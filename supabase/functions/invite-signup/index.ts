@@ -13,9 +13,11 @@
  * The invites table is read directly with the service role (its hash is computed here), so this function does not depend on any
  * function grants.
  *
- * Deploy:  supabase functions deploy invite-signup
- *          (or Supabase dashboard → Edge Functions → Deploy a new function → Via Editor; keep "Enforce JWT verification" ON,
- *          the app sends its public key, which is enough)
+ * Deploy:  supabase functions deploy invite-signup   (supabase/config.toml turns the login check OFF for it)
+ *          (or Supabase dashboard → Edge Functions → Deploy a new function → Via Editor, and turn "Enforce JWT verification" OFF)
+ *          The login check must be OFF: the invited person has no login yet, and the app's publishable key is not a login token, so
+ *          with the check ON every call gets a 401 (the app then falls back to the normal sign-up). Turning it off is safe here: the
+ *          function does nothing without a valid, unused invite link.
  * Needs no extra secrets (SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are already provided to every function).
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';

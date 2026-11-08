@@ -57,6 +57,8 @@ WHAT TO CHECK (only you can see these)
 TWO WAYS TO FIX IT
 ------------------
 OPTION A — ONE BUCKET FOR EVERYTHING (what you asked for)
+  [Old note. No longer possible: the media function now REFUSES worker ID photo uploads when
+   R2_PRIVATE_BUCKET_NAME is missing; ID photos never go to the public bucket. See docs/media-pipeline.md.]
   Stop treating any photo as private. Every upload goes to the one public bucket
   and is read by its normal address, exactly like profile and project photos.
   - Pro: simplest, most robust, everything "just works," nothing to maintain.

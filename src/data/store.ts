@@ -20,7 +20,7 @@ import { useSyncExternalStore } from 'react';
 import { properName } from '@/lib/names';
 import { Alert, AppState, Platform } from 'react-native';
 import type { RealtimeChannel } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, isDemoMode } from '@/lib/supabase';
 import { sweepStorageSoon } from '@/lib/storageSweep';
 import { uuid } from '@/lib/ids';
 import type { Company, CompanyMember, PersonSummary } from '@/types/company';
@@ -747,9 +747,10 @@ export function endSession(): void {
   emitChange();
 }
 
-/** Demo mode (no Supabase configured): load the built-in sample data so the
- * app is explorable exactly as before. Changes stay in memory only. */
+/** Demo mode (DEVELOPMENT builds with no Supabase configured): load the built-in sample data so the
+ * app is explorable exactly as before. Changes stay in memory only. A release build never loads sample data. */
 export function startDemoSession(personId: string, role: SessionRole): void {
+  if (!isDemoMode) return;
   // Lazy-required so the sample data isn't bundled into the real-mode code path's startup.
   const mock = require('./mock') as typeof import('./mock');
   const ops = require('./mockOperations') as typeof import('./mockOperations');

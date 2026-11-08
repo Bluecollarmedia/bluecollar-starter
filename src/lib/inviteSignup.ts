@@ -28,7 +28,9 @@ export async function createInvitedLogin(
 
   const res = (error as { context?: Response }).context;
   if (res && typeof res.json === 'function') {
-    if (res.status === 404) return 'unavailable';
+    // 404 = the function is not deployed; 401 = it was deployed with the login check ON (it must be OFF, see supabase/config.toml).
+    // Either way the function is not usable here, so fall back to the normal sign-up instead of a dead end.
+    if (res.status === 404 || res.status === 401) return 'unavailable';
     const body = (await res.json().catch(() => null)) as { error?: string } | null;
     return REASONS[body?.error ?? ''] ?? 'Something went wrong. Please try again.';
   }

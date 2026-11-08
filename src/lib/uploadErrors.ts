@@ -26,3 +26,6 @@ export function explainUploadError(raw: unknown): string {
 
 /** Message used when there is no signed-in session, so the server would refuse the upload anyway. */
 export const SIGNED_OUT_UPLOAD_MESSAGE = "You're signed out, so the file can't be saved. Sign out and sign in again, then retry.";
+
+/** Message used when the build has no photo storage address (EXPO_PUBLIC_R2_PUBLIC_URL), so no file can be saved anywhere. */
+export const PHOTO_STORAGE_NOT_SET_UP_MESSAGE = "Photo storage is not set up in this app yet, so the file can't be saved. Ask the company to finish the app's setup.";

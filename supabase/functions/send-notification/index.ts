@@ -1,6 +1,11 @@
 /**
  * Edge Function: send-notification
  *
+ * WARNING: the login (JWT) check is OFF for this function on purpose (supabase/config.toml): the database trigger calls it with no
+ * login. Anyone on the internet can call it, so it is only safe because of its own rules below: it takes nothing but a notification
+ * id, only sends a notification created in the last 15 minutes (MAX_AGE_MS), and claims each one once (pushed_at is null -> set) before
+ * sending. Keep those rules, and never add a feature here that trusts the caller (a check script fails if they are removed).
+ *
  * Called by the database (trigger app_notifications_push, update 008) each
  * time an in-app notification is created. It:
  *   1. sends it as a push to every phone the person is signed in on
@@ -12,7 +17,7 @@
  * notification itself and marks it sent, so each one goes out at most once
  * and the endpoint can't be used to send anything else.
  *
- * Deploy:  supabase functions deploy send-notification --no-verify-jwt
+ * Deploy:  supabase functions deploy send-notification   (supabase/config.toml turns the login check off)
  *          (or Supabase dashboard → Edge Functions → Deploy a new function →
  *          Via Editor, name it send-notification, paste this file, and turn
  *          off "Enforce JWT verification" in its settings)
@@ -58,7 +63,7 @@ serve(async (req: Request) => {
     .eq('id', id)
     .is('pushed_at', null)
     .gt('created_at', new Date(Date.now() - MAX_AGE_MS).toISOString())
-    .select('id, recipient_id, event_type, title, body, linked_entity_type, linked_entity_id')
+    .select('id, company_id, recipient_id, event_type, title, body, linked_entity_type, linked_entity_id')
     .maybeSingle();
   if (error) return json({ error: error.message }, 500);
   if (!n) return json({ skipped: true });
@@ -73,6 +78,7 @@ serve(async (req: Request) => {
 type Db = ReturnType<typeof getServiceClient>;
 interface Notification {
   id: string;
+  company_id: string;
   recipient_id: string;
   event_type: string;
   title: string;
@@ -146,11 +152,13 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
 
   const table = n.linked_entity_type === 'quote' ? 'quotes' : n.linked_entity_type === 'change_order' ? 'change_orders' : null;
   const doc = table && n.linked_entity_id
-    ? (await db.from(table).select('number, total, share_token, project_id, approved_name, decline_reason').eq('id', n.linked_entity_id).maybeSingle()).data
+    ? (await db.from(table).select('company_id, status, number, total, share_token, project_id, approved_name, decline_reason').eq('id', n.linked_entity_id).maybeSingle()).data
     : null;
-  const project = doc
-    ? (await db.from('projects').select('name, address, city').eq('id', doc.project_id).maybeSingle()).data
-    : null;
+  // Only a REAL decision is emailed: the document must belong to this notice's company and really be approved / declined.
+  // (Anyone in a company could once write a fake notice; this keeps the email from leaking a document's total, address and link.)
+  const wanted = n.event_type === 'quote_approved' ? 'approved' : 'declined';
+  if (!doc || doc.company_id !== n.company_id || doc.status !== wanted) return 'skipped: the document is not ' + wanted + ' in this company';
+  const project = (await db.from('projects').select('name, address, city').eq('id', doc.project_id).maybeSingle()).data;
 
   const webUrl = (Deno.env.get('APP_WEB_URL') ?? '').replace(/\/+$/, '');
   const link = webUrl && doc?.share_token ? `${webUrl}/approve/${doc.share_token}` : null;

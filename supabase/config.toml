@@ -1,0 +1,50 @@
+# Supabase settings for deploying the Edge Functions from this repo with one command:
+#   supabase functions deploy            (deploys every function below with the login check shown)
+#
+# verify_jwt = the "Enforce JWT verification" (login check) switch. A plain deploy turns it ON, so every function is listed here.
+#
+# OFF on purpose (each one is called WITHOUT a login, and is safe only because of its own rules):
+#   send-notification  the database push trigger calls it with no login (only a notification id; 15 minutes; sent once)
+#   notify-request     signed-out visitors call it from the public Request form (only a request id; 15 minutes; emailed once)
+#   invite-signup      called before the invited person has a login (does nothing without a valid, unused invite link)
+#   weather            the signed-out weather area calls it (public forecast data only)
+# ON for every other function (the app calls them signed in).
+#
+# A check (scripts/checks/functionsConfig.check.cjs) fails if a function folder is missing here or a setting changes.
+
+# Only a local name for the Supabase CLI (it refuses a config without one). It is NOT the client's project; the deploy
+# picks the project with `supabase link` or --project-ref.
+project_id = "bluecollar-starter"
+
+[functions.clock-in-alert]
+verify_jwt = true
+
+[functions.delete-media]
+verify_jwt = true
+
+[functions.invite-signup]
+verify_jwt = false
+
+[functions.media]
+verify_jwt = true
+
+[functions.notify-request]
+verify_jwt = false
+
+[functions.send-document-email]
+verify_jwt = true
+
+[functions.send-notification]
+verify_jwt = false
+
+[functions.storage-cleanup]
+verify_jwt = true
+
+[functions.storage-usage]
+verify_jwt = true
+
+[functions.upload-url]
+verify_jwt = true
+
+[functions.weather]
+verify_jwt = false

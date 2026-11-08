@@ -25,7 +25,12 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
   const fs = require('node:fs');
   const fn = fs.readFileSync(path.join(root, 'supabase/functions/media/index.ts'), 'utf8');
   check('new private files are written to the private bucket, not the public one', /writeBase\(key\)/.test(fn) && (fn.match(/writeBase\(key\)/g) || []).length >= 1);
-  check('with no private bucket configured everything behaves as before (one bucket)', /PRIVATE_BUCKET_URL && isPrivateKey\(key\) \? PRIVATE_BUCKET_URL : BUCKET_URL/.test(fn));
+  // R17: no private bucket = ID photo uploads are REFUSED (never written to the public bucket).
+  check('with no private bucket configured an ID photo upload is refused with a clear error, never sent to the public bucket',
+    /if \(isPrivateKey\(`\$\{folder\}\/x`\) && !PRIVATE_BUCKET_URL\) return reply\(\{ error: NO_PRIVATE_BUCKET \}, 503\)/.test(fn) &&
+    /if \(!isPrivateKey\(key\)\) return BUCKET_URL;\s*if \(!PRIVATE_BUCKET_URL\) throw new Error\(NO_PRIVATE_BUCKET\);\s*return PRIVATE_BUCKET_URL;/.test(fn) &&
+    !/PRIVATE_BUCKET_URL && isPrivateKey\(key\) \? PRIVATE_BUCKET_URL : BUCKET_URL/.test(fn) &&
+    /ID photo storage is not set up/.test(fn));
   check('reading/signing finds a file in the private bucket first, then the old one (so moving files across breaks nothing)', /async function locate/.test(fn) && /return BUCKET_URL;/.test(fn));
   check('deleting removes a file from both buckets', /deleteEverywhere/.test(fn));
   console.log(bad ? `\n${bad} failed` : '\nall passed');

@@ -2,8 +2,9 @@
  * Auth Provider
  *
  * Wraps the app in authentication state powered by Supabase.
- * When Supabase is not configured (no .env), falls through to
- * demo mode with the built-in sample data so the app is explorable.
+ * When Supabase is not configured (no .env) in a DEVELOPMENT build, falls through to
+ * demo mode with the built-in sample data so the app is explorable. A release build is
+ * never in demo mode: it stays signed out and the root layout shows "App not set up".
  *
  * Supports onboarding states:
  *  - unauthenticated → welcome / sign-in
@@ -19,7 +20,7 @@ import { Platform } from 'react-native';
 import { AUTH_CALLBACK_URL } from '@/lib/authLink';
 import { createInvitedLogin } from '@/lib/inviteSignup';
 import { properName } from '@/lib/names';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured, isDemoMode } from '@/lib/supabase';
 import { startSession, endSession, startDemoSession, updateRow } from '@/data/store';
 import { unregisterForPush } from '@/lib/push';
 import { syncMaterialReminders } from '@/lib/materialReminders';
@@ -304,6 +305,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
+      // Release build with no Supabase settings: no demo, no sample data. Stay signed out; the root layout shows "App not set up".
+      if (!isDemoMode) {
+        dispatch({ type: 'SIGN_OUT' });
+        return;
+      }
       const user = DEV_USERS.worker;
       startDemoSession(user.id, user.role as 'worker');
       dispatch({ type: 'SET_DEV_MODE', user, session: DEV_SESSION, appState: 'active', onboardingStep: 'ready' });
@@ -419,7 +425,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [resolveFromSession]);
 
   const switchDevRole = useCallback((role: UserRole) => {
-    if (isSupabaseConfigured) return;
+    if (!isDemoMode) return;
     const user = devUser(role);
     startDemoSession(user.id, user.role as 'owner');
     dispatch({
@@ -432,7 +438,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const switchDevState = useCallback((appState: AppState, onboardingStep?: OnboardingStep) => {
-    if (isSupabaseConfigured) return;
+    if (!isDemoMode) return;
     const step = onboardingStep ?? (appState === 'unauthenticated' ? 'welcome' : 'ready');
     const user = appState === 'unauthenticated' ? null : DEV_USERS.worker;
     dispatch({
