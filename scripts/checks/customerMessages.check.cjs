@@ -11,14 +11,14 @@ let bad = 0;
 const check = (n, ok, d) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAIL') + '  ' + n + (ok ? '' : ' - ' + (d || ''))); };
 
 check('1 two groups: all customers, and customers with an active job',
-  c.AUDIENCES.map((a) => a.key).join() === 'customers_all,customers_landscaping' && c.isCustomerAudience('customers_landscaping') && !c.isCustomerAudience('all_workers'));
+  c.AUDIENCES.map((a) => a.key).join() === 'customers_all,customers_active' && c.isCustomerAudience('customers_active') && !c.isCustomerAudience('all_workers'));
 check('2 a message needs a title and a body, within the size limits',
   c.messageProblem('', 'x') === 'Add a title.' && c.messageProblem('t', '  ') === 'Write the message.' && c.messageProblem('t', 'b') === ''
   && /under 120/.test(c.messageProblem('x'.repeat(121), 'b')) && /under 2000/.test(c.messageProblem('t', 'x'.repeat(2001))));
 check('3 the owner is told the real number reached, and the push + banner',
   /Sent to 1 customer\./.test(c.sentText(1)) && /Sent to 12 customers\./.test(c.sentText(12)) && /push notification and a banner/.test(c.sentText(2)) && /nobody was messaged/.test(c.sentText(0)));
 check('4 the confirmation says who it goes to and that it cannot be unsent',
-  /all your customers/.test(c.confirmText('customers_all').message) && /active job customers/.test(c.confirmText('customers_landscaping').message) && /can't be unsent/.test(c.confirmText('customers_all').message));
+  /all your customers/.test(c.confirmText('customers_all').message) && /active job customers/.test(c.confirmText('customers_active').message) && /can't be unsent/.test(c.confirmText('customers_all').message));
 check('5 errors are plain words (update not installed, not allowed)',
   /update 55/.test(c.describeSendError('Could not find the function public.send_customer_announcement in the schema cache')) && /Only the owner, or someone the owner allows/.test(c.describeSendError('Only the owner or an admin can message customers.')));
 
