@@ -11,6 +11,7 @@ import { haptics } from '@/lib/haptics';
 import { useT } from '@/i18n';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { fixed } from '@/theme/colors';
 
 /**
  * An ADMIN who is put on a job works it like any worker: this card on their dashboard shows the job, lets them confirm it, has the
@@ -50,7 +51,7 @@ export function AdminJobCard() {
                   accessibilityRole="button"
                   style={[styles.confirm, { backgroundColor: colors.primaryDark }]}
                 >
-                  <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>{t('Confirm')}</Text>
+                  <Text style={[typeScale.labelSmall, { color: fixed.white }]}>{t('Confirm')}</Text>
                 </Pressable>
               )}
             </View>

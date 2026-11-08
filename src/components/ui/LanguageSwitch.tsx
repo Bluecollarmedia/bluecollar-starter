@@ -5,6 +5,7 @@ import { LANGUAGES, SPANISH_ON, useLanguage, useT } from '@/i18n';
 import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { fixed } from '@/theme/colors';
 
 /**
  * English | Español. Small on purpose: a pill for the sign-in / sign-up screens (so someone can read the page in Spanish before they sign up),
@@ -30,7 +31,7 @@ export function LanguageSwitch({ style, compact = false }: { style?: object; com
             hitSlop={6}
             style={[styles.segment, compact && styles.segmentSmall, on && { backgroundColor: colors.primary }]}
           >
-            <Text style={[compact ? typeScale.caption : typeScale.labelSmall, { color: on ? '#FFFFFF' : colors.textSecondary, fontWeight: '700' }]}>{l.label}</Text>
+            <Text style={[compact ? typeScale.caption : typeScale.labelSmall, { color: on ? fixed.white : colors.textSecondary, fontWeight: '700' }]}>{l.label}</Text>
           </Pressable>
         );
       })}

@@ -23,6 +23,7 @@ import { spacing, radius } from '@/theme/spacing';
 import type { OwnerProjectPhoto } from '@/types/project';
 import { confirmAction } from '@/components/financials/ActionSheet';
 import { brand, w } from '@/config/brand';
+import { fixed, whiteAlpha } from '@/theme/colors';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -204,12 +205,12 @@ export function ProjectPrivateNotes({ projectId, projectName, address, internalN
       <Modal visible={!!viewing} animationType="fade" onRequestClose={() => setViewing(null)} statusBarTranslucent>
         <View style={[styles.viewer, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.md }]}>
           <View style={styles.viewerTop}>
-            <Pressable onPress={() => { if (viewing) updateOwnerPhotoCaption(viewing.id, caption); setViewing(null); }} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close"><Text style={[typeScale.bodyLarge, { color: '#FFFFFF' }]}>Done</Text></Pressable>
-            <Pressable onPress={() => viewing && confirm('Delete this picture?', 'It will be removed for good.', 'Delete', () => { removeOwnerPhoto(viewing); setViewing(null); })} hitSlop={12} accessibilityRole="button" accessibilityLabel="Delete this picture"><Icon name="trash-2" size={20} color="#FFFFFF" /></Pressable>
+            <Pressable onPress={() => { if (viewing) updateOwnerPhotoCaption(viewing.id, caption); setViewing(null); }} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close"><Text style={[typeScale.bodyLarge, { color: fixed.white }]}>Done</Text></Pressable>
+            <Pressable onPress={() => viewing && confirm('Delete this picture?', 'It will be removed for good.', 'Delete', () => { removeOwnerPhoto(viewing); setViewing(null); })} hitSlop={12} accessibilityRole="button" accessibilityLabel="Delete this picture"><Icon name="trash-2" size={20} color={fixed.white} /></Pressable>
           </View>
           {viewing ? <OptimizedImage source={viewing.fileUrl} style={styles.viewerImage} /> : null}
-          <TextInput value={caption} onChangeText={setCaption} placeholder="Add a caption (optional)" placeholderTextColor="rgba(255,255,255,0.5)" style={[typeScale.bodyLarge, styles.captionInput]} />
-          {viewing ? <Text style={[typeScale.caption, { color: 'rgba(255,255,255,0.6)', textAlign: 'center' }]}>Added {when(viewing.createdAt)}</Text> : null}
+          <TextInput value={caption} onChangeText={setCaption} placeholder="Add a caption (optional)" placeholderTextColor={whiteAlpha(0.5)} style={[typeScale.bodyLarge, styles.captionInput]} />
+          {viewing ? <Text style={[typeScale.caption, { color: whiteAlpha(0.6), textAlign: 'center' }]}>Added {when(viewing.createdAt)}</Text> : null}
         </View>
       </Modal>
 
@@ -261,10 +262,10 @@ const styles = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   thumb: { width: 96, height: 96, borderRadius: radius.md, overflow: 'hidden' },
   addTile: { borderWidth: 1.5, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
-  viewer: { flex: 1, backgroundColor: '#111111', paddingHorizontal: spacing.lg, gap: spacing.md },
+  viewer: { flex: 1, backgroundColor: fixed.viewer, paddingHorizontal: spacing.lg, gap: spacing.md },
   viewerTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 },
   viewerImage: { flex: 1, width: '100%', borderRadius: radius.md },
-  captionInput: { color: '#FFFFFF', borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.3)', paddingVertical: spacing.sm },
+  captionInput: { color: fixed.white, borderBottomWidth: 1, borderBottomColor: whiteAlpha(0.3), paddingVertical: spacing.sm },
   listScreen: { flex: 1, paddingHorizontal: spacing.lg },
   itemsBox: { borderRadius: radius.lg, borderWidth: StyleSheet.hairlineWidth, overflow: 'hidden' },
   itemRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md, padding: spacing.md },

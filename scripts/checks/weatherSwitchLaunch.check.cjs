@@ -129,14 +129,15 @@ const settle = () => new Promise((r) => setImmediate(r));
   check('27 the signed-out branch now asks signedOutRedirect and nothing else changed there', /const goTo = signedOutRedirect\(\{ firstSegment: \(segments as string\[\]\)\[0\], weatherOn \}\);\s*if \(goTo\) router\.replace\(goTo as any\);/.test(layout) && /weatherOn\]\);/.test(layout) && !/router\.replace\('\/\(auth\)\/welcome'\)/.test(layout));
   // Fingerprints retaken in Step 2c (the original company name and trade-specific wording were removed from these screens),
   // and in Step 3 for welcome / create-company (the app name and company example now come from src/config/brand.js),
-  // and in Step 3b for create-company (its one sentence says "jobs" instead of "projects").
+  // and in Step 3b for create-company (its one sentence says "jobs" instead of "projects"),
+  // and in Step 4 for welcome / WelcomeOverlay (plain look: theme color tokens and the plain logo mark instead of the leaf; comments only otherwise).
   const fp = {
-    'app/(auth)/welcome.tsx': '40a532add2d93ecd584afdfcc4c1da0cc3d950d75f89ab79e523f3d7ca13f5de',
+    'app/(auth)/welcome.tsx': '5dfa9fa9e0ae5f1b62f6e0defdc3312698676216c890e4ed5e0c6e1c30ae8b6a',
     'app/(auth)/login.tsx': '879b7e355d33e5c88ce975be9e67018e38b94b70edbc415f351275bcdf73cf13',
     'app/(auth)/forgot-password.tsx': '5c502ed34a4ff2df6dd22d8dcb3f2b9387e9d816221ccab9a21f0eff27a016f5',
     'app/(auth)/create-company.tsx': '6cba8faa485d0306ea4e2a2994b47bbe32b1fe6658107b1ee764adb5b7a9f3ce', // Step 3b: "projects" -> "jobs"
     'app/(auth)/_layout.tsx': '1d276fc0fd221a87d2e47732dd860a9f5000475e4e1e78bf5ca0eab379074109',
-    'src/components/branding/WelcomeOverlay.tsx': '85244eedb874729513efdac4c3a7b19be9abd9190ee6f8d0ab6ed94bd18398e4',
+    'src/components/branding/WelcomeOverlay.tsx': '77bed7dfd21ed2bc3d03f54b5222b883e7fb8c86d99b6aa7d20638d828a62927',
   };
   const changed = Object.entries(fp).filter(([f, h]) => sha(read(f)) !== h).map(([f]) => f);
   check('28 the welcome, sign-in, forgot-password, create-company screens, the auth layout and the sign-in welcome overlay are unchanged', changed.length === 0, changed.join(', '));

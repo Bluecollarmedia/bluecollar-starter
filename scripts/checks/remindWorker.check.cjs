@@ -7,7 +7,7 @@ const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 let bad = 0;
 const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  - ' + detail}`); };
 const m = { exports: {} };
-new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/remindMessage.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, () => ({}));
+new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/remindMessage.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(() => ({}), ts));
 const { remindMessage } = m.exports;
 check('1 sent to a phone: "Reminder sent"', remindMessage({ sent: true, devices: 1 }, 'Yosef').text === 'Reminder sent to Yosef.');
 check('2 saved but no phone set up for push: says so, never "sent"', /no push went out/.test(remindMessage({ sent: true, devices: 0 }, 'Yosef').text) && !/^Reminder sent/.test(remindMessage({ sent: true, devices: 0 }, 'Yosef').text));

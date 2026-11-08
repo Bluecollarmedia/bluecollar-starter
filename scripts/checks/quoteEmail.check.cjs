@@ -4,7 +4,7 @@ const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
-const load = (p) => { const m = { exports: {} }; new Function('module', 'exports', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports); return m.exports; };
+const load = (p) => { const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(require, ts)); return m.exports; };
 const email = load('src/lib/documentEmail.ts');
 const sig = load('src/lib/signature.ts');
 let bad = 0;

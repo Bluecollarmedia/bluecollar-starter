@@ -181,13 +181,13 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
     ['Reason', approved ? null : doc?.decline_reason],
   ];
   const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1F2328;max-width:520px">
+<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#111111;max-width:520px">
   <p style="font-size:18px;font-weight:600;margin:0 0 12px">${esc(n.title)}</p>
   <table style="border-collapse:collapse;font-size:14px">
-    ${rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#6B7570">${esc(k)}</td><td style="padding:4px 0">${esc(String(v))}</td></tr>`).join('')}
+    ${rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#6B6B6B">${esc(k)}</td><td style="padding:4px 0">${esc(String(v))}</td></tr>`).join('')}
   </table>
   ${link ? `<p style="margin:20px 0"><a href="${esc(link)}" style="background:${BRAND_COLOR};color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:600">View ${approved ? 'approved ' : ''}document &amp; PDF</a></p>` : ''}
-  <p style="font-size:12px;color:#8A948F">Sent by the app. It's also in your notifications.</p>
+  <p style="font-size:12px;color:#8A8A8A">Sent by the app. It's also in your notifications.</p>
 </div>`;
 
   const res = await fetch('https://api.resend.com/emails', {

@@ -54,7 +54,7 @@ export function TruckMaintenanceSheet({ visible, editing, onClose, onSubmit }: P
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
           <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
           <View style={styles.head}>
             <Text style={[typeScale.headingLarge, { color: colors.textPrimary }]}>{editing ? 'Change maintenance' : 'Add maintenance'}</Text>

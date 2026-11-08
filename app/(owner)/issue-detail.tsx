@@ -16,6 +16,7 @@ import { deleteIssue, issueTypeLabel, removeIssuePhoto, reopenIssue, resolveIssu
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 export default function IssueDetailScreen() {
   const { colors } = useTheme();
@@ -92,8 +93,8 @@ export default function IssueDetailScreen() {
               accessibilityLabel="Mark resolved"
               style={[styles.primary, { backgroundColor: colors.primary }]}
             >
-              <Icon name="check" size={18} color="#FFFFFF" />
-              <Text style={[typeScale.labelLarge, { color: '#FFFFFF', fontWeight: '800' }]}>Mark Resolved</Text>
+              <Icon name="check" size={18} color={fixed.white} />
+              <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '800' }]}>Mark Resolved</Text>
             </PressableScale>
           </>
         ) : (
@@ -133,5 +134,5 @@ const styles = StyleSheet.create({
   input: { minHeight: 80, borderRadius: radius.md, borderWidth: 1, padding: spacing.md, textAlignVertical: 'top' },
   primary: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, height: 52, borderRadius: radius.full, marginTop: spacing.md },
   resolved: { marginTop: spacing.xl, padding: spacing.md, borderRadius: radius.lg },
-  viewer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', alignItems: 'center', justifyContent: 'center' },
+  viewer: { flex: 1, backgroundColor: blackAlpha(0.92), alignItems: 'center', justifyContent: 'center' },
 });

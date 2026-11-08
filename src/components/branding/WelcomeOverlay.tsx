@@ -2,8 +2,8 @@
  * Sign-in welcome animation.
  *
  *  1. Tap Sign In → the screen fades to white and the logo mark springs in,
- *     breathing with a soft green ripple while the password is checked.
- *  2. Signed in → the leaf settles and lifts, "Welcome back, <name>" rises in.
+ *     breathing with a soft ripple while the password is checked.
+ *  2. Signed in → the logo mark settles and lifts, "Welcome back, <name>" rises in.
  *  3. Brief hold, then the whole thing fades away into the app.
  *  If sign-in fails, it simply fades out so the error is visible.
  */
@@ -29,10 +29,10 @@ import { useAuth } from '@/providers/AuthProvider';
 import { resetWelcome, useWelcomePhase, welcomeStartedAt } from '@/lib/welcomeAnimation';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
-import { brand } from '@/theme/colors';
+import { brand, fixed } from '@/theme/colors';
 
 const LEAF = 112;
-/** Leaf is on screen at least this long before the welcome text, even on a fast sign-in. */
+/** The mark is on screen at least this long before the welcome text, even on a fast sign-in. */
 const MIN_LEAF_MS = 700;
 const HOLD_MS = 1300;
 /** Give up on the animation if sign-in hangs (the login screen still shows its own state). */
@@ -163,7 +163,7 @@ export function WelcomeOverlay({ ready, name }: { ready: boolean; name?: string 
       <Animated.View style={[styles.center, contentStyle]}>
         <Animated.View style={[styles.ripple, { backgroundColor: brand.primarySurface }, rippleStyle]} />
         <Animated.View style={[styles.badge, leafStyle]}>
-          <Image source={require('../../../assets/images/logo-leaf.png')} style={styles.leaf} resizeMode="contain" />
+          <Image source={require('../../../assets/images/logo-mark.png')} style={styles.leaf} resizeMode="contain" />
         </Animated.View>
         <Animated.View style={[styles.textWrap, textStyle]}>
           <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, textAlign: 'center' }]}>
@@ -190,15 +190,15 @@ export function SignInWelcome() {
 const styles = StyleSheet.create({
   overlay: { zIndex: 1000, elevation: 1000 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  // White circle badge holding the leaf.
+  // White circle badge holding the logo mark.
   badge: {
     width: LEAF,
     height: LEAF,
     borderRadius: LEAF / 2,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: fixed.white,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#1B3A2D',
+    shadowColor: fixed.black,
     shadowOpacity: 0.12,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 6 },

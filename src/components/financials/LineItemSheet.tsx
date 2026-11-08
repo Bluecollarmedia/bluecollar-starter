@@ -92,7 +92,7 @@ export function LineItemSheet({ visible, item, isNew, suggestions, onSave, onDel
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <KeyboardAvoidingView style={styles.overlay} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close" />
-        <View style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
+        <View style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]}>
           <View style={styles.header}>
             <Pressable onPress={onClose} hitSlop={10}><Text style={[typeScale.bodyLarge, { color: colors.textSecondary }]}>Cancel</Text></Pressable>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{isNew ? 'Add Item' : 'Edit Item'}</Text>

@@ -35,7 +35,22 @@ function expoConfig() {
   return fn({ config: JSON.parse(JSON.stringify(appJson)) });
 }
 
-/** A require() for compiled files that answers '@/config/brand' and falls back to `other` for everything else. */
-const withBrand = (other, ts) => (n) => (n === '@/config/brand' ? brandModule(ts) : other(n));
+const themeCache = {};
+/** A theme file (src/theme/<name>.ts, e.g. colors or weather) compiled for Node, reading the settings file. */
+function themeModule(name, ts) {
+  if (themeCache[name]) return themeCache[name];
+  const tsLib = ts || require(process.argv[2] || 'typescript');
+  const src = fs.readFileSync(path.join(root, `src/theme/${name}.ts`), 'utf8');
+  const m = { exports: {} };
+  const out = tsLib.transpileModule(src, { compilerOptions: { module: 'commonjs', target: 'es2020', esModuleInterop: true } }).outputText;
+  const req = (n) => (n === '@/config/brand' ? brandModule(tsLib) : n.startsWith('@/theme/') ? themeModule(n.slice('@/theme/'.length), tsLib) : require(n));
+  new Function('module', 'exports', 'require', out)(m, m.exports, req);
+  themeCache[name] = m.exports;
+  return m.exports;
+}
 
-module.exports = { brand, brandModule, expoConfig, withBrand, freshBrand };
+/** A require() for compiled files that answers '@/config/brand' and the theme files ('@/theme/colors', '@/theme/weather'),
+ *  and falls back to `other` for everything else. */
+const withBrand = (other, ts) => (n) => (n === '@/config/brand' ? brandModule(ts) : n.startsWith('@/theme/') ? themeModule(n.slice('@/theme/'.length), ts) : other(n));
+
+module.exports = { brand, brandModule, themeModule, expoConfig, withBrand, freshBrand };

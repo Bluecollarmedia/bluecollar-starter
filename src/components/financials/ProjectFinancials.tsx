@@ -17,6 +17,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { FinancialDocType } from '@/types/financial';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 const TABS: { kind: FinancialDocType; label: string; create: string; empty: string }[] = [
   { kind: 'quote', label: 'Quotes', create: 'New Quote', empty: w('No quotes yet. Create one to price the work for this job.') },
@@ -52,7 +53,7 @@ export function ProjectFinancials({ projectId }: { projectId: string }) {
         appearance="light"
         backgroundColor={colors.backgroundTertiary}
         fontStyle={{ color: colors.textSecondary }}
-        activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+        activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
         style={styles.segment}
       />
 

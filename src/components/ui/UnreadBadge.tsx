@@ -6,6 +6,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useNotifications } from '@/hooks/useOperations';
 import { typeScale } from '@/theme/typography';
+import { fixed, semantic } from '@/theme/colors';
 
 /** "9+" would hide the real number, so only very large counts are shortened. */
 export const badgeText = (n: number) => (n > 99 ? '99+' : String(n));
@@ -30,11 +31,11 @@ const styles = StyleSheet.create({
     height: 18,
     paddingHorizontal: 5,
     borderRadius: 9,
-    backgroundColor: '#E53935',
+    backgroundColor: semantic.error,
     borderWidth: 1.5,
-    borderColor: '#FFFFFF',
+    borderColor: fixed.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  text: { color: '#FFFFFF', fontSize: 11, lineHeight: 13, fontWeight: '800' },
+  text: { color: fixed.white, fontSize: 11, lineHeight: 13, fontWeight: '800' },
 });

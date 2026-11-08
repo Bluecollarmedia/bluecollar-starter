@@ -26,6 +26,7 @@ import { spacing, radius } from '@/theme/spacing';
 import type { TruckStatus } from '@/types/truck';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 const STATUS_OPTIONS: { key: TruckStatus; label: string; dot: string }[] = [
   { key: 'available', label: 'Available', dot: semantic.success },
@@ -136,7 +137,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
           {photoUri ? (
             <>
               <OptimizedImage source={photoUri} style={styles.photoPreview} />
-              <View style={[styles.photoBadge, { backgroundColor: colors.primary }]}><Icon name="camera" size={14} color="#FFFFFF" /></View>
+              <View style={[styles.photoBadge, { backgroundColor: colors.primary }]}><Icon name="camera" size={14} color={colors.textOnPrimary} /></View>
             </>
           ) : (
             <>
@@ -180,7 +181,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
           </View>
         </View>
 
-        <Input label="Notes (optional)" value={notes} onChangeText={(v) => setNotes(v.slice(0, 200))} placeholder="e.g. Primary crew truck" multiline maxLength={200} hint={`${notes.length}/200. Your crew can see this short note.`} />
+        <Input label="Notes (optional)" value={notes} onChangeText={(v) => setNotes(v.slice(0, 200))} placeholder={w("e.g. Primary crew truck")} multiline maxLength={200} hint={w('{length}/200. Your crew can see this short note.', { length: notes.length })} />
 
         {!editing && isOwner ? (
           <View style={[styles.docs, { backgroundColor: colors.surface, borderColor: colors.borderLight }]}>
@@ -208,7 +209,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
 
       <BottomSheetModal visible={photoSheet} onRequestClose={() => setPhotoSheet(false)}>
         <Pressable style={styles.backdrop} onPress={() => setPhotoSheet(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
             <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center', marginBottom: spacing.md }]}>Vehicle Photo</Text>
             <Pressable style={styles.option} onPress={() => pick('camera')}><Icon name="camera" size={18} color={colors.textPrimary} /><Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Take Photo</Text></Pressable>

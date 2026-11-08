@@ -89,12 +89,12 @@ serve(async (req: Request) => {
 
     const m = buildRequestEmail(r);
     const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1F2328;max-width:520px;line-height:1.55">
+<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#111111;max-width:520px;line-height:1.55">
   <p style="margin:0 0 14px;font-size:17px;font-weight:700">New service request</p>
   <p style="margin:0 0 14px">A new request came in through the app.</p>
-  <table style="border-collapse:collapse;margin:0 0 18px">${m.lines.map((l) => { const i = l.indexOf(':'); return `<tr><td style="padding:3px 12px 3px 0;color:#5B6B62;white-space:nowrap;vertical-align:top">${esc(l.slice(0, i))}</td><td style="padding:3px 0;white-space:pre-line">${esc(l.slice(i + 2))}</td></tr>`; }).join('')}</table>
+  <table style="border-collapse:collapse;margin:0 0 18px">${m.lines.map((l) => { const i = l.indexOf(':'); return `<tr><td style="padding:3px 12px 3px 0;color:#5C5C5C;white-space:nowrap;vertical-align:top">${esc(l.slice(0, i))}</td><td style="padding:3px 0;white-space:pre-line">${esc(l.slice(i + 2))}</td></tr>`; }).join('')}</table>
   <p style="margin:0 0 6px"><a href="tel:${esc(r.phone.replace(/[^+\d]/g, ''))}" style="color:${BRAND_COLOR};font-weight:600">Call ${esc(r.name)}</a></p>
-  <p style="margin:0;color:#5B6B62">Open the app → Requests to mark it contacted or done.</p>
+  <p style="margin:0;color:#5C5C5C">Open the app → Requests to mark it contacted or done.</p>
 </div>`;
 
     const res = await fetch('https://api.resend.com/emails', {

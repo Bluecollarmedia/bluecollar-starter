@@ -29,6 +29,7 @@ import { formatBytes, storageLimitLabel } from '@/types/storage';
 import type { UserRole } from '@/types';
 import { appVersionText } from '@/lib/appVersion';
 import { isFeatureOn, words } from '@/config/brand';
+import { fixed, semantic } from '@/theme/colors';
 
 /** The owner's "Public weather" row exists only when the settings file has the public visitor area (and weather) on. */
 const PUBLIC_AREA_IN_APP = isFeatureOn('publicVisitorArea') && isFeatureOn('weather');
@@ -49,7 +50,7 @@ export default function SettingsScreen() {
 
   const usedBytes = info?.usage.totalBytes ?? 0;
   const usedPercent = limitBytes > 0 ? Math.round((usedBytes / limitBytes) * 100) : 0;
-  const usageColor = usedPercent > 90 ? tileColors.red : usedPercent > 75 ? tileColors.orange : colors.primary;
+  const usageColor = usedPercent > 90 ? semantic.error : usedPercent > 75 ? semantic.warning : colors.primary;
   const companyAddress = [company?.address, company?.city, [company?.state, company?.zip].filter(Boolean).join(' ')]
     .filter(Boolean)
     .join(', ');
@@ -97,7 +98,7 @@ export default function SettingsScreen() {
             <Avatar firstName={user?.firstName ?? 'O'} lastName={user?.lastName ?? ''} size={66} uri={user.avatarUrl} />
           ) : (
             <View style={[styles.heroInitials, { backgroundColor: colors.primary }]}>
-              <Text style={[typeScale.headingLarge, { color: '#FFFFFF', fontWeight: '800' }]}>
+              <Text style={[typeScale.headingLarge, { color: fixed.white, fontWeight: '800' }]}>
                 {`${(user?.firstName ?? 'O')[0] ?? ''}${(user?.lastName ?? '')[0] ?? ''}`.toUpperCase()}
               </Text>
             </View>
@@ -131,21 +132,21 @@ export default function SettingsScreen() {
           {!db.demo && (
             <SettingsRow
               icon="briefcase"
-              tint={tileColors.green}
+              tint={tileColors.brand}
               title="Company Info & Header Photos"
               subtitle={[company?.phone, company?.email].filter(Boolean).join(' · ') || 'Name, phone, email, photos'}
               onPress={() => router.push({ pathname: '/(owner)/setup', params: { step: 'company' } } as any)}
             />
           )}
           {db.demo && (
-            <SettingsRow icon="briefcase" tint={tileColors.green} title={company?.name ?? 'Company'} subtitle={companyAddress || undefined} />
+            <SettingsRow icon="briefcase" tint={tileColors.brand} title={company?.name ?? 'Company'} subtitle={companyAddress || undefined} />
           )}
           {!db.demo && !!companyAddress && (
-            <SettingsRow icon="map-pin" tint={tileColors.pink} title="Office Address" subtitle={companyAddress} />
+            <SettingsRow icon="map-pin" tint={tileColors.brand} title="Office Address" subtitle={companyAddress} />
           )}
           <SettingsRow
             icon="navigation"
-            tint={tileColors.blue}
+            tint={tileColors.brand}
             title="Yard Location"
             subtitle={yard ? formatAddress(yard) : 'Not set yet'}
             onPress={() => router.push('/(owner)/more/yard-location' as any)}
@@ -153,7 +154,7 @@ export default function SettingsScreen() {
           {isFeatureOn('timeClock') && isFeatureOn('clockInAlerts') && (
             <SettingsRow
               icon="bell"
-              tint={tileColors.orange}
+              tint={tileColors.brand}
               title="Yard & clock-in alerts"
               subtitle="Get an email when someone clocks in away from the yard"
               onPress={() => router.push('/(owner)/more/yard-alerts' as any)}
@@ -162,7 +163,7 @@ export default function SettingsScreen() {
           {!db.demo && (
             <SettingsRow
               icon="check-square"
-              tint={tileColors.indigo}
+              tint={tileColors.brand}
               title="Recommended Setup"
               subtitle={isFeatureOn('trucks') ? 'Trucks, workers, pay rates and more' : 'Workers, pay rates and more'}
               onPress={() => router.push('/(owner)/setup' as any)}
@@ -172,18 +173,18 @@ export default function SettingsScreen() {
 
         {PUBLIC_AREA_IN_APP && weatherRow.canChange ? (
           <SettingsGroup title="Public Weather" footer="When on, anyone who opens the app without signing in sees local weather first, with a Sign In button. Off keeps the usual welcome screen.">
-            <SettingsRow icon="cloud" tint={tileColors.blue} title={weatherRow.title} subtitle={weatherRow.subtitle} value={weatherRow.value} onPress={weatherRow.confirm} />
+            <SettingsRow icon="cloud" tint={tileColors.brand} title={weatherRow.title} subtitle={weatherRow.subtitle} value={weatherRow.value} onPress={weatherRow.confirm} />
           </SettingsGroup>
         ) : null}
 
         <SettingsGroup title={words.crews} footer={`Build a ${words.crew.toLowerCase()} once, then add the whole ${words.crew.toLowerCase()} to a ${words.job.toLowerCase()} with one tap. A worker can be in more than one ${words.crew.toLowerCase()}.`}>
-          <SettingsRow icon="users" tint={tileColors.green} title={words.crews} subtitle={`Make and edit your ${words.crews.toLowerCase()}`} onPress={() => router.push('/(owner)/crews' as any)} />
+          <SettingsRow icon="users" tint={tileColors.brand} title={words.crews} subtitle={`Make and edit your ${words.crews.toLowerCase()}`} onPress={() => router.push('/(owner)/crews' as any)} />
         </SettingsGroup>
 
         <SettingsGroup title={`${words.job} Tasks`} footer={`By default anyone assigned to a ${words.job.toLowerCase()} can check off its tasks. Choose Task Lead only to limit it to the lead you pick on each ${words.job.toLowerCase()}.`}>
           <SettingsRow
             icon="check-square"
-            tint={tileColors.green}
+            tint={tileColors.brand}
             title="Check off tasks"
             subtitle="Tap to change"
             value={db.company?.taskLeadOnly ? 'Task Lead' : 'Anyone'}
@@ -195,7 +196,7 @@ export default function SettingsScreen() {
           <SettingsGroup title="Quotes & Invoices">
             <SettingsRow
               icon="file-text"
-              tint={tileColors.orange}
+              tint={tileColors.brand}
               title="Document Defaults"
               subtitle={docDefaultsSummary}
               onPress={() => router.push('/(owner)/more/document-defaults' as any)}
@@ -206,7 +207,7 @@ export default function SettingsScreen() {
         <SettingsGroup title="Storage">
           <SettingsRow
             icon="hard-drive"
-            tint={tileColors.teal}
+            tint={tileColors.brand}
             title="Storage"
             onPress={() => router.push('/(owner)/more/storage' as any)}
           >

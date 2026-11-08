@@ -120,7 +120,7 @@ serve(async (req: Request) => {
     const m = buildMessage({ customerName, kind, totalText: total, dateText: date, contactEmail: contact, company: companyName, dueText });
 
     const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1F2328;max-width:520px;line-height:1.55">
+<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#111111;max-width:520px;line-height:1.55">
   <p style="margin:0 0 14px">${esc(m.hello)}</p>
   <p style="margin:0 0 14px">${esc(m.body)}</p>
   <p style="margin:0 0 20px">${esc(m.closing)}</p>

@@ -15,7 +15,7 @@ import { Avatar, ProgressBar } from '@/components/ui';
 import { UnreadBadge } from '@/components/ui/UnreadBadge';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, whiteAlpha, blackAlpha } from '@/theme/colors';
 import { getProjectImageUri, getCompanyImageUri } from '@/lib/projectImages';
 import { BrandCover } from '@/components/branding/BrandCover';
 import { DASHBOARD_HERO_HEIGHT } from '@/components/media/HeaderPhotoField';
@@ -100,9 +100,9 @@ export default function OwnerDashboard() {
       <View style={styles.heroStat}>
         <View style={styles.heroStatIconRow}>
           {icon}
-          <Text style={[typeScale.headingLarge, { color: '#FFFFFF', marginLeft: spacing.xs }]}>{value}</Text>
+          <Text style={[typeScale.headingLarge, { color: fixed.white, marginLeft: spacing.xs }]}>{value}</Text>
         </View>
-        <Text style={[typeScale.caption, { color: 'rgba(255,255,255,0.85)' }]}>{label}</Text>
+        <Text style={[typeScale.caption, { color: whiteAlpha(0.85) }]}>{label}</Text>
       </View>
     );
   }
@@ -131,7 +131,7 @@ export default function OwnerDashboard() {
         onPress={() => router.push(item.route as any)}
       >
         <View style={[styles.attentionIcon, { backgroundColor: c.icon }]}>
-          <Icon name={item.icon} size={16} color="#FFFFFF" />
+          <Icon name={item.icon} size={16} color={fixed.white} />
         </View>
         <View style={{ flex: 1, marginLeft: spacing.sm }}>
           <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>
@@ -147,7 +147,7 @@ export default function OwnerDashboard() {
           disabled={reminding === item.id}
           hitSlop={8}
           accessibilityRole="button"
-          accessibilityLabel={item.confirmOwn ? 'Confirm my job' : item.remind ? `Remind ${item.remind.firstName || 'the worker'} to confirm` : item.actionLabel}
+          accessibilityLabel={item.confirmOwn ? w('Confirm my job') : item.remind ? `Remind ${item.remind.firstName || 'the worker'} to confirm` : item.actionLabel}
         >
           <Text style={[typeScale.labelSmall, { color: c.icon }]}>{reminding === item.id ? 'Sending…' : reminded[item.id] ? 'Sent' : item.actionLabel}</Text>
         </Pressable>
@@ -231,7 +231,7 @@ export default function OwnerDashboard() {
               )
             ) : null}
             <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: project.todayStatusLabel ? spacing.xs : 0 }]} numberOfLines={1}>
-              {project.todayStatusLabel ?? 'No crew scheduled'}
+              {project.todayStatusLabel ?? w('No crew scheduled')}
             </Text>
           </View>
         </View>
@@ -315,18 +315,18 @@ export default function OwnerDashboard() {
           <View style={[styles.heroCard, shadow.md]}>
             <BrandCover uri={getCompanyImageUri()} style={StyleSheet.absoluteFill} />
             <LinearGradient
-              colors={['rgba(10,20,15,0.25)', 'rgba(8,16,12,0.85)']}
+              colors={[blackAlpha(0.25), blackAlpha(0.85)]}
               style={StyleSheet.absoluteFill}
             />
             <View style={styles.heroContent}>
-              <Text style={[typeScale.overline, { color: 'rgba(255,255,255,0.8)' }]}>TODAY</Text>
-              <Text style={[typeScale.headingLarge, { color: '#FFFFFF', marginTop: 2, marginBottom: spacing.md }]}>
+              <Text style={[typeScale.overline, { color: whiteAlpha(0.8) }]}>TODAY</Text>
+              <Text style={[typeScale.headingLarge, { color: fixed.white, marginTop: 2, marginBottom: spacing.md }]}>
                 {todayStats.jobsInProgress} job{todayStats.jobsInProgress === 1 ? '' : 's'} in progress
               </Text>
               <View style={styles.heroStatsRow}>
-                {renderHeroStat(<Icon name="users" size={14} color="#FFFFFF" />, todayStats.workersScheduled, 'Workers scheduled')}
+                {renderHeroStat(<Icon name="users" size={14} color={fixed.white} />, todayStats.workersScheduled, 'Workers scheduled')}
                 {renderHeroStat(<View style={styles.onSiteDot} />, todayStats.onSite, 'On site')}
-                {renderHeroStat(<Icon name="clock" size={14} color="#FFFFFF" />, todayStats.upcoming, 'Upcoming')}
+                {renderHeroStat(<Icon name="clock" size={14} color={fixed.white} />, todayStats.upcoming, 'Upcoming')}
               </View>
               <Pressable
                 style={styles.heroButton}
@@ -377,7 +377,7 @@ export default function OwnerDashboard() {
                 <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>
                   {openIssueCount} open {openIssueCount === 1 ? 'issue' : 'issues'}
                 </Text>
-                <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>Problems your crew reported</Text>
+                <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{w('Problems your crew reported')}</Text>
               </View>
               <Icon name="chevron-right" size={18} color={colors.textTertiary} />
             </Pressable>
@@ -426,7 +426,7 @@ export default function OwnerDashboard() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>
-                Crew Today <Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {crewTodayTotal} scheduled</Text>
+                {w('Crew Today ')}<Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {crewTodayTotal} scheduled</Text>
               </Text>
               <Pressable onPress={() => router.push('/(owner)/workers' as any)}>
                 <Text style={[typeScale.labelSmall, { color: colors.primary }]}>View Team</Text>
@@ -473,7 +473,7 @@ export default function OwnerDashboard() {
       {/* Quick Actions sheet */}
       <BottomSheetModal visible={quickActionsOpen} onRequestClose={() => setQuickActionsOpen(false)}>
         <Pressable style={styles.sheetBackdrop} onPress={() => setQuickActionsOpen(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
             <View style={[styles.sheetHandle, { backgroundColor: colors.borderLight }]} />
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center', marginBottom: spacing.md }]}>
               Quick Actions
@@ -590,7 +590,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.xs,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: fixed.white,
     paddingVertical: spacing.md,
     borderRadius: radius.full,
   },
@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
   },
   projectStatusDot: { width: 6, height: 6, borderRadius: 3 },
 
-  sheetBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  sheetBackdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: {
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,

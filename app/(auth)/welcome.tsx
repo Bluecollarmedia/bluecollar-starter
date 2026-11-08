@@ -56,8 +56,8 @@ export default function WelcomeScreen() {
             style={({ pressed }) => [styles.primaryBtn, { backgroundColor: pressed ? colors.primaryDark : colors.primary }, pressed && styles.pressed]}
             onPress={() => router.push('/(auth)/login')}
           >
-            <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('Sign In')}</Text>
-            <Icon name="arrow-right" size={20} color="#FFFFFF" />
+            <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>{t('Sign In')}</Text>
+            <Icon name="arrow-right" size={20} color={colors.textOnPrimary} />
           </Pressable>
 
           {canCreateCompany && (
@@ -92,7 +92,7 @@ export default function WelcomeScreen() {
   );
 }
 
-/** White rounded card with a green icon circle, used for the secondary welcome choices. */
+/** White rounded card with a soft icon circle, used for the secondary welcome choices. */
 function ChoiceCard({ icon, title, subtitle, onPress }: {
   icon: React.ComponentProps<typeof Icon>['name'];
   title: string;

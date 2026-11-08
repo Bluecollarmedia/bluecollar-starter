@@ -9,6 +9,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { TruckStatus } from '@/types/truck';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { fixed } from '@/theme/colors';
 
 const STATUS_MAP: Record<TruckStatus, { label: string; status: 'success' | 'warning' | 'error' | 'info' | 'neutral' }> = {
   available: { label: 'Available', status: 'success' },
@@ -120,7 +121,7 @@ export default function TrucksScreen() {
 const cardShadow = Platform.select({
   android: { elevation: 2 },
   default: {
-    shadowColor: '#1B3A2D',
+    shadowColor: fixed.black,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 12,

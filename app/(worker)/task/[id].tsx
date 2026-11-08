@@ -16,6 +16,7 @@ import { TaskMediaStrip, TaskMediaViewer, type TaskMediaItem } from '@/component
 import { PhotoPager } from '@/components/media/PhotoPager';
 import { keepPicked } from '@/lib/keepPickedFile';
 import { useT, tr } from '@/i18n';
+import { fixed } from '@/theme/colors';
 
 export default function TaskDetailScreen() {
   const t = useT();
@@ -220,8 +221,8 @@ export default function TaskDetailScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.pillButton}
               >
-                <Feather name="play" size={18} color="#FFFFFF" />
-                <Text style={[typeScale.labelLarge, { color: '#FFFFFF', marginLeft: spacing.sm }]}>{t('Start Task')}</Text>
+                <Feather name="play" size={18} color={fixed.white} />
+                <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>{t('Start Task')}</Text>
               </LinearGradient>
             </Pressable>
           )}
@@ -247,8 +248,8 @@ export default function TaskDetailScreen() {
                   end={{ x: 1, y: 1 }}
                   style={styles.pillButton}
                 >
-                  <Feather name="check" size={18} color="#FFFFFF" />
-                  <Text style={[typeScale.labelLarge, { color: '#FFFFFF', marginLeft: spacing.sm }]}>
+                  <Feather name="check" size={18} color={fixed.white} />
+                  <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>
                     {t('Mark Complete')}
                   </Text>
                 </LinearGradient>

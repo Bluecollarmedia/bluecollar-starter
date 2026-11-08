@@ -18,7 +18,7 @@ import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import { Feather } from '@expo/vector-icons';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
-import { brand } from '@/theme/colors';
+import { fixed, whiteAlpha, blackAlpha } from '@/theme/colors';
 
 export interface PickedImage {
   uri: string;
@@ -183,9 +183,9 @@ export function PhotoCropper({ image, aspect, title, overlay, onCancel, onDone }
           <Text style={[typeScale.headingSmall, styles.barText]} numberOfLines={1}>{title}</Text>
           <Pressable onPress={handleDone} hitSlop={12} accessibilityRole="button" disabled={saving}>
             {saving ? (
-              <ActivityIndicator color={brand.primaryLight} />
+              <ActivityIndicator color={fixed.white} />
             ) : (
-              <Text style={[typeScale.bodyLarge, styles.barText, { color: brand.primaryLight, fontWeight: '700' }]}>Done</Text>
+              <Text style={[typeScale.bodyLarge, styles.barText, { color: fixed.white, fontWeight: '700' }]}>Done</Text>
             )}
           </Pressable>
         </View>
@@ -234,7 +234,7 @@ export function PhotoCropper({ image, aspect, title, overlay, onCancel, onDone }
 
         <View style={[styles.bottomBar, { paddingBottom: insets.bottom + spacing.lg }]}>
           {error ? (
-            <Text style={[typeScale.bodySmall, { color: '#FF8A80', textAlign: 'center' }]}>{error}</Text>
+            <Text style={[typeScale.bodySmall, { color: fixed.errorOnDark, textAlign: 'center' }]}>{error}</Text>
           ) : (
             <Text style={[typeScale.bodySmall, styles.hint]}>
               Drag to move · pinch to zoom. Everything inside the frame is what shows.
@@ -242,10 +242,10 @@ export function PhotoCropper({ image, aspect, title, overlay, onCancel, onDone }
           )}
           <View style={styles.zoomRow}>
             <Pressable onPress={() => stepZoom(1 / 1.25)} style={styles.zoomButton} accessibilityLabel="Zoom out" hitSlop={8}>
-              <Feather name="minus" size={20} color="#FFFFFF" />
+              <Feather name="minus" size={20} color={fixed.white} />
             </Pressable>
             <Pressable onPress={() => stepZoom(1.25)} style={styles.zoomButton} accessibilityLabel="Zoom in" hitSlop={8}>
-              <Feather name="plus" size={20} color="#FFFFFF" />
+              <Feather name="plus" size={20} color={fixed.white} />
             </Pressable>
           </View>
         </View>
@@ -255,7 +255,7 @@ export function PhotoCropper({ image, aspect, title, overlay, onCancel, onDone }
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#0B0F0C' },
+  root: { flex: 1, backgroundColor: fixed.viewer },
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -265,28 +265,28 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     zIndex: 2,
   },
-  barText: { color: '#FFFFFF' },
+  barText: { color: fixed.white },
   stage: { flex: 1, overflow: 'hidden' },
   gestureArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   frameAnchor: { alignItems: 'center', justifyContent: 'center' },
   imageWrap: { position: 'absolute' },
-  shade: { backgroundColor: 'rgba(0,0,0,0.62)' },
+  shade: { backgroundColor: blackAlpha(0.62) },
   frame: {
     borderWidth: 2,
-    borderColor: '#FFFFFF',
+    borderColor: fixed.white,
     borderRadius: radius.md,
     overflow: 'hidden',
   },
-  gridV: { position: 'absolute', top: 0, bottom: 0, width: StyleSheet.hairlineWidth, backgroundColor: 'rgba(255,255,255,0.6)' },
-  gridH: { position: 'absolute', left: 0, right: 0, height: StyleSheet.hairlineWidth, backgroundColor: 'rgba(255,255,255,0.6)' },
+  gridV: { position: 'absolute', top: 0, bottom: 0, width: StyleSheet.hairlineWidth, backgroundColor: whiteAlpha(0.6) },
+  gridH: { position: 'absolute', left: 0, right: 0, height: StyleSheet.hairlineWidth, backgroundColor: whiteAlpha(0.6) },
   bottomBar: { paddingHorizontal: spacing.lg, paddingTop: spacing.md, gap: spacing.md, zIndex: 2 },
-  hint: { color: 'rgba(255,255,255,0.75)', textAlign: 'center' },
+  hint: { color: whiteAlpha(0.75), textAlign: 'center' },
   zoomRow: { flexDirection: 'row', justifyContent: 'center', gap: spacing.lg },
   zoomButton: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(255,255,255,0.14)',
+    backgroundColor: whiteAlpha(0.14),
     alignItems: 'center',
     justifyContent: 'center',
   },

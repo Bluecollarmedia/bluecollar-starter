@@ -167,7 +167,7 @@ export default function TeamAccessScreen() {
 
       <BottomSheetModal visible={!!sheet} onRequestClose={() => { if (!busy) setSheet(null); }}>
         <Pressable style={styles.overlay} onPress={() => { if (!busy) setSheet(null); }}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.lg }]} onPress={(e) => e.stopPropagation()}>
             {copy && sheet ? (
               <>
                 <Text style={[typeScale.headingLarge, { color: colors.textPrimary, textAlign: 'center' }]}>{copy.title}</Text>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w } from '@/config/brand';
 import type { Feather } from '@expo/vector-icons';
 import { useSchedule } from '@/hooks/useSchedule';
 import { useAttendance } from '@/hooks/useOperations';
@@ -158,7 +158,7 @@ export function useOwnerDashboard() {
         items.push({
           id: `unconfirmed_${personId}`,
           title: mine ? "You haven't confirmed" : `${name} hasn't confirmed`,
-          subtitle: `${unconfirmed.project?.name ?? 'Today’s job'} · Starts ${unconfirmed.isFullDay ? 'Full Day' : formatTime(unconfirmed.startTime)}`,
+          subtitle: `${unconfirmed.project?.name ?? w('Today’s job')} · Starts ${unconfirmed.isFullDay ? 'Full Day' : formatTime(unconfirmed.startTime)}`,
           icon: 'alert-circle',
           severity: 'warning',
           actionLabel: mine ? 'Confirm' : 'Remind',
@@ -180,7 +180,7 @@ export function useOwnerDashboard() {
         items.push({
           id: `missed_${personId}`,
           title: `${name} hasn't checked in`,
-          subtitle: `${missed.project?.name ?? 'Today’s job'} · Was due at ${formatTime(missed.startTime)}`,
+          subtitle: `${missed.project?.name ?? w('Today’s job')} · Was due at ${formatTime(missed.startTime)}`,
           icon: 'user-x',
           severity: 'critical',
           actionLabel: 'Follow Up',
@@ -194,7 +194,7 @@ export function useOwnerDashboard() {
       if (isFeatureOn('timeClock') && detail.withinRadius === false && detail.worker && !handledWorkers.has(detail.worker.id)) {
         items.push({
           id: `radius_${detail.assignmentId}`,
-          title: `${detail.worker.firstName} ${detail.worker.lastName} checked in outside the job site`,
+          title: w('{firstName} {lastName} checked in outside the job site', { firstName: detail.worker.firstName, lastName: detail.worker.lastName }),
           subtitle: `${detail.projectName} · Needs approval`,
           icon: 'map-pin',
           severity: 'critical',
@@ -212,7 +212,7 @@ export function useOwnerDashboard() {
         items.push({
           id: `truck_${a.id}`,
           title: `${truck.name} is unavailable but assigned to ${a.person?.firstName ?? 'a worker'}`,
-          subtitle: `${a.project?.name ?? 'Today’s job'} · Needs a different truck`,
+          subtitle: `${a.project?.name ?? w('Today’s job')} · Needs a different truck`,
           icon: 'truck',
           severity: 'critical',
           actionLabel: 'Fix Assignment',
@@ -302,10 +302,10 @@ export function useOwnerDashboard() {
       const anyOnSite = todaysForProject.some(a => onSiteWorkerIds.has(a.personId));
       let todayStatusLabel: string | undefined;
       if (anyOnSite) {
-        todayStatusLabel = 'Crew on site';
+        todayStatusLabel = w('Crew on site');
       } else if (todaysForProject.length > 0) {
         const next = sortByStart(todaysForProject)[0];
-        todayStatusLabel = next.isFullDay ? 'Crew scheduled today' : `Next visit today · ${formatTime(next.startTime)}`;
+        todayStatusLabel = next.isFullDay ? w('Crew scheduled today') : `Next visit today · ${formatTime(next.startTime)}`;
       }
       return { project: p, todayStatusLabel, hasToday: todaysForProject.length > 0 };
     });

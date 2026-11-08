@@ -9,6 +9,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useLanguage, useT } from '@/i18n';
 import { axisStep, hourParts, hoursOnDate, hourLabel, orDash, tempColor, uvColor, viewTz, weekdayShort, todayInTowns, type WeatherPayload, type WxHour } from '@/lib/weatherView';
 import { Panel, WX, WeatherBackground, WxPicture } from '@/components/weather/WeatherUI';
+import { fixed } from '@/theme/colors';
+import { wxArt } from '@/theme/weather';
 
 export type MetricKey = 'temp' | 'feels' | 'uv' | 'pop' | 'rain' | 'wind' | 'gust' | 'humidity' | 'dew' | 'cloud';
 type Icon = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -29,7 +31,7 @@ const METRICS: Metric[] = [
 
 const INK = WX.deep;
 const SOFT = WX.soft;
-const ON_DARK = '#FFFFFF';
+const ON_DARK = WX.onDeep;
 const AXIS_W = 40;
 const CHART_H = 190;
 
@@ -113,7 +115,7 @@ const ChartMarks = memo(function ChartMarks({ chart, metricKey }: { chart: Chart
     keys.forEach((key, i) => {
       const y = ys[i]; if (y === null) return;
       const top = Math.min(CHART_H - 2, y);
-      nodes.push(<View key={`b${key}`} style={{ position: 'absolute', left: xs[i] - barW / 2, width: barW, top, height: CHART_H - top, borderRadius: 3, backgroundColor: metricKey === 'uv' ? uvColor(values[i]) : '#8EC3F0', opacity: 0.85 }} />);
+      nodes.push(<View key={`b${key}`} style={{ position: 'absolute', left: xs[i] - barW / 2, width: barW, top, height: CHART_H - top, borderRadius: 3, backgroundColor: metricKey === 'uv' ? uvColor(values[i]) : wxArt.rainBar, opacity: 0.85 }} />);
     });
   } else {
     for (let i = 0; i < keys.length - 1; i++) {
@@ -125,7 +127,7 @@ const ChartMarks = memo(function ChartMarks({ chart, metricKey }: { chart: Chart
     }
     keys.forEach((key, i) => {
       const y = ys[i]; const v = values[i]; if (y === null || v === null) return;
-      nodes.push(<View key={`d${key}`} style={{ position: 'absolute', left: xs[i] - 3, top: y - 3, width: 6, height: 6, borderRadius: 3, backgroundColor: metricKey === 'temp' ? tempColor(v) : WX.rain, borderWidth: 1.5, borderColor: '#FFFFFF' }} />);
+      nodes.push(<View key={`d${key}`} style={{ position: 'absolute', left: xs[i] - 3, top: y - 3, width: 6, height: 6, borderRadius: 3, backgroundColor: metricKey === 'temp' ? tempColor(v) : WX.rain, borderWidth: 1.5, borderColor: fixed.white }} />);
     });
   }
   return <>{nodes}</>;
@@ -139,7 +141,7 @@ function Cursor({ chart, idx, metricKey }: { chart: Chart; idx: number; metricKe
     <>
       {chart.bars && y !== null ? <View style={{ position: 'absolute', left: x - chart.barW / 2, width: chart.barW, top: Math.min(CHART_H - 2, y), height: CHART_H - Math.min(CHART_H - 2, y), borderRadius: 3, backgroundColor: WX.deep }} /> : null}
       <View style={{ position: 'absolute', left: x - 1, top: 0, width: 2, height: CHART_H, backgroundColor: WX.deep }} />
-      {!chart.bars && y !== null && v !== null ? <View style={{ position: 'absolute', left: x - 7, top: y - 7, width: 14, height: 14, borderRadius: 7, backgroundColor: '#FFFFFF', borderWidth: 3, borderColor: metricKey === 'temp' ? tempColor(v) : WX.rain }} /> : null}
+      {!chart.bars && y !== null && v !== null ? <View style={{ position: 'absolute', left: x - 7, top: y - 7, width: 14, height: 14, borderRadius: 7, backgroundColor: fixed.white, borderWidth: 3, borderColor: metricKey === 'temp' ? tempColor(v) : WX.rain }} /> : null}
     </>
   );
 }
@@ -152,7 +154,7 @@ const MetricTile = memo(function MetricTile({ metric, on, valueText, off, label,
         <MaterialCommunityIcons name={metric.icon} size={16} color={on ? ON_DARK : SOFT} />
         <Text style={[styles.tileLabel, on && { color: ON_DARK }]} numberOfLines={1}>{label}</Text>
       </View>
-      <Text style={[styles.tileValue, on && { color: ON_DARK }, off && styles.tileOff, off && on && { color: '#D7E8DD' }]} numberOfLines={1}>{valueText}</Text>
+      <Text style={[styles.tileValue, on && { color: ON_DARK }, off && styles.tileOff, off && on && { color: WX.onDeepMuted }]} numberOfLines={1}>{valueText}</Text>
     </Pressable>
   );
 });
@@ -344,14 +346,14 @@ export function WeatherDetails({ visible, data, start, onClose }: { visible: boo
 const styles = StyleSheet.create({
   head: { height: 52, justifyContent: 'center' },
   back: { alignSelf: 'flex-start', zIndex: 2 },
-  backGlass: { borderRadius: 99, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: WX.line, shadowColor: '#14803C', shadowOpacity: 0.14, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
+  backGlass: { borderRadius: 99, backgroundColor: fixed.white, borderWidth: 1, borderColor: WX.line, shadowColor: WX.shadow, shadowOpacity: 0.14, shadowRadius: 8, shadowOffset: { width: 0, height: 4 }, elevation: 3 },
   backRow: { flexDirection: 'row', alignItems: 'center', minHeight: 44, paddingLeft: 8, paddingRight: 16 },
   backText: { color: INK, fontSize: 16, fontWeight: '700' },
   headTitle: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   title: { color: INK, fontSize: 17, fontWeight: '700' },
   subtitle: { color: SOFT, fontSize: 12.5 },
   days: { flexDirection: 'row', gap: 6, marginTop: 6 },
-  day: { flex: 1, minHeight: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: WX.line },
+  day: { flex: 1, minHeight: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: fixed.white, borderWidth: 1, borderColor: WX.line },
   dayOn: { backgroundColor: WX.deep, borderColor: WX.deep },
   dayText: { color: INK, fontSize: 13 },
   pad: { padding: 16 },
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
   readout: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12, padding: 10, borderRadius: 16, backgroundColor: WX.leafTint },
   readValue: { color: INK, fontSize: 24, fontWeight: '700' },
   readTime: { color: SOFT, fontSize: 12.5, marginTop: 1 },
-  step: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: WX.line },
+  step: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: fixed.white, borderWidth: 1, borderColor: WX.line },
   empty: { color: SOFT, fontSize: 13.5, marginTop: 14 },
   axisY: { position: 'absolute', right: 0, width: AXIS_W - 4, textAlign: 'right', color: SOFT, fontSize: 11 },
   axisX: { position: 'absolute', width: 40, alignItems: 'center' },
@@ -369,7 +371,7 @@ const styles = StyleSheet.create({
   hint: { color: WX.faint, fontSize: 12, marginTop: 10 },
   section: { color: INK, fontSize: 14, fontWeight: '700', marginTop: 20, marginBottom: 8 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  tile: { width: '48.5%', minHeight: 74, borderRadius: 18, padding: 12, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: WX.line, justifyContent: 'space-between' },
+  tile: { width: '48.5%', minHeight: 74, borderRadius: 18, padding: 12, backgroundColor: fixed.white, borderWidth: 1, borderColor: WX.line, justifyContent: 'space-between' },
   tileOn: { backgroundColor: WX.deep, borderColor: WX.deep },
   tileHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   tileLabel: { color: SOFT, fontSize: 12, fontWeight: '700', flexShrink: 1 },

@@ -21,6 +21,7 @@ import { documentDefaults, saveDocumentDefaults } from '@/data/financials';
 import { parseAmount } from '@/lib/money';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { fixed } from '@/theme/colors';
 
 export default function DocumentDefaultsScreen() {
   const { colors } = useTheme();
@@ -67,7 +68,7 @@ export default function DocumentDefaultsScreen() {
             accessibilityLabel="Save defaults"
             style={[styles.save, { backgroundColor: colors.primary }]}
           >
-            <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>Save</Text>
+            <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Save</Text>
           </PressableScale>
         }
       />

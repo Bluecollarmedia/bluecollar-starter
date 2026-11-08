@@ -88,7 +88,7 @@ export function TruckDocumentSheet({ visible, onClose, onSubmit }: Props) {
   return (
     <BottomSheetModal visible={visible} onRequestClose={busy ? () => {} : onClose}>
       <Pressable style={styles.backdrop} onPress={busy ? undefined : onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
           <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
           <View style={styles.head}>
             <Text style={[typeScale.headingLarge, { color: colors.textPrimary }]}>Add insurance</Text>

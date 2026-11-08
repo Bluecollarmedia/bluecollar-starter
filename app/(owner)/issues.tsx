@@ -13,6 +13,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useIssues } from '@/data/issues';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 export default function IssuesScreen() {
   const { colors } = useTheme();
@@ -29,7 +30,7 @@ export default function IssuesScreen() {
         <GlassIconButton icon="chevron-left" onPress={() => router.back()} accessibilityLabel="Back" />
         <Text style={[typeScale.displaySmall, { color: colors.textPrimary, marginTop: spacing.lg }]}>Issues</Text>
         <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, marginTop: 2, marginBottom: spacing.lg }]}>
-          Problems your crew reported
+          {w('Problems your crew reported')}
         </Text>
         <FilterChips
           options={[

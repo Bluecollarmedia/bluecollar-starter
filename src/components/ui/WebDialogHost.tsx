@@ -5,6 +5,7 @@ import { answerWebDialog, subscribeDialogs, type DialogRequest } from '@/lib/web
 import { useT } from '@/i18n';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 /** Draws the website's dialogs (confirm / message), one at a time. Renders nothing on a phone. Mounted once at the root. */
 export function WebDialogHost() {
@@ -19,7 +20,7 @@ export function WebDialogHost() {
   return (
     <Modal transparent animationType="fade" visible onRequestClose={() => answerWebDialog(cancel ?? current.buttons[0])}>
       <View style={styles.backdrop}>
-        <View style={[styles.box, { backgroundColor: colors.surface }]} accessibilityRole="alert">
+        <View style={[styles.box, { backgroundColor: colors.surfaceElevated }]} accessibilityRole="alert">
           <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{t(current.title)}</Text>
           {current.message ? <Text style={[typeScale.bodyMedium, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t(current.message)}</Text> : null}
           <View style={[styles.buttons, current.buttons.length > 2 && { flexDirection: 'column' }]}>
@@ -36,7 +37,7 @@ export function WebDialogHost() {
                     { backgroundColor: primary ? (destructive ? colors.error : colors.primaryDark) : colors.backgroundTertiary, opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
-                  <Text style={[typeScale.labelLarge, { color: primary ? '#FFFFFF' : colors.textPrimary }]}>{t(b.text ?? 'OK')}</Text>
+                  <Text style={[typeScale.labelLarge, { color: primary ? fixed.white : colors.textPrimary }]}>{t(b.text ?? 'OK')}</Text>
                 </Pressable>
               );
             })}
@@ -48,7 +49,7 @@ export function WebDialogHost() {
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.45)', alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.45), alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   box: { width: '100%', maxWidth: 420, borderRadius: radius.xl, padding: spacing.xl },
   buttons: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.xl, justifyContent: 'flex-end' },
   button: { minHeight: 46, borderRadius: radius.lg, paddingHorizontal: spacing.lg, alignItems: 'center', justifyContent: 'center', flexGrow: 1 },

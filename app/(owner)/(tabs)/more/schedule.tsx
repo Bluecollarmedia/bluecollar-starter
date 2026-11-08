@@ -11,7 +11,7 @@ import { Card, StatusBadge, Avatar, Divider, EmptyState, CrewLabels } from '@/co
 import { useCrews } from '@/hooks/useCrews';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, blackAlpha } from '@/theme/colors';
 import type { Assignment, ScheduleSeries } from '@/types/schedule';
 import { repeatShortLabel } from '@/lib/recurrence';
 import { haptics } from '@/lib/haptics';
@@ -387,7 +387,7 @@ export default function ScheduleScreen() {
           appearance="light"
           backgroundColor={colors.groupedBackground}
           fontStyle={{ color: colors.textSecondary }}
-          activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+          activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
           style={styles.segmentControl}
         />
       </View>
@@ -526,7 +526,7 @@ function AssignmentSheet({
   if (Platform.OS === 'ios') {
     return (
       <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-        <View style={[styles.sheetIosContainer, { backgroundColor: colors.surface }]}>{body}</View>
+        <View style={[styles.sheetIosContainer, { backgroundColor: colors.surfaceElevated }]}>{body}</View>
       </Modal>
     );
   }
@@ -534,7 +534,7 @@ function AssignmentSheet({
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.sheetOverlay} onPress={onClose}>
-        <Pressable style={[styles.sheetCard, { backgroundColor: colors.surface }]} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={[styles.sheetCard, { backgroundColor: colors.surfaceElevated }]} onPress={(e) => e.stopPropagation()}>
           <View style={[styles.sheetGrabber, { backgroundColor: colors.border }]} />
           {body}
         </Pressable>
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
   },
   dateCenter: { alignItems: 'center' },
   dateCenterTopRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
-  pickerOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  pickerOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: blackAlpha(0.4) },
   pickerCard: { borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, paddingHorizontal: spacing.lg, paddingTop: spacing.md },
   pickerHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.sm },
   segmentWrap: {
@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
   issueDot: { width: 8, height: 8, borderRadius: 4 },
 
   sheetIosContainer: { flex: 1 },
-  sheetOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  sheetOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: blackAlpha(0.4) },
   sheetCard: {
     borderTopLeftRadius: radius.lg,
     borderTopRightRadius: radius.lg,

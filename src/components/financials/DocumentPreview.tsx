@@ -6,6 +6,7 @@
 import React from 'react';
 import { Platform, View, StyleSheet, ActivityIndicator } from 'react-native';
 import { useTheme } from '@/providers/ThemeProvider';
+import { fixed } from '@/theme/colors';
 
 let WebView: any = null;
 if (Platform.OS !== 'web') {
@@ -21,7 +22,7 @@ export function DocumentPreview({ html }: { html: string }) {
         {React.createElement('iframe', {
           srcDoc: html,
           title: 'Document preview',
-          style: { border: 0, width: '100%', height: '100%', background: '#fff' },
+          style: { border: 0, width: '100%', height: '100%', background: fixed.white },
         })}
       </View>
     );

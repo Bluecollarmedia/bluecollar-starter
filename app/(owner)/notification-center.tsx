@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/ui';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic, brand } from '@/theme/colors';
+import { semantic, brand, tones } from '@/theme/colors';
 import { useNotifications } from '@/hooks/useOperations';
 import { ownerNotificationTarget } from '@/lib/notificationTarget';
 import type { NotificationEventType } from '@/types/operations';
@@ -18,7 +18,7 @@ import { w } from '@/config/brand';
 const EVENT_ICONS: Record<NotificationEventType, { icon: string; color: string }> = {
   issue_reported: { icon: 'alert-triangle', color: semantic.warning },
   worker_checked_in: { icon: 'log-in', color: semantic.success },
-  worker_checked_out: { icon: 'log-out', color: '#757575' },
+  worker_checked_out: { icon: 'log-out', color: tones.neutral.fg },
   worker_checked_in_late: { icon: 'alert-circle', color: semantic.warning },
   worker_outside_radius: { icon: 'map-pin', color: semantic.error },
   worker_not_checked_in: { icon: 'x-circle', color: semantic.error },

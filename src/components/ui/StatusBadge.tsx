@@ -10,7 +10,7 @@ import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, tones } from '@/theme/colors';
 
 type StatusType = 'success' | 'warning' | 'error' | 'info' | 'neutral';
 
@@ -25,7 +25,7 @@ const statusColors: Record<StatusType, { bg: string; text: string }> = {
   warning: { bg: semantic.warningLight, text: semantic.warning },
   error: { bg: semantic.errorLight, text: semantic.error },
   info: { bg: semantic.infoLight, text: semantic.info },
-  neutral: { bg: '#F5F5F5', text: '#757575' },
+  neutral: { bg: tones.neutral.bg, text: tones.neutral.fg },
 };
 
 export function StatusBadge({ label, status = 'neutral', style }: StatusBadgeProps) {

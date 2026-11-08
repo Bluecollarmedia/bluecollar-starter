@@ -27,7 +27,7 @@ function leafFile(dir: string | null): Promise<string | null> {
         const dest = `${dir}${dir.endsWith('/') ? '' : '/'}brand-mark.png`;
         const info = await legacy.getInfoAsync(dest);
         if (!info.exists) {
-          const from = Image.resolveAssetSource(require('../../assets/images/logo-leaf.png')).uri;
+          const from = Image.resolveAssetSource(require('../../assets/images/logo-mark.png')).uri;
           if (/^https?:/i.test(from)) await legacy.downloadAsync(from, dest);
           else await legacy.copyAsync({ from, to: dest });
         }

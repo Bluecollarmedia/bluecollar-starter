@@ -13,11 +13,12 @@ import { setServiceRequestStatus, useServiceRequests } from '@/data/serviceReque
 import { REQUEST_STATUS_LABEL, type RequestStatus, type ServiceRequestRow } from '@/lib/serviceRequest';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { tones } from '@/theme/colors';
 
 const PILL: Record<RequestStatus, { fg: string; bg: string }> = {
-  new: { fg: '#7A4A00', bg: '#FFF0D6' },
-  contacted: { fg: '#0D4F8B', bg: '#E1EEFA' },
-  done: { fg: '#1F5E2E', bg: '#E1F3E4' },
+  new: tones.warning,
+  contacted: tones.neutral,
+  done: tones.success,
 };
 
 const when = (iso: string) => new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });

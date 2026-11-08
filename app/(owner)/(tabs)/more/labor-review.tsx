@@ -12,6 +12,7 @@ import { Card, Empty, LaborScreen, NotInstalled, StatePill, fmtClock, fmtDay, sh
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { fixed } from '@/theme/colors';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -62,7 +63,7 @@ export default function LaborReviewScreen() {
             </Text>
             {readyRows.length > 1 ? (
               <Pressable onPress={approveAll} disabled={busy} style={[styles.btn, { backgroundColor: colors.primary, opacity: busy ? 0.6 : 1 }]} accessibilityRole="button">
-                <Icon name="check-circle" size={16} color="#FFFFFF" /><Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Approve all {readyRows.length} ready days</Text>
+                <Icon name="check-circle" size={16} color={fixed.white} /><Text style={[typeScale.labelSmall, { color: fixed.white }]}>Approve all {readyRows.length} ready days</Text>
               </Pressable>
             ) : null}
           </Card>
@@ -78,7 +79,7 @@ export default function LaborReviewScreen() {
                   <View style={{ alignItems: 'flex-end', gap: 6 }}>
                     <StatePill state={r.state} />
                     {r.state === 'ready' || r.state === 'reapproval' ? (
-                      <Pressable onPress={() => approveOne(r.workday.id)} disabled={busy} style={[styles.small, { backgroundColor: colors.primary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Approve</Text></Pressable>
+                      <Pressable onPress={() => approveOne(r.workday.id)} disabled={busy} style={[styles.small, { backgroundColor: colors.primary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.textOnPrimary }]}>Approve</Text></Pressable>
                     ) : (
                       <Pressable onPress={() => router.push({ pathname: '/(owner)/more/labor-day', params: { id: r.workday.id } } as never)} style={[styles.small, { backgroundColor: colors.backgroundTertiary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.textPrimary }]}>Review</Text></Pressable>
                     )}

@@ -77,13 +77,13 @@ export function reminderProblem(projectId: string): string | null {
   if (!plan.reminderAt) return null;
   const job = nextJobDate(projectId);
   if (plan.reminderJobDate && job && job !== plan.reminderJobDate) {
-    return `The job moved from ${formatDocDate(plan.reminderJobDate)} to ${formatDocDate(job)}. Check the reminder.`;
+    return w('The job moved from {reminderJobDate} to {job}. Check the reminder.', { reminderJobDate: formatDocDate(plan.reminderJobDate), job: formatDocDate(job) });
   }
   if (plan.reminderJobDate && !job && plan.reminderJobDate >= todayKey()) {
-    return `The job on ${formatDocDate(plan.reminderJobDate)} is no longer on the schedule. Check the reminder.`;
+    return w('The job on {reminderJobDate} is no longer on the schedule. Check the reminder.', { reminderJobDate: formatDocDate(plan.reminderJobDate) });
   }
   if (job && plan.reminderAt.slice(0, 10) > job) {
-    return 'The reminder is after the job date.';
+    return w('The reminder is after the job date.');
   }
   return null;
 }
@@ -300,7 +300,7 @@ export function checklistText(projectId: string, opts: { includeDone?: boolean }
   lines.push(`Materials: ${project?.name ?? w('Job')}`);
   const addr = [project?.address, project?.city].filter(Boolean).join(', ');
   if (addr) lines.push(addr);
-  if (job) lines.push(`Job date: ${formatDocDate(job)}`);
+  if (job) lines.push(w('Job date: {job}', { job: formatDocDate(job) }));
   lines.push('');
   if (items.length === 0) lines.push('Nothing left to prepare.');
   for (const m of items) {

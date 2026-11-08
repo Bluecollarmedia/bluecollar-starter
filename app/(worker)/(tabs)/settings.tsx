@@ -22,6 +22,7 @@ import type { NavAppPreference } from '@/types/worker';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useT } from '@/i18n';
 import { appVersionText } from '@/lib/appVersion';
+import { fixed, blackAlpha, semantic } from '@/theme/colors';
 
 const NAV_OPTIONS: { value: NavAppPreference; label: string; icon: keyof typeof Feather.glyphMap }[] = [
   { value: 'google_maps', label: 'Google Maps', icon: 'map' },
@@ -62,7 +63,7 @@ export default function WorkerSettingsScreen() {
           <View style={styles.avatarWrap}>
             <Avatar firstName={user?.firstName ?? ''} lastName={user?.lastName ?? ''} size={56} uri={user?.avatarUrl} />
             <View style={[styles.cameraBadge, { backgroundColor: colors.primary, borderColor: colors.surface }]}>
-              <Feather name="camera" size={11} color="#FFFFFF" />
+              <Feather name="camera" size={11} color={fixed.white} />
             </View>
           </View>
           <View style={{ marginLeft: spacing.md, flex: 1 }}>
@@ -147,7 +148,7 @@ export default function WorkerSettingsScreen() {
       {/* Navigation App selection sheet */}
       <BottomSheetModal visible={navSheetOpen} onRequestClose={() => setNavSheetOpen(false)}>
         <Pressable style={styles.sheetBackdrop} onPress={() => setNavSheetOpen(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
             <View style={[styles.sheetHandle, { backgroundColor: colors.borderLight }]} />
             <Text style={[typeScale.headingLarge, { color: colors.textPrimary, textAlign: 'center', marginBottom: spacing.md }]}>
               {t('Maps App')}
@@ -172,7 +173,7 @@ export default function WorkerSettingsScreen() {
       {/* Sign out confirmation */}
       <Modal visible={signOutConfirmOpen} transparent animationType="fade" onRequestClose={() => setSignOutConfirmOpen(false)}>
         <View style={styles.confirmBackdrop}>
-          <View style={[styles.confirmCard, { backgroundColor: colors.surface }]}>
+          <View style={[styles.confirmCard, { backgroundColor: colors.surfaceElevated }]}>
             <View style={[styles.confirmIcon, { backgroundColor: colors.errorLight }]}>
               <Feather name="log-out" size={22} color={colors.error} />
             </View>
@@ -185,12 +186,12 @@ export default function WorkerSettingsScreen() {
             <View style={{ marginTop: spacing.xl, gap: spacing.sm, width: '100%' }}>
               <Pressable onPress={() => { setSignOutConfirmOpen(false); guardedSignOut(); }}>
                 <LinearGradient
-                  colors={['#E1615D', '#C4453F']}
+                  colors={[semantic.error, semantic.errorDark]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.confirmButton}
                 >
-                  <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('Sign Out')}</Text>
+                  <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('Sign Out')}</Text>
                 </LinearGradient>
               </Pressable>
               <Pressable
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  sheetBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  sheetBackdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: {
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: spacing.md,
   },
-  confirmBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
+  confirmBackdrop: { flex: 1, backgroundColor: blackAlpha(0.5), alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   confirmCard: { width: '100%', maxWidth: 340, borderRadius: radius.xl, padding: spacing.xl, alignItems: 'center' },
   confirmIcon: { width: 56, height: 56, borderRadius: 28, alignItems: 'center', justifyContent: 'center' },
   confirmButton: {

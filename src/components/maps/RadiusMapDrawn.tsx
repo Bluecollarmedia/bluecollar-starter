@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/providers/ThemeProvider';
 import { shadow } from '@/theme/spacing';
 import type { Place } from '@/lib/maps';
+import { mapColors } from '@/theme/colors';
 
 export interface RadiusMapProps {
   place: Place;
@@ -18,7 +19,7 @@ export interface RadiusMapProps {
   ready?: boolean;
 }
 
-const MAP_TINT = '#E4EAF0';
+const MAP_TINT = mapColors.tint;
 
 /**
  * Check-in zone preview. The real map is iPhone-only (RadiusMap.ios.tsx, like
@@ -33,7 +34,7 @@ export function RadiusMapDrawn({ fraction, height = 180, style }: RadiusMapProps
       <View
         style={{
           position: 'absolute', width: size, height: size, borderRadius: size / 2,
-          borderWidth: 2, borderColor: colors.primary, backgroundColor: 'rgba(76, 175, 80, 0.18)',
+          borderWidth: 2, borderColor: colors.primary, backgroundColor: mapColors.zoneFill,
         }}
       />
       <View style={[styles.pin, { backgroundColor: colors.surface }, shadow.sm]}>

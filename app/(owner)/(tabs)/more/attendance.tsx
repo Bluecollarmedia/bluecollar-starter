@@ -8,7 +8,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { Avatar, EmptyState } from '@/components/ui';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, tones, neutral } from '@/theme/colors';
 import { useAttendance } from '@/hooks/useOperations';
 import type { AttendanceStatus, WorkerAttendance } from '@/types/operations';
 import { todayKey, localDateKey } from '@/lib/ids';
@@ -29,11 +29,11 @@ function formatDateLabel(dateStr: string): string {
 
 const STATUS_CONFIG: Record<AttendanceStatus, { label: string; icon: string; color: string }> = {
   checked_in: { label: 'Checked In', icon: 'check-circle', color: semantic.success },
-  checked_out: { label: 'Checked Out', icon: 'log-out', color: '#757575' },
+  checked_out: { label: 'Checked Out', icon: 'log-out', color: tones.neutral.fg },
   late: { label: 'Late', icon: 'alert-circle', color: semantic.warning },
   not_checked_in: { label: 'Not Checked In', icon: 'x-circle', color: semantic.error },
   past_scheduled_end: { label: 'Past End', icon: 'clock', color: semantic.warning },
-  off_today: { label: 'Off', icon: 'moon', color: '#9E9E9E' },
+  off_today: { label: 'Off', icon: 'moon', color: neutral.gray500 },
 };
 
 export default function AttendanceScreen() {

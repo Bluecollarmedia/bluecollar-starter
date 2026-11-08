@@ -67,19 +67,20 @@ const done = V.completePayload(old).hourly[0];
 check('26 an older answer (no wind, humidity, feels-like...) is completed with null (unavailable), never undefined or NaN, and keeps what it had', done.feelsF === null && done.windMph === null && done.humidityPct === null && done.cloudPct === null && done.windDir === '' && done.tempF === 65 && done.popPct === 0);
 check('27 the app completes every answer (fresh or saved on the phone) before showing it, with the place\'s own point', /completePayload\(\{ \.\.\.answer\.data, town: place\.key, townName: place\.name \}, place\)/.test(read('src/data/weather.ts')) && /completePayload\(v, place\)/.test(read('src/data/weather.ts')));
 
-// ── Phase 2c: the light design (white air, the logo's leaf green, the real leaf in the corner) ──
+// ── Phase 2c, plain look since Step 4: white page, light gray panels, near-black text, the brand color for buttons; the logo mark in the corner ──
 const ui2 = read('src/components/weather/WeatherUI.tsx');
-const hex = (name) => ui2.match(new RegExp(name + ": '#([0-9A-Fa-f]{6})'"))[1];
+const WXT = require('./_brand.cjs').themeModule('weather', ts).WX; // the palette lives in src/theme/weather.ts
+const hex = (name) => String(WXT[name]).replace('#', '');
 const lin = (c) => { const v = c / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
 const lumOf = (h) => 0.2126 * lin(parseInt(h.slice(0, 2), 16)) + 0.7152 * lin(parseInt(h.slice(2, 4), 16)) + 0.0722 * lin(parseInt(h.slice(4, 6), 16));
 const contrast = (a, b) => { const x = lumOf(a), y = lumOf(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
 const textOnWhite = ['ink', 'deep', 'soft', 'faint', 'amber', 'rain'].map((k) => [k, contrast(hex(k), 'FFFFFF')]);
 check('28 every text colour used on the white cards has WCAG contrast of at least 4.5 : 1 (small text stays readable)', textOnWhite.every(([, c]) => c >= 4.5), JSON.stringify(textOnWhite.map(([k, c]) => [k, Math.round(c * 10) / 10])));
-check('29 the deep green is on white at 8 : 1 or better and the page colour is the soft off-white the artwork ends in', contrast(hex('deep'), 'FFFFFF') >= 8 && hex('page').toUpperCase() === 'F7FAF4');
-check('30 the brand colours are the logo\'s own: deep #0B4736 and leaf #53A246', hex('deep').toUpperCase() === '0B4736' && hex('leaf').toUpperCase() === '53A246');
-check('31 the hero artwork is bundled, shown at the top of the home screen, and scrolls away with the page', fs.existsSync(path.join(root, 'assets/images/weather-hero.jpg')) && /weather-hero\.jpg/.test(home) && /position: 'absolute', top: 0, left: 0, width: screenW/.test(home));
-check('32 the logo mark is in the top-left corner, in the brand green', /logo-leaf\.png/.test(home) && /leaf: \{[^}]*tintColor: WX\.leaf/.test(home));
-check('33 Sign In is a solid deep-green button with white text and a 44-point tap area', /signIn: \{[^}]*backgroundColor: WX\.deep/.test(home) && /signInText: \{ color: ON_DARK/.test(home) && /signInRow: \{[^}]*minHeight: 44/.test(home));
+check('29 the page is plain white and the buttons / selected chips use the brand color from the settings file', hex('page').toUpperCase() === 'FFFFFF' && WXT.deep === require('./_brand.cjs').themeModule('colors', ts).BRAND_COLOR && WXT.leaf === WXT.deep);
+check('30 none of the old logo greens are left in the weather palette', !Object.values(WXT).some((v) => /0B4736|53A246|12392B|E3F1DC/i.test(String(v))) && /export { WX }/.test(ui2));
+check('31 the hero artwork is bundled, shown at the top of the home screen, and scrolls away with the page', fs.existsSync(path.join(root, 'assets/images/weather-hero.png')) && /weather-hero\.png/.test(home) && /position: 'absolute', top: 0, left: 0, width: screenW/.test(home));
+check('32 the logo mark is in the top-left corner, in the brand color', /logo-mark\.png/.test(home) && /leaf: \{[^}]*tintColor: WX\.leaf/.test(home));
+check('33 Sign In is a solid brand-color button with white text and a 44-point tap area', /signIn: \{[^}]*backgroundColor: WX\.deep/.test(home) && /signInText: \{ color: ON_DARK/.test(home) && /signInRow: \{[^}]*minHeight: 44/.test(home));
 check('34 pulling down refreshes, and there is also a visible Refresh button for anyone who does not know the gesture', /RefreshControl/.test(home) && /accessibilityLabel=\{t\('Refresh'\)\}/.test(home) && /refreshBtn: \{[^}]*minHeight: 44/.test(home));
 check('35 the tab bar is a solid white pill: the current page is marked by a tint AND a bolder label, each tab at least 48 points tall', /backgroundColor: WX\.white/.test(bar) && /itemOn: \{ backgroundColor: WX\.leafTint/.test(bar) && /fontWeight: '700'/.test(bar) && /minHeight: 48/.test(bar));
 check('36 the details sheet picks days with chips that show which one is chosen (dark fill) and which have no hours (faded and disabled)', /dayOn: \{ backgroundColor: WX\.deep/.test(det) && /disabled=\{empty\}/.test(det) && /opacity: 0\.4/.test(det));

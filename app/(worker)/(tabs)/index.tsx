@@ -24,7 +24,7 @@ import { Avatar } from '@/components/ui';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { JobMap } from '@/components/maps/JobMap';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, whiteAlpha, blackAlpha } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
 import type { Assignment } from '@/types/schedule';
 import type { ProjectTask } from '@/types/project';
@@ -324,7 +324,7 @@ export default function WorkerTodayScreen() {
         contentContainerStyle={[styles.checkedOutScreen, { flexGrow: 1, paddingTop: insets.top + spacing['3xl'], paddingBottom: tabBarClearance }]}
       >
         <View style={[styles.checkedOutIcon, { backgroundColor: colors.success }]}>
-          <Feather name="check" size={40} color="#FFFFFF" />
+          <Feather name="check" size={40} color={fixed.white} />
         </View>
         <Text style={[typeScale.displaySmall, { color: colors.textPrimary, marginTop: spacing.xl }]}>
           {t('Job Complete')}
@@ -380,8 +380,8 @@ export default function WorkerTodayScreen() {
             end={{ x: 1, y: 1 }}
             style={styles.pillButton}
           >
-            <Feather name="home" size={18} color="#FFFFFF" />
-            <Text style={[typeScale.labelLarge, { color: '#FFFFFF', marginLeft: spacing.sm }]}>
+            <Feather name="home" size={18} color={fixed.white} />
+            <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>
               {t('Back to Today')}
             </Text>
           </LinearGradient>
@@ -413,14 +413,14 @@ export default function WorkerTodayScreen() {
           </View>
 
           {showWorking ? (
-            <View style={[styles.onSitePill, { top: insets.top + spacing.sm, backgroundColor: 'rgba(255,255,255,0.9)' }]}>
+            <View style={[styles.onSitePill, { top: insets.top + spacing.sm, backgroundColor: whiteAlpha(0.9) }]}>
               <View style={[styles.onSiteDot, { backgroundColor: colors.success }]} />
               <Text style={[typeScale.labelSmall, { color: colors.textPrimary, marginLeft: spacing.xs }]}>{t('On Site')}</Text>
             </View>
           ) : (
             <View style={styles.heroText}>
-              <Text style={[typeScale.bodyMedium, styles.heroTextShadow, { color: '#FFFFFF' }]}>{dateStr}</Text>
-              <Text style={[typeScale.displayLarge, styles.heroTextShadow, { color: '#FFFFFF', marginTop: 2 }]}>
+              <Text style={[typeScale.bodyMedium, styles.heroTextShadow, { color: fixed.white }]}>{dateStr}</Text>
+              <Text style={[typeScale.displayLarge, styles.heroTextShadow, { color: fixed.white, marginTop: 2 }]}>
                 {greeting},{'\n'}{user?.firstName ?? t('there')}
               </Text>
               {yard && MAPS_ON && (
@@ -433,7 +433,7 @@ export default function WorkerTodayScreen() {
                   accessibilityHint={t('Opens directions to the yard')}
                 >
                   <View style={[styles.yardPin, { backgroundColor: colors.primary }]}>
-                    <Feather name="map-pin" size={11} color="#FFFFFF" />
+                    <Feather name="map-pin" size={11} color={fixed.white} />
                   </View>
                   <Text
                     style={[typeScale.labelLarge, styles.heroTextShadow, styles.yardText]}
@@ -441,10 +441,10 @@ export default function WorkerTodayScreen() {
                   >
                     {yardName} · {yard.address}
                   </Text>
-                  <Feather name="chevron-right" size={16} color="rgba(255,255,255,0.85)" />
+                  <Feather name="chevron-right" size={16} color={whiteAlpha(0.85)} />
                 </Pressable>
               )}
-              <Text style={[typeScale.bodyLarge, styles.heroTextShadow, { color: '#FFFFFF', marginTop: spacing.xs }]}>
+              <Text style={[typeScale.bodyLarge, styles.heroTextShadow, { color: fixed.white, marginTop: spacing.xs }]}>
                 {tagline}
               </Text>
             </View>
@@ -485,7 +485,7 @@ export default function WorkerTodayScreen() {
                 ]}
               >
                 <View style={[styles.announcementIcon, { backgroundColor: isStrong ? colors.error : colors.primarySurface }]}>
-                  <Feather name={(weatherMeta?.icon ?? 'volume-2') as any} size={16} color={isStrong ? '#FFFFFF' : colors.primaryDark} />
+                  <Feather name={(weatherMeta?.icon ?? 'volume-2') as any} size={16} color={isStrong ? fixed.white : colors.primaryDark} />
                 </View>
                 <View style={{ flex: 1, marginLeft: spacing.sm }}>
                   <View style={styles.announcementTopRow}>
@@ -523,8 +523,8 @@ export default function WorkerTodayScreen() {
                   end={{ x: 1, y: 1 }}
                   style={styles.pillButton}
                 >
-                  <Feather name="check" size={18} color="#FFFFFF" />
-                  <Text style={[typeScale.labelLarge, { color: '#FFFFFF', marginLeft: spacing.sm }]}>
+                  <Feather name="check" size={18} color={fixed.white} />
+                  <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>
                     {t('Confirm Schedule')}
                   </Text>
                 </LinearGradient>
@@ -585,12 +585,12 @@ export default function WorkerTodayScreen() {
                   style={[styles.pillButton, styles.checkInButton]}
                 >
                   <View style={styles.checkInRow}>
-                    <Feather name="log-in" size={20} color="#FFFFFF" />
-                    <Text style={[typeScale.headingSmall, { color: '#FFFFFF', marginLeft: spacing.sm, fontWeight: '700' }]}>
+                    <Feather name="log-in" size={20} color={fixed.white} />
+                    <Text style={[typeScale.headingSmall, { color: fixed.white, marginLeft: spacing.sm, fontWeight: '700' }]}>
                       {timeOn ? t('START AT JOB SITE') : t("I'M HERE")}
                     </Text>
                   </View>
-                  <Text style={[typeScale.bodySmall, { color: 'rgba(255,255,255,0.85)', marginTop: 2 }]}>
+                  <Text style={[typeScale.bodySmall, { color: whiteAlpha(0.85), marginTop: 2 }]}>
                     {locating ? t('Finding your location…') : timeOn ? t('Start your time at this job site') : t('Check in to start this job')}
                   </Text>
                 </LinearGradient>
@@ -738,17 +738,17 @@ export default function WorkerTodayScreen() {
 
               <Pressable onPress={handleCheckOutPress}>
                 <LinearGradient
-                  colors={['#4A8B3F', '#2D5A43']}
+                  colors={[colors.primary, colors.primaryDark]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={[styles.card, styles.leavingCard, { borderRadius: 28 }]}
                 >
-                  <Feather name="check-circle" size={22} color="#FFFFFF" />
+                  <Feather name="check-circle" size={22} color={fixed.white} />
                   <View style={{ marginLeft: spacing.md, flex: 1 }}>
-                    <Text style={[typeScale.headingSmall, { color: '#FFFFFF', fontWeight: '700' }]}>
+                    <Text style={[typeScale.headingSmall, { color: fixed.white, fontWeight: '700' }]}>
                       {t('COMPLETE JOB')}
                     </Text>
-                    <Text style={[typeScale.bodySmall, { color: 'rgba(255,255,255,0.85)' }]}>
+                    <Text style={[typeScale.bodySmall, { color: whiteAlpha(0.85) }]}>
                       {timeOn ? t('Finish this job. You clock out for the day on the Clock tab.') : t('Finish this job.')}
                     </Text>
                   </View>
@@ -769,7 +769,7 @@ export default function WorkerTodayScreen() {
           style={styles.modalBackdrop}
           onPress={() => setShowCheckoutConfirm(false)}
         >
-          <Pressable style={[styles.modalCard, { backgroundColor: colors.surface }]} onPress={() => {}}>
+          <Pressable style={[styles.modalCard, { backgroundColor: colors.surfaceElevated }]} onPress={() => {}}>
             <View style={[styles.modalIcon, { backgroundColor: colors.primarySurface }]}>
               <Feather name="check-circle" size={24} color={colors.primary} />
             </View>
@@ -791,12 +791,12 @@ export default function WorkerTodayScreen() {
               </Pressable>
               <Pressable style={styles.modalButton} onPress={confirmCheckOut}>
                 <LinearGradient
-                  colors={['#4A8B3F', '#2D5A43']}
+                  colors={[colors.primary, colors.primaryDark]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.modalButtonFill}
                 >
-                  <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('Complete job')}</Text>
+                  <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('Complete job')}</Text>
                 </LinearGradient>
               </Pressable>
             </View>
@@ -806,7 +806,7 @@ export default function WorkerTodayScreen() {
 
       <BottomSheetModal visible={openAnnouncement} onRequestClose={handleCloseAnnouncement}>
         <Pressable style={styles.sheetBackdrop} onPress={handleCloseAnnouncement}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.lg }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.lg }]} onPress={() => {}}>
             <View style={[styles.sheetHandle, { backgroundColor: colors.borderLight }]} />
             {unreadAnnouncement && (() => {
               const weatherMeta = unreadAnnouncement.weatherAction ? WEATHER_ACTION_META[unreadAnnouncement.weatherAction] : null;
@@ -834,7 +834,7 @@ export default function WorkerTodayScreen() {
                     style={[styles.pillButton, { backgroundColor: colors.primary, marginTop: spacing.xl }]}
                     onPress={handleCloseAnnouncement}
                   >
-                    <Text style={[typeScale.labelLarge, { color: '#FFFFFF', fontWeight: '700' }]}>{t('Got it')}</Text>
+                    <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '700' }]}>{t('Got it')}</Text>
                   </Pressable>
                 </>
               );
@@ -907,9 +907,9 @@ const styles = StyleSheet.create({
   heroText: { position: 'absolute', left: spacing.lg, right: spacing.lg, bottom: 100 },
   yardRow: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', maxWidth: '100%', marginTop: spacing.sm, minHeight: 28 },
   yardPin: { width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center', marginRight: spacing.sm },
-  yardText: { color: '#FFFFFF', flexShrink: 1, marginRight: spacing.xs },
+  yardText: { color: fixed.white, flexShrink: 1, marginRight: spacing.xs },
   heroTextShadow: {
-    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowColor: blackAlpha(0.35),
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
   },
@@ -1042,7 +1042,7 @@ const styles = StyleSheet.create({
   },
   modalBackdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: blackAlpha(0.5),
     alignItems: 'center',
     justifyContent: 'center',
     padding: spacing.xl,
@@ -1096,7 +1096,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  sheetBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  sheetBackdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: {
     borderTopLeftRadius: radius.xl,
     borderTopRightRadius: radius.xl,

@@ -6,6 +6,7 @@ import { findCoords, cachedCoords } from '@/lib/maps';
 import { validCoords } from '@/lib/checkInRadius';
 import { formatAddress } from '@/lib/address';
 import { RadiusMapDrawn as DrawnRadius, type RadiusMapProps } from './RadiusMapDrawn';
+import { mapColors } from '@/theme/colors';
 
 type Coords = { latitude: number; longitude: number };
 
@@ -60,7 +61,7 @@ export function RadiusMap(props: RadiusMapProps) {
             radius={radiusMeters}
             strokeColor={colors.primary}
             strokeWidth={2}
-            fillColor="rgba(76, 175, 80, 0.18)"
+            fillColor={mapColors.zoneFill}
           />
           <Marker coordinate={coords} pinColor={colors.primary} />
         </MapView>

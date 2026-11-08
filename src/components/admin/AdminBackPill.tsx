@@ -10,6 +10,7 @@ import { useT } from '@/i18n';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { leaderWord } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 /** An admin working a job from the worker view gets a small way back to the admin view. Nothing for a real worker. */
 export function AdminBackPill({ to = '/(owner)', onBack }: { to?: string; onBack?: () => void } = {}) {
@@ -25,8 +26,8 @@ export function AdminBackPill({ to = '/(owner)', onBack }: { to?: string; onBack
       accessibilityLabel={t('Back to {role} view', { role: leaderWord() })}
       style={[styles.pill, { backgroundColor: colors.primaryDark, top: insets.top + spacing.xs }, shadow.md]}
     >
-      <Feather name="chevron-left" size={16} color="#FFFFFF" />
-      <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>{t('Back to {role} view', { role: leaderWord() })}</Text>
+      <Feather name="chevron-left" size={16} color={fixed.white} />
+      <Text style={[typeScale.labelSmall, { color: fixed.white }]}>{t('Back to {role} view', { role: leaderWord() })}</Text>
     </Pressable>
   );
 }

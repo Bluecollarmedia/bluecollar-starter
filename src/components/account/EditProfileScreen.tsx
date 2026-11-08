@@ -21,6 +21,7 @@ import { WORKER_EXTRAS_ON, WorkerExtrasFields } from '@/components/account/Worke
 import { loadMyDetails, saveMyHoodie, saveMyId, removeMyId } from '@/data/workerDetails';
 import type { HoodieSize } from '@/lib/workerDetails';
 import { useT } from '@/i18n';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 interface EditProfileScreenProps {
   /** Workers must fill in every field (photo and phone included); owners only need a name. */
@@ -173,7 +174,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
           <Pressable style={styles.avatarWrap} onPress={() => setPhotoSheetOpen(true)}>
             <Avatar firstName={firstName} lastName={lastName} size={96} uri={avatarUrl} />
             <View style={[styles.cameraBadgeLarge, { backgroundColor: colors.primary, borderColor: colors.background }]}>
-              <Feather name="camera" size={16} color="#FFFFFF" />
+              <Feather name="camera" size={16} color={fixed.white} />
             </View>
           </Pressable>
           <Pressable onPress={() => setPhotoSheetOpen(true)}>
@@ -271,7 +272,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
       {/* Change Profile Photo sheet */}
       <BottomSheetModal visible={photoSheetOpen} onRequestClose={() => setPhotoSheetOpen(false)}>
         <Pressable style={styles.sheetBackdrop} onPress={() => setPhotoSheetOpen(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
             <View style={[styles.sheetHandle, { backgroundColor: colors.borderLight }]} />
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center', marginBottom: spacing.md }]}>
               {t('Change Profile Photo')}
@@ -307,7 +308,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
       {/* Permission error */}
       <Modal visible={!!permissionError} transparent animationType="fade" onRequestClose={() => setPermissionError(null)}>
         <View style={styles.confirmBackdrop}>
-          <View style={[styles.confirmCard, { backgroundColor: colors.surface }]}>
+          <View style={[styles.confirmCard, { backgroundColor: colors.surfaceElevated }]}>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center' }]}>{t("Couldn't add the photo")}</Text>
             <Text style={[typeScale.bodyMedium, { color: colors.textSecondary, marginTop: spacing.xs, textAlign: 'center' }]}>
               {permissionError}
@@ -316,7 +317,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
               style={[styles.confirmButton, { backgroundColor: colors.primary, marginTop: spacing.lg, width: '100%' }]}
               onPress={() => setPermissionError(null)}
             >
-              <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('OK')}</Text>
+              <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('OK')}</Text>
             </Pressable>
           </View>
         </View>
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
   fields: { gap: spacing.md },
   nameRow: { flexDirection: 'row', gap: spacing.sm },
   divider: { height: StyleSheet.hairlineWidth },
-  sheetBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  sheetBackdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg },
   sheetHandle: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: spacing.md },
   sheetOption: { flexDirection: 'row', alignItems: 'center', paddingVertical: spacing.md },
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: spacing.md,
   },
-  confirmBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
+  confirmBackdrop: { flex: 1, backgroundColor: blackAlpha(0.5), alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   confirmCard: { width: '100%', maxWidth: 340, borderRadius: radius.xl, padding: spacing.xl, alignItems: 'center' },
   confirmButton: { height: 48, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
 });

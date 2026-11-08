@@ -16,6 +16,7 @@ import { localDateKey } from '@/lib/ids';
 import { db } from '@/data/store';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { fixed } from '@/theme/colors';
 
 function formatHours(hours: number): string {
   const h = Math.floor(hours);
@@ -376,7 +377,7 @@ function PayrollCard({
               />
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>/hr</Text>
               <Pressable onPress={handleSaveRate} style={[styles.rateSave, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                <Text style={[typeScale.labelSmall, { color: '#FFFFFF', fontWeight: '600' }]}>Save</Text>
+                <Text style={[typeScale.labelSmall, { color: fixed.white, fontWeight: '600' }]}>Save</Text>
               </Pressable>
             </View>
           </View>
@@ -399,7 +400,7 @@ function PayrollCard({
                 />
                 <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>/hr</Text>
                 <Pressable onPress={handleSaveTarget} style={[styles.rateSave, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                  <Text style={[typeScale.labelSmall, { color: '#FFFFFF', fontWeight: '600' }]}>Save</Text>
+                  <Text style={[typeScale.labelSmall, { color: fixed.white, fontWeight: '600' }]}>Save</Text>
                 </Pressable>
               </View>
               <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.xs }]}>
@@ -458,7 +459,7 @@ function PayrollCard({
                 </View>
                 {otDirty && (
                   <Pressable onPress={handleSaveOvertime} style={[styles.rateSave, styles.otSave, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                    <Text style={[typeScale.labelSmall, { color: '#FFFFFF', fontWeight: '600' }]}>Save overtime</Text>
+                    <Text style={[typeScale.labelSmall, { color: fixed.white, fontWeight: '600' }]}>Save overtime</Text>
                   </Pressable>
                 )}
               </View>

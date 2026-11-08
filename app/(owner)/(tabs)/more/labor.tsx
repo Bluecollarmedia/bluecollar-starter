@@ -24,7 +24,7 @@ function say(title: string, message: string) {
 
 function skipLabel(s: LaborSkip): string {
   const a = db.assignments.find((x) => x.id === s.assignmentId);
-  return a?.project?.name ?? 'a job';
+  return a?.project?.name ?? w('a job');
 }
 
 /** Hours & Labor: today's workforce at a glance. Everything links down to the record behind it. */
@@ -91,7 +91,7 @@ export default function LaborOverviewScreen() {
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Skip requested: {skipLabel(s)}</Text>
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]}>{L.snapshot?.names[s.requestedBy] ?? 'A worker'}: {s.reason}</Text>
                     <View style={styles.btnRow}>
-                      <Pressable onPress={() => decide(s, true)} style={[styles.smallBtn, { backgroundColor: colors.primary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Approve skip</Text></Pressable>
+                      <Pressable onPress={() => decide(s, true)} style={[styles.smallBtn, { backgroundColor: colors.primary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.textOnPrimary }]}>Approve skip</Text></Pressable>
                       <Pressable onPress={() => decide(s, false)} style={[styles.smallBtn, { backgroundColor: colors.backgroundTertiary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.textPrimary }]}>Deny</Text></Pressable>
                     </View>
                   </View>

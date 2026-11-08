@@ -15,7 +15,7 @@ import { CrewChips, type CrewPerson } from '@/components/crews/CrewChips';
 import { bookedOn } from '@/lib/crewBooking';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, blackAlpha } from '@/theme/colors';
 import { db, useDb } from '@/data/store';
 import { todayKey, localDateKey } from '@/lib/ids';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
@@ -24,7 +24,7 @@ import {
   addMonthsKey, describeHorizon, describeRepeat, occurrenceDates, HORIZON_OPTIONS, SERIES_HORIZON_DAYS,
 } from '@/lib/recurrence';
 import { showMessage } from '@/components/financials/ActionSheet';
-import { isFeatureOn, w } from '@/config/brand';
+import { isFeatureOn, w, w as settingsWords } from '@/config/brand';
 
 const today = todayKey();
 
@@ -345,7 +345,7 @@ export default function ScheduleCreateScreen() {
               onPress={() => toggleWorker(w.personId)}
               disabled={!!onJob && !selected}
               accessibilityRole="button"
-              accessibilityLabel={`${p.firstName} ${p.lastName}${onJob ? ', already on this job' : conflict ? ', unavailable' : ''}`}
+              accessibilityLabel={`${p.firstName} ${p.lastName}${onJob ? settingsWords(', already on this job') : conflict ? ', unavailable' : ''}`}
             >
               <Avatar firstName={p.firstName} lastName={p.lastName} size={36} uri={p.avatarUrl} />
               <View style={{ flex: 1 }}>
@@ -358,7 +358,7 @@ export default function ScheduleCreateScreen() {
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>
                       Scheduled {formatAssignmentTime(onJob)} · {onJob.project?.name}
                     </Text>
-                    <Text style={[typeScale.caption, { color: semantic.warning, fontWeight: '700' }]}>Already on this job</Text>
+                    <Text style={[typeScale.caption, { color: semantic.warning, fontWeight: '700' }]}>{settingsWords('Already on this job')}</Text>
                   </>
                 ) : conflict && (
                   <>
@@ -452,7 +452,7 @@ export default function ScheduleCreateScreen() {
                 appearance="light"
                 backgroundColor={colors.groupedBackground}
                 fontStyle={{ color: colors.textSecondary }}
-                activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                 style={styles.segmentControl}
               />
 
@@ -513,7 +513,7 @@ export default function ScheduleCreateScreen() {
                 appearance="light"
                 backgroundColor={colors.groupedBackground}
                 fontStyle={{ color: colors.textSecondary }}
-                activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                 style={styles.segmentControl}
               />
 
@@ -555,7 +555,7 @@ export default function ScheduleCreateScreen() {
                         appearance="light"
                         backgroundColor={colors.groupedBackground}
                         fontStyle={{ color: colors.textSecondary }}
-                        activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                        activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                         style={[styles.segmentControl, { flex: 1 }]}
                       />
                     </View>
@@ -570,7 +570,7 @@ export default function ScheduleCreateScreen() {
                     appearance="light"
                     backgroundColor={colors.groupedBackground}
                     fontStyle={{ color: colors.textSecondary }}
-                    activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                    activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                     style={styles.segmentControl}
                   />
 
@@ -584,7 +584,7 @@ export default function ScheduleCreateScreen() {
                     appearance="light"
                     backgroundColor={colors.groupedBackground}
                     fontStyle={{ color: colors.textSecondary }}
-                    activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                    activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                     style={styles.segmentControl}
                   />
 
@@ -628,7 +628,7 @@ export default function ScheduleCreateScreen() {
                         {upcomingDays.map(formatDateShort).join(' · ')}{upcomingDays.length === 4 ? ' …' : ''}
                       </Text>
                       <Text style={[typeScale.caption, { color: colors.textTertiary }]}>
-                        Workers see their days {describeHorizon(horizonDays)} ahead, and more keep filling in on their own. A day the worker is already on this job is skipped.
+                        Workers see their days {describeHorizon(horizonDays)}{w(' ahead, and more keep filling in on their own. A day the worker is already on this job is skipped.')}
                       </Text>
                     </View>
                   )}
@@ -873,7 +873,7 @@ function SheetModal({
   if (Platform.OS === 'ios') {
     return (
       <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-        <View style={[styles.sheetIosContainer, { backgroundColor: colors.surface }]}>{body}</View>
+        <View style={[styles.sheetIosContainer, { backgroundColor: colors.surfaceElevated }]}>{body}</View>
       </Modal>
     );
   }
@@ -881,7 +881,7 @@ function SheetModal({
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.sheetOverlay} onPress={onClose}>
-        <Pressable style={[styles.sheetCard, { backgroundColor: colors.surface }]} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={[styles.sheetCard, { backgroundColor: colors.surfaceElevated }]} onPress={(e) => e.stopPropagation()}>
           <View style={[styles.sheetGrabber, { backgroundColor: colors.border }]} />
           {body}
         </Pressable>
@@ -967,7 +967,7 @@ const styles = StyleSheet.create({
   },
 
   sheetIosContainer: { flex: 1, paddingHorizontal: spacing.lg },
-  sheetOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  sheetOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: blackAlpha(0.4) },
   sheetCard: {
     maxHeight: '80%',
     paddingHorizontal: spacing.lg,

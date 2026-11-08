@@ -6,6 +6,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { ProjectPhoto } from '@/types/project';
 import { useT } from '@/i18n';
+import { fixed, whiteAlpha } from '@/theme/colors';
 
 interface PhotoViewerProps {
   photos: ProjectPhoto[];
@@ -25,10 +26,10 @@ export function PhotoViewer({ photos, index, onIndexChange, onClose, insets }: P
     <View style={styles.backdrop}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <Pressable onPress={onClose} hitSlop={12} style={styles.closeButton}>
-          <Feather name="x" size={22} color="#FFFFFF" />
+          <Feather name="x" size={22} color={fixed.white} />
         </Pressable>
         {photos.length > 1 && (
-          <Text style={[typeScale.bodyMedium, { color: '#FFFFFF' }]}>
+          <Text style={[typeScale.bodyMedium, { color: fixed.white }]}>
             {t('{n} of {total}', { n: index + 1, total: photos.length })}
           </Text>
         )}
@@ -57,7 +58,7 @@ export function PhotoViewer({ photos, index, onIndexChange, onClose, insets }: P
 
       {current?.caption && (
         <View style={[styles.caption, { paddingBottom: insets.bottom + spacing.md }]}>
-          <Text style={[typeScale.bodySmall, { color: 'rgba(255,255,255,0.85)' }]}>{current.caption}</Text>
+          <Text style={[typeScale.bodySmall, { color: whiteAlpha(0.85) }]}>{current.caption}</Text>
         </View>
       )}
     </View>
@@ -65,7 +66,7 @@ export function PhotoViewer({ photos, index, onIndexChange, onClose, insets }: P
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: '#000' },
+  backdrop: { flex: 1, backgroundColor: fixed.black },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: whiteAlpha(0.15),
     alignItems: 'center',
     justifyContent: 'center',
   },

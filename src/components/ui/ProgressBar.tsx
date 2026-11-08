@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing } from '@/theme/spacing';
+import { semantic } from '@/theme/colors';
 
 interface ProgressBarProps {
   progress: number;
@@ -24,7 +25,7 @@ export function ProgressBar({ progress, showLabel = false, height = 6, style }: 
             {
               height,
               width: `${clamped}%`,
-              backgroundColor: clamped >= 100 ? '#43A047' : colors.primary,
+              backgroundColor: clamped >= 100 ? semantic.success : colors.primary,
             },
           ]}
         />

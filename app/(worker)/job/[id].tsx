@@ -21,6 +21,7 @@ import type { ProjectPhoto } from '@/types/project';
 import { getProjectImageUriById } from '@/lib/projectImages';
 import { BrandCover } from '@/components/branding/BrandCover';
 import { useT, tr } from '@/i18n';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 const HAS_LIQUID_GLASS = isLiquidGlassAvailable();
 
@@ -109,13 +110,13 @@ export default function JobDetailScreen() {
             <Pressable onPress={() => router.back()} hitSlop={12}>
               {HAS_LIQUID_GLASS ? (
                 <GlassView glassEffectStyle="regular" isInteractive style={styles.backChip}>
-                  <Feather name="chevron-left" size={20} color="#FFFFFF" />
-                  <Text style={[typeScale.bodyLarge, { color: '#FFFFFF', marginLeft: 2 }]}>{t('My Jobs')}</Text>
+                  <Feather name="chevron-left" size={20} color={fixed.white} />
+                  <Text style={[typeScale.bodyLarge, { color: fixed.white, marginLeft: 2 }]}>{t('My Jobs')}</Text>
                 </GlassView>
               ) : (
                 <View style={[styles.backChip, styles.backChipFallback]}>
-                  <Feather name="chevron-left" size={20} color="#FFFFFF" />
-                  <Text style={[typeScale.bodyLarge, { color: '#FFFFFF', marginLeft: 2 }]}>{t('My Jobs')}</Text>
+                  <Feather name="chevron-left" size={20} color={fixed.white} />
+                  <Text style={[typeScale.bodyLarge, { color: fixed.white, marginLeft: 2 }]}>{t('My Jobs')}</Text>
                 </View>
               )}
             </Pressable>
@@ -280,8 +281,8 @@ export default function JobDetailScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.pillButton}
               >
-                <Feather name="navigation" size={18} color="#FFFFFF" />
-                <Text style={[typeScale.labelLarge, { color: '#FFFFFF', marginLeft: spacing.sm }]}>
+                <Feather name="navigation" size={18} color={fixed.white} />
+                <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>
                   {t('Get Directions')}
                 </Text>
               </LinearGradient>
@@ -343,7 +344,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   backChipFallback: {
-    backgroundColor: 'rgba(0,0,0,0.32)',
+    backgroundColor: blackAlpha(0.32),
   },
   content: { paddingHorizontal: spacing.lg, gap: spacing.lg },
   card: { borderRadius: radius.xl, padding: spacing.lg },

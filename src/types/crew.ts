@@ -1,3 +1,4 @@
+import { swatches } from '@/theme/colors';
 /** A named group of workers, e.g. "Paving Crew". A worker is in at most one. */
 export interface Crew {
   id: string;
@@ -19,5 +20,5 @@ export interface CrewMember {
   createdAt: string;
 }
 
-/** Label colors the owner picks from. The first is the brand green (Step 4 swaps the brand color). */
-export const CREW_COLORS = ['#7CB342', '#1E88E5', '#F4511E', '#8E24AA', '#00897B', '#F9A825', '#6D4C41', '#E91E63'];
+/** Label colors the owner picks from: the brand color plus muted charcoal tints (src/theme/colors.ts, swatches). */
+export const CREW_COLORS: readonly string[] = swatches;

@@ -1,7 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import type { CompanySetupState, SetupStepKey } from '@/types/company';
 import { db, useDb, updateRow, findRow } from '@/data/store';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w } from '@/config/brand';
 
 export interface SetupStepInfo {
   key: SetupStepKey;
@@ -13,7 +13,7 @@ export interface SetupStepInfo {
 /** The owner's first-time setup, in the order the wizard walks through it. Steps for a feature switched off in the settings file
  *  (trucks; pay rates belong to the time clock) are left out. */
 const ALL_SETUP_STEPS: SetupStepInfo[] = [
-  { key: 'trucks', title: 'Add your trucks', subtitle: 'So you can hand out trucks to crews each day.', icon: 'truck' },
+  { key: 'trucks', title: 'Add your trucks', subtitle: w('So you can hand out trucks to crews each day.'), icon: 'truck' },
   { key: 'workers', title: 'Invite your workers', subtitle: 'Add a name and phone number, then text them a private link.', icon: 'users' },
   { key: 'payRates', title: 'Set pay rates', subtitle: 'Hourly rates power the payroll estimates.', icon: 'dollar-sign' },
   { key: 'notifications', title: 'Choose your alerts', subtitle: 'Pick what you want to be told about.', icon: 'bell' },

@@ -22,6 +22,7 @@ import Animated, {
 import { Icon } from './Icon';
 import { useTheme } from '@/providers/ThemeProvider';
 import { haptics } from '@/lib/haptics';
+import { fixed } from '@/theme/colors';
 
 interface ReorderableListProps<T> {
   items: T[];
@@ -157,7 +158,7 @@ function DragRow({ id, index, count, rowHeight, positions, draggable, onDrop, on
     <Animated.View
       style={[
         styles.row,
-        { height: rowHeight, backgroundColor: colors.surface, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowRadius: 10 },
+        { height: rowHeight, backgroundColor: colors.surface, shadowColor: fixed.black, shadowOffset: { width: 0, height: 4 }, shadowRadius: 10 },
         rowStyle,
       ]}
     >

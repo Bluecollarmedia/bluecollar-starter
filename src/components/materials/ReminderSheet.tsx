@@ -16,6 +16,7 @@ import { formatDocDate } from '@/lib/documentHtml';
 import { materialRemindersSupported } from '@/lib/materialReminders';
 import { typeScale } from '@/theme/typography';
 import { spacing, sizing } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const toLocalInput = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
@@ -96,7 +97,7 @@ export function ReminderSheet({ visible, initial, initialNote, jobDate, hasRemin
   return (
     <FormSheet visible={visible} title="Prep Reminder" onSave={save} onClose={onClose}>
       <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginBottom: spacing.md, marginHorizontal: spacing.xs }]}>
-        {jobDate ? `The job is scheduled for ${formatDocDate(jobDate)}.` : 'This job isn’t on the schedule yet. You can still set a reminder.'}
+        {jobDate ? w('The job is scheduled for {jobDate}.', { jobDate: formatDocDate(jobDate) }) : w('This job isn’t on the schedule yet. You can still set a reminder.')}
       </Text>
       {jobDate && (
         <ChipRow

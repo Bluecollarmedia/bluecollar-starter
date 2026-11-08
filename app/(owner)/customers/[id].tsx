@@ -12,7 +12,7 @@ import { CustomerPropertiesCard } from '@/components/properties/CustomerProperti
 import { CustomerInviteCard } from '@/components/invites/CustomerInviteCard';
 import { deleteUnusedMember } from '@/data/deleteMember';
 import { haptics } from '@/lib/haptics';
-import { semantic } from '@/theme/colors';
+import { semantic, tones } from '@/theme/colors';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
@@ -159,10 +159,10 @@ You can turn their portal access off instead.` : res.error);
                 <Text style={[typeScale.labelLarge, { color: colors.textPrimary, fontWeight: '700', marginLeft: spacing.xs }]}>Call</Text>
               </Pressable>
               <Pressable
-                style={[styles.contactBtn, { backgroundColor: '#DCE9FB' }]}
+                style={[styles.contactBtn, { backgroundColor: tones.neutral.bg }]}
                 onPress={handleEmail}
               >
-                <Icon name="mail" size={16} color="#2E6BD6" />
+                <Icon name="mail" size={16} color={tones.strong.fg} />
                 <Text style={[typeScale.labelLarge, { color: colors.textPrimary, fontWeight: '700', marginLeft: spacing.xs }]}>Email</Text>
               </Pressable>
             </View>

@@ -1,4 +1,5 @@
 import { db } from '@/data/store';
+import { w } from '@/config/brand';
 
 /**
  * Where a worker is already booked on a day, or null when they are free. A project job counts;
@@ -8,6 +9,6 @@ import { db } from '@/data/store';
 export function bookedOn(personId: string, dateKey: string): string | null {
   const job = db.assignments.find((a) =>
     a.personId === personId && a.scheduledDate === dateKey && a.status !== 'cancelled' && a.status !== 'reassigned');
-  if (job) return db.projects.find((p) => p.id === job.projectId)?.name ?? 'another job';
+  if (job) return db.projects.find((p) => p.id === job.projectId)?.name ?? w('another job');
   return null;
 }

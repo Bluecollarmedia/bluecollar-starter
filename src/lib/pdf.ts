@@ -20,6 +20,7 @@ import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { renderDocumentHtml, footerText, type DocumentHtmlOptions } from './documentHtml';
 import type { FinancialDoc, DocumentSnapshot } from '@/types/financial';
 import { brand } from '@/config/brand';
+import { documentColors, unitRgb } from '@/theme/colors';
 
 /** Letter, in points. */
 const PAGE = { width: 612, height: 792 };
@@ -42,7 +43,7 @@ export async function stampPages(pdf: string | Uint8Array, footer: string, title
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const pages = doc.getPages();
   const size = 7.5;
-  const color = rgb(0.54, 0.58, 0.56);
+  const color = rgb(...unitRgb(documentColors.faint));
   const left = winAnsiSafe(footer);
   pages.forEach((page, i) => {
     const { width } = page.getSize();
@@ -51,7 +52,7 @@ export async function stampPages(pdf: string | Uint8Array, footer: string, title
       start: { x: 43, y: 40 },
       end: { x: width - 43, y: 40 },
       thickness: 0.5,
-      color: rgb(0.89, 0.88, 0.85),
+      color: rgb(...unitRgb(documentColors.rule)),
     });
     page.drawText(left, { x: 43, y: 27, size, font, color });
     page.drawText(label, { x: width - 43 - font.widthOfTextAtSize(label, size), y: 27, size, font, color });

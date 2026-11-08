@@ -23,6 +23,7 @@ import { getCompanyImageUri, getWorkerHeaderImageUri } from '@/lib/projectImages
 import { HeaderPhotoField } from '@/components/media/HeaderPhotoField';
 import type { SetupStepKey } from '@/types/company';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { w as settingsWords } from '@/config/brand';
 
 /** Recommended first-time setup for the owner. Opens automatically until it's been walked through once. */
 export default function CompanySetupScreen() {
@@ -368,7 +369,7 @@ function CompanyStep({ onSaved }: { onSaved: () => void }) {
       <Card title="Workers' home photo" style={styles.section}>
         <HeaderPhotoField kind="worker" value={workerPhoto} onChange={setWorkerPhoto} />
         <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: spacing.sm }]}>
-          The top of your workers' Today, Jobs and Activity screens. A job's own cover photo shows instead on days they're scheduled there.
+          {settingsWords('The top of your workers\' Today, Jobs and Activity screens. A job\'s own cover photo shows instead on days they\'re scheduled there.')}
         </Text>
       </Card>
       <Card title={c?.name ?? 'Company'} style={styles.section}>

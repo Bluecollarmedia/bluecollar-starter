@@ -18,6 +18,7 @@ import { FormSheet } from '@/components/materials/FormSheet';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 type Sheet =
   | null
@@ -193,7 +194,7 @@ export default function LaborDayScreen() {
             </View>
             {wd.approvedAt ? <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.xs }]}>Approved {new Date(wd.approvedAt).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}{wd.status === 'reopened' ? ' (changed since, needs approval again)' : ''}</Text> : null}
             <View style={styles.btnRow}>
-              {canApprove ? <Pressable onPress={onApprove} style={[styles.btn, { backgroundColor: colors.primary }]} accessibilityRole="button"><Icon name="check" size={16} color="#FFFFFF" /><Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Approve day</Text></Pressable> : null}
+              {canApprove ? <Pressable onPress={onApprove} style={[styles.btn, { backgroundColor: colors.primary }]} accessibilityRole="button"><Icon name="check" size={16} color={colors.textOnPrimary} /><Text style={[typeScale.labelSmall, { color: colors.textOnPrimary }]}>Approve day</Text></Pressable> : null}
               {row.state === 'approved' ? <Pressable onPress={() => setSheet({ kind: 'reopen' })} style={[styles.btn, { backgroundColor: colors.backgroundTertiary }]} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.textPrimary }]}>Reopen</Text></Pressable> : null}
               <Pressable onPress={onExport} style={[styles.btn, { backgroundColor: colors.backgroundTertiary }]} accessibilityRole="button"><Icon name="download" size={16} color={colors.textPrimary} /><Text style={[typeScale.labelSmall, { color: colors.textPrimary }]}>Export CSV</Text></Pressable>
             </View>
@@ -212,7 +213,7 @@ export default function LaborDayScreen() {
               <View style={styles.btnRow}>
                 {wd.claimedOutAt ? (
                   <Pressable onPress={async () => { await done(await editWorkday(wd.id, null, wd.claimedOutAt!, 'Used the time the employee gave')); }} style={[styles.btn, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                    <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>Use their time</Text>
+                    <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Use their time</Text>
                   </Pressable>
                 ) : null}
                 <Pressable onPress={() => setSheet({ kind: 'workday' })} style={[styles.btn, { backgroundColor: colors.backgroundTertiary }]} accessibilityRole="button">

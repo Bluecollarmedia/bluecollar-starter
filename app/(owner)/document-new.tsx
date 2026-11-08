@@ -26,6 +26,7 @@ import { spacing, radius } from '@/theme/spacing';
 import type { FinancialDocType } from '@/types/financial';
 import type { ProjectStatus } from '@/types/project';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 const PROJECT_STATUS: Record<ProjectStatus, { label: string; tone: 'success' | 'warning' | 'info' | 'neutral' }> = {
   prospect: { label: 'Prospect', tone: 'neutral' },
@@ -205,7 +206,7 @@ export default function NewDocumentScreen() {
                 accessibilityState={{ checked: on }}
               >
                 <View style={[styles.box, { borderColor: on ? colors.primary : colors.border, backgroundColor: on ? colors.primary : 'transparent' }]}>
-                  {on && <Icon name="check" size={13} color="#FFFFFF" />}
+                  {on && <Icon name="check" size={13} color={fixed.white} />}
                 </View>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Change order {c.number}</Text>

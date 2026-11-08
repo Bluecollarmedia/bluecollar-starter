@@ -227,19 +227,19 @@ const DEV_USERS: Record<'owner' | 'worker' | 'customer', UserProfile> = {
   owner: {
     id: 'owner1', email: 'alex@example.com', role: 'owner',
     firstName: 'Alex', lastName: 'Morgan', activeCompanyId: 'company1',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Morgan&background=7CB342&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Morgan&background=555555&color=fff&size=128',
     createdAt: '2024-01-15T10:00:00Z', updatedAt: '2024-01-15T10:00:00Z',
   },
   worker: {
     id: 'worker1', email: 'marcus@example.com', role: 'worker',
     firstName: 'Marcus', lastName: 'Rivera', activeCompanyId: 'company1',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Marcus+Rivera&background=42A5F5&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Marcus+Rivera&background=555555&color=fff&size=128',
     createdAt: '2025-03-01T08:00:00Z', updatedAt: '2025-03-01T08:00:00Z',
   },
   customer: {
     id: 'customer1', email: 'sarah.mitchell@example.com', role: 'customer',
     firstName: 'Sarah', lastName: 'Mitchell', activeCompanyId: 'company1',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Sarah+Mitchell&background=AB47BC&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Sarah+Mitchell&background=555555&color=fff&size=128',
     createdAt: '2026-02-15T10:00:00Z', updatedAt: '2026-02-15T10:00:00Z',
   },
 };

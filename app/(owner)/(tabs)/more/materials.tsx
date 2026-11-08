@@ -31,7 +31,7 @@ export default function MaterialsOverviewScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
-      <ScreenHeader title="Materials" subtitle="Jobs that need materials ordered or picked up, soonest first." />
+      <ScreenHeader title="Materials" subtitle={w("Jobs that need materials ordered or picked up, soonest first.")} />
 
       <ScrollView bounces={false} contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: clearance + spacing['2xl'], gap: spacing.md }}>
         {!db.ready ? (
@@ -59,7 +59,7 @@ export default function MaterialsOverviewScreen() {
                   {!!r.project.address && <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>{r.project.address}</Text>}
                 </View>
                 {r.nextJob
-                  ? <StatusBadge label={`Job ${formatDocDate(r.nextJob).replace(/, \d{4}$/, '')}`} status={soon ? 'warning' : 'neutral'} />
+                  ? <StatusBadge label={w('Job {nextJob}', { nextJob: formatDocDate(r.nextJob).replace(/, \d{4}$/, '') })} status={soon ? 'warning' : 'neutral'} />
                   : <StatusBadge label="Not scheduled" status="neutral" />}
               </View>
 

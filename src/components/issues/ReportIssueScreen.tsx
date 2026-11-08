@@ -16,6 +16,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { haptics } from '@/lib/haptics';
 import { useT } from '@/i18n';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 export function ReportIssueScreen() {
   const t = useT();
@@ -101,8 +102,8 @@ export function ReportIssueScreen() {
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundTertiary }]}
               >
-                <Icon name={it.icon as any} size={16} color={on ? '#FFFFFF' : colors.textPrimary} />
-                <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textPrimary, fontWeight: '600' }]}>{t(it.label)}</Text>
+                <Icon name={it.icon as any} size={16} color={on ? fixed.white : colors.textPrimary} />
+                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textPrimary, fontWeight: '600' }]}>{t(it.label)}</Text>
               </PressableScale>
             );
           })}
@@ -119,7 +120,7 @@ export function ReportIssueScreen() {
                 accessibilityLabel={t('Remove photo')}
                 style={styles.remove}
               >
-                <Icon name="x" size={14} color="#FFFFFF" />
+                <Icon name="x" size={14} color={fixed.white} />
               </PressableScale>
             </View>
           ))}
@@ -157,8 +158,8 @@ export function ReportIssueScreen() {
           accessibilityLabel={t('Send report')}
           style={[styles.send, { backgroundColor: colors.primary, opacity: !type || busy ? 0.5 : 1 }]}
         >
-          {busy ? <ActivityIndicator color="#FFFFFF" /> : <Icon name="send" size={18} color="#FFFFFF" />}
-          <Text style={[typeScale.labelLarge, { color: '#FFFFFF', fontWeight: '800', letterSpacing: 0.6 }]}>{busy ? t('SENDING…') : t('SEND REPORT')}</Text>
+          {busy ? <ActivityIndicator color={fixed.white} /> : <Icon name="send" size={18} color={fixed.white} />}
+          <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '800', letterSpacing: 0.6 }]}>{busy ? t('SENDING…') : t('SEND REPORT')}</Text>
         </PressableScale>
       </View>
     </View>
@@ -173,7 +174,7 @@ const styles = StyleSheet.create({
   photoWrap: { position: 'relative' },
   photo: { width: 92, height: 92, borderRadius: radius.md },
   add: { alignItems: 'center', justifyContent: 'center', gap: 4, borderWidth: 1.5, borderStyle: 'dashed' },
-  remove: { position: 'absolute', top: 4, right: 4, width: 24, height: 24, borderRadius: 12, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center' },
+  remove: { position: 'absolute', top: 4, right: 4, width: 24, height: 24, borderRadius: 12, backgroundColor: blackAlpha(0.6), alignItems: 'center', justifyContent: 'center' },
   input: { minHeight: 110, borderRadius: radius.md, borderWidth: 1, padding: spacing.md, textAlignVertical: 'top' },
   bottom: { position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: spacing.lg, paddingTop: spacing.md, borderTopWidth: StyleSheet.hairlineWidth },
   send: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.sm, height: 56, borderRadius: radius.full },

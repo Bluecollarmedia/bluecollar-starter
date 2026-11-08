@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 export interface PagerPhoto { id: string; url: string }
 
@@ -67,17 +68,17 @@ export function PhotoPager({ photos, startId, onClose, actionsFor }: {
         />
         <View style={[styles.top, { paddingTop: insets.top + spacing.sm }]} pointerEvents="box-none">
           <Pressable onPress={onClose} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close" style={styles.close}>
-            <Icon name="x" size={22} color="#FFFFFF" />
+            <Icon name="x" size={22} color={fixed.white} />
           </Pressable>
-          <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{Math.min(index, photos.length - 1) + 1} / {photos.length}</Text>
+          <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{Math.min(index, photos.length - 1) + 1} / {photos.length}</Text>
           <View style={{ width: 40 }} />
         </View>
         {actions.length ? (
           <View style={[styles.bar, { paddingBottom: insets.bottom + spacing.md }]}>
             {actions.map((a) => (
               <Pressable key={a.key} onPress={a.onPress} accessibilityRole="button" accessibilityLabel={a.label} style={styles.action}>
-                <Icon name={a.icon} size={22} color={a.destructive ? '#FF6B6B' : '#FFFFFF'} />
-                <Text style={[typeScale.caption, { color: a.destructive ? '#FF6B6B' : '#FFFFFF' }]}>{a.label}</Text>
+                <Icon name={a.icon} size={22} color={a.destructive ? fixed.errorOnDark : fixed.white} />
+                <Text style={[typeScale.caption, { color: a.destructive ? fixed.errorOnDark : fixed.white }]}>{a.label}</Text>
               </Pressable>
             ))}
           </View>
@@ -88,9 +89,9 @@ export function PhotoPager({ photos, startId, onClose, actionsFor }: {
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: '#000' },
+  backdrop: { flex: 1, backgroundColor: fixed.black },
   top: { position: 'absolute', top: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: spacing.md },
-  close: { width: 40, height: 40, borderRadius: radius.full, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
-  bar: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-around', paddingTop: spacing.md, backgroundColor: 'rgba(0,0,0,0.55)' },
+  close: { width: 40, height: 40, borderRadius: radius.full, backgroundColor: blackAlpha(0.5), alignItems: 'center', justifyContent: 'center' },
+  bar: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', justifyContent: 'space-around', paddingTop: spacing.md, backgroundColor: blackAlpha(0.55) },
   action: { alignItems: 'center', gap: 2, minWidth: 64 },
 });

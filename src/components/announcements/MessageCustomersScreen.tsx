@@ -15,6 +15,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction } from '@/components/financials/ActionSheet';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
@@ -67,9 +68,9 @@ export function MessageCustomersPanel() {
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.border }]}
               >
-                <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textSecondary }]}>{w(a.label)}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textSecondary }]}>{w(a.label)}</Text>
                 {reach?.[a.key] != null ? (
-                  <Text style={[typeScale.caption, { color: on ? '#FFFFFF' : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
+                  <Text style={[typeScale.caption, { color: on ? fixed.white : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
                 ) : null}
               </Pressable>
             );
@@ -77,7 +78,7 @@ export function MessageCustomersPanel() {
         </View>
         {help ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{help}</Text> : null}
 
-        <Input label="Title" value={title} onChangeText={setTitle} placeholder="For example: Crews start at 7 AM tomorrow" maxLength={TITLE_MAX} />
+        <Input label="Title" value={title} onChangeText={setTitle} placeholder={w("For example: Crews start at 7 AM tomorrow")} maxLength={TITLE_MAX} />
         <Input label="Message" value={body} onChangeText={setBody} placeholder="Write whatever you want your customers to know." multiline maxLength={BODY_MAX} containerStyle={{ minHeight: 140 }} />
 
         {note ? <InlineNotice icon={note.tone === 'success' ? 'check-circle' : 'alert-triangle'} tone={note.tone === 'success' ? 'success' : 'error'} text={note.text} /> : null}

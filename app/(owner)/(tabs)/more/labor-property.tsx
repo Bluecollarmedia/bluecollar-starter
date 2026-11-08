@@ -91,7 +91,7 @@ export default function LaborPropertyScreen() {
       <Card title="AVERAGES">
         <KV label="Completed visits counted" value={String(stats.count)} hint="In-progress, voided and skipped visits are left out" />
         <KV label="Average elapsed visit duration" value={stats.averageElapsedMs == null ? '–' : durationText(stats.averageElapsedMs)} hint="How long a visit takes, start to finish" bold />
-        <KV label="Average crew labor" value={stats.averageLaborMs == null ? '–' : `${hoursText(stats.averageLaborMs)} labor-hours`} hint="All employees' time added together" bold />
+        <KV label={w("Average crew labor")} value={stats.averageLaborMs == null ? '–' : `${hoursText(stats.averageLaborMs)} labor-hours`} hint="All employees' time added together" bold />
         {avgVsTarget ? <KV label="Average vs your target" value={`${durationText(Math.abs(avgVsTarget.diffMs))} ${avgVsTarget.over ? 'over' : 'under'}`} /> : null}
       </Card>
 
@@ -108,14 +108,14 @@ export default function LaborPropertyScreen() {
         <>
           <Card title={w('JOB LABOR (ALL DAYS)')}>
             <KV label="Work visits" value={String(totals.visits)} hint={totals.firstDate ? `${fmtDay(totals.firstDate)} to ${fmtDay(totals.lastDate ?? totals.firstDate)}` : undefined} />
-            <KV label="Total crew labor" value={`${hoursText(totals.laborMs)} labor-hours`} bold />
+            <KV label={w("Total crew labor")} value={`${hoursText(totals.laborMs)} labor-hours`} bold />
             <KV label="Billable labor" value={`${hoursText(totals.billableLaborMs)} h`} />
             <KV label="Non-billable labor" value={`${hoursText(totals.nonBillableLaborMs)} h`} />
             <KV label="Actual labor cost" value={`$${totals.cost.toFixed(2)}`} bold />
             {totals.byEmployee.map((e) => <KV key={e.personId} label={e.name} value={`${hoursText(e.ms)} h · $${e.cost.toFixed(2)}`} />)}
           </Card>
           <Card title="ESTIMATE VS ACTUAL">
-            <Text style={[typeScale.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>Estimated total labor-hours (person-hours), compared with the actual crew labor above.</Text>
+            <Text style={[typeScale.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>{w('Estimated total labor-hours (person-hours), compared with the actual crew labor above.')}</Text>
             <Input label="Estimated labor-hours" value={estText} onChangeText={setEstText} keyboardType="decimal-pad" placeholder="e.g. 40" />
             <View style={{ marginTop: spacing.sm }}><Button title="Save estimate" size="sm" onPress={saveEstimate} /></View>
             {est ? (
@@ -138,7 +138,7 @@ export default function LaborPropertyScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{fmtDay(r.visit.visitDate)}{r.billable ? '' : '  · non-billable'}</Text>
                 <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
-                  Elapsed {r.elapsedMs == null ? (r.status === 'in_progress' ? 'in progress' : '–') : durationText(r.elapsedMs)} · Crew labor {hoursText(r.laborMs)} h
+                  Elapsed {r.elapsedMs == null ? (r.status === 'in_progress' ? 'in progress' : '–') : durationText(r.elapsedMs)}{w(' · Crew labor ')}{hoursText(r.laborMs)} h
                 </Text>
                 <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{r.employees.map((e) => e.name.split(' ')[0]).join(', ') || 'No employees'}{vsTarget ? ` · ${durationText(Math.abs(vsTarget.diffMs))} ${vsTarget.over ? 'over' : 'under'} target` : ''}</Text>
               </View>

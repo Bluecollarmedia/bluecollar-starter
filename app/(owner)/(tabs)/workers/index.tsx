@@ -11,6 +11,7 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 type FilterKey = 'all' | 'working_today' | 'needs_confirmation' | 'inactive';
 
@@ -125,8 +126,8 @@ export default function WorkersListScreen() {
                 accessibilityState={{ selected }}
                 accessibilityLabel={`${c.name}, ${c.memberIds.length} workers`}
               >
-                <View style={[styles.crewDot, { backgroundColor: selected ? '#FFFFFF' : c.color }]} />
-                <Text style={[typeScale.labelSmall, { color: selected ? '#FFFFFF' : c.color, fontWeight: '700' }]} numberOfLines={1}>
+                <View style={[styles.crewDot, { backgroundColor: selected ? fixed.white : c.color }]} />
+                <Text style={[typeScale.labelSmall, { color: selected ? fixed.white : c.color, fontWeight: '700' }]} numberOfLines={1}>
                   {c.name} · {c.memberIds.length}
                 </Text>
               </Pressable>
@@ -136,11 +137,11 @@ export default function WorkersListScreen() {
             onPress={() => router.push('/(owner)/crews' as any)}
             style={({ pressed }) => [styles.crewChip, { backgroundColor: pressed ? colors.border : colors.backgroundTertiary }]}
             accessibilityRole="button"
-            accessibilityLabel={crews.length ? 'Manage crews' : 'Make a crew'}
+            accessibilityLabel={crews.length ? w('Manage crews') : w('Make a crew')}
           >
             <Icon name={crews.length ? 'edit-2' : 'plus'} size={13} color={colors.textPrimary} />
             <Text style={[typeScale.labelSmall, { color: colors.textPrimary, fontWeight: '700' }]}>
-              {crews.length ? 'Crews' : 'Make a Crew'}
+              {crews.length ? w('Crews') : w('Make a Crew')}
             </Text>
           </Pressable>
         </ScrollView>
