@@ -1,7 +1,7 @@
 /**
  * "Report a problem": a worker reports something at a job (project) with
  * photos and notes. Owner/admin see every
- * report, mark them Resolved and can delete them (supabase/updates/038).
+ * report, mark them Resolved and can delete them (supabase/setup.sql).
  */
 
 import { tr } from '@/i18n';

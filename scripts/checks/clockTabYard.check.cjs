@@ -1,10 +1,11 @@
 // Run: node scripts/checks/clockTabYard.check.cjs [path to typescript package]
 // The worker Clock tab, the clock-in location record, and the owner's clock-in email (clock-in-alert). UNIT tests run the email's real wording code
 // in Node; STATIC checks read file text. Not covered here (needs real phones and a deployed function): the real GPS reading, the real email arriving,
-// and how the Clock tab looks. The database rules are proved by supabase/tests/107_yard_clock_alerts.pglite.mjs.
+// and how the Clock tab looks. The database rules are proved by supabase/tests/setup/09_clock_rules.test.mjs.
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
+const SETUP_SQL = require('./_sql.cjs').setup;   // supabase/setup.sql, the one file that builds the database
 const root = path.join(__dirname, '../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 let bad = 0;
@@ -53,6 +54,6 @@ check('recording the location never throws and does nothing before the database 
 const alerts = read('app/(owner)/(tabs)/more/yard-alerts.tsx');
 check('Settings has the screen: a switch for the email, how close counts, and where it goes; it uses the existing Yard Location', /Email me when someone clocks in away from the yard/.test(alerts) && /YARD_RADII/.test(alerts) && /Send the email to/.test(alerts) && /yard-location/.test(alerts));
 check('the Settings list links to it', /Yard & clock-in alerts/.test(read('app/(owner)/(tabs)/more/settings.tsx')) && /more\/yard-alerts/.test(read('app/(owner)/(tabs)/more/settings.tsx')));
-const sql = read('supabase/updates/107_yard_clock_alerts.sql');
-check('alerts start OFF until the owner turns them on, and only the owner can change them', /alert_on boolean not null default false/.test(sql) && /_yard_owner_company\(\)/.test(sql) && /role = 'owner' and m\.status = 'active'/.test(sql));
+const sql = SETUP_SQL;
+check('alerts start OFF until the owner turns them on, and only the owner can change them', /alert_on boolean default false not null/.test(sql) && /_yard_owner_company\(\)/.test(sql) && /role = 'owner' and m\.status = 'active'/.test(sql));
 process.exit(bad ? 1 : 0);

@@ -1,4 +1,4 @@
-/** The owner's Remind button (supabase/updates/094): sends the worker a push notification asking them to confirm a job. */
+/** The owner's Remind button (supabase/setup.sql): sends the worker a push notification asking them to confirm a job. */
 import { isDemo, rpc } from '@/data/store';
 import { remindMessage, type RemindResult } from '@/lib/remindMessage';
 

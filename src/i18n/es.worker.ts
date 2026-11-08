@@ -318,7 +318,7 @@ export const ES_WORKER: Record<string, string> = {
   'Next day': 'Día siguiente',
   'Pick a date': 'Elige una fecha',
   "Hours & Labor isn't switched on yet": 'Horas y mano de obra aún no está activado',
-  'The database updates 63, 64 and 65 have not been run. Once they are, workdays and job site times show up here.': 'Las actualizaciones 63, 64 y 65 de la base de datos aún no se han ejecutado. Cuando se ejecuten, las jornadas y los tiempos por sitio de trabajo aparecerán aquí.',
+  'Time tracking is missing from the database (run supabase/setup.sql). Once it is there, workdays and job site times show up here.': 'El control de horas todavía no está en la base de datos (ejecute supabase/setup.sql). Cuando esté, las jornadas y los tiempos por sitio de trabajo aparecerán aquí.',
   'Needs correction': 'Necesita corrección',
   'Never clocked out': 'Nunca registró su salida',
   'Ready for review': 'Lista para revisar',

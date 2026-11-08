@@ -24,7 +24,7 @@ export interface Company {
   storageLimitGb?: number;
   /** Biggest single upload the owner allows, in MB (1 to 200). Missing means the upload service's own maximum (200 MB). */
   maxFileSizeMb?: number;
-  /** Task lists: true = only the job's Task Lead checks off tasks. Missing/false = anyone on the job can (update 120). */
+  /** Task lists: true = only the job's Task Lead checks off tasks. Missing/false = anyone on the job can (enforced in setup.sql). */
   taskLeadOnly?: boolean;
   /** Payroll: pay each worker's target rate × hours, absorbing overtime into a lower base. */
   targetPayEnabled?: boolean;

@@ -17,7 +17,7 @@ import { w } from '@/config/brand';
 /**
  * Owner only: "Delete Company" row plus its confirmation sheet (type the
  * company name). The database does the delete as one all-or-nothing step
- * (delete_my_company, supabase/updates/036): if it fails nothing is deleted.
+ * (delete_my_company in supabase/setup.sql): if it fails nothing is deleted.
  * When it works the company's data is gone, accounts stay, and the welcome
  * screen offers "Create a Company" again.
  */

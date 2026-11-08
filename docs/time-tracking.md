@@ -1,27 +1,28 @@
 # Workday, property-visit and labor tracking
 
-Database updates 063, 064 and 065 (run in that order, after 062). The app works exactly as before until they are run: every new
-screen and button checks that the database answers and falls back to the older check-in screens when it does not.
+All of it is in `supabase/setup.sql` (the `time_*` tables and functions); tested in `supabase/tests/setup/04_time_clock`,
+`08_time_tracking` and `09_clock_rules`. Every screen and button checks that the database answers and falls back to the older
+check-in screens when it does not (for example a database made before time tracking existed).
 
 ## What it does
 
 * **Workday** (`time_workdays`): one row per employee workday, clock-in at the yard to clock-out. The server stamps the times
   (`now()`); the phone only sends its local calendar date. One open workday per person, enforced by a unique index, even from two phones.
   Breaks (`time_breaks`) exist only when the owner turns break tracking on.
-* **Property visit** (`time_visits`): one row per real visit: a maintenance stop, or a project on one date.
-  A recurring property has many visits; a multi-day project has one visit per day worked.
+* **Property visit** (`time_visits`): one row per real visit: a project (job) on one date.
+  A multi-day project has one visit per day worked.
 * **Each employee's own time** (`time_intervals`): start and end at a visit. Crew labor = the sum of these. The visit's elapsed time
   (first start to last finish) is a different number and is always labelled differently.
 * **Rates**: `time_workday_rates` and `time_interval_rates` hold the hourly rate in force when the work happened (owner-only tables), so a
   raise never rewrites past costs. `time_set_hourly_rate` ends the old rate and adds a new effective-dated one.
-* **Route order, skips, photos, one-property-at-a-time, no break mid-visit** are enforced in the database functions
+* **Job order, skips, photos, one-job-at-a-time, no break mid-visit** are enforced in the database functions
   (`time_start_visit`, `time_complete_visit`, `time_request_skip`, `time_decide_skip`), not only on screen.
 * **Corrections** (`time_staff_*`) need a reason, never overwrite silently, and write the old and new value, the person and the time to
   `time_audit` (append-only). Changing an approved day reopens it for approval again.
 * Typed-in corrections are checked for typos: a workday the owner enters or edits can't be longer than 24 hours and must start on (about)
   the date it is filed under. The employee's own server-stamped clock-out is never refused for being long (the owner then corrects it).
   A visit whose every time was removed becomes "void" and drops out of the history lists; a "still clocked in" alert closes itself once
-  the workday has a clock-out; the owner starting a stop out of order is allowed but written to the history.
+  the workday has a clock-out; the owner starting a job out of order is allowed but written to the history.
 * **Approval** (`time_approve_workday` / `time_reopen_workday`): only a clocked-out day with nothing running can be approved.
 * **Alerts** (`time_alerts`): over target, daily alert hours (approaching / reached), a workday left open, an unusually long visit and
   skip requests. Each is saved once (unique key) so it never repeats. There is no background scheduler: alerts are worked out when a
@@ -52,7 +53,6 @@ Both stay. They measure different things, so their totals are expected to differ
 |---|---|---|
 | What is counted | Each project job check-in to check-out (`work_sessions`) | The whole workday, clock-in to clock-out, minus unpaid breaks |
 | Yard, loading and driving time | Not counted | Counted (it is inside the workday) |
-| Maintenance routes | Not part of `work_sessions` | Workday and each stop's time are recorded |
 | Overtime | Weekly threshold on job hours, each day priced at the rate for that date | Weekly threshold on net workday hours, each day priced at the rate **saved with that day** |
 | Pay rate | Looked up live from `worker_hourly_rates` | Saved when the work was recorded; a later raise never rewrites it |
 
@@ -69,9 +69,6 @@ Where totals can still differ, and what to do:
 * A pay rate changed on the older Payroll Estimate screen changes the live rate it uses; it does not change rates already saved with recorded
   work. The first time a rate is set in Hours & Labor, time already recorded with a blank rate is filled in (unapproved days, from the rate's
   start date); a saved rate is never changed.
-* A maintenance stop finished by an older app build (before the update) has no property time; its workday still counts.
-* Anyone can still call the older maintenance functions directly from an older build. Skips are owner-only there already; arrival and finish
-  are not timed. Once every phone has the new build, a small hardening update can make those direct calls refuse crew members (not done yet, so older builds in the field keep working).
 
 ## Midnight, time zones and shifts that run past midnight
 

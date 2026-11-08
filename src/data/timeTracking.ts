@@ -1,5 +1,5 @@
 /**
- * Workday and property-visit time tracking (supabase/updates/063 and 064).
+ * Workday and property-visit time tracking (supabase/setup.sql).
  *
  * Workers use the time_* functions (the database checks who they are, photos, one-open-property and so on).
  * Owners read the time tables and make corrections through the time_staff_* functions. Nothing here saves a time locally:
@@ -86,7 +86,7 @@ function parseDay(r: Raw): MyDay {
     serverNow: r.server_now,
     clockOffsetMs: Number.isFinite(now) ? now - Date.now() : 0,
     workDate: r.work_date,
-    // An older database (before update 67) doesn't say; keep the old behaviour then.
+    // An older database doesn't say; keep the old behaviour then.
     canClockIn: r.can_clock_in !== false,
     settings: {
       breaksEnabled: !!r.settings?.breaks_enabled,
@@ -177,7 +177,7 @@ export async function withdrawSkip(id: string): Promise<Result> {
 export interface LaborWorkday {
   id: string; personId: string; workDate: string; clockInAt: string; clockOutAt?: string; status: 'active' | 'closed' | 'approved' | 'reopened' | 'needs_review';
   truckId?: string; truckSource?: string; approvedBy?: string; approvedAt?: string; approvalVersion: number; hourlyRate?: number | null;
-  /** Update 90: a day never clocked out of is flagged (zero hours); the worker's answer, if any, is here. */
+  /** A day never clocked out of is flagged (zero hours); the worker's answer, if any, is here. */
   flaggedAt?: string; claimedOutAt?: string; claimNote?: string; claimedAt?: string;
 }
 export interface LaborBreak { id: string; workdayId: string; personId: string; startedAt: string; endedAt?: string; paid: boolean }

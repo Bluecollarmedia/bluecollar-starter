@@ -6,13 +6,13 @@
  * self-contained); keep the two copies the same.
  */
 const RULES: Record<string, [RegExp, string][]> = {
-  // update 94: "Remind" asks a worker to confirm their schedule
+  // "Remind" asks a worker to confirm their schedule
   schedule_reminder: [
     [/^Please confirm your schedule$/, 'Confirma tu horario'],
     [/^(.+) (today|tomorrow|[A-Z][a-z]{2} \d{1,2}), full day\. Open the app to confirm\.$/, '$1 $2, todo el día. Abre la app para confirmar.'],
     [/^(.+) (today|tomorrow|[A-Z][a-z]{2} \d{1,2}), starts (.+)\. Open the app to confirm\.$/, '$1 $2, empieza a las $3. Abre la app para confirmar.'],
   ],
-  // updates 64 / 98: the mid-day "check your progress" nudge
+  // the mid-day "check your progress" nudge
   time_progress_check: [
     [/^Check your progress$/, 'Revisa tu avance'],
     [/^Take a moment to check how the work at (.+) is going\.?$/, 'Tómate un momento para ver cómo va el trabajo en $1.'],

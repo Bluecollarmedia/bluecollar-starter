@@ -3,7 +3,7 @@
  *
  * The owner texts this one-time link to a worker or a customer. Opening it shows the sign-up for that one person, with the
  * name and phone the owner typed filled in (the person can correct their own name). Signing up uses the link up, in the same
- * database step that creates the login (supabase/updates/078_invite_links.sql, handle_new_user). Someone who already has an
+ * database step that creates the login (handle_new_user in supabase/setup.sql). Someone who already has an
  * account signs in first and the link is attached to that account (invite_accept).
  */
 

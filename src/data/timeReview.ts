@@ -1,5 +1,5 @@
 /**
- * Days that closed on their own and wait for the owner (supabase/updates/090 and 098).
+ * Days that closed on their own and wait for the owner (supabase/setup.sql).
  * A day nobody clocked out of is closed at zero hours; the database suggests the real end (the last finished stop, visit or break)
  * and the owner accepts it in one tap. Accepting is the owner's existing audited edit, so nothing counts until then.
  * Owner/admin only: the database refuses anyone else.
@@ -57,7 +57,7 @@ export async function acceptSuggestedEnd(workdayId: string): Promise<Result> {
   }
 }
 
-/** The person did not work that day (update 101): it stays at zero hours, is settled, and leaves the list. */
+/** The person did not work that day (in setup.sql): it stays at zero hours, is settled, and leaves the list. */
 export async function settleNoHours(workdayId: string): Promise<Result> {
   if (!isSupabaseConfigured) return { ok: false, error: 'Needs the live database.', notInstalled: true };
   try {

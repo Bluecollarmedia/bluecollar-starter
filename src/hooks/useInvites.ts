@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { db, rpc, refresh } from '@/data/store';
 
 /**
- * Private one-time invite links for workers and customers (supabase/updates/078_invite_links.sql).
+ * Private one-time invite links for workers and customers (supabase/setup.sql).
  * The database makes the link and stores only a hash of it, so the link can be shown once, right after it is made.
  * "Send again" makes a new link; the old one stops working.
  */

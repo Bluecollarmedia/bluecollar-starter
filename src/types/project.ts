@@ -27,10 +27,10 @@ export interface Project {
   id: string;
   companyId: string;
   customerId?: string;
-  /** The property (supabase/updates/075 and 79) this job is at; its address is kept in step with it. */
+  /** The property (supabase/setup.sql) this job is at; its address is kept in step with it. */
   propertyId?: string;
   name: string;
-  /** The one worker who can start/complete this job's tasks (update 016). */
+  /** The one worker who can start/complete this job's tasks (enforced in setup.sql). */
   taskLeadId?: string;
   address?: string;
   city?: string;
@@ -83,12 +83,12 @@ export interface ProjectTask {
   sortOrder: number;
   assignedTo?: string;
   completedAt?: string;
-  /** Stamped by the database when the task is completed (update 016). */
+  /** Stamped by the database when the task is completed (see setup.sql). */
   completedBy?: string;
   createdAt: string;
   updatedAt: string;
   assignee?: PersonSummary;
-  /** Who completed it (stamped by the database, update 016). */
+  /** Who completed it (stamped by the database, see setup.sql). */
   completer?: PersonSummary;
 }
 
@@ -115,7 +115,7 @@ export interface ProjectSettings {
   customerCanRequest: boolean;
   customerCanViewPhotos: boolean;
   customerCanComment: boolean;
-  /** Progress is estimated from the tasks (database, update 121). False = the owner sets it by hand. Missing means on. */
+  /** Progress is estimated from the tasks (database, _recompute_project_progress in setup.sql). False = the owner sets it by hand. Missing means on. */
   autoProgress?: boolean;
   createdAt: string;
   updatedAt: string;

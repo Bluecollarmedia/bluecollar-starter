@@ -60,7 +60,11 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test:db": "node supabase/tests/run-setup-tests.mjs"
+    "typecheck": "tsc --noEmit -p .",
+    "check": "node scripts/run-checks.cjs",
+    "test:db": "node supabase/tests/run-setup-tests.mjs",
+    "verify": "npm run typecheck && npm run check && npm run test:db"
   },
+  "//": "typecheck/verify need FRESH Expo Router types in .expo/types (made by `npx expo start`; delete .expo/types and start Expo once after adding, renaming or removing a screen), or tsc reports stale routes.",
   "private": true
 }

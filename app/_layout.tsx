@@ -55,7 +55,7 @@ function RootNavigator() {
   usePushNotifications(user?.role, appState === 'active' && isAuthenticated && !!user);
   // Files of things deleted earlier (or by someone else, or along with their project) are cleared out shortly after the app opens signed in.
   useEffect(() => { if (appState === 'active' && isAuthenticated && user) sweepStorageSoon(); }, [appState, isAuthenticated, user?.id]);
-  // Tell the server which language this person uses, so its push notices come in it (update 95).
+  // Tell the server which language this person uses, so its push notices come in it (in setup.sql).
   useEffect(() => { if (appState === 'active' && isAuthenticated && user) syncLanguageToAccount(); }, [appState, isAuthenticated, user?.id]);
   usePrefetchKeyImages();
   // The home and lock screen widgets get their forecast for everyone, signed in or not (only when the settings file has widgets on).

@@ -25,6 +25,8 @@ check('6 the ID is uploaded to the private ids folder, saved as a key (never a p
   /uploadImage\(localUri, idFolder\(personId\)\)/.test(data) && /id_key: key/.test(data) && !/id_key: url/.test(data) && /action: 'id-sign'/.test(data));
 const wk = read('app/(owner)/(tabs)/workers/[id].tsx');
 check('7 the owner sees shirt size and a private View ID on the worker page', /<OwnerWorkerExtras personId=\{personId\}/.test(wk));
-check('8 the database update and its test exist', fs.existsSync(path.join(__dirname, '../../supabase/updates/058_worker_hoodie_and_id.sql')) && fs.existsSync(path.join(__dirname, '../../supabase/tests/058_worker_hoodie_and_id.pglite.mjs')));
+check('8 setup.sql has the shirt size column and the private person_ids table with its rules, and the database test exists',
+  /^\s+hoodie_size text,$/m.test(require('./_sql.cjs').table('people')) && require('./_sql.cjs').table('person_ids') !== ''
+  && ['select', 'insert', 'update', 'delete'].every((op) => new RegExp(`create policy person_ids_${op} on public\\.person_ids for ${op}\\b`).test(require('./_sql.cjs').policies('person_ids'))) &&fs.existsSync(path.join(__dirname, '../../supabase/tests/setup/10_team.test.mjs')));
 console.log(bad ? '\n' + bad + ' failed' : '\nall passed');
 process.exit(bad ? 1 : 0);

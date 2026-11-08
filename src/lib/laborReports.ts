@@ -7,7 +7,7 @@ import {
 } from './timeCalc';
 import { w } from '@/config/brand';
 
-export interface RWorkday { id: string; personId: string; workDate: string; clockInAt: string; clockOutAt?: string; status: string; hourlyRate?: number | null; truckId?: string; approvedAt?: string; /** Update 90: the employee never clocked out; their answer, if any. */ flaggedAt?: string; claimedOutAt?: string; claimNote?: string; claimedAt?: string }
+export interface RWorkday { id: string; personId: string; workDate: string; clockInAt: string; clockOutAt?: string; status: string; hourlyRate?: number | null; truckId?: string; approvedAt?: string; /** The employee never clocked out; their answer, if any. */ flaggedAt?: string; claimedOutAt?: string; claimNote?: string; claimedAt?: string }
 export interface RBreak { id: string; workdayId: string; startedAt: string; endedAt?: string; paid: boolean }
 export interface RInterval { id: string; visitId: string; workdayId: string; personId: string; startedAt: string; endedAt?: string; status: string; billable: boolean; hourlyRate?: number | null }
 export interface RVisit { id: string; label?: string; status: string; billable: boolean; visitDate: string; source: string; targetMinutes?: number; projectId?: string }

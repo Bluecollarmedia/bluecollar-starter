@@ -1,5 +1,5 @@
 /**
- * The banner on a customer's home screen for messages their contractor sent them (see supabase/updates/055). It shows every
+ * The banner on a customer's home screen for messages their contractor sent them (see supabase/setup.sql). It shows every
  * unread one, newest first, until the customer dismisses it. Dismissing marks that notification read; the message itself is
  * kept. This is the same notification that was pushed to their phone, so tapping a push lands them on the screen with the banner.
  */

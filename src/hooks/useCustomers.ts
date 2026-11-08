@@ -49,7 +49,7 @@ export function useCustomers(options: UseCustomersOptions = {}) {
   }, [customers, search]);
 
   /**
-   * Adds a customer to the company and returns their person id. The database decides (add_customer, update 72), so a customer who
+   * Adds a customer to the company and returns their person id. The database decides (add_customer in setup.sql), so a customer who
    * already has an account, or is already in this company, is reused and never duplicated; matching is by email only, never by name.
    * Throws a sentence the screen can show (for example when the email belongs to a team member).
    * Demo mode (no database) keeps the old local behaviour.

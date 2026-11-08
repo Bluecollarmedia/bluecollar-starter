@@ -278,7 +278,7 @@ export default function ProjectDetailScreen() {
   const [responseNote, setResponseNote] = useState('');
   const [accessVersion, setAccessVersion] = useState(0);
   const [activityExpanded, setActivityExpanded] = useState<Record<string, boolean>>({});
-  // Clear this project's activity for a period (update 51, owner/admin)
+  // Clear this project's activity for a period (owner/admin; see setup.sql)
   const [clearingActivity, setClearingActivity] = useState(false);
   const [activityClearedNote, setActivityClearedNote] = useState<string | null>(null);
   const [showRadiusPicker, setShowRadiusPicker] = useState(false);
@@ -1480,7 +1480,7 @@ export default function ProjectDetailScreen() {
           />
         </View>
 
-        {/* Task Lead (update 016): only this worker can start/complete tasks on the job. */}
+        {/* Task Lead (enforced in setup.sql): only this worker can start/complete tasks on the job. */}
         <View style={[styles.taskStatsHeader, { gap: spacing.sm }]}>
           <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]}>Task Lead</Text>
           <Text style={[typeScale.caption, { color: colors.textSecondary }]}>

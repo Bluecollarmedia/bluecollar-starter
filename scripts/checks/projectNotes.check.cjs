@@ -43,8 +43,11 @@ check('9 the on-device sorter (no AI, no key) reads quantities and units, groups
   by('gravel').quantity === 12 && by('gravel').unit === 'yards' && by('rebar').quantity === 40 && by('rebar').notes === 'black' && by('plywood').category === 'Lumber' && by('polymeric').category === 'Concrete & Masonry' && by('topsoil').quantity === 5 && by('fabric').quantity === 3
   && sorted.otherNotes.length === 2 && sorted.otherNotes.some((x) => /gate/.test(x)) && sorted.otherNotes.some((x) => /40 x 60/.test(x)) && sorted.items[0].category === 'Asphalt & Sealcoat' && by('crack').quantity === 2, JSON.stringify(sorted));
 check('9b nothing recognisable gives no items, and a note with no quantity keeps the quantity empty', sn.exports.sortNotesLocally('hello there', 'T').items.length === 0 && sn.exports.sortNotesLocally('some gravel', 'T').items[0].quantity === null);
-const sql = read('supabase/updates/057_owner_project_notes.sql');
-check('10 the database keeps all three tables OWNER-ONLY and they belong to the project (tested)', /is_company_owner\(company_id\)/.test(sql) && /owner_project_notes/.test(sql) && /owner_project_photos/.test(sql) && /owner_material_lists/.test(sql) && fs.existsSync(path.join(__dirname, '../../supabase/tests/057_owner_project_notes.pglite.mjs')));
+const sqlHelper = require('./_sql.cjs');
+const ownerTables = ['owner_project_notes', 'owner_project_photos', 'owner_material_lists'];
+check('10 the database (setup.sql) keeps all three tables OWNER-ONLY and they belong to the project (tested)', ownerTables.every((t) => sqlHelper.ownerOnly(t)
+  && new RegExp(`alter table public\\.${t} add constraint ${t}_project_id_fkey FOREIGN KEY \\(project_id\\) REFERENCES public\\.projects\\(id\\) ON DELETE CASCADE`).test(sqlHelper.setup))
+  && fs.existsSync(path.join(__dirname, '../../supabase/tests/setup/12_records_files.test.mjs')));
 const data = read('src/data/ownerProjectNotes.ts');
 check('11 sorting sends only this project\'s notes, saves the clean list, and errors are explained in words',
   /filter\(\(n\) => n\.projectId === projectId\)/.test(data) && /normalizeMaterialList\(sortNotesLocally/.test(data) && /insertRow\('owner_material_lists'/.test(data) && /sortNotesLocally\(/.test(data) && !/functions\.invoke/.test(data) && !/organize-materials/.test(data));

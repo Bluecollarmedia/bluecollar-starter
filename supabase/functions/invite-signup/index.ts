@@ -3,7 +3,7 @@
  *
  * Someone opens their private invite link and makes a login. Supabase's normal sign-up sends a second "confirm your email" message,
  * which is pointless here: the invite link itself was sent to this person by their owner and works once. So this creates the login
- * ALREADY CONFIRMED, but only when the link is valid, and the existing sign-up trigger (update 78, handle_new_user) attaches the new
+ * ALREADY CONFIRMED, but only when the link is valid, and the existing sign-up trigger (handle_new_user in supabase/setup.sql) attaches the new
  * login to the record the owner made and uses the link up. The app then signs the person in right away.
  *
  * Nobody can use this to make an arbitrary confirmed account: no valid link, no account. And a login that did not end up attached to
@@ -34,7 +34,7 @@ const reply = (body: unknown, status = 200) =>
 const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 const text = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) : '');
 
-/** The same one-way hash the database stores (update 78's _invite_hash), computed here. */
+/** The same one-way hash the database stores (_invite_hash in setup.sql), computed here. */
 async function tokenHash(token: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(token));
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');

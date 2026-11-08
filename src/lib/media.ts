@@ -5,7 +5,7 @@
  * a short upload link). R2 is required: the build must have EXPO_PUBLIC_R2_PUBLIC_URL.
  * Without it every upload fails with a clear "Photo storage is not set up" message;
  * nothing is ever put in the old public Supabase "media" bucket (it is closed to
- * uploads, supabase/updates/200). Old Supabase files keep their links.
+ * uploads, supabase/setup.sql). Old Supabase files keep their links.
  *
  * In demo mode (development only, no Supabase configured) the local file URI is returned as-is.
  */

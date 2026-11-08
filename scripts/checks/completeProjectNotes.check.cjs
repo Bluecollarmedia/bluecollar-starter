@@ -1,5 +1,5 @@
 // File-text checks for: "I'm here" updating the screen at once, Complete project instead of "I'm leaving", clocking out ending open work,
-// and the owner's notes showing everywhere. The database rules are proved by supabase/tests/108_clock_out_ends_open_work.pglite.mjs.
+// and the owner's notes showing everywhere. The database rules are proved by supabase/tests/setup/09_clock_rules.test.mjs.
 // Not covered here (needs a phone): how the screens look and the check-in actually moving the screen on a real device.
 const fs = require('fs');
 const read = (p) => fs.readFileSync(p, 'utf8');
@@ -16,9 +16,9 @@ const hook = read('src/hooks/useMyWorkday.ts');
 check('after clocking out the jobs are reloaded', /refreshStore\('assignments', 'check_ins', 'check_outs', 'work_sessions'\)/.test(hook));
 const card = read('src/components/time/WorkdayCard.tsx');
 check('the clock-out confirmation says it also ends the project time', /Clocking out also ends your time at/.test(card) && !/Complete the property you are at before clocking out/.test(card));
-const sql = read('supabase/updates/108_clock_out_ends_open_work.sql');
-check('clock-out no longer refuses for an open project or a running break; it ends them', !/raise exception 'You are still working/.test(sql) && !/break is still running/.test(sql) && /update public\.time_breaks set ended_at = now\(\)/.test(sql) && /status = 'completed'/.test(sql));
-check('a route stop is never marked finished by clocking out (its required tasks and photos are not skipped)', /v\.source = 'project_day'/.test(sql) && !/maintenance_finish_stop/.test(sql.replace(/--.*$/gm, '')));
+const sql = require('./_sql.cjs').fn('time_clock_out');   // the final time_clock_out in supabase/setup.sql
+check('clock-out no longer refuses for an open project or a running break; it ends them', sql !== '' && !/raise exception '(?!Please sign in again\.')/.test(sql) && /update public\.time_breaks set ended_at = now\(\)/.test(sql) && /status = 'completed'/.test(sql));
+check('clocking out only finishes job (project) time; it never marks anything else finished', /v\.source = 'project_day'/.test(sql) && !/maintenance|snow/i.test(sql.replace(/--.*$/gm, '')));
 const proj = read('app/(owner)/(tabs)/projects/[id].tsx');
 check('the project Overview shows the owner\'s My Notes next to the Internal Notes, with a way into all of them', /useOwnerNotes\(id\)/.test(proj) && /MY NOTES ·/.test(proj) && /setMoreSubSection\('notes'\)/.test(proj));
 const pn = read('src/components/projects/ProjectPrivateNotes.tsx');

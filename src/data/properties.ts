@@ -1,9 +1,9 @@
 /**
- * One place for every property (supabase/updates/075 and 079). A property is entered once, for one customer; projects there
+ * One place for every property (supabase/setup.sql). A property is entered once, for one customer; projects there
  * link to that same property (by property_id).
  *
  * Every form that asks for an address goes through `propertyForSave`: it picks the customer's existing property, or makes it once.
- * Before update 79 is installed the function does not exist; then the form just saves as it always did, so nothing breaks.
+ * When the database doesn't have the function yet, then the form just saves as it always did, so nothing breaks.
  */
 import { useMemo } from 'react';
 import { db, insertRow, rowsOf, rpc, refresh, updateRow, useDb, isDemo } from '@/data/store';

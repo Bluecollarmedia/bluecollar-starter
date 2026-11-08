@@ -5,7 +5,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 /**
  * Whether "Create a Company" should be offered. The app allows exactly one
  * company: it is offered only while no company exists, and comes back once the
- * company has been deleted (supabase/updates/036). The server decides and also
+ * company has been deleted (supabase/setup.sql). The server decides and also
  * refuses a second company, so this only controls the button. It asks again
  * every time the screen is focused. Starts hidden until the server answers;
  * demo mode always shows it.

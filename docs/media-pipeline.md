@@ -13,7 +13,7 @@ needs the owner's go-ahead), and it has not yet been run on any device. A build 
 the person chooses Retry or "Original" (uploads the large original); nothing is skipped silently. The 50 MB / 60 s limits in the pickers still
 apply BEFORE compression; move them after compression once video compression has been verified on devices.
 
-**The queue** (`src/lib/mediaQueue.ts`, phone wiring `mediaQueueRuntime.ts`) is used by project progress photos, maintenance stop photos
+**The queue** (`src/lib/mediaQueue.ts`, phone wiring `mediaQueueRuntime.ts`) is used by project progress photos
 and task photos/videos: pick several at once, the local file is shown immediately, and each item moves Preparing -> Uploading -> Uploaded
 (storage AND the database record confirmed) or Failed (Retry / Original / Remove). At most 3 run at once (1 video). Pending work is saved
 in AsyncStorage and resumes after leaving a screen or restarting the app. Network trouble retries automatically (4 tries, growing delay), then shows
@@ -24,17 +24,15 @@ beginning; there is no upload while the app is closed.
 **Not in the queue, by design:**
 - Required start/finish photos for timed visits (`timePhotos.ts`): the visit step must wait for the saved photo, so they upload and save in one
   step; they are compressed by `uploadImage` like everything else.
-- Snow media (`snowMedia.ts`): different storage model (stand-in object + private bucket decided by database rules, records created by
-  Snow functions). Photos are compressed there too; moving Snow into the queue is a separate piece of work.
 - Avatars, ID photos, truck documents, issue photos, project header, private notes: single uploads through `uploadImage` (photos compressed).
 
-Sharing: a maintenance photo is always saved internal; compression and uploading never change who can see it.
+Compression and uploading never change who can see a photo.
 
 ## Private files (ID photos only)
 
 Only `ids/...` (worker ID photos) are private. They live in a second R2 bucket with no public address (secret `R2_PRIVATE_BUCKET_NAME`,
 the private bucket (e.g. `yourcompany-private`)) and are opened through short-lived signed links from the `media` function (`id-sign`: the person themself, or
-the owner of a company they belong to). Everything else — maintenance, Snow reference/completion, projects, avatars, trucks, issues — is a
+the owner of a company they belong to). Everything else — projects, tasks, avatars, trucks, issues — is a
 normal public file in the one public bucket, opened straight from its stored address. `R2_PRIVATE_BUCKET_NAME` is REQUIRED for ID photos:
 without it the `media` function refuses every `ids/...` upload with a clear "ID photo storage is not set up yet" error. There is no fallback
 to the public bucket, so an ID photo can never end up at a public address. Set it for every client (per-client setup list).
@@ -42,7 +40,7 @@ to the public bucket, so an ID photo can never end up at a public address. Set i
 ## R2 is required (no Supabase Storage fallback)
 
 Every upload goes to R2 through the `media` function. A build without `EXPO_PUBLIC_R2_PUBLIC_URL` cannot save files: `uploadImage` fails with
-"Photo storage is not set up" and `removeMedia` does nothing. The app never writes to the old Supabase "media" bucket any more, and update 200
+"Photo storage is not set up" and `removeMedia` does nothing. The app never writes to the old Supabase "media" bucket any more, and `supabase/setup.sql`
 closes that bucket to uploads, changes and deletes from signed-in people (listing is limited to your own company's folders).
 
 ## Who may delete a file
@@ -51,6 +49,5 @@ New company files are named `{uploaderPersonId}_{random}.{ext}`, so the `media` 
 company's owner/admin (any file in the company folder), or for the person who uploaded that file. `avatars/{personId}/...` and
 `ids/{personId}/...` can be deleted only by that person. Workers and customers can never delete other people's files.
 
-History: maintenance and Snow photos were briefly treated as private (a second bucket + signed links). They are just pictures of properties
-and work, so they were made public again on 2026-10-23. The one-time `private-migrate` tool for moving files into the private bucket was removed.
-After this change, redeploy the `media` function so the server stops routing maintenance/Snow uploads to the private bucket.
+Deleted rows' files are queued in the database (`storage_cleanup_queue`, filled by triggers in `supabase/setup.sql`) and removed from R2 by
+the `storage-cleanup` function, which the app calls right after deletes.

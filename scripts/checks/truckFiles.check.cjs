@@ -20,9 +20,9 @@ check('2 expiry: expired, expiring within 30 days, fine, or no date',
 check('3 titles and sizes read well', d.suggestedTitle('insurance', 'State_Farm_Policy.pdf') === 'State Farm Policy' && d.suggestedTitle('registration') === 'Registration' && d.formatSize(1536) === '2 KB' && d.formatSize(2.5 * 1024 * 1024) === '2.5 MB');
 check('4 a note needs text and a sensible length', d.noteProblem('  ') !== '' && d.noteProblem('Needs tires') === '' && d.noteProblem('x'.repeat(2001)) !== '');
 
-const sql = read('supabase/updates/056_truck_documents_notes.sql');
-check('5 the database keeps documents and notes OWNER-ONLY (not admins, workers or customers) and tested',
-  /is_company_owner\(company_id\)/.test(sql) && /member_role\(cid\) = 'owner'/.test(sql) && fs.existsSync(path.join(__dirname, '../../supabase/tests/056_truck_documents_notes.pglite.mjs')));
+const sqlHelper = require('./_sql.cjs');
+check('5 the database (setup.sql) keeps documents, notes and the service log OWNER-ONLY (not admins, workers or customers) and tested',
+  ['truck_documents', 'truck_notes', 'truck_maintenance'].every((t) => sqlHelper.ownerOnly(t)) && /member_role\(cid\) = 'owner'/.test(sqlHelper.fn('is_company_owner')) && fs.existsSync(path.join(__dirname, '../../supabase/tests/setup/12_records_files.test.mjs')));
 check('6 PDFs can be uploaded (client and the media function)', /application\/pdf/.test(read('src/lib/media.ts')) && /'application\/pdf': 'pdf'/.test(read('supabase/functions/media/index.ts')));
 
 const form = read('src/components/trucks/TruckForm.tsx');

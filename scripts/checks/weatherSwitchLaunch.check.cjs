@@ -8,6 +8,7 @@ const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const sqlHelper = require('./_sql.cjs');   // supabase/setup.sql, the one file that builds the database
 const root = path.join(__dirname, '../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const load = (p) => { const m = { exports: {} }; new Function('module', 'exports', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports); return m.exports; };
@@ -143,17 +144,18 @@ const settle = () => new Promise((r) => setImmediate(r));
   check('28 the welcome, sign-in, forgot-password, create-company screens, the auth layout and the sign-in welcome overlay are unchanged', changed.length === 0, changed.join(', '));
   const wfiles = fs.existsSync(path.join(root, 'app/weather')) ? fs.readdirSync(path.join(root, 'app/weather')).sort().join() : '';
   check('29 the Weather area is exactly its layout and its screens (home, request, account), and no other new area exists', wfiles === '(tabs),_layout.tsx' && fs.readdirSync(path.join(root, 'app/weather/(tabs)')).sort().join() === '_layout.tsx,account.tsx,index.tsx,request.tsx', wfiles);
-  check('30 the Weather screens are built, and the owner\'s switch still decides: the database default is OFF', WEATHER_EXPERIENCE_BUILT === true && /enabled boolean not null default false/.test(read('supabase/updates/103_public_weather_switch.sql')));
+  check('30 the Weather screens are built, and the owner\'s switch still decides: the database default is OFF', WEATHER_EXPERIENCE_BUILT === true && /^\s+enabled boolean default false not null,$/m.test(sqlHelper.table('public_weather_settings')));
   const finalConfig = require('./_brand.cjs').expoConfig();
   check('31 the build config has nothing about weather or location changes apart from the widget setup (permission text untouched)', !/weather/i.test(JSON.stringify(finalConfig, (k, v) => (Array.isArray(v) && v[0] === 'expo-widgets' ? undefined : v))) && JSON.stringify(finalConfig).includes(`${require('./_brand.cjs').brand.app.name} uses your location to check you in when you arrive at a job site.`));
   const walk = (d) => fs.readdirSync(path.join(root, d), { withFileTypes: true }).flatMap((e) => e.isDirectory() ? (e.name === 'node_modules' ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)]);
   const callers = [...walk('app'), ...walk('src')].filter((f) => /\.(ts|tsx)$/.test(f) && /set_public_weather_enabled/.test(read(f)));
   check('32 the owner-only switch function is called from exactly one place (the data file the owner\'s Settings row uses), and that row is shown only to the owner', callers.map((f) => f.replace(/\\/g, '/')).join() === 'src/data/publicWeather.ts' && /db\.role === 'owner'/.test(read('src/hooks/usePublicWeatherRow.ts')) && /weatherRow\.canChange/.test(read('app/(owner)/(tabs)/more/settings.tsx')));
-  const sql = read('supabase/updates/103_public_weather_switch.sql');
-  const statements = sql.replace(/--[^\n]*/g, '').split(';').map((s) => s.trim()).filter(Boolean);
-  const risky = statements.filter((s) => /\b(alter|drop|grant|revoke|create\s+(or\s+replace\s+)?(trigger|policy|function|table)|insert|update|delete)\b/i.test(s) && !/public_weather/i.test(s) && !/^notify\b/i.test(s));
-  check('33 the SQL touches only the new public_weather objects (nothing existing is altered, dropped, granted or revoked)', risky.length === 0, risky.map((s) => s.slice(0, 60)).join(' | '));
-  check('34 the SQL revokes all direct table access and enables row security', /alter table public\.public_weather_settings enable row level security/i.test(sql) && /revoke all on public\.public_weather_settings from public, anon, authenticated/i.test(sql));
+  const sql = sqlHelper.fn('set_public_weather_enabled');
+  check('33 signed-out visitors only get the yes/no answer: public_weather_config is the one weather function they may call, the switch needs a sign-in',
+    sqlHelper.grantedTo('public_weather_config').includes('anon') && !sqlHelper.grantedTo('set_public_weather_enabled').includes('anon') && sqlHelper.grantedTo('set_public_weather_enabled').includes('authenticated'));
+  check('34 setup.sql revokes all direct table access, enables row security and gives the table no rule (only the functions reach it)',
+    /^alter table public\.public_weather_settings enable row level security;$/m.test(sqlHelper.setup) && /^revoke all on table public\.public_weather_settings from anon, authenticated;$/m.test(sqlHelper.grants('public_weather_settings'))
+    && !/^grant /m.test(sqlHelper.grants('public_weather_settings')) && sqlHelper.policies('public_weather_settings') === '');
   check('35 the owner function checks the exact owner role and active membership', /m\.role = 'owner' and m\.status = 'active'/.test(sql) && !/is_staff/.test(sql));
   const idx = read('app/index.tsx');
   check('36b app/index.tsx still redirects to the login screen unless entryRedirect says otherwise (file text)', /<Redirect href=\{entryRedirect\(\{ isAuthenticated, weatherOn \}\)\} \/>/.test(idx) && /'\/\(auth\)\/login'/.test(read('src/lib/launchRoute.ts')));

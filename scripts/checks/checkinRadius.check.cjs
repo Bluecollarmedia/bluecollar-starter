@@ -28,6 +28,6 @@ check('12 the sheet resolves the PROJECT location (never the phone\'s), shows an
 check('13 save is single-shot and only runs with coordinates (or when Anywhere is chosen)', /savingRef\.current/.test(sheet) && /canSave = anywhere \|\| !!coords/.test(sheet) && /if \(!canSave \|\| savingRef\.current\) return;/.test(sheet));
 check('14 the native map is created after the sheet opens, only for valid coordinates, inside an error guard; the circle is a real-radius Circle', /setMapReady\(true\)/.test(sheet) && /!ready \|\| !validCoords\(coords\)/.test(ios) && /class MapGuard/.test(ios) && /radius=\{radiusMeters\}/.test(ios));
 check('15 the screen opens the sheet once and saves this project\'s distance (plus its map spot if it had none)', /openRadiusPicker/.test(screen) && /updateSettings\(\{ checkinRadiusMeters: meters \}\)/.test(screen) && /updateProject\(\{ latitude: coords\.latitude, longitude: coords\.longitude \}\)/.test(screen));
-const sql = read('supabase/updates/052_checkin_radius_enforcement.sql');
+const sql = require('./_sql.cjs').fn('enforce_checkin_radius');   // the check-in rule in supabase/setup.sql
 check('16 the database repeats the rule (distance, accuracy, missing fix) with the same numbers; owners exempt', /public\.haversine_m/.test(sql) && /v_acc > 100/.test(sql) && /least\(v_acc, 75\)/.test(sql) && /coalesce\(v_radius, 805\)/.test(sql) && /is_staff\(v_company\)/.test(sql) && /You are too far from this project to check in\./.test(sql));
 console.log(bad ? `\n${bad} failed` : '\nall passed'); process.exit(bad ? 1 : 0);

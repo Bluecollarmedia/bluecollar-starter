@@ -1,5 +1,5 @@
 /**
- * notify-request — emails the owner (and admins) about a NEW service request (update 118).
+ * notify-request — emails the owner (and admins) about a NEW service request (submit_service_request in supabase/setup.sql).
  *
  * WARNING: the login (JWT) check is OFF for this function on purpose (supabase/config.toml): signed-out visitors call it from the public
  * Request form. Anyone on the internet can call it, so it is only safe because of its own rules below: it takes nothing but a request id,

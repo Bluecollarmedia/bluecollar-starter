@@ -1,5 +1,5 @@
 /**
- * The owner's private notes, pictures and materials lists for a project (supabase/updates/057). They belong to the project, so
+ * The owner's private notes, pictures and materials lists for a project (supabase/setup.sql). They belong to the project, so
  * notes written while quoting are still there when the quote is approved and the project is running. Only the company owner can
  * read or change any of it: the database enforces it, and the screens only show it to the owner.
  */

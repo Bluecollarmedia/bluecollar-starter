@@ -1,5 +1,5 @@
 /**
- * Truck documents (insurance, registration, any PDF or photo) and the owner's private notes (supabase/updates/056).
+ * Truck documents (insurance, registration, any PDF or photo) and the owner's private notes (supabase/setup.sql).
  * Only the company owner can read or change either one: the database enforces it, and these screens only show for the owner.
  * Files are uploaded to the company's photo storage first; the row that points at the file is saved once the upload worked.
  */

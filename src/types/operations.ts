@@ -99,7 +99,7 @@ export type NotificationEventType =
   | 'schedule_changed'
   | 'schedule_conflict'
   | 'announcement_posted'
-  // Hours & Labor (update 64)
+  // Hours & Labor (see setup.sql)
   | 'time_skip_request'
   | 'time_over_target'
   | 'time_overtime'

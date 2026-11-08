@@ -10,7 +10,7 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
 const data = read('src/data/deleteMember.ts');
 const worker = read('app/(owner)/(tabs)/workers/[id].tsx');
 const customer = read('app/(owner)/customers/[id].tsx');
-const sql = read('supabase/updates/092_delete_unused_members.sql');
+const sql = require('./_sql.cjs').fn('delete_unused_member');   // in supabase/setup.sql
 
 check('1 the app asks the database to delete, and reports "has history" separately from other failures', /rpc\('delete_unused_member', \{ p_person_id: personId \}\)/.test(data) && /\^HAS_HISTORY:/.test(data) && /hasHistory: true/.test(data) && !/replace\(\/\^HAS_HISTORY/.test(data));
 check('2 you can never delete yourself', /personId === db\.personId/.test(data));

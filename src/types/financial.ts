@@ -130,7 +130,7 @@ export interface Invoice extends FinancialDocBase {
   changeOrderIds: string[];
   paymentInstructions?: string;
   /** YYYY-MM-DD */
-  /** The private view link's token (update 81); the database makes it. */
+  /** The private view link's token (in setup.sql); the database makes it. */
   shareToken?: string;
   invoiceDate: string;
   dueDate?: string;

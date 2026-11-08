@@ -172,7 +172,7 @@ serve(async (req: Request) => {
       // Worker ID photos only ever go to the private bucket. No private bucket = no upload (never the public bucket).
       if (isPrivateKey(`${folder}/x`) && !PRIVATE_BUCKET_URL) return reply({ error: NO_PRIVATE_BUCKET }, 503);
 
-      // The owner's max file size for this company (More > Storage). Empty = the 200 MB maximum above. Needs update 53.
+      // The owner's max file size for this company (More > Storage). Empty = the 200 MB maximum above. Needs the setting from setup.sql.
       if (first !== 'avatars' && first !== 'ids' && typeof body.size === 'number') {
         const { data: co } = await createClient(SUPABASE_URL, SERVICE_KEY)
           .from('companies').select('max_file_size_mb').eq('id', first).maybeSingle();

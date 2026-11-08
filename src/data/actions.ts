@@ -69,7 +69,7 @@ export function notifyStaff(
 
 /**
  * In-app notifications for specific people (e.g. workers for an announcement).
- * Only ACTIVE members of the company get one: the database refuses a notice for anyone else (update 200), so an invited
+ * Only ACTIVE members of the company get one: the database refuses a notice for anyone else (see setup.sql), so an invited
  * customer with no login yet is skipped here instead of failing the whole save.
  */
 export function notifyPeople(

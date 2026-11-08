@@ -1,6 +1,6 @@
 /**
  * Payment-card guard for Company Resources. Mirrors the database checks in
- * supabase/updates/006_company_resources.sql so the owner gets a clear
+ * supabase/setup.sql so the owner gets a clear
  * message before saving; the database enforces the same rules regardless.
  */
 

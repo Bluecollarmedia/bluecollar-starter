@@ -1,5 +1,5 @@
 /**
- * The public Weather master switch, as the app reads it (supabase/updates/103). One anonymous question to the database ("is Weather on?")
+ * The public Weather master switch, as the app reads it (supabase/setup.sql). One anonymous question to the database ("is Weather on?")
  * and a small remembered answer on the phone. All the deciding lives in src/lib/weatherSwitch.ts.
  *
  * The only place that CHANGES the switch is setPublicWeatherEnabled below, called from the owner's Settings row. The database refuses anyone

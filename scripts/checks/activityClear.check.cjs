@@ -47,7 +47,7 @@ check('12 for a project the wording says "activity" and does not promise a note'
   check('13 the preview asks the database for a dry run and returns the count', r.ok && r.data === 3 && calls[0].fn === 'clear_project_activity' && calls[0].args.p_dry_run === true && calls[0].args.p_project_id === 'p1' && calls[0].args.p_from === range.from, JSON.stringify(calls));
   rpcResult = { data: null, error: { message: 'Could not find the function public.clear_project_activity in the schema cache' } };
   r = await data.runProjectClear('p1', range);
-  check('15 before update 51 a clear message says what is missing', !r.ok && /update 51/.test(r.error), JSON.stringify(r));
+  check('15 on a database without log clearing a clear message says what is missing (run setup.sql)', !r.ok && /supabase\/setup\.sql/.test(r.error), JSON.stringify(r));
   rpcResult = { data: null, error: { message: 'Only the owner or an admin can clear the activity log.' } };
   r = await data.runProjectClear('p1', range);
   check('16 a refusal from the database is shown as it is', !r.ok && /owner or an admin/.test(r.error));

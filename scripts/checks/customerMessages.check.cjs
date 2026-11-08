@@ -20,7 +20,7 @@ check('3 the owner is told the real number reached, and the push + banner',
 check('4 the confirmation says who it goes to and that it cannot be unsent',
   /all your customers/.test(c.confirmText('customers_all').message) && /active job customers/.test(c.confirmText('customers_active').message) && /can't be unsent/.test(c.confirmText('customers_all').message));
 check('5 errors are plain words (update not installed, not allowed)',
-  /update 55/.test(c.describeSendError('Could not find the function public.send_customer_announcement in the schema cache')) && /Only the owner, or someone the owner allows/.test(c.describeSendError('Only the owner or an admin can message customers.')));
+  /supabase\/setup\.sql/.test(c.describeSendError('Could not find the function public.send_customer_announcement in the schema cache')) && /Only the owner, or someone the owner allows/.test(c.describeSendError('Only the owner or an admin can message customers.')));
 
 const screen = read('src/components/announcements/MessageCustomersScreen.tsx');
 check('6 the compose screen: pick a group, title, message, confirm before sending, and a history of what was sent',
@@ -35,8 +35,8 @@ check('10 entry point: the one Announcements page reaches the customer message f
   /MessageCustomersPanel/.test(read('app/(owner)/(tabs)/more/announcements/index.tsx'))
   && /export function MessageCustomersPanel/.test(read('src/components/announcements/MessageCustomersScreen.tsx')));
 check('11 workers\' announcements never show customer messages', /startsWith\('customers_'\)/.test(read('src/hooks/useAnnouncements.ts')));
-const sql = read('supabase/updates/055_customer_announcements.sql');
+const sql = require('./_sql.cjs').fn('send_customer_announcement') + require('./_sql.cjs').fn('_customer_audience');   // in supabase/setup.sql
 check('12 the database: owner/admin only, only people with an account, one notification each, customers cannot read the list',
-  /Only the owner or an admin can message customers/.test(sql) && /pe\.user_id is not null/.test(sql) && /'announcement_posted'/.test(sql) && fs.existsSync(path.join(__dirname, '../../supabase/tests/055_customer_announcements.pglite.mjs')));
+  /Only the owner or an admin can message customers/.test(sql) && /pe\.user_id is not null/.test(sql) && /'announcement_posted'/.test(sql) && fs.existsSync(path.join(__dirname, '../../supabase/tests/setup/11_customers_jobs.test.mjs')));
 console.log(bad ? '\n' + bad + ' failed' : '\nall passed');
 process.exit(bad ? 1 : 0);

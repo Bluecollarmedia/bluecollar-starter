@@ -243,7 +243,7 @@ export interface Problem { kind: 'no_clock_out' | 'never_clocked_out' | 'open_in
 /** Neutral "needs review" findings for one workday (nothing is changed or hidden). */
 export function dayProblems(w: TimeWorkday, intervals: TimeInterval[], now: number = Date.now(), openHours = 14): Problem[] {
   const out: Problem[] = [];
-  // Update 90: a day the employee never clocked out of is flagged by the database at zero hours. One clear line, not a pile of side effects.
+  // A day the employee never clocked out of is flagged by the database at zero hours. One clear line, not a pile of side effects.
   if (w.status === 'needs_review') return [{ kind: 'never_clocked_out', message: 'Never clocked out. It counts as zero hours until you set the real end time.', refId: w.id }];
   if (!w.clockOutAt && now - ms(w.clockInAt) > openHours * HOUR_MS) out.push({ kind: 'no_clock_out', message: `Still clocked in after more than ${openHours} hours. Needs review.`, refId: w.id });
   const live = intervals.filter((i) => i.status !== 'void').sort((a, b) => ms(a.startedAt) - ms(b.startedAt));

@@ -24,7 +24,7 @@ export function reportProblem(reason: ReportReason | null, details: string): str
   return '';
 }
 
-/** A ready-to-send email to support, used when the report can't be saved in the app (for example before SQL 049 is run). */
+/** A ready-to-send email to support, used when the report can't be saved in the app (for example when the database doesn't have reports yet). */
 export function reportMailto(input: { type: ReportContentType; reason: ReportReason; details?: string; where?: string }): string {
   const subject = `Report: ${contentLabel(input.type)} (${reasonLabel(input.reason)})`;
   const body = [

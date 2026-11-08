@@ -18,7 +18,7 @@ export interface RequestPrefill { name?: string; phone?: string; email?: string 
 
 /**
  * Request tab: anyone who is not signed in can ask the company for work. Property type, what they want, a description, where the property
- * is and how to reach them. It goes to the owner's phone as a notification and lands in the owner's Service Requests list (update 114).
+ * is and how to reach them. It goes to the owner's phone as a notification and lands in the owner's Service Requests list (submit_service_request in setup.sql).
  * No account is needed. A signed-in customer gets the same form from their Home (app/(customer)/request.tsx), with their details filled in.
  */
 export default function WeatherRequest() {

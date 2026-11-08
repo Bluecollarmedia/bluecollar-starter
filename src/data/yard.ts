@@ -1,5 +1,5 @@
 /**
- * Clock-in location alerts (database update 107, edge function clock-in-alert).
+ * Clock-in location alerts (database: supabase/setup.sql, edge function clock-in-alert).
  *
  * The yard is the one the owner already set on the Yard Location screen; Settings > Yard and clock-in alerts holds the rest. When a worker clocks in, the phone's location is recorded with that workday; if a yard is set and the
  * worker is outside it (or no location could be read) the owner is emailed exactly where the worker clocked in from. Clocking in is NEVER
@@ -56,7 +56,7 @@ export async function saveYardAlerts(a: Pick<YardAlerts, 'radiusM' | 'alertOn' |
 
 /**
  * After a clock-in: record where the phone was, and ask for the email when the database says the owner should be told. Never throws,
- * never waits for anything the worker is looking at, and does nothing before update 107 is installed.
+ * never waits for anything the worker is looking at, and does nothing when the database doesn't have it yet.
  */
 export async function reportClockInLocation(day: MyDay, where: Promise<GpsResult>): Promise<void> {
   try {

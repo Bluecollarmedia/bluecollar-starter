@@ -33,6 +33,6 @@ export function accessErrorText(raw: unknown): string {
   const m = (raw instanceof Error ? raw.message : typeof raw === 'string' ? raw : '').trim();
   if (/only the owner/i.test(m)) return 'Only the owner (or someone the owner allows) can change customer access.';
   if (/network|failed to fetch|timeout/i.test(m)) return "Couldn't reach the server. Check your connection and try again.";
-  if (/could not find the function|schema cache/i.test(m)) return "Turning customer access on or off needs database update 84, which hasn't been installed yet.";
+  if (/could not find the function|schema cache/i.test(m)) return "Turning customer access on or off needs the latest database setup (supabase/setup.sql), which hasn't been run yet.";
   return m ? `Couldn't change their access. (${m})` : "Couldn't change their access. Please try again.";
 }

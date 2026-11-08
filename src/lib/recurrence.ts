@@ -1,6 +1,6 @@
 /**
  * Repeating schedules: which days a weekly / every-2-weeks / monthly repeat
- * lands on. Mirrors extend_schedule_series() in supabase/updates/012 (used
+ * lands on. Mirrors extend_schedule_series() in supabase/setup.sql (used
  * directly in demo mode and for the preview on Schedule Work).
  */
 import type { RepeatFrequency } from '@/types/schedule';

@@ -1,5 +1,5 @@
 // Messages from the owner to their customers. Pure helpers: who a message can go to, checks before sending, and the sentences
-// the owner sees (written with the default words; the screen shows them through w() for the settings words). The database (supabase/updates/055) does the real work of finding the customers.
+// the owner sees (written with the default words; the screen shows them through w() for the settings words). The database (send_customer_announcement in supabase/setup.sql) does the real work of finding the customers.
 
 /** 'customers_active' = customers with an active (or on-hold) job. Must match the database (supabase/setup.sql, _customer_audience). */
 export type CustomerAudience = 'customers_all' | 'customers_active';
@@ -41,7 +41,7 @@ export function confirmText(audience: CustomerAudience): { title: string; messag
 /** The error codes and messages the database can give, in plain words. */
 export function describeSendError(message: string | undefined): string {
   const m = message ?? '';
-  if (/could not find the function|schema cache/i.test(m)) return "Messaging customers needs database update 55, which hasn't been installed yet.";
+  if (/could not find the function|schema cache/i.test(m)) return "Messaging customers needs the latest database setup (supabase/setup.sql), which hasn't been run yet.";
   if (/owner or an admin/i.test(m)) return 'Only the owner, or someone the owner allows, can message customers.';
   if (/title|message|who this message/i.test(m)) return m.replace(/^error:\s*/i, '');
   return m ? `The message couldn't be sent. (${m})` : "The message couldn't be sent. Please try again.";
