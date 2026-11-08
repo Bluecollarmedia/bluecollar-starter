@@ -1,20 +1,12 @@
 {
   "expo": {
-    "name": "Starter App",
-    "slug": "starter-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "starter",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.yourcompany.starter",
       "buildNumber": "1",
-      "associatedDomains": [
-        "applinks:app.yourcompany.com"
-      ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
@@ -23,11 +15,6 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
-        "foregroundImage": "./assets/images/icon-foreground.png"
-      },
-      "package": "com.yourcompany.starter",
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
@@ -41,66 +28,20 @@
       ]
     },
     "web": {
-      "favicon": "./assets/images/icon.png",
       "bundler": "metro"
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-widgets",
-        {
-          "groupIdentifier": "group.com.yourcompany.starter",
-          "widgets": [
-            {
-              "name": "ForecastWidget",
-              "displayName": "Forecast",
-              "description": "Your local weather.",
-              "ios": {
-                "supportedFamilies": [
-                  "systemSmall",
-                  "systemMedium",
-                  "accessoryCircular",
-                  "accessoryRectangular",
-                  "accessoryInline"
-                ]
-              }
-            }
-          ]
-        }
-      ],
+      "expo-widgets",
       "expo-font",
       "expo-image",
       "expo-dev-client",
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Allow Starter App to access your photos and videos for profile pictures, job photos and task instructions.",
-          "cameraPermission": "Allow Starter App to use the camera for profile pictures, job photos, task instructions and videos.",
-          "microphonePermission": "Allow Starter App to record sound when you film a video for a task."
-        }
-      ],
+      "expo-image-picker",
       "expo-video",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#FFFFFF",
-          "image": "./assets/images/logo-full.png",
-          "imageWidth": 240
-        }
-      ],
+      "expo-splash-screen",
       "@react-native-community/datetimepicker",
-      [
-        "expo-location",
-        {
-          "locationWhenInUsePermission": "Starter App uses your location to check you in when you arrive at a job site."
-        }
-      ],
-      [
-        "expo-notifications",
-        {
-          "color": "#7CB342"
-        }
-      ]
+      "expo-location",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true

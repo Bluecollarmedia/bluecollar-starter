@@ -1,25 +1,48 @@
 /**
  * Design System — Color Tokens
  *
- * Brand palette: placeholder greens carried over from the original app.
- * A new client swaps these for their own brand color (Step 4 makes a plain default).
- * The darker greens are for headings and strong emphasis.
+ * The brand color comes from the settings file (src/config/brand.js, look.brandColor). Every primary / accent token below is worked
+ * out from that one color, so changing it there changes buttons, selected tabs, links and highlights everywhere.
+ * (Step 4 gives the rest of the palette a plain default look.)
  */
+import { brand as brandSettings } from '@/config/brand';
 
-// ── Brand Palette (placeholder) ──────────────────────────────────
+const HEX = /^#?([0-9a-f]{6})$/i;
+const toRgb = (hex: string): [number, number, number] => {
+  const m = HEX.exec(hex.trim());
+  const n = parseInt(m ? m[1] : '2B2B2B', 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+const toHex = (rgb: number[]): string => `#${rgb.map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+/** The color moved part of the way (0 to 1) toward another color: toward white makes it lighter, toward black darker. */
+export const mixColor = (hex: string, toward: string, amount: number): string => {
+  const a = toRgb(hex);
+  const b = toRgb(toward);
+  return toHex(a.map((v, i) => v + (b[i] - v) * amount));
+};
+/** The brand color with some see-through (0 to 1), for soft tints. */
+export const withAlpha = (hex: string, alpha: number): string => {
+  const [r, g, b] = toRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+/** The one brand color from the settings (a 6-digit hex code), normalised. */
+export const BRAND_COLOR = toHex(toRgb(brandSettings.look.brandColor));
+
+// ── Brand Palette (from look.brandColor) ─────────────────────────
 export const brand = {
-  /** Primary — deep forest green. Only for important actions and selected states. */
-  primary: '#2D5A43',
-  /** Lighter forest tone for hover / disabled primary */
-  primaryLight: '#4E7B64',
+  /** Primary — the brand color. Only for important actions and selected states. */
+  primary: BRAND_COLOR,
+  /** Lighter tone for hover / disabled primary */
+  primaryLight: mixColor(BRAND_COLOR, '#FFFFFF', 0.25),
   /** Darker for pressed states */
-  primaryDark: '#1E4430',
-  /** Quiet warm-neutral fill for tiles, chips and selected backgrounds (not green) */
+  primaryDark: mixColor(BRAND_COLOR, '#000000', 0.3),
+  /** Quiet warm-neutral fill for tiles, chips and selected backgrounds (not the brand color) */
   primarySurface: '#EDECE6',
-  /** Deep forest green from the main wordmark — for headings & strong text */
-  accent: '#1B3A2D',
-  /** Medium green from the main logo lettering */
-  accentMid: '#4A8B3F',
+  /** A deep shade of the brand color — for headings & strong text */
+  accent: mixColor(BRAND_COLOR, '#000000', 0.4),
+  /** A medium shade of the brand color */
+  accentMid: mixColor(BRAND_COLOR, '#FFFFFF', 0.15),
 } as const;
 
 // ── Neutral Palette ──────────────────────────────────────────────
@@ -124,7 +147,7 @@ export const darkTheme = {
   primary: brand.primaryLight,
   primaryLight: brand.primary,
   primaryDark: brand.primaryDark,
-  primarySurface: 'rgba(76, 175, 80, 0.12)',
+  primarySurface: withAlpha(BRAND_COLOR, 0.12),
 
   // Semantic
   success: semantic.success,

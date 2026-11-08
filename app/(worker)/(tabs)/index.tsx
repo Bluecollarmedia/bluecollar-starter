@@ -15,6 +15,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/providers/AuthProvider';
 import { useWorkerContext } from '@/providers/WorkerProvider';
 import { useAnnouncements } from '@/hooks/useAnnouncements';
+import { isFeatureOn } from '@/config/brand';
 import { useCompanyYard } from '@/hooks/useCompanyYard';
 import { formatAddress } from '@/lib/address';
 import { useResources } from '@/hooks/useResources';
@@ -46,6 +47,9 @@ function formatElapsed(startIso: string, now: Date): string {
   const m = mins % 60;
   return h > 0 ? `${h}h ${m}m` : `${m}m`;
 }
+
+/** Directions buttons and the map preview (settings file: features.maps). */
+const MAPS_ON = isFeatureOn('maps');
 
 function formatClock(iso: string): string {
   return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
@@ -326,7 +330,7 @@ export default function WorkerTodayScreen() {
           {t('Project Complete')}
         </Text>
         <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, marginTop: spacing.xs, textAlign: 'center', paddingHorizontal: spacing.lg }]}>
-          {t('Great work! Clock out for the day on the Clock tab when you are done.')}
+          {timeOn ? t('Great work! Clock out for the day on the Clock tab when you are done.') : t('Great work!')}
         </Text>
 
         <View style={[styles.card, styles.summaryCard, { backgroundColor: colors.surface }, shadow.md]}>
@@ -419,7 +423,7 @@ export default function WorkerTodayScreen() {
               <Text style={[typeScale.displayLarge, styles.heroTextShadow, { color: '#FFFFFF', marginTop: 2 }]}>
                 {greeting},{'\n'}{user?.firstName ?? t('there')}
               </Text>
-              {yard && (
+              {yard && MAPS_ON && (
                 <Pressable
                   onPress={handleYardPress}
                   hitSlop={{ top: 8, bottom: 8 }}
@@ -537,7 +541,7 @@ export default function WorkerTodayScreen() {
               <View style={[styles.card, styles.mapCard, { backgroundColor: colors.surface }, shadow.md]}>
                 <JobCardBody label={t('Next Job')} assignment={primaryAssignment} />
 
-                {primaryAssignment.project?.address && (
+                {MAPS_ON && primaryAssignment.project?.address && (
                   <>
                     <Pressable onPress={() => openMapsNavigation(primaryAssignment.project!)} accessibilityLabel={t('Open in Maps')}>
                       <JobMap place={primaryAssignment.project} />
@@ -653,7 +657,7 @@ export default function WorkerTodayScreen() {
               </View>
 
               <View style={styles.actionRow}>
-                {primaryAssignment.project?.address && (
+                {MAPS_ON && primaryAssignment.project?.address && (
                   <Pressable
                     style={[styles.actionPill, { backgroundColor: colors.primarySurface }]}
                     onPress={() => openMapsNavigation(primaryAssignment.project!)}
@@ -745,7 +749,7 @@ export default function WorkerTodayScreen() {
                       {t('COMPLETE PROJECT')}
                     </Text>
                     <Text style={[typeScale.bodySmall, { color: 'rgba(255,255,255,0.85)' }]}>
-                      {t('Finish this job. You clock out for the day on the Clock tab.')}
+                      {timeOn ? t('Finish this job. You clock out for the day on the Clock tab.') : t('Finish this job.')}
                     </Text>
                   </View>
                 </LinearGradient>
@@ -773,7 +777,9 @@ export default function WorkerTodayScreen() {
               {t('Complete this project?')}
             </Text>
             <Text style={[typeScale.bodyMedium, { color: colors.textSecondary, marginTop: spacing.xs, textAlign: 'center' }]}>
-              {t('This marks {name} finished. You stay clocked in until you clock out for the day on the Clock tab.', { name: primaryAssignment?.project?.name ?? t('this job') })}
+              {timeOn
+                ? t('This marks {name} finished. You stay clocked in until you clock out for the day on the Clock tab.', { name: primaryAssignment?.project?.name ?? t('this job') })
+                : t('This marks {name} finished.', { name: primaryAssignment?.project?.name ?? t('this job') })}
             </Text>
 
             <View style={styles.modalActions}>

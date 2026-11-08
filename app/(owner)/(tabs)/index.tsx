@@ -26,6 +26,7 @@ import { AdminJobCard } from '@/components/admin/AdminJobCard';
 import { NeedsOkCard } from '@/components/time/NeedsOkCard';
 import { showMessage } from '@/components/financials/ActionSheet';
 import { WeatherButton } from '@/components/weather/WeatherButton';
+import { isFeatureOn, words } from '@/config/brand';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 
 const HAS_LIQUID_GLASS = isLiquidGlassAvailable();
@@ -51,12 +52,13 @@ const SEVERITY_COLORS: Record<AttentionItem['severity'], { bg: string; icon: str
   info: { bg: semantic.infoLight, icon: semantic.info },
 };
 
+// Each quick action shows only while its feature is on in the settings file (src/config/brand.js).
 const QUICK_ACTIONS = [
-  { label: 'New Project', icon: 'plus-circle' as const, route: '/(owner)/project-new' },
-  { label: 'Schedule Worker', icon: 'calendar' as const, route: '/(owner)/schedule-create' },
-  { label: 'Add Worker', icon: 'user-plus' as const, route: '/(owner)/worker-new' },
-  { label: 'Announcement', icon: 'volume-2' as const, route: '/(owner)/more/announcements' },
-];
+  { label: `New ${words.job}`, icon: 'plus-circle' as const, route: '/(owner)/project-new', on: true },
+  { label: 'Schedule Worker', icon: 'calendar' as const, route: '/(owner)/schedule-create', on: true },
+  { label: 'Add Worker', icon: 'user-plus' as const, route: '/(owner)/worker-new', on: true },
+  { label: 'Announcement', icon: 'volume-2' as const, route: '/(owner)/more/announcements', on: isFeatureOn('announcements') },
+].filter((a) => a.on);
 
 export default function OwnerDashboard() {
   const { colors } = useTheme();
@@ -363,7 +365,7 @@ export default function OwnerDashboard() {
           )}
 
           {/* Problems the crew reported */}
-          {openIssueCount > 0 && (
+          {isFeatureOn('issues') && openIssueCount > 0 && (
             <Pressable
               onPress={() => router.push('/(owner)/issues' as any)}
               accessibilityRole="button"
@@ -385,7 +387,7 @@ export default function OwnerDashboard() {
           <AdminJobCard />
 
           {/* Workdays that closed on their own and wait for the owner's end time */}
-          <NeedsOkCard />
+          {isFeatureOn('timeClock') ? <NeedsOkCard /> : null}
 
           {/* Needs Attention */}
           <View style={styles.section}>

@@ -373,7 +373,7 @@ function CompanyStep({ onSaved }: { onSaved: () => void }) {
       </Card>
       <Card title={c?.name ?? 'Company'} style={styles.section}>
         <View style={styles.form}>
-          <Input label="Business phone" placeholder="(555) 555-0100" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
+          <Input label="Business phone" placeholder="(555) 123-4567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
           <Input label="Business email" placeholder="office@company.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" icon="mail" />
           <AddressFields value={{ address, city, state, zip }} onChange={(v) => { setAddress(v.address); setCity(v.city); setState(v.state); setZip(v.zip); }} />
         </View>

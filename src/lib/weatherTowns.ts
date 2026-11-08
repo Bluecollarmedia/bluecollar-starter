@@ -1,37 +1,27 @@
 /**
- * The places Weather can show. Any town in the US can be picked (see placeSearch.ts); these eight are the built-in nearby towns, listed
- * first in the picker. Their keys, names and points are the same as supabase/functions/weather/index.ts (a check keeps the two lists identical),
- * and the function has each one's forecast grid already verified. Any other place is looked up by its coordinates.
- *
- * PLACEHOLDER: these eight New Jersey towns and the Lakewood default come from the original app. They are valid (weather works), but a new
- * client should swap them for their own area (Step 3 makes them settings: weather.defaultPlace / weather.nearbyTowns; the weather function's
- * list must change with it).
+ * The places Weather can show. Any town in the US can be picked (see placeSearch.ts); the settings file's nearby towns
+ * (src/config/brand.js, weather.nearbyTowns) are listed first in the picker, and weather.defaultPlace is shown the first time.
+ * Their keys and names must be the same as supabase/functions/weather/index.ts (a check keeps the two lists identical), where each
+ * one's forecast grid is already verified. Any other place is looked up by its coordinates.
  */
+import { brand } from '@/config/brand';
+
 export interface Place { key: string; name: string; state: string; lat: number; lon: number }
 
-export const WEATHER_TOWNS = [
-  { key: 'lakewood', name: 'Lakewood', state: 'NJ', lat: 40.0771, lon: -74.1985 },
-  { key: 'jackson', name: 'Jackson', state: 'NJ', lat: 40.0909, lon: -74.3613 },
-  { key: 'howell', name: 'Howell', state: 'NJ', lat: 40.1781, lon: -74.2062 },
-  { key: 'toms-river', name: 'Toms River', state: 'NJ', lat: 39.9943, lon: -74.1662 },
-  { key: 'brick', name: 'Brick', state: 'NJ', lat: 40.0618, lon: -74.1096 },
-  { key: 'manchester', name: 'Manchester', state: 'NJ', lat: 39.9616, lon: -74.3753 },
-  { key: 'freehold', name: 'Freehold', state: 'NJ', lat: 40.2602, lon: -74.2759 },
-  { key: 'point-pleasant', name: 'Point Pleasant', state: 'NJ', lat: 40.0777, lon: -74.0699 },
-] as const;
+export const WEATHER_TOWNS: readonly Place[] = brand.weather.nearbyTowns;
 
-export type TownKey = (typeof WEATHER_TOWNS)[number]['key'];
-export const DEFAULT_TOWN: TownKey = 'lakewood';
-export const DEFAULT_PLACE: Place = { key: 'lakewood', name: 'Lakewood', state: 'NJ', lat: 40.0771, lon: -74.1985 };
+export type TownKey = string;
+export const DEFAULT_PLACE: Place = brand.weather.defaultPlace;
+export const DEFAULT_TOWN: TownKey = DEFAULT_PLACE.key;
 export const isTownKey = (v: unknown): v is TownKey => WEATHER_TOWNS.some((t) => t.key === v);
 export const townName = (key: string): string => WEATHER_TOWNS.find((t) => t.key === key)?.name ?? key;
-/** The point of one of the eight towns (the first, Lakewood, if the key is not one of them). */
+/** The point of one of the nearby towns (the default place if the key is not one of them). */
 export const townCoords = (key: string): { lat: number; lon: number } => {
-  const t = WEATHER_TOWNS.find((x) => x.key === key) ?? WEATHER_TOWNS[0];
+  const t = WEATHER_TOWNS.find((x) => x.key === key) ?? DEFAULT_PLACE;
   return { lat: t.lat, lon: t.lon };
 };
 
-/** The key for a place that is not one of the eight: its point, to three decimals (about 100 metres). */
+/** The key for a place that is not one of the nearby towns: its point, to three decimals (about 100 metres). */
 export const placeKey = (lat: number, lon: number): string => `p:${lat.toFixed(3)},${lon.toFixed(3)}`;
 export const isBuiltInKey = (key: string): boolean => isTownKey(key);
 

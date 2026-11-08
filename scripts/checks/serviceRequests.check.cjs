@@ -4,9 +4,10 @@ const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
+const { withBrand } = require('./_brand.cjs');
 const compile = (src) => {
   const m = { exports: {} };
-  new Function('module', 'exports', 'require', ts.transpileModule(src, { compilerOptions: { module: 'commonjs', esModuleInterop: true } }).outputText)(m, m.exports, () => ({}));
+  new Function('module', 'exports', 'require', ts.transpileModule(src, { compilerOptions: { module: 'commonjs', esModuleInterop: true } }).outputText)(m, m.exports, withBrand(() => ({}), ts));
   return m.exports;
 };
 const lib = compile(read('src/lib/serviceRequest.ts'));
@@ -30,7 +31,7 @@ check('9 the new-request count counts only the new ones', lib.newRequestCount(so
 // ── the server function ──
 const sql = read('supabase/updates/114_service_requests.sql');
 // The old updates (114, and 118's final copy) still hold the ORIGINAL app's service list. The starter's list lives in
-// src/lib/serviceRequest.ts and setup.sql (Step 5) must accept exactly these words. Until setup.sql exists this only checks the app list.
+// src/config/brand.js (wording.serviceTypes, read by src/lib/serviceRequest.ts) and setup.sql (Step 5) must accept exactly these words. Until setup.sql exists this only checks the app list.
 const setupPath = path.join(__dirname, '../../supabase/setup.sql');
 const setupSql = fs.existsSync(setupPath) ? fs.readFileSync(setupPath, 'utf8') : '';
 const allowed = (setupSql.match(/allowed constant text\[\] := array\[([\s\S]*?)\];/) || [])[1] || '';

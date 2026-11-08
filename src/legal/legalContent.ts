@@ -1,18 +1,23 @@
 // The text of the Privacy Policy, Terms of Use and Support pages. One source: the app screens (app/legal/*) and the
 // public web pages (public/legal/*.html, made by scripts/build-legal-pages.cjs) both come from here.
 
-// PLACEHOLDERS: a new client fills these in before publishing the pages (Step 3 moves them to the brand settings).
-// Then run `node scripts/build-legal-pages.cjs` to remake public/legal/*.html.
+// Every business fact here comes from the settings file (src/config/brand.js: legal, company, app). Change it there, then run
+// `node scripts/build-legal-pages.cjs` to remake public/legal/*.html.
+import { brand, appWebUrl, legalUrls } from '@/config/brand';
+
 export const BUSINESS = {
-  name: 'Your Company LLC',
-  appName: 'Starter App',
-  addressLines: ['123 Main St', 'Your Town, ST 00000'],
-  email: 'support@yourcompany.com',
-  phone: '(555) 555-0100',
-  website: 'https://app.yourcompany.com',
-  state: 'Your State',
-  effective: 'January 1, 2027',
+  name: brand.legal.businessName,
+  appName: brand.app.name,
+  addressLines: brand.company.addressLines,
+  email: brand.legal.contactEmail,
+  phone: brand.company.phone.display,
+  website: appWebUrl(),
+  state: brand.legal.state,
+  effective: brand.legal.effectiveDate,
 } as const;
+
+/** The addresses of the three public pages (given to App Store Connect). */
+export const LEGAL_URLS = legalUrls();
 
 export type LegalSection = { heading: string; paragraphs?: string[]; bullets?: string[] };
 export type LegalDoc = { slug: 'privacy' | 'terms' | 'support'; title: string; intro: string; sections: LegalSection[] };
@@ -219,7 +224,7 @@ export const SUPPORT: LegalDoc = {
     },
     {
       heading: 'Policies',
-      paragraphs: [`Privacy Policy: ${BUSINESS.website}/legal/privacy.html`, `Terms of Use: ${BUSINESS.website}/legal/terms.html`],
+      paragraphs: [`Privacy Policy: ${LEGAL_URLS.privacy}`, `Terms of Use: ${LEGAL_URLS.terms}`],
     },
   ],
 };

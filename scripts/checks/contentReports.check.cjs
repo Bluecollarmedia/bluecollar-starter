@@ -11,7 +11,8 @@ const compile = (src, req) => {
   return m.exports;
 };
 
-const legal = compile(read('src/legal/legalContent.ts'), () => ({}));
+const { withBrand } = require('./_brand.cjs');
+const legal = compile(read('src/legal/legalContent.ts'), withBrand(() => ({}), ts));
 const lib = compile(read('src/lib/contentReports.ts'), (n) => (n === '@/legal/legalContent' ? legal : {}));
 
 let calls = [];

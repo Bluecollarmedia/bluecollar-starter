@@ -19,7 +19,8 @@ import { Icon } from '@/components/ui/Icon';
 import { Button, Input, LoadingSpinner } from '@/components/ui';
 import { DateField } from '@/components/ui/DateField';
 import { TermsAgreement, TERMS_REQUIRED_MESSAGE } from '@/components/legal/TermsAgreement';
-import { WorkerExtrasFields } from '@/components/account/WorkerExtras';
+import { WORKER_EXTRAS_ON, WorkerExtrasFields } from '@/components/account/WorkerExtras';
+import { brand as brandSettings } from '@/config/brand';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/providers/AuthProvider';
@@ -60,7 +61,7 @@ async function lookupInvite(token: string): Promise<Lookup> {
     if (!isDemoMode) return { valid: false, reason: 'invalid' };
     // Demo mode (development build, no database): any "demo…" link shows a sample worker invite so the page can be tried.
     return token.startsWith('demo')
-      ? { valid: true, kind: 'worker', companyName: 'Your Company', firstName: 'Gabriel', lastName: 'Rivera', phone: '(555) 555-0142' }
+      ? { valid: true, kind: 'worker', companyName: brandSettings.company.name, firstName: 'Gabriel', lastName: 'Rivera', phone: '(555) 555-0142' }
       : { valid: false, reason: 'invalid' };
   }
   const { data, error } = await supabase.rpc('invite_lookup', { p_token: token });
@@ -182,7 +183,7 @@ export default function InviteScreen() {
       if (birthdayIso) await saveBirthdayForCurrentUser(birthdayIso);
       if (isWorker) {
         const note = await saveDetailsForCurrentUser({ hoodieSize: hoodie, idUri });
-        if (note) say('Not saved', `You're in, but ${note} You can add your shirt size and ID later by tapping your name in Settings.`);
+        if (note) say('Not saved', `You're in, but ${note} You can add these details later by tapping your name in Settings.`);
       }
       if (photoUri) {
         try {
@@ -265,7 +266,7 @@ export default function InviteScreen() {
               <Input label={t('First Name *')} placeholder={t('First name')} value={firstName} onChangeText={setFirstName} editable={!firstLocked} containerStyle={{ flex: 1 }} />
               <Input label={t('Last Name')} placeholder={t('Last name')} value={lastName} onChangeText={setLastName} editable={!lastLocked} containerStyle={{ flex: 1 }} />
             </View>
-            <Input label={isWorker ? t('Phone *') : t('Phone')} placeholder="(555) 555-0100" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
+            <Input label={isWorker ? t('Phone *') : t('Phone')} placeholder="(555) 123-4567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
             <Input label={t('Email *')} placeholder="you@email.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" icon="mail" />
             <Input label={t('Password *')} placeholder={t('At least 6 characters')} value={password} onChangeText={setPassword} secureTextEntry textContentType="newPassword" autoComplete="new-password" autoCapitalize="none" autoCorrect={false} icon="lock" />
             <Input label={t('Confirm Password *')} placeholder={t('Re-enter password')} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry textContentType="newPassword" autoComplete="new-password" autoCapitalize="none" autoCorrect={false} icon="lock" />
@@ -273,7 +274,7 @@ export default function InviteScreen() {
             {isWorker ? (
               <>
                 <DateField label={t('Birthday (optional)')} icon="gift" placeholder={t('Select your birthday')} value={parseBirthday(birthday) ?? ''} onChange={(k) => setBirthday(birthdayInputText(k))} onClear={() => setBirthday('')} maximumDate={localDateKey(new Date())} initialPickerDate="1990-01-01" />
-                <WorkerExtrasFields hoodie={hoodie} onHoodie={setHoodie} newIdUri={idUri} onNewIdUri={setIdUri} onError={setError} />
+                {WORKER_EXTRAS_ON ? <WorkerExtrasFields hoodie={hoodie} onHoodie={setHoodie} newIdUri={idUri} onNewIdUri={setIdUri} onError={setError} /> : null}
               </>
             ) : null}
 

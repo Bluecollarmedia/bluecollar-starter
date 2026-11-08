@@ -8,11 +8,12 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 let bad = 0;
 const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  - ' + detail}`); };
 
-const app = JSON.parse(read('app.json')).expo;
+// The final Expo config: app.json put through app.config.js (which fills in the settings file's values).
+const app = require('./_brand.cjs').expoConfig();
 let aasa = null;
 try { aasa = JSON.parse(read('public/.well-known/apple-app-site-association')); } catch (e) { /* reported below */ }
 const detail = aasa && aasa.applinks && aasa.applinks.details && aasa.applinks.details[0];
-// The web address the invite links use: the EAS value if one is written in eas.json, else the domain the app claims in app.json.
+// The web address the invite links use: the EAS value if one is written in eas.json, else the domain the app claims (from app.webUrl in src/config/brand.js).
 const claimed = (app.ios.associatedDomains || []).map((d) => d.replace(/^applinks:/, ''));
 const web = (require(path.join(root, 'eas.json')).build['live-test'].env || {}).EXPO_PUBLIC_WEB_URL || (claimed[0] ? `https://${claimed[0]}` : '');
 // The Apple Team ID is a placeholder ("YOURTEAMID") until a client fills in theirs; the bundle id must be this app's.

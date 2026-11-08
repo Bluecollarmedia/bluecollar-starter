@@ -6,6 +6,11 @@
  * Anything the forecast has no figure for is left out or shown as an en dash, never as 0.
  */
 import { hourLabel, type WeatherPayload, type WxHour, type WxIcon } from '@/lib/weatherView';
+import { brand } from '@/config/brand';
+
+/** The widget runs in its own small runtime and cannot read the settings file, so these two settings travel in its props. */
+const WIDGET_LINK = `${brand.app.scheme}://weather`;
+const WIDGET_NAME = brand.company.name.toUpperCase();
 
 export interface WidgetHour { label: string; temp: string; symbol: string }
 export interface WidgetProps {
@@ -25,6 +30,10 @@ export interface WidgetProps {
   leaf: string | null;
   /** For the lock screen circle: where the temperature sits between today's low and high. */
   gauge: { now: number; low: number; high: number } | null;
+  /** Where tapping the widget goes: the app's own weather link (settings file: app.scheme). */
+  link: string;
+  /** The company name in capitals, shown next to the logo mark (settings file: company.name). */
+  company: string;
 }
 export interface WidgetEntry { date: Date; props: WidgetProps }
 
@@ -91,7 +100,7 @@ export function buildWidgetEntries(data: WeatherPayload, now: number, leaf: stri
       date: new Date(now),
       props: {
         place: data.townName, temp: deg(c?.tempF), condition: c?.text || s.word, symbol: s.name, symbolColor: s.color, highLow, uv: '', rain: '',
-        hours: [], leaf, gauge: gaugeOf(c?.tempF ?? null),
+        hours: [], leaf, gauge: gaugeOf(c?.tempF ?? null), link: WIDGET_LINK, company: WIDGET_NAME,
       },
     }];
   }
@@ -122,6 +131,8 @@ export function buildWidgetEntries(data: WeatherPayload, now: number, leaf: stri
         rain: rainLine(data.hourly, idx),
         hours: strip,
         leaf,
+        link: WIDGET_LINK,
+        company: WIDGET_NAME,
         gauge: gaugeOf(temp ?? null),
       },
     });

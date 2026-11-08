@@ -19,6 +19,7 @@ import { File, Paths } from 'expo-file-system';
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import { renderDocumentHtml, footerText, type DocumentHtmlOptions } from './documentHtml';
 import type { FinancialDoc, DocumentSnapshot } from '@/types/financial';
+import { brand } from '@/config/brand';
 
 /** Letter, in points. */
 const PAGE = { width: 612, height: 792 };
@@ -58,7 +59,7 @@ export async function stampPages(pdf: string | Uint8Array, footer: string, title
   doc.setTitle(winAnsiSafe(title));
   doc.setAuthor(winAnsiSafe(author));
   doc.setCreator(winAnsiSafe(author));
-  doc.setProducer('Starter App');
+  doc.setProducer(winAnsiSafe(brand.app.name));
   return doc.save();
 }
 

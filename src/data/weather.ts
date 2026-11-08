@@ -33,8 +33,10 @@ export function loadWeather(place: Place): Promise<WeatherResult> {
 async function loadWeatherNow(place: Place): Promise<WeatherResult> {
   if (!isSupabaseConfigured) return { ok: false, reason: 'unavailable' };
   try {
-    // The built-in nearby towns are asked for by name (their forecast grid is already known); any other place by its point.
-    const body = isBuiltInKey(place.key) ? { town: place.key } : { lat: place.lat, lon: place.lon, name: place.name, state: place.state };
+    // The built-in nearby towns are asked for by name (their forecast grid is already known); any other place by its point. A nearby town
+    // also sends its point, so a town added to the settings file but not (yet) to the weather function still works.
+    const point = { lat: place.lat, lon: place.lon, name: place.name, state: place.state };
+    const body = isBuiltInKey(place.key) ? { town: place.key, ...point } : point;
     const call = supabase.functions.invoke('weather', { body });
     const stop = new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Timed out.')), REQUEST_LIMIT_MS));
     const { data, error } = await Promise.race([Promise.resolve(call), stop]);
@@ -72,7 +74,7 @@ export async function saveLastWeather(data: WeatherPayload): Promise<void> {
   } catch { /* the phone's storage is best effort */ }
 }
 
-/** The place last chosen (Lakewood the first time, or when nothing usable is saved). An older save that held one of the eight towns' names still works. */
+/** The place last chosen (the settings file's weather.defaultPlace the first time, or when nothing usable is saved). An older save that held one of the nearby towns' names still works. */
 export async function readPlace(): Promise<Place> {
   try {
     const raw = await AsyncStorage.getItem(PLACE_KEY);

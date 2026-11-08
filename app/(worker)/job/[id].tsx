@@ -1,4 +1,5 @@
 import { ReportProblemButton } from '@/components/issues/ReportProblemButton';
+import { isFeatureOn } from '@/config/brand';
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView, Modal } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -180,7 +181,7 @@ export default function JobDetailScreen() {
             )}
           </View>
 
-          {assignment.project?.address && (
+          {isFeatureOn('maps') && assignment.project?.address && (
             <Pressable
               style={[styles.card, styles.mapsRow, { backgroundColor: colors.primarySurface }]}
               onPress={handleOpenMaps}
@@ -271,7 +272,7 @@ export default function JobDetailScreen() {
             </View>
           )}
 
-          {assignment.project?.address && (
+          {isFeatureOn('maps') && assignment.project?.address && (
             <Pressable onPress={handleOpenMaps}>
               <LinearGradient
                 colors={[colors.primary, colors.primary]}
@@ -287,9 +288,11 @@ export default function JobDetailScreen() {
             </Pressable>
           )}
         </View>
-        <View style={{ paddingHorizontal: spacing.lg, marginTop: spacing.lg }}>
-          <ReportProblemButton where={{ projectId: assignment.projectId }} />
-        </View>
+        {isFeatureOn('issues') ? (
+          <View style={{ paddingHorizontal: spacing.lg, marginTop: spacing.lg }}>
+            <ReportProblemButton where={{ projectId: assignment.projectId }} />
+          </View>
+        ) : null}
       </ScrollView>
 
       <Modal

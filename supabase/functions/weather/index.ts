@@ -2,7 +2,9 @@
  * weather — the Weather feature's data source: the National Weather Service (NWS) API, read on the server and shaped into one small answer.
  *
  * The app never talks to NWS itself. It asks this function for a town, and the function:
- *   1. refuses unless the owner's public Weather switch is ON (public_weather_config, update 103), so nothing is served while Weather is off;
+ *   1. decides who may ask (weatherIsOn): a SIGNED-IN person always (the app's settings file, features.weather, decides whether they see
+ *      weather at all); a signed-out visitor only while the owner's public visitor area switch is ON (public_weather_config, update 103);
+ *      nobody when the secret WEATHER_ENABLED is "false" (set it when the app has features.weather off);
  *   2. answers for the eight built-in nearby towns (fixed list below, each point from the US Census and checked against NWS) and for any other US point
  *      (its forecast grid is looked up from NWS /points, which also says the place's time zone);
  *   3. reads NWS (forecast, hourly, raw grid for snowfall, active alerts), converts it, and keeps the answer for 10 minutes;
@@ -281,7 +283,10 @@ const json = (status: number, body: unknown) => new Response(JSON.stringify(body
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
 const CONTACT = Deno.env.get('NWS_CONTACT');
-const USER_AGENT = `StarterAppWeather/1.0 (app.yourcompany.com${CONTACT ? `, ${CONTACT}` : ''})`; // PLACEHOLDER: your app name and web address
+// Who is asking, for NWS: the app's name and web address from the secrets APP_NAME / APP_WEB_URL (the same values as src/config/brand.js).
+const APP_NAME_FOR_NWS = (Deno.env.get('APP_NAME') ?? 'StarterApp').replace(/[^A-Za-z0-9]/g, '') || 'StarterApp';
+const WEB_HOST = (Deno.env.get('APP_WEB_URL') ?? 'https://app.yourcompany.com').replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+const USER_AGENT = `${APP_NAME_FOR_NWS}Weather/1.0 (${WEB_HOST}${CONTACT ? `, ${CONTACT}` : ''})`;
 const TTL_MS = 10 * 60 * 1000;
 const NWS_TIMEOUT_MS = 8000;
 
@@ -326,7 +331,24 @@ async function nws(path: string): Promise<any> {
   }
 }
 
-async function weatherIsOn(): Promise<boolean | null> {
+/** Is the caller signed in? The app sends the person's own sign-in token; a signed-out visitor sends only the public key. */
+async function isSignedIn(req: Request): Promise<boolean> {
+  const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '').trim();
+  if (!token || token === ANON_KEY) return false;
+  try {
+    const sb = createClient(SUPABASE_URL, ANON_KEY);
+    const { data, error } = await sb.auth.getUser(token);
+    return !error && !!data?.user;
+  } catch {
+    return false;
+  }
+}
+
+/** May this caller have weather? Signed-in: yes (unless weather is off for the whole app). Signed-out: only while the public visitor
+ *  area switch is on. null when the switch cannot be read. */
+async function weatherIsOn(req: Request): Promise<boolean | null> {
+  if ((Deno.env.get('WEATHER_ENABLED') ?? 'true').trim().toLowerCase() === 'false') return false;
+  if (await isSignedIn(req)) return true;
   try {
     const sb = createClient(SUPABASE_URL, ANON_KEY);
     const { data, error } = await sb.rpc('public_weather_config');
@@ -360,8 +382,8 @@ serve(async (req: Request) => {
     return json(400, { error: 'town' });
   }
 
-  // Nothing is served while the owner has Weather switched off (or when the switch cannot be read).
-  const on = await weatherIsOn();
+  // A signed-out visitor gets nothing while the owner's public visitor area switch is off (or when it cannot be read).
+  const on = await weatherIsOn(req);
   if (on === null) return json(503, { error: 'unavailable' });
   if (!on) return json(403, { error: 'disabled' });
 

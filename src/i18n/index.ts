@@ -9,6 +9,10 @@
 import { useMemo, useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DICTIONARY } from './dictionary';
+import { isFeatureOn } from '@/config/brand';
+
+/** Spanish is offered in this app (settings file: features.spanish). When off, the app always stays English and hides the language switch. */
+export const SPANISH_ON = isFeatureOn('spanish');
 
 export type Language = 'en' | 'es';
 export const LANGUAGES: { key: Language; label: string; short: string }[] = [
@@ -41,7 +45,7 @@ export function getLanguage(): Language {
 }
 
 export function setLanguage(next: Language) {
-  if (next === current) return;
+  if (next === current || (next === 'es' && !SPANISH_ON)) return;
   current = next;
   emit();
   AsyncStorage.setItem(STORAGE_KEY, next).catch(() => {});
@@ -58,6 +62,7 @@ export function syncLanguageToAccount() {
 
 /** Reads the saved choice (called once at startup). Anything unexpected stays English. */
 export async function loadLanguage(): Promise<void> {
+  if (!SPANISH_ON) return;
   try {
     const saved = await AsyncStorage.getItem(STORAGE_KEY);
     if ((saved === 'es' || saved === 'en') && saved !== current) { current = saved; emit(); }

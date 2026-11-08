@@ -9,6 +9,7 @@ import { Icon } from './Icon';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { isFeatureOn } from '@/config/brand';
 import { fetchPlace, fetchSuggestions, lastPlacesProblem, newSessionToken, placesEnabled, type PickedPlace, type Suggestion } from '@/lib/placesAutocomplete';
 
 export function StreetSuggestions({ text, onPick }: { text: string; onPick: (place: PickedPlace) => void }) {
@@ -38,7 +39,8 @@ export function StreetSuggestions({ text, onPick }: { text: string; onPick: (pla
 
   const note = (text: string) => <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: -spacing.sm, marginBottom: spacing.sm }]}>{text}</Text>;
   // Said out loud on purpose: a silent list that never appears looks the same whether the key is missing, Google refused, or nothing matched.
-  if (!placesEnabled && text.trim().length >= 3) return note('Address suggestions are not turned on in this version of the app. Type the full address.');
+  // (Switched off in the settings file, features.addressSuggestions: say nothing, the field is plain typing on purpose.)
+  if (!placesEnabled && isFeatureOn('addressSuggestions') && text.trim().length >= 3) return note('Address suggestions are not turned on in this version of the app. Type the full address.');
   if (placesEnabled && rows.length === 0 && !problem && phase === 'looking') return note('Looking up addresses...');
   if (placesEnabled && rows.length === 0 && !problem && phase === 'none') return note('No matching address found. Keep typing the full street address, or enter it yourself.');
   if (placesEnabled && rows.length === 0 && problem) {

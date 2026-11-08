@@ -32,6 +32,8 @@ import { usePublicWeatherSwitch } from '@/hooks/usePublicWeatherSwitch';
 import { useWidgetSync } from '@/hooks/useWidgetSync';
 import { signedOutRedirect } from '@/lib/launchRoute';
 import { sweepStorageSoon } from '@/lib/storageSweep';
+import { blockedFeature } from '@/config/featureRoutes';
+import { FeatureOffScreen } from '@/components/branding/FeatureOffScreen';
 
 // On the website Alert.alert does nothing by itself; this points it at the app's own dialog (a phone keeps the system alert).
 installWebAlert();
@@ -56,8 +58,10 @@ function RootNavigator() {
   // Tell the server which language this person uses, so its push notices come in it (update 95).
   useEffect(() => { if (appState === 'active' && isAuthenticated && user) syncLanguageToAccount(); }, [appState, isAuthenticated, user?.id]);
   usePrefetchKeyImages();
-  // The home and lock screen widgets get their forecast for everyone, signed in or not.
+  // The home and lock screen widgets get their forecast for everyone, signed in or not (only when the settings file has widgets on).
   useWidgetSync();
+  // A screen whose feature is switched off in the settings file is covered by a plain "Not available" page (src/config/featureRoutes.ts).
+  const offFeature = blockedFeature(segments as string[]);
 
   // Photo, birthday, shirt size and ID set aside while the account waited for email confirmation are saved on first sign-in.
   useEffect(() => {
@@ -129,6 +133,7 @@ function RootNavigator() {
   return (
     <>
       <Slot />
+      {offFeature ? <FeatureOffScreen feature={offFeature} /> : null}
       {isPublicPage ? null : <SignInWelcome />}
       <WebDialogHost />
     </>

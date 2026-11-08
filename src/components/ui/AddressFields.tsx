@@ -10,6 +10,7 @@ import { applyStreetInput, type AddressParts } from '@/lib/address';
 import type { PickedPlace } from '@/lib/placesAutocomplete';
 import { verifyAddress, previewOnMap } from '@/lib/maps';
 import { StreetSuggestions } from './StreetSuggestions';
+import { brand, isFeatureOn } from '@/config/brand';
 
 /** Map check state for an address: exact spot found, or the owner chose to keep it as typed. */
 export interface AddressCheck {
@@ -78,7 +79,7 @@ export function AddressFields({ value, onChange, required, streetLabel = 'Street
         />
         <Input
           label={`State${star}`}
-          placeholder="NJ"
+          placeholder={brand.company.state}
           value={value.state}
           onChangeText={(state) => change({ ...value, state: state.toUpperCase() })}
           textContentType="addressState"
@@ -88,7 +89,7 @@ export function AddressFields({ value, onChange, required, streetLabel = 'Street
         />
         <Input
           label={`ZIP${star}`}
-          placeholder="08701"
+          placeholder="00000"
           value={value.zip}
           onChangeText={(zip) => change({ ...value, zip })}
           textContentType="postalCode"
@@ -126,9 +127,11 @@ function MapCheckRow({ value, check, onCheckChange }: { value: AddressParts; che
       <View style={[styles.checkRow, { backgroundColor: semantic.successLight }]}>
         <Icon name="check-circle" size={16} color={semantic.success} />
         <Text style={[typeScale.bodySmall, { color: semantic.success, flex: 1, fontWeight: '600' }]}>Address found on the map</Text>
-        <Pressable onPress={() => previewOnMap({ ...value, ...check })} hitSlop={8}>
-          <Text style={[typeScale.labelSmall, { color: semantic.success, textDecorationLine: 'underline' }]}>Preview</Text>
-        </Pressable>
+        {isFeatureOn('maps') ? (
+          <Pressable onPress={() => previewOnMap({ ...value, ...check })} hitSlop={8}>
+            <Text style={[typeScale.labelSmall, { color: semantic.success, textDecorationLine: 'underline' }]}>Preview</Text>
+          </Pressable>
+        ) : null}
       </View>
     );
   }

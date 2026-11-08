@@ -21,7 +21,7 @@ const WeatherWidget = (p: WidgetProps, env: WidgetEnvironment) => {
   const page = dark ? '#18241C' : '#FBFDF8';
   const green = dark ? '#8CCB63' : '#2E5E34';
   const rule = dark ? '#2B3B30' : '#DCE6D5';
-  const open = widgetURL('starter://weather') /* must match "scheme" in app.json */;
+  const open = widgetURL(p.link) /* the app's own weather link, from the settings file (app.scheme) via widgetData.ts */;
   // The leaf is a picture file at its full size: it must be made resizable and fitted, or the frame alone does not shrink it and it covers the widget.
   const leafMods = (n: number) => [resizable(), aspectRatio({ contentMode: 'fit' }), frame({ width: n, height: n }), clipped()];
 
@@ -89,7 +89,7 @@ const WeatherWidget = (p: WidgetProps, env: WidgetEnvironment) => {
   if (family === 'systemSmall') {
     return (
       <VStack alignment="leading" spacing={0} modifiers={[containerBackground(page, 'widget'), open]}>
-        {brand('YOUR COMPANY', 15)}
+        {brand(p.company, 15)}
         <Spacer />
         <HStack alignment="top">
           <VStack alignment="leading" spacing={1}>
@@ -120,7 +120,7 @@ const WeatherWidget = (p: WidgetProps, env: WidgetEnvironment) => {
         <Spacer />
         <VStack alignment="trailing" spacing={3}>
           <VStack alignment="trailing" spacing={2}>
-            <VStack modifiers={[padding({ bottom: 4 })]}>{brand('YOUR COMPANY FORECAST', 15)}</VStack>
+            <VStack modifiers={[padding({ bottom: 4 })]}>{brand(`${p.company} FORECAST`, 15)}</VStack>
             {p.uv ? <Text modifiers={[font({ size: 12, weight: 'bold' }), foregroundStyle(soft)]}>{p.uv}</Text> : null}
             {p.rain ? <Text modifiers={[font({ size: 12 }), foregroundStyle(soft), lineLimit(1)]}>{p.rain}</Text> : null}
           </VStack>

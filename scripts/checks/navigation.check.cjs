@@ -10,7 +10,7 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
 
 const layout = read('app/_layout.tsx');
 check('1 the root layout never returns a bare <Slot /> for public pages (that rebuilt the navigator)', !/if \(isPublicPage\) \{\s*return <Slot \/>;/.test(layout));
-check('2 the same tree is returned for public and normal pages: <Slot /> then optional overlays (the welcome) and the dialog host for the website (always there)', /<>\s*<Slot \/>\s*\{isPublicPage \? null : <SignInWelcome \/>\}\s*<WebDialogHost \/>\s*<\/>/.test(layout));
+check('2 the same tree is returned for public and normal pages: <Slot /> then optional overlays (the "Not available" page of a switched-off feature, the welcome) and the dialog host for the website (always there)', /<>\s*<Slot \/>\s*\{offFeature \? <FeatureOffScreen feature=\{offFeature\} \/> : null\}\s*\{isPublicPage \? null : <SignInWelcome \/>\}\s*<WebDialogHost \/>\s*<\/>/.test(layout));
 check('3 the splash still shows for normal pages while loading, but not for public pages', /!isPublicPage && \(isLoading \|\| !splashDone\)/.test(layout));
 check('4c profile photos no longer use the built-in crop screen', !/allowsEditing: true/.test(read('src/components/account/EditProfileScreen.tsx')) && !/allowsEditing: true/.test(read('app/invite/[token].tsx')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');

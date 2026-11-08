@@ -3,8 +3,9 @@
 # Starter App (blue-collar starter kit)
 
 A company management app for contractors and trades (owner, workers, customers), built with Expo (React Native + web), Supabase, and Cloudflare R2.
-Company name, app name, domain, bundle id and the other client settings are still plain placeholders ("Your Company", "Starter App",
-app.yourcompany.com, com.yourcompany.starter); Step 3 moves them into one settings file.
+Every client setting (company name and contact, app name, domain, bundle id, scheme, brand color, wording, feature switches, legal
+facts, weather places) lives in ONE file: `src/config/brand.js` (plain JS so `app.config.js` can read it), typed by `src/config/brand.ts`.
+App code imports from `@/config/brand`; never type a client value anywhere else (`scripts/checks/brandSettings.check.cjs` enforces it).
 
 ## Stack
 - **Framework**: Expo SDK 57, React Native 0.86, expo-router (file-based routing)
@@ -36,15 +37,18 @@ app.yourcompany.com, com.yourcompany.starter); Step 3 moves them into one settin
 - `npm run android` — Start for Android
 
 ## Branding
-- **Company / app name**: placeholders ("Your Company", "Starter App") until a client fills them in.
-- **Colors**: `src/theme/colors.ts` still carries the original greens as a placeholder palette (Step 4 makes a plain default).
+- **Company / app name**: `src/config/brand.js` (placeholders "Your Company", "Starter App" until a client fills them in).
+- **Feature switches**: `brand.js` `features`. Hide a feature's entry points with `isFeatureOn('x')`; list its screens in
+  `src/config/featureRoutes.ts` (the root layout covers them with a "Not available" page when off).
+- **Colors**: the primary/accent tokens in `src/theme/colors.ts` are worked out from `look.brandColor`; the rest is still the original
+  palette (Step 4 makes a plain default).
 - **Logos**: `assets/images/logo-full.png` (wordmark) and `logo-leaf.png` (mark) are still the original pictures; Step 4 swaps them for plain placeholders.
 
 ## Roles
 Three user roles: `owner`, `worker`, `customer`. Auth routing in `app/_layout.tsx` redirects to the correct group based on role.
 
 ## Design System
-Import from `@/theme`. Brand colors live in `src/theme/colors.ts`.
+Import from `@/theme`. The brand color is set in `src/config/brand.js` (`look.brandColor`); `src/theme/colors.ts` derives the tokens.
 
 ## Important Notes
 - Path alias: `@/` maps to `src/`

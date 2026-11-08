@@ -42,7 +42,7 @@ export function confirmText(audience: CustomerAudience): { title: string; messag
 export function describeSendError(message: string | undefined): string {
   const m = message ?? '';
   if (/could not find the function|schema cache/i.test(m)) return "Messaging customers needs database update 55, which hasn't been installed yet.";
-  if (/owner or an admin/i.test(m)) return 'Only the owner or an admin can message customers.';
+  if (/owner or an admin/i.test(m)) return 'Only the owner, or someone the owner allows, can message customers.';
   if (/title|message|who this message/i.test(m)) return m.replace(/^error:\s*/i, '');
   return m ? `The message couldn't be sent. (${m})` : "The message couldn't be sent. Please try again.";
 }

@@ -16,6 +16,10 @@ import { semantic } from '@/theme/colors';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
+import { isFeatureOn, words } from '@/config/brand';
+
+/** Customers get their own login only while the settings file has the customer portal on (features.customerPortal). */
+const PORTAL_ON = isFeatureOn('customerPortal');
 
 const projectStatusBadge = (status: string): { label: string; status: 'success' | 'info' | 'warning' | 'neutral' } => {
   if (status === 'active') return { label: 'Active', status: 'success' };
@@ -167,17 +171,19 @@ You can turn their portal access off instead.` : res.error);
           <CustomerPropertiesCard customerId={p.id} firstName={p.firstName} />
 
           {/* Login: a private one-time link */}
-          <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
-            <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700', marginBottom: spacing.sm }]}>Customer Login</Text>
-            <CustomerInviteCard personId={p.id} firstName={p.firstName} phone={p.phone} autoMake={justAdded === '1'} />
-          </View>
+          {PORTAL_ON && (
+            <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
+              <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700', marginBottom: spacing.sm }]}>Customer Login</Text>
+              <CustomerInviteCard personId={p.id} firstName={p.firstName} phone={p.phone} autoMake={justAdded === '1'} />
+            </View>
+          )}
 
 
           {/* Projects */}
           <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
             <View style={styles.sectionHeaderRow}>
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700' }]}>
-                Projects ({customerProjects.length})
+                {words.jobs} ({customerProjects.length})
               </Text>
               <Pressable
                 style={[styles.addProjectBtn, { backgroundColor: colors.backgroundTertiary }]}
@@ -223,7 +229,7 @@ You can turn their portal access off instead.` : res.error);
               })
             ) : (
               <Text style={[typeScale.bodySmall, { color: colors.textTertiary, marginTop: spacing.xs }]}>
-                No projects yet
+                No {words.jobs.toLowerCase()} yet
               </Text>
             )}
           </View>
@@ -242,7 +248,7 @@ You can turn their portal access off instead.` : res.error);
               </Text>
             </View>
 
-            <View style={[styles.accountRow, { marginTop: spacing.sm }]}>
+            {PORTAL_ON && <View style={[styles.accountRow, { marginTop: spacing.sm }]}>
               <View style={{ flex: 1, paddingRight: spacing.md }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Icon name="eye" size={14} color={colors.textTertiary} />
@@ -252,7 +258,7 @@ You can turn their portal access off instead.` : res.error);
                 <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: spacing.xs }]}>{portal.note}</Text>
               </View>
               <Switch value={portal.on} disabled={savingAccess} onValueChange={changeAccess} accessibilityLabel={`Portal access for ${p.firstName}`} />
-            </View>
+            </View>}
           </View>
 
           <Pressable

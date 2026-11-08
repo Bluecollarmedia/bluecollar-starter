@@ -12,13 +12,16 @@ import { semantic } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
 import { useTeamAccess, type TeamPerson, type TeamState } from '@/hooks/useTeamAccess';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { aOrAn, leaderPlural, leaderWord, roleLabel, words } from '@/config/brand';
 
 type Sheet =
   | { kind: 'deactivate'; person: TeamPerson; warnings: string[]; blocking: string[] }
   | { kind: 'reactivate'; person: TeamPerson }
   | { kind: 'role'; person: TeamPerson; to: 'admin' | 'worker' };
 
-const ROLE_LABEL: Record<string, string> = { owner: 'Owner', admin: 'Admin', worker: 'Worker' };
+// The name SHOWN for each role (the database keeps 'admin'; people see the settings file's leaderRoleLabel, e.g. "Manager").
+const LEADER = words.leaderRoleLabel;
+const leader = leaderWord();
 const name = (p: TeamPerson) => `${p.firstName} ${p.lastName}`.trim() || p.email || 'No name';
 const when = (iso?: string) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
 
@@ -74,10 +77,10 @@ export default function TeamAccessScreen() {
     const n = name(sheet.person);
     switch (sheet.kind) {
       case 'deactivate': return { title: `Deactivate ${n}?`, body: 'They lose ALL company access right away. Their hours, photos and records stay exactly as they are, and you can reactivate them later.', button: 'Deactivate Worker', danger: true };
-      case 'reactivate': return { title: `Reactivate ${n}`, body: 'They get their worker access back. Old admin rights are never restored, and nothing is assigned to them automatically.', button: 'Reactivate', danger: false };
+      case 'reactivate': return { title: `Reactivate ${n}`, body: `They get their worker access back. Old ${leader} rights are never restored, and nothing is assigned to them automatically.`, button: 'Reactivate', danger: false };
       case 'role': return sheet.to === 'admin'
-        ? { title: `Make ${n} an admin?`, body: 'Admins help run the company. You can limit what admins may do under Admin powers, and take this back any time.', button: 'Make Admin', danger: false }
-        : { title: `Remove admin from ${n}?`, body: 'They stay on the team as a worker. Their history is kept.', button: 'Remove Admin', danger: true };
+        ? { title: `Make ${n} ${aOrAn(leader)} ${leader}?`, body: `${leaderPlural()} help run the company. You can limit what ${leaderPlural().toLowerCase()} may do under ${LEADER} powers, and take this back any time.`, button: `Make ${LEADER}`, danger: false }
+        : { title: `Remove ${leader} from ${n}?`, body: 'They stay on the team as a worker. Their history is kept.', button: `Remove ${LEADER}`, danger: true };
     }
   })();
   const blocked = sheet?.kind === 'deactivate' && sheet.blocking.length > 0;
@@ -94,7 +97,7 @@ export default function TeamAccessScreen() {
           <View style={{ flex: 1 }}>
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>{name(p)}{p.isMe ? ' (you)' : ''}</Text>
             <View style={styles.badges}>
-              {p.role ? <StatusBadge label={ROLE_LABEL[p.role] ?? p.role} status="info" /> : null}
+              {p.role ? <StatusBadge label={roleLabel(p.role)} status="info" /> : null}
               {p.state === 'active' ? <StatusBadge label="Active" status="success" /> : null}
               {p.state === 'waiting' ? <StatusBadge label="Invited" status="info" /> : null}
               {p.state === 'deactivated' ? <StatusBadge label="Deactivated" status="error" /> : null}
@@ -116,13 +119,13 @@ export default function TeamAccessScreen() {
             ) : locked ? (
               <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{p.isMe ? 'This is you.' : 'The owner’s account can’t be changed here.'}</Text>
             ) : adminTarget ? (
-              <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Only the owner can change an admin.</Text>
+              <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Only the owner can change {aOrAn(leader)} {leader}.</Text>
             ) : (
               <>
                 {isOwner ? (
                   p.role === 'admin'
-                    ? <Button title="Remove admin" size="sm" variant="secondary" onPress={() => show({ kind: 'role', person: p, to: 'worker' })} />
-                    : <Button title="Make admin" size="sm" variant="secondary" onPress={() => show({ kind: 'role', person: p, to: 'admin' })} />
+                    ? <Button title={`Remove ${leader}`} size="sm" variant="secondary" onPress={() => show({ kind: 'role', person: p, to: 'worker' })} />
+                    : <Button title={`Make ${leader}`} size="sm" variant="secondary" onPress={() => show({ kind: 'role', person: p, to: 'admin' })} />
                 ) : null}
                 <Button title="Deactivate worker" size="sm" variant="danger" onPress={() => startDeactivate(p)} />
               </>
@@ -146,8 +149,8 @@ export default function TeamAccessScreen() {
           <Pressable onPress={() => router.push('/(owner)/more/admin-powers' as never)} style={[styles.link, { backgroundColor: colors.surface }, shadow.sm]} accessibilityRole="button">
             <Icon name="shield" size={20} color={colors.primary} />
             <View style={{ flex: 1 }}>
-              <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Admin powers</Text>
-              <Text style={[typeScale.caption, { color: colors.textSecondary }]}>Choose what admins may do</Text>
+              <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{LEADER} powers</Text>
+              <Text style={[typeScale.caption, { color: colors.textSecondary }]}>Choose what {leaderPlural().toLowerCase()} may do</Text>
             </View>
             <Icon name="chevron-right" size={18} color={colors.textTertiary} />
           </Pressable>

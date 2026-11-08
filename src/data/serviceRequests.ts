@@ -57,7 +57,7 @@ export async function setServiceRequestStatus(id: string, status: RequestStatus)
       .eq('id', id)
       .select('id');
     if (error) return { ok: false, error: error.message };
-    if (!data?.length) return { ok: false, error: 'Only the owner or an admin can change a request.' };
+    if (!data?.length) return { ok: false, error: 'Only the owner, or someone the owner allows, can change a request.' };
     return { ok: true };
   } catch {
     return { ok: false, error: "Couldn't update the request." };

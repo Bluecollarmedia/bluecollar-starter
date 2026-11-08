@@ -1,4 +1,5 @@
 import { openDirections, findCoords, distanceMeters, formatDistance, DEFAULT_CHECKIN_RADIUS_M, type Place } from '@/lib/maps';
+import { isFeatureOn } from '@/config/brand';
 import { evaluateCheckIn, checkInRefusal } from '@/lib/checkInRadius';
 import { tr } from '@/i18n';
 import { getCurrentGps } from '@/lib/location';
@@ -121,7 +122,8 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
   const [taskPhotoUris, setTaskPhotoUris] = useState<Record<string, string>>({});
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const workday = useMyWorkday(!!workerId && isSupabaseConfigured);
-  const timeOn = workday.installed === true;
+  // The settings file can leave the time clock out of the app (features.timeClock): then check-in works the original way, with no workday.
+  const timeOn = workday.installed === true && isFeatureOn('timeClock');
   const [offlineQueue] = useState<OfflineAction[]>([]);
   const [isOnline] = useState(true);
 

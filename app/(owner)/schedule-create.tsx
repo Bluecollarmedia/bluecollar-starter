@@ -24,6 +24,7 @@ import {
   addMonthsKey, describeHorizon, describeRepeat, occurrenceDates, HORIZON_OPTIONS, SERIES_HORIZON_DAYS,
 } from '@/lib/recurrence';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { isFeatureOn } from '@/config/brand';
 
 const today = todayKey();
 
@@ -71,8 +72,9 @@ function dateToTimeStr(d: Date): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-/** Repeat jobs are built but switched off: a project or a one-off job is scheduled day by day. */
-const ALLOW_REPEAT = false;
+/** Repeat jobs (every week, etc.) are reachable only when the settings file switches them on (src/config/brand.js, features.repeatJobs).
+ *  Off (the default): a job or a one-off visit is scheduled day by day. */
+const ALLOW_REPEAT = isFeatureOn('repeatJobs');
 
 export default function ScheduleCreateScreen() {
   const { colors } = useTheme();
@@ -500,7 +502,7 @@ export default function ScheduleCreateScreen() {
               )}
             </Section>
 
-            {/* Repeat: switched off (ALLOW_REPEAT). Projects and one-off jobs go day by day. */}
+            {/* Repeat: only when features.repeatJobs is on (ALLOW_REPEAT). Otherwise jobs go day by day. */}
             {ALLOW_REPEAT ? (
             <Section icon="repeat" title="Repeat">
               <SegmentedControl

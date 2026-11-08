@@ -1,5 +1,6 @@
 import { LanguageRow } from '@/components/ui/LanguageSwitch';
 import { ClockRow } from '@/components/time/ClockRow';
+import { isFeatureOn } from '@/config/brand';
 import { LegalSection } from '@/components/legal/LegalSection';
 import { useGuardedSignOut } from '@/hooks/useGuardedSignOut';
 import React, { useState } from 'react';
@@ -78,13 +79,15 @@ export default function WorkerSettingsScreen() {
       </Pressable>
 
       <ListSection title={t('Preferences')}>
-        <ListRow
-          icon="navigation"
-          title={t('Maps App')}
-          value={t(currentNavLabel)}
-          showChevron
-          onPress={() => setNavSheetOpen(true)}
-        />
+        {isFeatureOn('maps') ? (
+          <ListRow
+            icon="navigation"
+            title={t('Maps App')}
+            value={t(currentNavLabel)}
+            showChevron
+            onPress={() => setNavSheetOpen(true)}
+          />
+        ) : null}
         <ListRow
           icon="bell"
           title={t('Notifications')}

@@ -7,7 +7,8 @@ const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
-const load = (p) => { const m = { exports: {} }; new Function('module', 'exports', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports); return m.exports; };
+const { withBrand } = require('./_brand.cjs');
+const load = (p) => { const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports, withBrand(() => ({}), ts)); return m.exports; };
 const V = load('src/lib/weatherView.ts');
 const towns = load('src/lib/weatherTowns.ts');
 

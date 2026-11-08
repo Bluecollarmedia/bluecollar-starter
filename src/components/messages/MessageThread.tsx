@@ -8,6 +8,7 @@ import { spacing, radius } from '@/theme/spacing';
 import { db } from '@/data/store';
 import { useProjectMessages } from '@/hooks/useProjectMessages';
 import { ReportSheet, type ReportTarget } from '@/components/reports/ReportSheet';
+import { isFeatureOn } from '@/config/brand';
 import { isoToLocalDateKey, todayKey } from '@/lib/ids';
 import type { ProjectMessage } from '@/types/project';
 import { confirmAction } from '@/components/financials/ActionSheet';
@@ -87,7 +88,8 @@ export function MessageList({ projectId, emptyTitle, emptyText }: MessageThreadP
               <Text style={[typeScale.caption, { color: colors.textTertiary, marginHorizontal: spacing.sm }]}>
                 {timeLabel(m.createdAt)}
               </Text>
-              {!mine ? (
+              {/* Reporting a message can be switched off in the settings file (features.reports; Apple wants it on). */}
+              {!mine && isFeatureOn('reports') ? (
                 <Pressable
                   onPress={() => setReporting({ projectId, type: 'message', contentId: m.id })}
                   hitSlop={8}

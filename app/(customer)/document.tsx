@@ -24,6 +24,7 @@ import { DOC_LABEL, STATUS_LABEL, STATUS_TONE, displayStatus, snapshotFor, templ
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { FinancialDocType } from '@/types/financial';
+import { brand } from '@/config/brand';
 
 export default function CustomerDocumentScreen() {
   const { kind, id } = useLocalSearchParams<{ kind: FinancialDocType; id: string }>();
@@ -68,7 +69,7 @@ export default function CustomerDocumentScreen() {
   const canAnswer = doc.kind !== 'invoice' && status === 'sent';
   const answered = [...events].reverse().find((e) => e.eventType === 'approved' || e.eventType === 'declined');
 
-  const companyName = db.company?.name ?? 'Your Company';
+  const companyName = db.company?.name ?? brand.company.name;
 
   const respond = (approve: boolean) => {
     if (doc.kind === 'invoice') return;

@@ -15,7 +15,7 @@ check('3 every worker row is on the screen itself, with the same availability ru
 check('4 opened from inside a project, the Project question is not asked (the id is bound in the background)', /const projectKnown = !isMove && !!params\.projectId/.test(s) && /\{projectKnown \? null : \(\s*<Section\s*icon="home"\s*title="Project"/.test(s) && /useState\(params\.projectId \?\? ''\)/.test(s));
 check('5 from a generic Schedule button (no project given) the Project question is still asked', /projectKnown \? null : \(/.test(s) && /title="Project"/.test(s));
 check('6 Time starts on Full Day', /const \[isFullDay, setIsFullDay\] = useState\(true\)/.test(s));
-check('7 Repeat is not offered for projects and one-off jobs', /const ALLOW_REPEAT = false/.test(s) && /\{ALLOW_REPEAT \? \(\s*<Section icon="repeat" title="Repeat">/.test(s));
+check('7 Repeat is offered only when the settings file switches repeat jobs on (off by default: projects and one-off jobs go day by day)', /const ALLOW_REPEAT = isFeatureOn\('repeatJobs'\)/.test(s) && require('./_brand.cjs').brand.features.repeatJobs === false && /\{ALLOW_REPEAT \? \(\s*<Section icon="repeat" title="Repeat">/.test(s));
 check('8 the date cards on the project Schedule tab are labelled buttons that select the day', /accessibilityRole="button"\s*accessibilityState=\{\{ selected: isSelected \}\}/.test(proj) && /setScheduleDate\(dateStr\)/.test(proj));
 check('9 Schedule Worker passes the selected day to the sheet', /schedule-create\?projectId=\$\{p\.id\}&date=\$\{scheduleDate\}/.test(proj) && /useState\(params\.date \?\? today\)/.test(s));
 console.log(bad ? `\n${bad} failed` : '\nall passed');

@@ -10,7 +10,8 @@ const compile = (src, req) => {
   return m.exports;
 };
 
-const legal = compile(read('src/legal/legalContent.ts'), () => ({}));
+const { withBrand } = require('./_brand.cjs');
+const legal = compile(read('src/legal/legalContent.ts'), withBrand(() => ({}), ts));
 const lib = compile(read('src/lib/passwordReset.ts'), (n) => (n === '@/legal/legalContent' ? legal : {}));
 
 let calls = [];
@@ -28,7 +29,7 @@ const fakeSupabase = {
 let webUrl = 'https://app.yourcompany.com';
 let configured = true;
 let os = 'web';
-const authLink = compile(read('src/lib/authLink.ts'), () => ({}));
+const authLink = compile(read('src/lib/authLink.ts'), withBrand(() => ({}), ts));
 const data = compile(read('src/data/passwordReset.ts'), (n) => {
   if (n === '@/lib/supabase') return { supabase: fakeSupabase, get isSupabaseConfigured() { return configured; } };
   if (n === '@/lib/config') return { config: { get webUrl() { return webUrl; } } };

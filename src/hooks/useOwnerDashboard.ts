@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { isFeatureOn } from '@/config/brand';
 import type { Feather } from '@expo/vector-icons';
 import { useSchedule } from '@/hooks/useSchedule';
 import { useAttendance } from '@/hooks/useOperations';
@@ -190,7 +191,7 @@ export function useOwnerDashboard() {
     }
 
     for (const detail of attendanceByAssignment.values()) {
-      if (detail.withinRadius === false && detail.worker && !handledWorkers.has(detail.worker.id)) {
+      if (isFeatureOn('timeClock') && detail.withinRadius === false && detail.worker && !handledWorkers.has(detail.worker.id)) {
         items.push({
           id: `radius_${detail.assignmentId}`,
           title: `${detail.worker.firstName} ${detail.worker.lastName} checked in outside the job site`,
@@ -205,7 +206,7 @@ export function useOwnerDashboard() {
     }
 
     for (const a of todayAssignments) {
-      if (!a.truckId) continue;
+      if (!a.truckId || !isFeatureOn('trucks')) continue;
       const truck = db.trucks.find(t => t.id === a.truckId);
       if (truck && (truck.status === 'maintenance' || truck.status === 'out_of_service')) {
         items.push({
@@ -220,7 +221,8 @@ export function useOwnerDashboard() {
       }
     }
 
-    const pendingRequests = Object.values(db.requests).flat().filter(r => r.status === 'pending');
+    // Requests customers send from their own login (only while the customer portal is on in the settings file).
+    const pendingRequests = isFeatureOn('customerPortal') ? Object.values(db.requests).flat().filter(r => r.status === 'pending') : [];
     for (const req of pendingRequests) {
       const project = db.projects.find(p => p.id === req.projectId);
       items.push({

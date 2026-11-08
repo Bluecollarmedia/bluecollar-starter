@@ -19,6 +19,9 @@ import { todayKey, localDateKey } from '@/lib/ids';
 import { loadBirthdays } from '@/data/birthday';
 import { OwnerWorkerExtras } from '@/components/account/WorkerExtras';
 import { OwnerClockCard } from '@/components/time/OwnerClockCard';
+import { isFeatureOn } from '@/config/brand';
+
+const TRUCKS_ON = isFeatureOn('trucks');
 import { formatBirthday, birthdaySoon } from '@/lib/birthday';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
@@ -290,12 +293,14 @@ export default function WorkerDetailScreen() {
                       <Icon name="clock" size={14} color={colors.textSecondary} />
                       <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginLeft: spacing.xs }]}>{timeStr}</Text>
                     </View>
-                    <View style={styles.assignmentDetailRow}>
-                      <Icon name="truck" size={14} color={colors.textSecondary} />
-                      <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginLeft: spacing.xs }]}>
-                        {a.truck?.name ?? 'No truck assigned'}
-                      </Text>
-                    </View>
+                    {TRUCKS_ON && (
+                      <View style={styles.assignmentDetailRow}>
+                        <Icon name="truck" size={14} color={colors.textSecondary} />
+                        <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginLeft: spacing.xs }]}>
+                          {a.truck?.name ?? 'No truck assigned'}
+                        </Text>
+                      </View>
+                    )}
                   </View>
                 );
               })
@@ -318,7 +323,7 @@ export default function WorkerDetailScreen() {
             ) : null}
           </View>
 
-          {isActive ? <OwnerClockCard personId={p.id} firstName={p.firstName} /> : null}
+          {isActive && isFeatureOn('timeClock') ? <OwnerClockCard personId={p.id} firstName={p.firstName} /> : null}
 
           {/* Tomorrow */}
           <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
@@ -344,7 +349,7 @@ export default function WorkerDetailScreen() {
                     <View style={[styles.assignmentDetailRow, { marginTop: spacing.xs }]}>
                       <Icon name="clock" size={14} color={colors.textSecondary} />
                       <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginLeft: spacing.xs }]}>
-                        {timeStr} · {a.truck?.name ?? 'No truck assigned'}
+                        {timeStr}{TRUCKS_ON ? ` · ${a.truck?.name ?? 'No truck assigned'}` : ''}
                       </Text>
                     </View>
                   </View>

@@ -13,6 +13,7 @@ import { SectionTabs, Card, EmptyState, StatusBadge, Button, OptimizedImage } fr
 import { useProject } from '@/hooks/useProject';
 import { db } from '@/data/store';
 import { CustomerBillingCard } from '@/components/financials/CustomerBillingCard';
+import { brand as brandSettings, isFeatureOn } from '@/config/brand';
 import { ProgressRing } from '@/components/ui/ProgressRing';
 import { meaningfulUpdates } from '@/lib/customerOverview';
 import { ReportSheet, type ReportTarget } from '@/components/reports/ReportSheet';
@@ -109,7 +110,7 @@ export default function CustomerProjectScreen() {
     if (!reqTitle.trim()) return;
     Keyboard.dismiss();
     submitRequest({ title: reqTitle.trim(), description: reqDescription.trim() || undefined, category: reqCategory });
-    const companyName = db.company?.name ?? 'Your Company';
+    const companyName = db.company?.name ?? brandSettings.company.name;
     const sentMsg = t("Your {category} has been sent to {company}. They'll review it shortly.", { category: t(categoryOptions.find(c => c.key === reqCategory)?.label ?? reqCategory), company: companyName });
     showMessage(t('Request Submitted'), sentMsg);
     setReqTitle('');
@@ -256,8 +257,8 @@ export default function CustomerProjectScreen() {
           )}
         </View>
 
-        {/* 4. Billing, always last */}
-        <CustomerBillingCard projectId={p.id} />
+        {/* 4. Billing, always last (settings file: features.financials) */}
+        {isFeatureOn('financials') ? <CustomerBillingCard projectId={p.id} /> : null}
       </View>
     );
   }
@@ -340,6 +341,7 @@ export default function CustomerProjectScreen() {
                   <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: spacing.xs }]}>
                     {formatDateTime(photo.sharedAt ?? photo.createdAt)}
                   </Text>
+                  {isFeatureOn('reports') ? (
                   <Pressable
                     onPress={() => setReporting({ projectId: id, type: 'photo', contentId: photo.id, where: project?.name })}
                     hitSlop={8}
@@ -349,6 +351,7 @@ export default function CustomerProjectScreen() {
                   >
                     <Text style={[typeScale.caption, { color: colors.textSecondary, textDecorationLine: 'underline' }]}>{t('Report')}</Text>
                   </Pressable>
+                  ) : null}
                 </View>
               </Card>
             ))}

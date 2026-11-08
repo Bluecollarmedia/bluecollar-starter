@@ -24,6 +24,7 @@ import type {
   Quote, ChangeOrder, Invoice, ProjectFinancialSummary, FinancialStatus,
 } from '@/types/financial';
 import type { Project } from '@/types/project';
+import { brand } from '@/config/brand';
 
 type TableFor = 'quotes' | 'change_orders' | 'invoices';
 
@@ -189,7 +190,7 @@ export function currentSnapshot(projectId: string, customerId?: string): Documen
   const cust = customerId ? db.people[customerId] : p?.customer;
   return {
     company: {
-      name: c?.name ?? 'Your Company',
+      name: c?.name ?? brand.company.name,
       phone: c?.phone,
       email: c?.email,
       address: c?.address,
@@ -619,7 +620,7 @@ export async function emailDocumentToCustomer(doc: FinancialDoc, typedEmail?: st
 /** Text for the message the owner sends with the link. */
 export function approvalMessage(doc: FinancialDoc, link: string): string {
   const first = doc.customer?.firstName?.trim();
-  const company = db.company?.name ?? 'Your Company';
+  const company = db.company?.name ?? brand.company.name;
   const what = `${DOC_LABEL[doc.kind].toLowerCase()} ${doc.number}`;
   const act = doc.kind === 'invoice' ? 'You can view it here' : 'You can review and approve it here';
   return `${first ? `Hi ${first}, here` : 'Here'}'s your ${what} from ${company} (${formatMoney(doc.total)}). ${act}: ${link}`;

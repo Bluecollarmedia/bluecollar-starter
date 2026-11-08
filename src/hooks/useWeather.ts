@@ -40,9 +40,9 @@ export function useWeather(place: Place): { view: WeatherView; refresh: () => vo
       return;
     }
     if (r.reason === 'disabled') {
-      // The owner switched Weather off: ask the switch now, so a visitor is moved to the welcome screen straight away.
+      // The owner switched the public visitor area off: ask the switch now, so a visitor is moved to the welcome screen straight away.
+      // (Signed-in people are not refused by the server; if they ever are, they see "unavailable" below instead of waiting forever.)
       void weatherSwitch.refresh();
-      return;
     }
     setView(have.current ? { status: 'stale', data: have.current } : { status: 'unavailable', data: null });
   }, []);

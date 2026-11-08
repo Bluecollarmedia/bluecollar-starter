@@ -5,6 +5,10 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { sizing } from '@/theme/spacing';
+import { isFeatureOn, words } from '@/config/brand';
+
+/** The Clock tab is part of the time clock (settings file: features.timeClock). */
+const CLOCK_ON = isFeatureOn('timeClock');
 
 let NativeTabs: any = null;
 try {
@@ -28,20 +32,22 @@ function WorkerNativeTabs() {
         <NativeTabs.Trigger.Label>{t('Today')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="clock">
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'clock', selected: 'clock.fill' }}
-          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="clock" />}
-        />
-        <NativeTabs.Trigger.Label>{t('Clock')}</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
+      {CLOCK_ON && (
+        <NativeTabs.Trigger name="clock">
+          <NativeTabs.Trigger.Icon
+            sf={{ default: 'clock', selected: 'clock.fill' }}
+            src={<NativeTabs.Trigger.VectorIcon family={Feather} name="clock" />}
+          />
+          <NativeTabs.Trigger.Label>{t('Clock')}</NativeTabs.Trigger.Label>
+        </NativeTabs.Trigger>
+      )}
 
       <NativeTabs.Trigger name="jobs">
         <NativeTabs.Trigger.Icon
           sf={{ default: 'clipboard', selected: 'clipboard.fill' }}
           src={<NativeTabs.Trigger.VectorIcon family={Feather} name="clipboard" />}
         />
-        <NativeTabs.Trigger.Label>{t('Jobs')}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t(words.jobs)}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="activity">
@@ -98,6 +104,7 @@ function WorkerJSTabs() {
       <Tabs.Screen
         name="clock"
         options={{
+          href: CLOCK_ON ? undefined : null,
           title: t('Clock'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="clock" size={size} color={color} />
@@ -107,7 +114,7 @@ function WorkerJSTabs() {
       <Tabs.Screen
         name="jobs"
         options={{
-          title: t('Jobs'),
+          title: t(words.jobs),
           tabBarIcon: ({ color, size }) => (
             <Feather name="clipboard" size={size} color={color} />
           ),

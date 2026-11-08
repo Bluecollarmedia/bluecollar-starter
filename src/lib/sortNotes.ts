@@ -3,6 +3,7 @@
 // not recognise as a material (a measurement, a reminder, who to call) goes under "Other notes" word for word, so nothing is lost.
 // It never makes up a quantity: if the note didn't give one, the quantity is left empty.
 import type { MaterialItem, MaterialList } from './materialList';
+import { brand, wordsPattern } from '@/config/brand';
 
 const UNITS = [
   'cubic yards?', 'cu\\.? ?yds?', 'yards?', 'yds?', 'tons?', 'bags?', 'sq\\.? ?ft', 'square feet', 'linear feet', 'lin\\.? ?ft', 'feet', 'foot', 'ft', "'", 'inch(?:es)?', 'in',
@@ -11,19 +12,8 @@ const UNITS = [
 const UNIT_RE = new RegExp(`(\\d+(?:\\.\\d+)?|\\d+\\s*/\\s*\\d+)\\s*(?:x\\s*)?(${UNITS.join('|')})(?![a-z])`, 'i');
 const LEADING_NUM_RE = /^\s*(\d+(?:\.\d+)?)\s+(?!x\b|by\b)/i;
 
-const CATEGORIES: [string, RegExp][] = [
-  ['Asphalt & Sealcoat', /\b(asphalt|blacktop|hot ?mix|cold ?patch|sealcoat(?:ing)?|sealer|crack ?fill(?:er)?|tack ?coat|emulsion)\b/i],
-  ['Concrete & Masonry', /\b(concrete|cement|mortar|polymeric|rebar|footing|grout)\b/i],
-  ['Stone & Gravel', /\b(stone|gravel|rock|boulders?|flagstone|belgian|rip ?rap|crushed|pea gravel|screenings|rubble|stone dust|aggregate)\b/i],
-  ['Block & Brick', /\b(pavers?|retaining wall|wall block|blocks?|bricks?|cap stones?|capstone|coping|steps?)\b/i],
-  ['Soil & Sand', /\b(top ?soil|soil|dirt|fill|sand|loam)\b/i],
-  ['Lumber', /\b(lumber|plywood|osb|boards?|studs?|joists?|beams?|posts?|timbers?|2x4s?|2x6s?|2x8s?|2x10s?|2x12s?|4x4s?|6x6s?)\b/i],
-  ['Paint & Striping', /\b(paint|primer|stain|striping|line paint|stencils?|caulk)\b/i],
-  ['Fabric & Liner', /\b(fabric|geotextile|liner|tarp|plastic|vapor barrier)\b/i],
-  ['Drainage & Pipe', /\b(pipe|drain|drainage|valve|corrugated|pvc|catch basin|downspout|culvert)\b/i],
-  ['Lighting & Electrical', /\b(lights?|lighting|wire|wiring|transformer|fixture)\b/i],
-  ['Hardware', /\b(screws?|nails?|spikes?|stakes?|fasteners?|brackets?|anchors?|staples?|adhesive|glue)\b/i],
-];
+// The groups and the words that put a line in each come from the settings file (src/config/brand.js, wording.materialCategories).
+const CATEGORIES: [string, RegExp][] = brand.wording.materialCategories.map((c) => [c.name, wordsPattern(c.words)] as [string, RegExp]);
 
 const FILLER = /^(?:i\s+)?(?:need(?:s|ed)?|order|get|buy|pick up|bring|want|use|about|approx\.?|approximately|around|roughly|maybe|total|of|the|some)\b[\s,:-]*/i;
 

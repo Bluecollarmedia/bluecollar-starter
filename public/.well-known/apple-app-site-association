@@ -2,9 +2,14 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["YOURTEAMID.com.yourcompany.starter"],
+        "appIDs": [
+          "YOURTEAMID.com.yourcompany.starter"
+        ],
         "components": [
-          { "/": "/invite/*", "comment": "Private invite links open the app when it is installed" }
+          {
+            "/": "/invite/*",
+            "comment": "Private invite links open the app when it is installed"
+          }
         ]
       }
     ]
