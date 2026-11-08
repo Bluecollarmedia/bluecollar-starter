@@ -67,7 +67,11 @@ export function notifyStaff(
   insertRows('app_notifications', rows);
 }
 
-/** In-app notifications for specific people (e.g. workers for an announcement). */
+/**
+ * In-app notifications for specific people (e.g. workers for an announcement).
+ * Only ACTIVE members of the company get one: the database refuses a notice for anyone else (update 200), so an invited
+ * customer with no login yet is skipped here instead of failing the whole save.
+ */
 export function notifyPeople(
   personIds: string[],
   eventType: NotificationEventType,
@@ -76,7 +80,9 @@ export function notifyPeople(
   link?: { type: AppNotification['linkedEntityType']; id: string },
   metadata?: Record<string, unknown>,
 ) {
-  insertRows('app_notifications', personIds.map((recipientId) => ({
+  const active = new Set(db.members.filter((m) => m.status === 'active').map((m) => m.personId));
+  const to = db.demo ? personIds : personIds.filter((id) => active.has(id));
+  insertRows('app_notifications', to.map((recipientId) => ({
     recipientId,
     eventType,
     title,

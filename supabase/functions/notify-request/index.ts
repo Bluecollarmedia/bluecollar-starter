@@ -1,9 +1,14 @@
 /**
  * notify-request — emails the owner (and admins) about a NEW service request (update 118).
  *
+ * WARNING: the login (JWT) check is OFF for this function on purpose (supabase/config.toml): signed-out visitors call it from the public
+ * Request form. Anyone on the internet can call it, so it is only safe because of its own rules below: it takes nothing but a request id,
+ * only emails a request created in the last 15 minutes (FRESH_MS), and claims each one once (emailed_at is null -> set) before sending.
+ * Keep those rules, and never add a feature here that trusts the caller (a check script fails if they are removed).
+ *
  * The app calls it right after submit_service_request, with the new request's id. Anyone can call it (visitors are not signed in), so it
  * only ever emails a request that is less than 15 minutes old and has not been emailed yet, and it emails only the company's own owner and
- * admins. It never returns the request's details. Deploy with "Verify JWT" OFF. One file on purpose (no _shared imports): it is deployed by
+ * admins. It never returns the request's details. Deploy with "Verify JWT" OFF (supabase/config.toml does that). One file on purpose (no _shared imports): it is deployed by
  * pasting it into the Supabase website.
  *
  * Secrets (already set for send-document-email): RESEND_API_KEY, NOTIFY_EMAIL_FROM.

@@ -1,6 +1,6 @@
 // Run: node scripts/checks/mediaUpload.check.cjs <path to typescript package>
-// Checks every way a photo upload can succeed or fail, with a FAKE Supabase: the Supabase Storage fallback (used
-// before R2 is set up), the R2 path, and what the person is told in each failure.
+// Checks every way a photo upload can succeed or fail, with a FAKE Supabase: R2 is required (no address = a clear
+// "Photo storage is not set up" failure, never the old Supabase bucket), the R2 path, and what the person is told in each failure.
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
@@ -73,45 +73,56 @@ const msgOf = async (p) => { try { await p; return null; } catch (e) { return e.
   check('1 each known cause gets a plain sentence AND keeps the raw text in brackets', allMapped, JSON.stringify(cases.map(([r]) => explainUploadError(r))));
   check('2 an unknown error is shown as it is (never hidden)', explainUploadError('weird thing 42') === 'weird thing 42' && explainUploadError(new Error('boom')) === 'boom');
 
-  // Supabase Storage fallback (R2 not set up)
+  // R2 is required (no Supabase Storage fallback any more)
   const { media } = load(false);
-  check('3 R2 is OFF when the build has no R2 address (the fallback is the Supabase "media" bucket)', media.r2Enabled === false);
+  check('3 R2 is OFF when the build has no R2 address', media.r2Enabled === false);
   calls.length = 0;
-  let r = await media.uploadImage('file:///a/b.png', 'co/projects/p1');
-  check('4 success: uploads to the "media" bucket under the folder, returns the public link', calls.length === 1 && calls[0].bucket === 'media' && calls[0].key === 'co/projects/p1/uuid-1.png' && r.url === 'https://sb.test/media/co/projects/p1/uuid-1.png' && r.key === 'co/projects/p1/uuid-1.png', JSON.stringify({ calls, r }));
-  check('5 file types: jpeg default, heic, mov video', (await media.uploadImage('file:///x.heic', 'f')).key.endsWith('.heic') && (await media.uploadImage('file:///x', 'f', 'video/quicktime')).key.endsWith('.mov') && (await media.uploadImage('file:///x.jpg', 'f')).key.endsWith('.jpg'));
-  check('6 a web link is returned unchanged, nothing uploaded', (calls.length = 0, (await media.uploadImage('https://x.test/a.jpg', 'f')).url === 'https://x.test/a.jpg' && calls.length === 0));
+  let m = await msgOf(media.uploadImage('file:///a/b.png', 'co/projects/p1'));
+  check('4 with no R2 address an upload FAILS with "Photo storage is not set up", and nothing is sent anywhere (no Supabase bucket, no function)', m && /Photo storage is not set up/.test(m) && calls.length === 0, JSON.stringify({ m, calls }));
+  check('5 a web link is returned unchanged, nothing uploaded', (calls.length = 0, (await media.uploadImage('https://x.test/a.jpg', 'f')).url === 'https://x.test/a.jpg' && calls.length === 0));
+  calls.length = 0;
+  await media.removeMedia('co/projects/p1/a.jpg');
+  check('6 with no R2 address removeMedia asks nobody (no Supabase bucket delete)', calls.length === 0, JSON.stringify(calls));
 
-  uploadResult = { error: { message: 'Bucket not found' } };
-  let m = await msgOf(media.uploadImage('file:///a.jpg', 'f'));
-  check('7 missing bucket: says storage is not set up AND shows the raw error', m && /^Upload failed:/.test(m) && /bucket is missing/.test(m) && /Bucket not found/.test(m), m);
-  uploadResult = { error: { message: 'new row violates row-level security policy' } };
-  m = await msgOf(media.uploadImage('file:///a.jpg', 'f'));
-  check('8 permission refusal: explained, raw text kept', m && /refused this upload/.test(m) && /row-level security/.test(m), m);
-  uploadResult = { error: { message: 'The object exceeded the maximum allowed size' } };
-  m = await msgOf(media.uploadImage('file:///a.mov', 'f'));
-  check('9 too large: explained', m && /bigger than the server allows/.test(m), m);
-  uploadResult = { error: null }; uploadThrows = new TypeError('Network request failed');
-  m = await msgOf(media.uploadImage('file:///a.jpg', 'f'));
-  check('10 a thrown network failure is caught and explained (not a raw crash)', m && /^Upload failed:/.test(m) && /connection/.test(m), m);
-  uploadThrows = null;
+  const on = load(true);
+  calls.length = 0;
+  let r = await on.media.uploadImage('file:///a/b.png', 'co/projects/p1');
+  check('7 success: asks the media function for an upload link for the folder, returns its link and key; the Supabase bucket is never used', calls.length === 1 && calls[0].fn === 'media' && calls[0].args.body.action === 'put' && calls[0].args.body.folder === 'co/projects/p1' && calls[0].args.body.contentType === 'image/png' && r.url === 'https://r2.test/k' && r.key === 'k' && !calls.some((c) => c.bucket), JSON.stringify({ calls, r }));
+  calls.length = 0;
+  await on.media.uploadImage('file:///x.heic', 'f'); await on.media.uploadImage('file:///x', 'f', 'video/quicktime'); await on.media.uploadImage('file:///x.jpg', 'f');
+  check('8 file types: heic, mov video, jpeg', calls.map((c) => c.args.body.contentType).join() === 'image/heic,video/quicktime,image/jpeg', JSON.stringify(calls.map((c) => c.args.body.contentType)));
+  const okFetch = globalThis.fetch;
+  globalThis.fetch = async () => ({ ok: false, status: 403, text: async () => '<Error><Code>AccessDenied</Code></Error>' });
+  m = await msgOf(on.media.uploadImage('file:///a.jpg', 'f'));
+  check('9 storage refused (403): explained, raw text kept', m && /^Upload failed:/.test(m) && /refused this upload/.test(m) && /403/.test(m), m);
+  globalThis.fetch = async () => ({ ok: false, status: 413, text: async () => '' });
+  m = await msgOf(on.media.uploadImage('file:///a.mov', 'f'));
+  check('10 too large (413): explained', m && /bigger than the server allows/.test(m), m);
+  globalThis.fetch = async () => { throw new TypeError('Network request failed'); };
+  m = await msgOf(on.media.uploadImage('file:///a.jpg', 'f'));
+  check('11 a thrown network failure is caught and explained (not a raw crash)', m && /^Upload failed:/.test(m) && /connection/.test(m), m);
+  globalThis.fetch = okFetch;
 
   session = null; calls.length = 0;
-  m = await msgOf(media.uploadImage('file:///a.jpg', 'f'));
-  check('11 signed out: clear message, and the server is never asked', m && /signed out/.test(m) && calls.length === 0, m);
+  m = await msgOf(on.media.uploadImage('file:///a.jpg', 'f'));
+  check('12 signed out: clear message, and the server is never asked', m && /signed out/.test(m) && calls.length === 0, m);
   session = { access_token: 't' };
 
-  uploadResult = { error: null };
+  const said = { error: 'ID photo storage is not set up yet (the private bucket, R2_PRIVATE_BUCKET_NAME, is missing). Ask the company to finish setup.' };
+  invokeResult = { data: null, error: { message: 'Edge Function returned a non-2xx status code', context: { clone: () => ({ json: async () => said }) } } };
+  m = await msgOf(on.media.uploadImage('file:///a.jpg', 'ids/p1'));
+  check('13 the media function\'s own refusal (no private bucket for ID photos) reaches the person, not the generic "non-2xx" text', m && /ID photo storage is not set up/.test(m) && !/non-2xx/.test(m), m);
+  invokeResult = { data: { uploadUrl: 'https://r2.test/put', key: 'k', publicUrl: 'https://r2.test/k' }, error: null };
 
   // R2 path
   const r2 = load(true);
-  check('15 with an R2 address in the build, R2 is ON', r2.media.r2Enabled === true);
+  check('14 with an R2 address in the build, R2 is ON', r2.media.r2Enabled === true);
   invokeResult = { data: null, error: { message: 'Failed to send a request to the Edge Function' } };
   m = await msgOf(r2.media.uploadImage('file:///a.jpg', 'f'));
-  check('16 R2 on but the function is not deployed: says so, raw text kept', m && /isn't reachable/.test(m) && /Edge Function/.test(m), m);
+  check('15 R2 on but the function is not deployed: says so, raw text kept', m && /isn't reachable/.test(m) && /Edge Function/.test(m), m);
   invokeResult = { data: { error: 'R2 is not set up yet.' }, error: null };
   m = await msgOf(r2.media.uploadImage('file:///a.jpg', 'f'));
-  check('17 R2 on but secrets missing: says R2 is not set up', m && /R2/.test(m), m);
+  check('16 R2 on but secrets missing: says R2 is not set up', m && /R2/.test(m), m);
 
   console.log(bad ? `\n${bad} failed` : '\nall passed');
   process.exit(bad ? 1 : 0);

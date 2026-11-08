@@ -16,6 +16,8 @@ import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { AuthProvider, useAuth } from '@/providers/AuthProvider';
 import { SplashScreen } from '@/components/branding/SplashScreen';
+import { AppNotSetUpScreen } from '@/components/branding/AppNotSetUpScreen';
+import { isAppNotSetUp } from '@/lib/supabase';
 import { SignInWelcome } from '@/components/branding/WelcomeOverlay';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { applyPendingSignup } from '@/data/pendingSignup';
@@ -69,7 +71,7 @@ function RootNavigator() {
   }, [isLoading]);
 
   useEffect(() => {
-    if (isLoading || !splashDone || isPublicPage) return;
+    if (isAppNotSetUp || isLoading || !splashDone || isPublicPage) return;
 
     const inAuthGroup = segments[0] === '(auth)';
     const inOnboardingGroup = segments[0] === '(onboarding)';
@@ -110,6 +112,12 @@ function RootNavigator() {
   const handleSplashFinish = useCallback(() => {
     setSplashDone(true);
   }, []);
+
+  // A release build made without its Supabase settings never runs demo mode: it shows one plain "App not set up" screen
+  // everywhere (only the legal pages, which need no server, still open).
+  if (isAppNotSetUp && (segments as string[])[0] !== 'legal') {
+    return <AppNotSetUpScreen />;
+  }
 
   if (!isPublicPage && (isLoading || !splashDone)) {
     return <SplashScreen onFinish={handleSplashFinish} />;

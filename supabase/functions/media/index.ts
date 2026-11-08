@@ -7,14 +7,19 @@
  * `company_members` tables, nothing else.
  *
  * Secrets (supabase secrets set ...): R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,
- * R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL (https://..., no slash).
+ * R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL (https://..., no slash),
+ * and R2_PRIVATE_BUCKET_NAME (REQUIRED for worker ID photos: without it, ID photo
+ * uploads are refused; they never fall back to the public bucket).
  *
  * Who may write where:
  *   avatars/{myPersonId}/...   any signed-in person (their own picture)
+ *   ids/{myPersonId}/...       any signed-in person (their own ID photo, private bucket only)
  *   {companyId}/...            active members of that company
- * Delete: the same prefixes; for company files, staff or the member who
- * uploaded it is not tracked, so owner/admin/manager/lead/worker may delete
- * inside their own company (customers may not).
+ * New company files are named {uploaderPersonId}_{random}.{ext}, so the server knows who uploaded them.
+ * Delete:
+ *   avatars/ and ids/          only the person whose folder it is
+ *   {companyId}/...            the company's owner/admin, or the member who uploaded that file (by its name).
+ *                              Workers and customers can never delete other people's files.
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -42,7 +47,7 @@ const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
 const R2_ACCOUNT_ID = Deno.env.get('R2_ACCOUNT_ID') ?? '';
 const R2_BUCKET_NAME = Deno.env.get('R2_BUCKET_NAME') ?? '';
 const R2_PUBLIC_URL = (Deno.env.get('R2_PUBLIC_URL') ?? '').replace(/\/+$/, '');
-/** The private bucket (no public address). When it is not set, everything stays in the one bucket exactly as before. */
+/** The private bucket (no public address). REQUIRED for worker ID photos (ids/...): without it those uploads are refused. */
 const R2_PRIVATE_BUCKET_NAME = Deno.env.get('R2_PRIVATE_BUCKET_NAME') ?? '';
 
 const r2 = new AwsClient({
@@ -54,8 +59,17 @@ const r2 = new AwsClient({
 const BUCKET_URL = `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${R2_BUCKET_NAME}`;
 const PRIVATE_BUCKET_URL = R2_PRIVATE_BUCKET_NAME ? `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com/${R2_PRIVATE_BUCKET_NAME}` : '';
 
-/** Where NEW files for this key are written: the private bucket for private keys (when it is set up), otherwise the normal bucket. */
-const writeBase = (key: string) => (PRIVATE_BUCKET_URL && isPrivateKey(key) ? PRIVATE_BUCKET_URL : BUCKET_URL);
+const NO_PRIVATE_BUCKET = 'ID photo storage is not set up yet (the private bucket, R2_PRIVATE_BUCKET_NAME, is missing). Ask the company to finish setup.';
+
+/**
+ * Where NEW files for this key are written: private keys ONLY to the private bucket, everything else to the normal bucket.
+ * There is no fallback: a private key with no private bucket set up is refused before this is reached (and throws here, to be sure).
+ */
+const writeBase = (key: string) => {
+  if (!isPrivateKey(key)) return BUCKET_URL;
+  if (!PRIVATE_BUCKET_URL) throw new Error(NO_PRIVATE_BUCKET);
+  return PRIVATE_BUCKET_URL;
+};
 
 /**
  * Where an EXISTING file is: the private bucket first, then the normal bucket (files not yet moved across). Used for reading and signing,
@@ -83,7 +97,10 @@ const TYPES: Record<string, string> = {
   'video/3gpp': '3gp',
 };
 const MAX_BYTES = 200 * 1024 * 1024;
-const CAN_DELETE = new Set(['owner', 'admin', 'manager', 'lead', 'worker']);
+/** Who may delete ANY file in their company's folder. Everyone else may delete only the files they uploaded themselves. */
+const CAN_DELETE_ANY = new Set(['owner', 'admin']);
+/** True when the file's name says this person uploaded it ({personId}_{random}.{ext}, see "put"). */
+const uploadedBy = (key: string, personId: string) => (key.split('/').pop() ?? '').startsWith(`${personId}_`);
 
 /** A private, short-lived read link for an R2 file. */
 async function presignGet(key: string, seconds: number): Promise<string> {
@@ -152,6 +169,8 @@ serve(async (req: Request) => {
       const [first, second] = folder.split('/');
       const mine = first === 'avatars' || first === 'ids' ? second === me.personId : first in me.roles;
       if (!mine) return reply({ error: 'You cannot upload there' }, 403);
+      // Worker ID photos only ever go to the private bucket. No private bucket = no upload (never the public bucket).
+      if (isPrivateKey(`${folder}/x`) && !PRIVATE_BUCKET_URL) return reply({ error: NO_PRIVATE_BUCKET }, 503);
 
       // The owner's max file size for this company (More > Storage). Empty = the 200 MB maximum above. Needs update 53.
       if (first !== 'avatars' && first !== 'ids' && typeof body.size === 'number') {
@@ -163,7 +182,9 @@ serve(async (req: Request) => {
         }
       }
 
-      const key = `${folder}/${crypto.randomUUID()}.${ext}`;
+      // Company files carry the uploader's person id in their name, so "delete" can tell who uploaded them.
+      const name = first === 'avatars' || first === 'ids' ? crypto.randomUUID() : `${me.personId}_${crypto.randomUUID()}`;
+      const key = `${folder}/${name}.${ext}`;
       const url = new URL(`${writeBase(key)}/${key}`);
       url.searchParams.set('X-Amz-Expires', '600');
       const signed = await r2.sign(
@@ -179,7 +200,7 @@ serve(async (req: Request) => {
       const [first, second] = key.split('/');
       const allowed = first === 'avatars' || first === 'ids'
         ? second === me.personId
-        : first in me.roles && CAN_DELETE.has(me.roles[first]);
+        : first in me.roles && (CAN_DELETE_ANY.has(me.roles[first]) || uploadedBy(key, me.personId));
       if (!allowed) return reply({ error: 'You cannot delete that' }, 403);
       if (!(await deleteEverywhere(key))) return reply({ error: 'Delete failed' }, 502);
       return reply({ ok: true });

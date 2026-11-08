@@ -35,8 +35,21 @@ Sharing: a maintenance photo is always saved internal; compression and uploading
 Only `ids/...` (worker ID photos) are private. They live in a second R2 bucket with no public address (secret `R2_PRIVATE_BUCKET_NAME`,
 the private bucket (e.g. `yourcompany-private`)) and are opened through short-lived signed links from the `media` function (`id-sign`: the person themself, or
 the owner of a company they belong to). Everything else — maintenance, Snow reference/completion, projects, avatars, trucks, issues — is a
-normal public file in the one public bucket, opened straight from its stored address. Without `R2_PRIVATE_BUCKET_NAME`, ID photos fall back to
-the public bucket too (so they would no longer be access-controlled); keep that secret set to a working bucket if you want ID photos private.
+normal public file in the one public bucket, opened straight from its stored address. `R2_PRIVATE_BUCKET_NAME` is REQUIRED for ID photos:
+without it the `media` function refuses every `ids/...` upload with a clear "ID photo storage is not set up yet" error. There is no fallback
+to the public bucket, so an ID photo can never end up at a public address. Set it for every client (per-client setup list).
+
+## R2 is required (no Supabase Storage fallback)
+
+Every upload goes to R2 through the `media` function. A build without `EXPO_PUBLIC_R2_PUBLIC_URL` cannot save files: `uploadImage` fails with
+"Photo storage is not set up" and `removeMedia` does nothing. The app never writes to the old Supabase "media" bucket any more, and update 200
+closes that bucket to uploads, changes and deletes from signed-in people (listing is limited to your own company's folders).
+
+## Who may delete a file
+
+New company files are named `{uploaderPersonId}_{random}.{ext}`, so the `media` function knows who uploaded them. Delete is allowed for the
+company's owner/admin (any file in the company folder), or for the person who uploaded that file. `avatars/{personId}/...` and
+`ids/{personId}/...` can be deleted only by that person. Workers and customers can never delete other people's files.
 
 History: maintenance and Snow photos were briefly treated as private (a second bucket + signed links). They are just pictures of properties
 and work, so they were made public again on 2026-10-23. The one-time `private-migrate` tool for moving files into the private bucket was removed.

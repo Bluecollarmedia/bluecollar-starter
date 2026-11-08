@@ -23,7 +23,7 @@ import { WorkerExtrasFields } from '@/components/account/WorkerExtras';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useAuth } from '@/providers/AuthProvider';
-import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { isSupabaseConfigured, isDemoMode, supabase } from '@/lib/supabase';
 import { uploadImage } from '@/lib/media';
 import { saveBirthdayForCurrentUser } from '@/data/birthday';
 import { saveDetailsForCurrentUser } from '@/data/workerDetails';
@@ -56,7 +56,9 @@ const REASON_TEXT: Record<string, string> = {
 
 async function lookupInvite(token: string): Promise<Lookup> {
   if (!isSupabaseConfigured) {
-    // Demo mode (no database): any "demo…" link shows a sample worker invite so the page can be tried.
+    // A release build with no database never shows sample data: the link simply can't be used here.
+    if (!isDemoMode) return { valid: false, reason: 'invalid' };
+    // Demo mode (development build, no database): any "demo…" link shows a sample worker invite so the page can be tried.
     return token.startsWith('demo')
       ? { valid: true, kind: 'worker', companyName: 'Your Company', firstName: 'Gabriel', lastName: 'Rivera', phone: '(555) 555-0142' }
       : { valid: false, reason: 'invalid' };
@@ -159,7 +161,7 @@ export default function InviteScreen() {
     Keyboard.dismiss();
     setLoading(true);
 
-    if (!isSupabaseConfigured) {
+    if (isDemoMode) {
       await new Promise((r) => setTimeout(r, 600));
       setLoading(false);
       say('Demo mode', 'This is a preview. With the live database this creates your login and opens the app.');

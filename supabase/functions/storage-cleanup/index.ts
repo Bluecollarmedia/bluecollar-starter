@@ -4,7 +4,7 @@
  * Removes the stored files of permanently deleted companies: every file and every folder the database queued when the company was
  * deleted (update 74), from the public bucket and the private bucket. The app calls it right after a company
  * is deleted (and it can be called again any time; it only ever works on the queue the database wrote, so calling it is harmless).
- * No secret is needed: it cannot be told WHAT to delete. Uses the same R2 secrets as the media function (R2_PRIVATE_BUCKET_NAME is optional).
+ * No secret is needed: it cannot be told WHAT to delete. Uses the same R2 secrets as the media function (R2_PRIVATE_BUCKET_NAME is required for worker ID photos).
  *
  * One file on purpose, so it can be pasted into the Supabase dashboard. The cleanup rules below are the same as
  * supabase/functions/_shared/cleanup.ts, which is the tested copy (a check keeps them identical).

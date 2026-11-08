@@ -22,6 +22,19 @@ export const isSupabaseConfigured =
   SUPABASE_ANON_KEY.length > 0 &&
   !SUPABASE_ANON_KEY.includes('your-anon-key');
 
+/** True only in a development build (Metro sets __DEV__; release builds and the web export have it false). */
+const IS_DEV_BUILD = typeof __DEV__ !== 'undefined' && __DEV__ === true;
+
+/**
+ * Demo mode (sample data, a pretend sign-in) is ONLY for development builds with no Supabase address/key.
+ * A release build (App Store, Play Store, TestFlight, the web site) NEVER runs demo mode: without its Supabase settings it shows the
+ * "App not set up" screen instead (app/_layout.tsx). Real demo data for a client comes only from the demo SQL, never from the app.
+ */
+export const isDemoMode = !isSupabaseConfigured && IS_DEV_BUILD;
+
+/** A release build made without its Supabase address/key: the app shows "App not set up" and does nothing else. */
+export const isAppNotSetUp = !isSupabaseConfigured && !IS_DEV_BUILD;
+
 const SERVER_DOWN = "Can't reach the server right now. Check your connection and try again in a minute.";
 
 /**
