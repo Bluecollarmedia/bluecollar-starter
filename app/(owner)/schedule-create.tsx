@@ -374,7 +374,7 @@ export default function ScheduleCreateScreen() {
                   <Text style={[typeScale.caption, { color: semantic.warning, fontWeight: '700' }]}>Select Anyway</Text>
                 </View>
               ) : (
-                <Icon name={selected ? 'check-circle' : 'circle'} size={24} color={selected ? colors.primary : colors.border} />
+                <Icon name={selected ? 'check-circle' : 'circle'} size={24} color={selected ? colors.primaryOnWhite : colors.border} />
               )}
             </Pressable>
           );
@@ -395,7 +395,7 @@ export default function ScheduleCreateScreen() {
           {selectedProject ? (
             <Pressable style={styles.projectPreview} onPress={() => setShowProjectSheet(true)}>
               <View style={[styles.projectIconWrap, { backgroundColor: colors.primarySurface }]}>
-                <Icon name="home" size={18} color={colors.primary} />
+                <Icon name="home" size={18} color={colors.primaryOnWhite} />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]} numberOfLines={1}>
@@ -452,7 +452,7 @@ export default function ScheduleCreateScreen() {
                 appearance="light"
                 backgroundColor={colors.groupedBackground}
                 fontStyle={{ color: colors.textSecondary }}
-                activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+                activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
                 style={styles.segmentControl}
               />
 
@@ -513,7 +513,7 @@ export default function ScheduleCreateScreen() {
                 appearance="light"
                 backgroundColor={colors.groupedBackground}
                 fontStyle={{ color: colors.textSecondary }}
-                activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+                activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
                 style={styles.segmentControl}
               />
 
@@ -555,7 +555,7 @@ export default function ScheduleCreateScreen() {
                         appearance="light"
                         backgroundColor={colors.groupedBackground}
                         fontStyle={{ color: colors.textSecondary }}
-                        activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+                        activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
                         style={[styles.segmentControl, { flex: 1 }]}
                       />
                     </View>
@@ -570,7 +570,7 @@ export default function ScheduleCreateScreen() {
                     appearance="light"
                     backgroundColor={colors.groupedBackground}
                     fontStyle={{ color: colors.textSecondary }}
-                    activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+                    activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
                     style={styles.segmentControl}
                   />
 
@@ -584,7 +584,7 @@ export default function ScheduleCreateScreen() {
                     appearance="light"
                     backgroundColor={colors.groupedBackground}
                     fontStyle={{ color: colors.textSecondary }}
-                    activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+                    activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
                     style={styles.segmentControl}
                   />
 
@@ -685,7 +685,7 @@ export default function ScheduleCreateScreen() {
           onPress={handleCreate}
           style={({ pressed }) => [
             styles.primaryButton,
-            { backgroundColor: pressed ? colors.primaryDark : colors.primary },
+            { backgroundColor: pressed ? colors.primaryPressed : colors.primary },
           ]}
           accessibilityRole="button"
           accessibilityLabel={isMove ? 'Move Worker' : isRepeating ? 'Schedule Repeating Work' : 'Schedule Work'}
@@ -708,7 +708,7 @@ export default function ScheduleCreateScreen() {
                   {iosPicker === 'date' ? 'Date' : iosPicker === 'endDate' ? 'End Date' : iosPicker === 'start' ? 'Start Time' : 'End Time'}
                 </Text>
                 <Pressable onPress={() => setIosPicker(null)} hitSlop={12} accessibilityRole="button">
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Done</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Done</Text>
                 </Pressable>
               </View>
               {iosPicker === 'date' && (
@@ -716,7 +716,7 @@ export default function ScheduleCreateScreen() {
                   value={dateObj}
                   mode="date"
                   display="inline"
-                  accentColor={colors.primary}
+                  accentColor={colors.primaryOnWhite}
                   onChange={(_e: DateTimePickerEvent, d?: Date) => { if (d) setDate(localDateKey(d)); }}
                 />
               )}
@@ -726,7 +726,7 @@ export default function ScheduleCreateScreen() {
                   mode="date"
                   display="inline"
                   minimumDate={dateObj}
-                  accentColor={colors.primary}
+                  accentColor={colors.primaryOnWhite}
                   onChange={(_e: DateTimePickerEvent, d?: Date) => { if (d) setEndDate(localDateKey(d)); }}
                 />
               )}
@@ -763,7 +763,7 @@ export default function ScheduleCreateScreen() {
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]}>{p.name}</Text>
               {p.address && <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{p.address}</Text>}
             </View>
-            {p.id === projectId && <Icon name="check" size={18} color={colors.primary} />}
+            {p.id === projectId && <Icon name="check" size={18} color={colors.primaryOnWhite} />}
           </Pressable>
         ))}
       </SheetModal>
@@ -775,7 +775,7 @@ export default function ScheduleCreateScreen() {
           onPress={() => { setTruckId(''); setShowTruckSheet(false); }}
         >
           <Text style={[typeScale.bodyLarge, { color: colors.textTertiary, flex: 1 }]}>No truck</Text>
-          {!truckId && <Icon name="check" size={18} color={colors.primary} />}
+          {!truckId && <Icon name="check" size={18} color={colors.primaryOnWhite} />}
         </Pressable>
         {availableTrucks.map(t => (
           <Pressable
@@ -788,7 +788,7 @@ export default function ScheduleCreateScreen() {
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]}>{t.name}</Text>
               <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{t.make} {t.model} · {t.status}</Text>
             </View>
-            {t.id === truckId && <Icon name="check" size={18} color={colors.primary} />}
+            {t.id === truckId && <Icon name="check" size={18} color={colors.primaryOnWhite} />}
           </Pressable>
         ))}
       </SheetModal>
@@ -817,15 +817,15 @@ function Section({
     <View style={[styles.section, { backgroundColor: colors.surface }, shadow.sm]}>
       <View style={styles.sectionHeaderRow}>
         <View style={[styles.sectionIconWrap, { backgroundColor: colors.primarySurface }]}>
-          <Icon name={icon} size={15} color={colors.primary} />
+          <Icon name={icon} size={15} color={colors.primaryOnWhite} />
         </View>
         <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700', flex: 1 }]}>
           {title}{required ? ' *' : ''}
         </Text>
         {accessoryLabel && (
           <Pressable onPress={onPressAccessory} style={styles.sectionAccessory} hitSlop={8}>
-            <Text style={[typeScale.bodySmall, { color: colors.primary, fontWeight: '600' }]}>{accessoryLabel}</Text>
-            <Icon name="chevron-right" size={13} color={colors.primary} />
+            <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite, fontWeight: '600' }]}>{accessoryLabel}</Text>
+            <Icon name="chevron-right" size={13} color={colors.primaryOnWhite} />
           </Pressable>
         )}
       </View>

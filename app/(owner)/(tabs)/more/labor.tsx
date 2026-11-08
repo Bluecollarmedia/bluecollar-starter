@@ -122,7 +122,7 @@ export default function LaborOverviewScreen() {
             </Card>
           ) : null}
 
-          <Card title="EMPLOYEES" right={<Pressable onPress={() => setPickWho(true)} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Add missed workday</Text></Pressable>}>
+          <Card title="EMPLOYEES" right={<Pressable onPress={() => setPickWho(true)} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Add missed workday</Text></Pressable>}>
             {rows.length === 0 ? <Empty icon="clock" text="Nobody has clocked in on this day." /> : rows.map((r, i) => {
               const person = db.people[r.workday.personId];
               return (
@@ -134,7 +134,7 @@ export default function LaborOverviewScreen() {
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
                       {fmtClock(r.workday.clockInAt)} – {r.workday.clockOutAt ? fmtClock(r.workday.clockOutAt) : 'now'} · Net payable {durationText(r.summary.netMs)}
                     </Text>
-                    {r.currentLabel ? <Text style={[typeScale.caption, { color: colors.primary }]}>At {r.currentLabel}</Text> : !r.workday.clockOutAt ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{w('Clocked in, not at a job site')}</Text> : null}
+                    {r.currentLabel ? <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>At {r.currentLabel}</Text> : !r.workday.clockOutAt ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{w('Clocked in, not at a job site')}</Text> : null}
                     {r.problems[0] ? <Text style={[typeScale.caption, { color: colors.warning }]}>{r.problems[0].message}</Text> : null}
                   </View>
                   <View style={{ alignItems: 'flex-end', gap: 4 }}>
@@ -154,7 +154,7 @@ export default function LaborOverviewScreen() {
             ].map((x, i) => (
               <Pressable key={x.label} onPress={() => router.push(x.to as never)} accessibilityRole="button"
                 style={[styles.empRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight }]}>
-                <Icon name={x.icon} size={20} color={colors.primary} />
+                <Icon name={x.icon} size={20} color={colors.primaryOnWhite} />
                 <View style={{ flex: 1 }}>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{x.label}</Text>
                   <Text style={[typeScale.caption, { color: colors.textSecondary }]}>{x.sub}</Text>

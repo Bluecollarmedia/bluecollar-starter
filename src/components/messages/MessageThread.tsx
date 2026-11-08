@@ -83,7 +83,7 @@ export function MessageList({ projectId, emptyTitle, emptyText }: MessageThreadP
                   : { backgroundColor: colors.backgroundTertiary, borderBottomLeftRadius: 4 },
               ]}
             >
-              <Text style={[typeScale.bodyLarge, { color: mine ? fixed.white : colors.textPrimary }]}>{m.body}</Text>
+              <Text style={[typeScale.bodyLarge, { color: mine ? colors.textOnPrimary : colors.textPrimary }]}>{m.body}</Text>
             </View>
             <View style={styles.metaRow}>
               <Text style={[typeScale.caption, { color: colors.textTertiary, marginHorizontal: spacing.sm }]}>
@@ -139,7 +139,7 @@ export function MessageComposer({ projectId }: { projectId: string }) {
         accessibilityRole="button"
         accessibilityLabel={t('Send message')}
       >
-        <Icon name="send" size={18} color={draft.trim() ? fixed.white : colors.textTertiary} />
+        <Icon name="send" size={18} color={draft.trim() ? colors.textOnPrimary : colors.textTertiary} />
       </Pressable>
     </View>
   );

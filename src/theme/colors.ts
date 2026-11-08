@@ -74,21 +74,63 @@ export const fixed = {
   errorOnDark: '#FF8A80',
 } as const;
 
-/** White text on the brand color when it is dark enough to read; near-black text on a light brand color. */
-const ON_BRAND = contrastRatio(BRAND_COLOR, fixed.white) >= 4.5 ? fixed.white : '#111111';
+// ── Readable on ANY brand color ──────────────────────────────────
+// Text needs a contrast of 4.5 : 1 or more (WCAG AA). The owner can pick any brand color, light or dark, so the colors drawn ON it
+// and the brand color drawn as text are worked out here, never assumed. Checked by scripts/checks/brandContrast.check.cjs.
+const MIN_CONTRAST = 4.5;
+const NEAR_BLACK = '#111111';
+/** The text / icon color for something drawn ON this background: white when it reads (4.5 : 1), otherwise near-black (or pure
+ *  black for the few middle colors where near-black falls just short). */
+export const onColor = (bg: string): string => {
+  if (contrastRatio(bg, fixed.white) >= MIN_CONTRAST) return fixed.white;
+  return contrastRatio(bg, NEAR_BLACK) >= MIN_CONTRAST ? NEAR_BLACK : fixed.black;
+};
+/** The color darkened (only as much as needed) until it reads as text on every one of these light backgrounds. */
+export const readableOn = (hex: string, backgrounds: readonly string[]): string => {
+  for (let step = 0; step <= 20; step++) {
+    const c = mixColor(hex, '#000000', step / 20);
+    if (backgrounds.every((bg) => contrastRatio(c, bg) >= MIN_CONTRAST)) return c;
+  }
+  return fixed.black;
+};
+/** A pressed / second shade of a background that still reads with the same text color: darker when that works, else lighter. */
+const shadeKeeping = (bg: string, text: string): string => {
+  for (const amount of [0.3, 0.2, 0.1]) {
+    const c = mixColor(bg, '#000000', amount);
+    if (contrastRatio(c, text) >= MIN_CONTRAST) return c;
+  }
+  return mixColor(bg, '#FFFFFF', 0.25);
+};
+
+/** Any color (a crew color, a swatch) as text on the white page, the gray cards or its own faint tint: darkened when too light. */
+export const readableOnLight = (hex: string): string => readableOn(hex, ['#FFFFFF', '#F5F5F5', mixColor(hex, '#FFFFFF', 0.85)]);
+
+/** Text and icons on the brand color: white on a dark brand color, near-black on a light one (yellow, cyan, white...). */
+const ON_BRAND = onColor(BRAND_COLOR);
+const BRAND_SURFACE = mixColor(BRAND_COLOR, '#FFFFFF', 0.9);
+const BRAND_TONE_BG = mixColor(BRAND_COLOR, '#FFFFFF', 0.88);
+/** The light backgrounds brand-colored text sits on: the white page, the gray cards and the brand's own light tints. */
+const LIGHT_BACKGROUNDS = ['#FFFFFF', '#FAFAFA', '#F5F5F5', '#F2F2F2', BRAND_SURFACE, BRAND_TONE_BG] as const;
+/** The brand color as TEXT or an ICON on the white page / light cards (links, outlined buttons, selected labels): the brand color
+ *  itself when it reads there, otherwise a darker shade of it. Never use plain primary for text. */
+const BRAND_ON_WHITE = readableOn(BRAND_COLOR, LIGHT_BACKGROUNDS);
 
 // ── Brand Palette (from look.brandColor) ─────────────────────────
 export const brand = {
-  /** Primary — the brand color. Main buttons, selected tabs, links and small highlights. */
+  /** Primary — the brand color. BACKGROUNDS: main buttons, selected chips and pills. Text on it = onPrimary. */
   primary: BRAND_COLOR,
-  /** Lighter tone for hover / disabled primary */
+  /** Lighter tone for borders and the disabled look (no text on it). */
   primaryLight: mixColor(BRAND_COLOR, '#FFFFFF', 0.25),
-  /** Darker for pressed states */
-  primaryDark: mixColor(BRAND_COLOR, '#000000', 0.3),
+  /** A deep shade of the brand color: text and icons on light backgrounds, or a background for white text (it reads both ways). */
+  primaryDark: readableOn(mixColor(BRAND_COLOR, '#000000', 0.3), LIGHT_BACKGROUNDS),
+  /** Pressed state of a brand-color button, and the second color of brand gradients: still readable with onPrimary. */
+  primaryPressed: shadeKeeping(BRAND_COLOR, ON_BRAND),
+  /** The brand color as text / icons on white and light cards (see BRAND_ON_WHITE). */
+  primaryOnWhite: BRAND_ON_WHITE,
   /** Quiet light fill for tiles, chips and selected backgrounds (a whisper of the brand color) */
-  primarySurface: mixColor(BRAND_COLOR, '#FFFFFF', 0.9),
+  primarySurface: BRAND_SURFACE,
   /** A deep shade of the brand color — for headings & strong text */
-  accent: mixColor(BRAND_COLOR, '#000000', 0.4),
+  accent: readableOn(mixColor(BRAND_COLOR, '#000000', 0.4), LIGHT_BACKGROUNDS),
   /** A medium shade of the brand color */
   accentMid: mixColor(BRAND_COLOR, '#FFFFFF', 0.15),
   /** Text and icons on top of the brand color */
@@ -138,11 +180,12 @@ export const tones = {
   neutral: { fg: neutral.gray600, bg: neutral.gray200 },
   /** Strong neutral: icons that should stand out without a color. */
   strong: { fg: neutral.gray900, bg: neutral.gray200 },
-  brand: { fg: BRAND_COLOR, bg: mixColor(BRAND_COLOR, '#FFFFFF', 0.88) },
+  brand: { fg: BRAND_ON_WHITE, bg: BRAND_TONE_BG },
 } as const;
 export type ToneName = keyof typeof tones;
 
-/** Muted colors to tell people and crews apart (avatar initials, crew dots): the brand color plus charcoal tints. All take white text. */
+/** Muted colors to tell people and crews apart (avatar initials, crew dots): the brand color plus charcoal tints. Text on one of
+ *  them uses onColor(swatch) (the brand color may be light). */
 export const swatches: readonly string[] = [BRAND_COLOR, '#555555', '#4A4F57', '#5A5249', '#45524D', '#534A5A', '#6B6B6B', '#3D3D3D'];
 
 /** Colors of the printed / emailed quotes, invoices and material lists (HTML and PDF). */
@@ -155,7 +198,8 @@ export const documentColors = {
   page: '#FFFFFF',
   /** The faint "VOID" / "DECLINED" stamp across a page. */
   stamp: withAlpha(semantic.error, 0.1),
-  heading: BRAND_COLOR,
+  /** Headings in the brand color on the white page (darkened if the brand color is too light to read). */
+  heading: BRAND_ON_WHITE,
 } as const;
 
 /** Maps: the drawn map card's background and the check-in zone around a job site. */
@@ -194,6 +238,9 @@ export const lightTheme = {
   primary: brand.primary,
   primaryLight: brand.primaryLight,
   primaryDark: brand.primaryDark,
+  primaryPressed: brand.primaryPressed,
+  /** The brand color as text / icons on the white page and light cards (readable for any brand color). */
+  primaryOnWhite: brand.primaryOnWhite,
   primarySurface: brand.primarySurface,
 
   // Semantic
@@ -238,6 +285,8 @@ export const darkTheme = {
   primary: brand.primaryLight,
   primaryLight: brand.primary,
   primaryDark: brand.primaryDark,
+  primaryPressed: brand.primaryPressed,
+  primaryOnWhite: brand.primaryLight,
   primarySurface: withAlpha(BRAND_COLOR, 0.18),
 
   // Semantic

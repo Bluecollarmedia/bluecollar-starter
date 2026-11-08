@@ -215,7 +215,7 @@ export default function NewProjectScreen() {
                       onPress={() => setStatus(opt.key)}
                       style={[styles.chip, { backgroundColor: active ? colors.primary : colors.backgroundTertiary }]}
                     >
-                      <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>
+                      <Text style={[typeScale.labelSmall, { color: active ? colors.textOnPrimary : colors.textSecondary, fontWeight: '600' }]}>
                         {opt.label}
                       </Text>
                     </Pressable>
@@ -232,7 +232,7 @@ export default function NewProjectScreen() {
                 >
                   <Icon name="minus" size={18} color={colors.textPrimary} />
                 </Pressable>
-                <Text style={[typeScale.displaySmall, { color: colors.primary, minWidth: 80, textAlign: 'center' }]}>
+                <Text style={[typeScale.displaySmall, { color: colors.primaryOnWhite, minWidth: 80, textAlign: 'center' }]}>
                   {progress}%
                 </Text>
                 <Pressable
@@ -294,7 +294,7 @@ export default function NewProjectScreen() {
                   onPress={() => changeCustomer(undefined)}
                   style={[styles.chip, { backgroundColor: !customerId ? colors.primary : colors.backgroundTertiary }]}
                 >
-                  <Text style={[typeScale.labelSmall, { color: !customerId ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>
+                  <Text style={[typeScale.labelSmall, { color: !customerId ? colors.textOnPrimary : colors.textSecondary, fontWeight: '600' }]}>
                     None
                   </Text>
                 </Pressable>
@@ -306,7 +306,7 @@ export default function NewProjectScreen() {
                       onPress={() => changeCustomer(c.person.id)}
                       style={[styles.chip, { backgroundColor: active ? colors.primary : colors.backgroundTertiary }]}
                     >
-                      <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>
+                      <Text style={[typeScale.labelSmall, { color: active ? colors.textOnPrimary : colors.textSecondary, fontWeight: '600' }]}>
                         {`${c.person.firstName} ${c.person.lastName}`.trim() || c.person.email}
                       </Text>
                     </Pressable>

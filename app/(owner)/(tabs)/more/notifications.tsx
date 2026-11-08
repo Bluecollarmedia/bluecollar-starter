@@ -67,7 +67,7 @@ export default function NotificationPreferencesScreen() {
               const enabled = pref?.enabled ?? true;
               return (
                 <View key={eventType} style={[styles.prefRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight }]}>
-                  <IconTile name={info.icon as any} color={enabled ? colors.primary : colors.textTertiary} />
+                  <IconTile name={info.icon as any} color={enabled ? colors.primaryOnWhite : colors.textTertiary} />
                   <View style={styles.prefInfo}>
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>{info.label}</Text>
                     <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: 1 }]}>{info.description}</Text>
@@ -106,7 +106,7 @@ export default function NotificationPreferencesScreen() {
                       {m.person!.firstName} {m.person!.lastName}
                     </Text>
                     {overrideCount > 0 && (
-                      <Text style={[typeScale.caption, { color: colors.primary }]}>
+                      <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>
                         {overrideCount} override{overrideCount !== 1 ? 's' : ''}
                       </Text>
                     )}
@@ -126,8 +126,8 @@ export default function NotificationPreferencesScreen() {
               onPress={() => setSelectedWorker(null)}
               accessibilityRole="button"
             >
-              <Icon name="arrow-left" size={16} color={colors.primary} />
-              <Text style={[typeScale.labelSmall, { color: colors.primary }]}>All Workers</Text>
+              <Icon name="arrow-left" size={16} color={colors.primaryOnWhite} />
+              <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>All Workers</Text>
             </Pressable>
             {(() => {
               const w = workers.find((m) => m.personId === selectedWorker);
@@ -150,7 +150,7 @@ export default function NotificationPreferencesScreen() {
               const hasOverride = override !== undefined;
               return (
                 <View key={eventType} style={[styles.prefRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight }]}>
-                  <IconTile name={info.icon as any} color={currentEnabled ? colors.primary : colors.textTertiary} />
+                  <IconTile name={info.icon as any} color={currentEnabled ? colors.primaryOnWhite : colors.textTertiary} />
                   <View style={styles.prefInfo}>
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>{info.label}</Text>
                     {hasOverride && (

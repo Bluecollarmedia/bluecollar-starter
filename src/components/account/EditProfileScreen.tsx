@@ -174,11 +174,11 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
           <Pressable style={styles.avatarWrap} onPress={() => setPhotoSheetOpen(true)}>
             <Avatar firstName={firstName} lastName={lastName} size={96} uri={avatarUrl} />
             <View style={[styles.cameraBadgeLarge, { backgroundColor: colors.primary, borderColor: colors.background }]}>
-              <Feather name="camera" size={16} color={fixed.white} />
+              <Feather name="camera" size={16} color={colors.textOnPrimary} />
             </View>
           </Pressable>
           <Pressable onPress={() => setPhotoSheetOpen(true)}>
-            <Text style={[typeScale.bodyMedium, { color: colors.primary, fontWeight: '600', marginTop: spacing.sm }]}>
+            <Text style={[typeScale.bodyMedium, { color: colors.primaryOnWhite, fontWeight: '600', marginTop: spacing.sm }]}>
               {avatarUrl ? t('Change Photo') : t('Add Photo')}
             </Text>
           </Pressable>
@@ -317,7 +317,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
               style={[styles.confirmButton, { backgroundColor: colors.primary, marginTop: spacing.lg, width: '100%' }]}
               onPress={() => setPermissionError(null)}
             >
-              <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('OK')}</Text>
+              <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>{t('OK')}</Text>
             </Pressable>
           </View>
         </View>

@@ -10,7 +10,7 @@ import { db } from '@/data/store';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing } from '@/theme/spacing';
 import type { Crew } from '@/types/crew';
-import { fixed } from '@/theme/colors';
+import { onColor, readableOnLight } from '@/theme/colors';
 
 /** `ok: false` with no reason hides the person quietly (not on this list, or already on it); with a reason it is shown. */
 export type CrewPerson = { ok: true } | { ok: false; reason?: string };
@@ -68,8 +68,8 @@ export function CrewChips({ crews, picked, onChange, check }: Props) {
               accessibilityState={{ selected: allIn }}
               accessibilityLabel={`${allIn ? 'Remove' : 'Add'} ${c.name}`}
             >
-              <Icon name={allIn ? 'check' : 'plus'} size={13} color={allIn ? fixed.white : c.color} />
-              <Text style={[typeScale.bodySmall, { color: allIn ? fixed.white : c.color, fontWeight: '700' }]} numberOfLines={1}>
+              <Icon name={allIn ? 'check' : 'plus'} size={13} color={allIn ? onColor(c.color) : readableOnLight(c.color)} />
+              <Text style={[typeScale.bodySmall, { color: allIn ? onColor(c.color) : readableOnLight(c.color), fontWeight: '700' }]} numberOfLines={1}>
                 {c.name} · {add.length}
               </Text>
             </Pressable>

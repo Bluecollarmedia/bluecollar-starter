@@ -19,7 +19,7 @@ function OwnerNativeTabs() {
 
   return (
     <NativeTabs
-      tintColor={colors.primary}
+      tintColor={colors.primaryOnWhite}
       minimizeBehavior="automatic"
       sidebarAdaptable={Platform.OS === 'ios'}
     >
@@ -66,7 +66,7 @@ function OwnerJSTabs() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors.primaryOnWhite,
         tabBarInactiveTintColor: colors.textTertiary,
         tabBarStyle: {
           backgroundColor: colors.surface,

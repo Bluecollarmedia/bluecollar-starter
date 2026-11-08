@@ -35,7 +35,7 @@ export function LoadingSpinner({
         style,
       ]}
     >
-      <ActivityIndicator size={size} color={colors.primary} />
+      <ActivityIndicator size={size} color={colors.primaryOnWhite} />
       {message && (
         <Text style={[styles.message, { color: colors.textSecondary }]}>
           {message}

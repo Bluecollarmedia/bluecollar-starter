@@ -123,7 +123,7 @@ export function ProjectPrivateNotes({ projectId, projectName, address, internalN
           <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{internalNotes}</Text>
           {onEditInternalNotes ? (
             <Pressable onPress={onEditInternalNotes} style={{ minHeight: 44, justifyContent: 'center' }} accessibilityRole="button">
-              <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Edit on the Overview</Text>
+              <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Edit on the Overview</Text>
             </Pressable>
           ) : null}
         </Card>
@@ -195,8 +195,8 @@ export function ProjectPrivateNotes({ projectId, projectName, address, internalN
             </Pressable>
           ))}
           <Pressable onPress={addPicture} disabled={uploading} accessibilityRole="button" accessibilityLabel="Add a picture" style={[styles.thumb, styles.addTile, { borderColor: colors.primary, opacity: uploading ? 0.6 : 1 }]}>
-            <Icon name="camera" size={22} color={colors.primary} />
-            <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '700', marginTop: 4 }]}>{uploading ? 'Uploading…' : 'Add picture'}</Text>
+            <Icon name="camera" size={22} color={colors.primaryOnWhite} />
+            <Text style={[typeScale.caption, { color: colors.primaryOnWhite, fontWeight: '700', marginTop: 4 }]}>{uploading ? 'Uploading…' : 'Add picture'}</Text>
           </Pressable>
         </View>
       </Card>
@@ -218,7 +218,7 @@ export function ProjectPrivateNotes({ projectId, projectName, address, internalN
       <Modal visible={!!shown} animationType="slide" onRequestClose={() => setShown(null)}>
         <View style={[styles.listScreen, { backgroundColor: colors.background, paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.md }]}>
           <View style={styles.viewerTop}>
-            <Pressable onPress={() => setShown(null)} hitSlop={12} accessibilityRole="button"><Text style={[typeScale.bodyLarge, { color: colors.primary }]}>Close</Text></Pressable>
+            <Pressable onPress={() => setShown(null)} hitSlop={12} accessibilityRole="button"><Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite }]}>Close</Text></Pressable>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]} numberOfLines={1}>{shown?.title}</Text>
             <View style={{ width: 44 }} />
           </View>

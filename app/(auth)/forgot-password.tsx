@@ -55,7 +55,7 @@ export default function ForgotPasswordScreen() {
 
       {sent ? (
         <View style={[styles.notice, { backgroundColor: colors.primarySurface }]}>
-          <Icon name="check-circle" size={18} color={colors.primary} />
+          <Icon name="check-circle" size={18} color={colors.primaryOnWhite} />
           <Text style={[typeScale.bodyMedium, { color: colors.textPrimary, flex: 1, marginLeft: spacing.sm }]}>
             {t('If there is an account for that email, a reset link is on its way. Open it on this phone, choose a new password, then come back and sign in.')}
           </Text>

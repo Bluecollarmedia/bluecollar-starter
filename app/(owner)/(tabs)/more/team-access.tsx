@@ -147,7 +147,7 @@ export default function TeamAccessScreen() {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={async () => { setRefreshing(true); await T.reload(); setRefreshing(false); }} />}>
         {isOwner ? (
           <Pressable onPress={() => router.push('/(owner)/more/admin-powers' as never)} style={[styles.link, { backgroundColor: colors.surface }, shadow.sm]} accessibilityRole="button">
-            <Icon name="shield" size={20} color={colors.primary} />
+            <Icon name="shield" size={20} color={colors.primaryOnWhite} />
             <View style={{ flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{LEADER} powers</Text>
               <Text style={[typeScale.caption, { color: colors.textSecondary }]}>Choose what {leaderPlural().toLowerCase()} may do</Text>

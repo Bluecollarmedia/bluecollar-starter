@@ -68,9 +68,9 @@ export function MessageCustomersPanel() {
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.border }]}
               >
-                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textSecondary }]}>{w(a.label)}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? colors.textOnPrimary : colors.textSecondary }]}>{w(a.label)}</Text>
                 {reach?.[a.key] != null ? (
-                  <Text style={[typeScale.caption, { color: on ? fixed.white : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
+                  <Text style={[typeScale.caption, { color: on ? colors.textOnPrimary : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
                 ) : null}
               </Pressable>
             );

@@ -105,7 +105,7 @@ export default function LaborVisitScreen() {
             </Pressable>
           </Card>
 
-          <Card title="EACH EMPLOYEE'S TIME" right={<Pressable onPress={() => setSheet({ kind: 'pickEmployee' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Add time</Text></Pressable>}>
+          <Card title="EACH EMPLOYEE'S TIME" right={<Pressable onPress={() => setSheet({ kind: 'pickEmployee' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Add time</Text></Pressable>}>
             {detail.intervals.length === 0 ? <Empty icon="users" text="Nobody has time recorded here yet." /> : detail.intervals.map((i, k) => (
               <View key={i.id} style={[styles.rowLine, k > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight }, i.status === 'void' && { opacity: 0.5 }]}>
                 <View style={{ flex: 1 }}>

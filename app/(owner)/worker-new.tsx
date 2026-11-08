@@ -113,7 +113,7 @@ export default function AddWorkerScreen() {
         {sent ? (
           <Card title={`Link for ${sent.who || 'your worker'}`} style={styles.section}>
             <View style={[styles.linkBox, { backgroundColor: colors.primarySurface }]}>
-              <Text style={[typeScale.bodySmall, { color: colors.primary }]} selectable numberOfLines={2}>{linkFor(sent)}</Text>
+              <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite }]} selectable numberOfLines={2}>{linkFor(sent)}</Text>
             </View>
             <View style={styles.actions}>
               <Button title="Text Message" icon="message-circle" onPress={() => handleText(sent)} style={{ flex: 1 }} />
@@ -137,7 +137,7 @@ export default function AddWorkerScreen() {
                   <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{i.phone || 'No phone'} · expires {new Date(i.expiresAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</Text>
                 </View>
                 <Pressable onPress={() => handleAgain(i)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`Send ${i.firstName} a new link`}>
-                  <Text style={[typeScale.labelSmall, { color: colors.primary }]}>New link</Text>
+                  <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>New link</Text>
                 </Pressable>
                 <Pressable onPress={() => handleCancel(i.id)} hitSlop={8} accessibilityRole="button" accessibilityLabel={`Cancel ${i.firstName}'s link`}>
                   <Text style={[typeScale.labelSmall, { color: semantic.error }]}>Cancel</Text>

@@ -125,7 +125,7 @@ export function AvatarCropper({ visible, uri, width, height, onCancel, onDone }:
               <View style={[styles.thumb, { left: thumbLeft - THUMB / 2, borderColor: colors.primary }]} />
             </View>
           </View>
-          <Icon name="plus" size={18} color={fixed.white} />
+          <Icon name="plus" size={18} color={colors.textOnPrimary} />
         </View>
         {Platform.OS === 'web' ? <Text style={[typeScale.caption, styles.hint]}>{t('You can also scroll or pinch to zoom')}</Text> : null}
       </View>

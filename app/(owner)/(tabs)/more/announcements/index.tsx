@@ -67,8 +67,8 @@ export default function AnnouncementsScreen() {
                 accessibilityState={{ selected: on }}
                 accessibilityLabel={key === 'workers' ? 'Announcement to workers' : 'Message to customers'}
               >
-                <Icon name={key === 'workers' ? 'briefcase' : 'users'} size={15} color={on ? colors.primary : colors.textSecondary} />
-                <Text style={[typeScale.labelLarge, { color: on ? colors.primary : colors.textSecondary, fontWeight: on ? '700' : '600' }]}>
+                <Icon name={key === 'workers' ? 'briefcase' : 'users'} size={15} color={on ? colors.primaryOnWhite : colors.textSecondary} />
+                <Text style={[typeScale.labelLarge, { color: on ? colors.primaryOnWhite : colors.textSecondary, fontWeight: on ? '700' : '600' }]}>
                   {key === 'workers' ? 'Workers' : 'Customers'}
                 </Text>
               </Pressable>

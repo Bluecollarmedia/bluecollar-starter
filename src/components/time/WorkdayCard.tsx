@@ -129,7 +129,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             </View>
           </View>
           <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} style={[styles.primary, { backgroundColor: colors.primary, opacity: w.busy || loadingTrucks ? 0.6 : 1 }]} accessibilityRole="button">
-            {w.busy || loadingTrucks ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('Clock In')}</Text>}
+            {w.busy || loadingTrucks ? <ActivityIndicator color={colors.textOnPrimary} /> : <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>{t('Clock In')}</Text>}
           </Pressable>
         </>
       ) : null}
@@ -174,7 +174,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
           ) : null}
           {current ? (
             <View style={[styles.row, { marginTop: spacing.xs }]}>
-              <Feather name="map-pin" size={14} color={colors.primary} />
+              <Feather name="map-pin" size={14} color={colors.primaryOnWhite} />
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1 }]} numberOfLines={1}>
                 At {current.label ?? t('a job site')} · {durationText(intervalMs({ startedAt: current.startedAt, status: 'active' }, nowMs))}
               </Text>
@@ -214,7 +214,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             <>
               <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t('Clocked out by mistake? Clock back in and your day keeps going.')}</Text>
               <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} accessibilityRole="button" style={[styles.primary, { backgroundColor: colors.primary, opacity: w.busy || loadingTrucks ? 0.6 : 1 }]}>
-                {w.busy || loadingTrucks ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('Clock back in')}</Text>}
+                {w.busy || loadingTrucks ? <ActivityIndicator color={colors.textOnPrimary} /> : <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>{t('Clock back in')}</Text>}
               </Pressable>
             </>
           ) : w.day?.canClockIn !== false && moreWork ? (
@@ -223,7 +223,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             </Pressable>
           ) : w.day?.canClockIn !== false ? (
             <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} hitSlop={8} style={{ marginTop: spacing.sm }}>
-              <Text style={[typeScale.labelSmall, { color: colors.primary }]}>{t('Clocked out by mistake? Clock back in')}</Text>
+              <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>{t('Clocked out by mistake? Clock back in')}</Text>
             </Pressable>
           ) : null}
         </>

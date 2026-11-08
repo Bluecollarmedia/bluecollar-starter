@@ -39,7 +39,7 @@ export function LaborScreen({ title, subtitle, right, children, loading, onRefre
         <View style={{ minWidth: 24, alignItems: 'flex-end' }}>{right}</View>
       </View>
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: tabBarClearance + spacing.lg, gap: spacing.md }} refreshControl={onRefresh ? <RefreshControl refreshing={false} onRefresh={onRefresh} /> : undefined} keyboardShouldPersistTaps="handled">
-        {loading ? <ActivityIndicator style={{ marginTop: spacing.xl }} color={colors.primary} /> : children}
+        {loading ? <ActivityIndicator style={{ marginTop: spacing.xl }} color={colors.primaryOnWhite} /> : children}
       </ScrollView>
     </View>
   );
@@ -99,8 +99,8 @@ export function Chip({ label, onPress, on, icon }: { label: string; onPress: () 
   const { colors } = useTheme();
   return (
     <Pressable onPress={onPress} accessibilityRole="button" style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundTertiary }]}>
-      {icon ? <Icon name={icon} size={14} color={on ? fixed.white : colors.textPrimary} /> : null}
-      <Text style={[typeScale.labelSmall, { color: on ? fixed.white : colors.textPrimary }]}>{label}</Text>
+      {icon ? <Icon name={icon} size={14} color={on ? colors.textOnPrimary : colors.textPrimary} /> : null}
+      <Text style={[typeScale.labelSmall, { color: on ? colors.textOnPrimary : colors.textPrimary }]}>{label}</Text>
     </Pressable>
   );
 }
@@ -112,11 +112,11 @@ export function DayBar({ dateKey, onChange }: { dateKey: string; onChange: (key:
   const today = localDateKey(new Date());
   return (
     <View style={styles.dayBar}>
-      <Pressable onPress={() => onChange(shiftDay(dateKey, -1))} hitSlop={10} accessibilityRole="button" accessibilityLabel={t('Previous day')}><Icon name="chevron-left" size={26} color={colors.primary} /></Pressable>
+      <Pressable onPress={() => onChange(shiftDay(dateKey, -1))} hitSlop={10} accessibilityRole="button" accessibilityLabel={t('Previous day')}><Icon name="chevron-left" size={26} color={colors.primaryOnWhite} /></Pressable>
       <View style={{ flex: 1 }}>
         <DateField label="" value={dateKey} onChange={onChange} maximumDate={shiftDay(today, 1)} placeholder={t('Pick a date')} />
       </View>
-      <Pressable onPress={() => onChange(shiftDay(dateKey, 1))} hitSlop={10} accessibilityRole="button" accessibilityLabel={t('Next day')}><Icon name="chevron-right" size={26} color={dateKey >= today ? colors.textTertiary : colors.primary} /></Pressable>
+      <Pressable onPress={() => onChange(shiftDay(dateKey, 1))} hitSlop={10} accessibilityRole="button" accessibilityLabel={t('Next day')}><Icon name="chevron-right" size={26} color={dateKey >= today ? colors.textTertiary : colors.primaryOnWhite} /></Pressable>
     </View>
   );
 }

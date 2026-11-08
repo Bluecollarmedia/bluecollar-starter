@@ -63,7 +63,7 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
     return (
       <KeyboardAwareScrollView ref={pageRef} contentContainerStyle={[pad, { alignItems: 'center' }]} keyboardShouldPersistTaps="handled">
         <View style={styles.doneBadge}>
-          <View style={styles.doneDot}><MaterialCommunityIcons name="check" size={30} color={WX.white} /></View>
+          <View style={styles.doneDot}><MaterialCommunityIcons name="check" size={30} color={WX.onDeep} /></View>
         </View>
         <Text style={[styles.title, { marginTop: 22, textAlign: 'center' }]}>{t('Request sent')}</Text>
         <Text style={[styles.sub, { textAlign: 'center', marginTop: 8 }]}>{t("Thanks. We'll reach out to you by phone or email.")}</Text>
@@ -78,7 +78,7 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
           <Text style={styles.primaryText}>{t('Send another request')}</Text>
         </Pressable>
         <Pressable onPress={() => { void Linking.openURL(COMPANY_PHONE_LINK); }} accessibilityRole="button" style={({ pressed }) => [styles.secondary, { alignSelf: 'stretch', marginTop: 10 }, pressed && { opacity: 0.85 }]}>
-          <MaterialCommunityIcons name="phone-outline" size={19} color={WX.deep} />
+          <MaterialCommunityIcons name="phone-outline" size={19} color={WX.deepText} />
           <Text style={styles.secondaryText}>{t('Call {phone}', { phone: COMPANY_PHONE_DISPLAY })}</Text>
         </Pressable>
       </KeyboardAwareScrollView>
@@ -112,8 +112,8 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
           const on = services.includes(s);
           return (
             <Pressable key={s} onPress={() => setServices((cur) => toggleService(cur, s))} accessibilityRole="button" accessibilityState={{ selected: on }} style={[styles.chip, on && styles.chipOn]}>
-              <View style={[styles.dot, on && styles.dotOn]}>{on ? <MaterialCommunityIcons name="check" size={13} color={WX.deep} /> : null}</View>
-              <Text style={[styles.chipText, on && { color: WX.white }]}>{t(s)}</Text>
+              <View style={[styles.dot, on && styles.dotOn]}>{on ? <MaterialCommunityIcons name="check" size={13} color={WX.deepText} /> : null}</View>
+              <Text style={[styles.chipText, on && { color: WX.onDeep }]}>{t(s)}</Text>
             </Pressable>
           );
         })}
@@ -161,8 +161,8 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  kicker: { color: WX.deep, fontSize: 11, fontWeight: '800', letterSpacing: 1.6 },
-  title: { color: WX.deep, fontSize: 30, fontWeight: '700', letterSpacing: -0.4, marginTop: 8 },
+  kicker: { color: WX.deepText, fontSize: 11, fontWeight: '800', letterSpacing: 1.6 },
+  title: { color: WX.deepText, fontSize: 30, fontWeight: '700', letterSpacing: -0.4, marginTop: 8 },
   sub: { color: WX.soft, fontSize: 15, lineHeight: 22, marginTop: 8 },
   label: { color: WX.ink, fontSize: 13, fontWeight: '700', marginTop: 22, marginBottom: 8 },
   labelRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   input: { minHeight: 50, borderRadius: 14, borderWidth: 1.5, borderColor: WX.line, backgroundColor: WX.white, paddingHorizontal: 14, fontSize: 15, color: WX.ink },
   problem: { color: semantic.error, fontSize: 14, fontWeight: '600', marginTop: 14 },
   primary: { height: 56, borderRadius: 16, backgroundColor: WX.deep, alignItems: 'center', justifyContent: 'center', shadowColor: WX.deep, shadowOpacity: 0.28, shadowRadius: 14, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
-  primaryText: { color: WX.white, fontSize: 17, fontWeight: '700' },
+  primaryText: { color: WX.onDeep, fontSize: 17, fontWeight: '700' },
   secondary: { height: 54, borderRadius: 16, backgroundColor: WX.white, borderWidth: 1.5, borderColor: WX.line, flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center' },
   secondaryText: { color: WX.ink, fontSize: 16, fontWeight: '700' },
   fine: { color: WX.soft, fontSize: 12.5, textAlign: 'center', marginTop: 12, lineHeight: 18 },

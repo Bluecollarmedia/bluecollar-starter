@@ -5,6 +5,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing } from '@/theme/spacing';
+import { readableOnLight } from '@/theme/colors';
 
 interface CrewLabelProps {
   name: string;
@@ -16,7 +17,7 @@ export function CrewLabel({ name, color, style }: CrewLabelProps) {
   return (
     <View style={[styles.pill, { backgroundColor: `${color}1F` }, style]}>
       <View style={[styles.dot, { backgroundColor: color }]} />
-      <Text style={[styles.label, { color }]} numberOfLines={1}>{name}</Text>
+      <Text style={[styles.label, { color: readableOnLight(color) }]} numberOfLines={1}>{name}</Text>
     </View>
   );
 }

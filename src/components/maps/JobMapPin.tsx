@@ -24,7 +24,7 @@ export function JobMapPin({ height = 140, style }: JobMapProps) {
   return (
     <View style={[styles.area, { height, backgroundColor: MAP_TINT }, style]}>
       <View style={[styles.pin, { backgroundColor: colors.surface }, shadow.sm]}>
-        <Feather name="map-pin" size={20} color={colors.primary} />
+        <Feather name="map-pin" size={20} color={colors.primaryOnWhite} />
       </View>
     </View>
   );

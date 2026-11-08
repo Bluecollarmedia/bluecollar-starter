@@ -60,7 +60,7 @@ export default function CustomerAccountScreen() {
         {db.company?.phone ? (
           <ListRow
             icon="phone"
-            iconColor={colors.primary}
+            iconColor={colors.primaryOnWhite}
             title={t('Call')}
             value={db.company.phone}
             showChevron
@@ -70,7 +70,7 @@ export default function CustomerAccountScreen() {
         {db.company?.email ? (
           <ListRow
             icon="mail"
-            iconColor={colors.primary}
+            iconColor={colors.primaryOnWhite}
             title={t('Email')}
             value={db.company.email}
             showChevron

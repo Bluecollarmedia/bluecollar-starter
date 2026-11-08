@@ -88,7 +88,7 @@ export function RaisedAddButton({ onPress, accessibilityLabel, icon = 'plus' }: 
       accessibilityLabel={accessibilityLabel}
     >
       <View style={[styles.raisedButton, { backgroundColor: colors.primary }]}>
-        <Icon name={icon as any} size={22} color={fixed.white} />
+        <Icon name={icon as any} size={22} color={colors.textOnPrimary} />
       </View>
     </PressableScale>
   );

@@ -68,7 +68,7 @@ export default function DocumentDefaultsScreen() {
             accessibilityLabel="Save defaults"
             style={[styles.save, { backgroundColor: colors.primary }]}
           >
-            <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Save</Text>
+            <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>Save</Text>
           </PressableScale>
         }
       />

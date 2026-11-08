@@ -101,7 +101,7 @@ export function ListRow({
             { backgroundColor: iconColor ? `${iconColor}1A` : colors.primarySurface },
           ]}
         >
-          <Icon name={icon} size={16} color={iconColor ?? colors.primary} />
+          <Icon name={icon} size={16} color={iconColor ?? colors.primaryOnWhite} />
         </View>
       )}
       <View style={{ flex: 1 }}>
@@ -120,7 +120,7 @@ export function ListRow({
         </Text>
       )}
       {rightElement}
-      {selected && <Icon name="check" size={18} color={colors.primary} />}
+      {selected && <Icon name="check" size={18} color={colors.primaryOnWhite} />}
       {showChevron && onPress && <Icon name="chevron-right" size={18} color={colors.textTertiary} />}
     </View>
   );

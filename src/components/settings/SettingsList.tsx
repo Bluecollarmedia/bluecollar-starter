@@ -19,7 +19,7 @@ type IconName = keyof typeof Feather.glyphMap;
 
 /** Row icon colors: the brand color for every kind of setting (plain look), gray for quiet rows, red only for destructive ones. */
 export const tileColors = {
-  brand: brand.primary,
+  brand: brand.primaryOnWhite,
   gray: neutral.gray500,
   red: semantic.error,
 } as const;
@@ -118,7 +118,7 @@ export function SettingsRow({ icon, tint = tileColors.brand, title, subtitle, va
 
   return (
     <PressScale onPress={onPress} pressedScale={0.98} style={styles.row} accessibilityLabel={title}>
-      {icon && <IconTile name={icon} color={destructive ? colors.error : colors.primary} />}
+      {icon && <IconTile name={icon} color={destructive ? colors.error : colors.primaryOnWhite} />}
       <View style={styles.rowText}>
         <Text style={[typeScale.bodyLarge, { color: titleColor, fontWeight: '700' }]} numberOfLines={1}>
           {title}
@@ -135,7 +135,7 @@ export function SettingsRow({ icon, tint = tileColors.brand, title, subtitle, va
           {value}
         </Text>
       )}
-      {selected && <Icon name="check" size={18} color={colors.primary} />}
+      {selected && <Icon name="check" size={18} color={colors.primaryOnWhite} />}
       {onPress && !selected && !destructive && (
         <Icon name="chevron-right" size={20} color={colors.textSecondary} />
       )}

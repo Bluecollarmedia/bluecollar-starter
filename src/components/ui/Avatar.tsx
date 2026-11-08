@@ -3,7 +3,7 @@ import { View, StyleSheet, ViewStyle, ImageStyle } from 'react-native';
 import { Image } from 'expo-image';
 import { Text } from 'react-native';
 import { fontWeight } from '@/theme/typography';
-import { fixed, swatches } from '@/theme/colors';
+import { onColor, swatches } from '@/theme/colors';
 
 interface AvatarProps {
   firstName: string;
@@ -52,7 +52,7 @@ export function Avatar({ firstName, lastName, size = 40, style, uri }: AvatarPro
         style,
       ]}
     >
-      <Text style={[styles.initials, { fontSize, lineHeight: fontSize * 1.2 }]}>
+      <Text style={[styles.initials, { fontSize, lineHeight: fontSize * 1.2, color: onColor(bg) }]}>
         {initials}
       </Text>
     </View>
@@ -65,7 +65,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   initials: {
-    color: fixed.white,
     fontWeight: fontWeight.semibold,
   },
 });

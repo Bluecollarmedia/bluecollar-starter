@@ -39,7 +39,7 @@ export function DocumentPreview({ html }: { html: string }) {
       startInLoadingState
       renderLoading={() => (
         <View style={[StyleSheet.absoluteFill, styles.center]}>
-          <ActivityIndicator color={colors.primary} />
+          <ActivityIndicator color={colors.primaryOnWhite} />
         </View>
       )}
       showsVerticalScrollIndicator={false}

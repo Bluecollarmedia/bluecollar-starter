@@ -142,7 +142,7 @@ function MapCheckRow({ value, check, onCheckChange }: { value: AddressParts; che
         <Icon name="edit-3" size={16} color={colors.textSecondary} />
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, flex: 1 }]}>Using the address as typed (not found on the map)</Text>
         <Pressable onPress={() => onCheckChange({})} hitSlop={8}>
-          <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Undo</Text>
+          <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Undo</Text>
         </Pressable>
       </View>
     );
@@ -156,8 +156,8 @@ function MapCheckRow({ value, check, onCheckChange }: { value: AddressParts; che
         style={[styles.checkRow, { backgroundColor: colors.primarySurface, opacity: complete ? 1 : 0.5 }]}
         accessibilityRole="button"
       >
-        {busy ? <ActivityIndicator size="small" color={colors.primary} /> : <Icon name="map" size={16} color={colors.primary} />}
-        <Text style={[typeScale.labelLarge, { color: colors.primary, flex: 1 }]}>
+        {busy ? <ActivityIndicator size="small" color={colors.primaryOnWhite} /> : <Icon name="map" size={16} color={colors.primaryOnWhite} />}
+        <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, flex: 1 }]}>
           {complete ? 'Check address on the map' : 'Fill in the address to check it on the map'}
         </Text>
       </Pressable>
@@ -168,7 +168,7 @@ function MapCheckRow({ value, check, onCheckChange }: { value: AddressParts; che
             {result === 'not_found' ? 'Couldn\u2019t find this address on the map. Double-check it, or keep it as typed.' : result}
           </Text>
           <Pressable onPress={() => { setResult(null); onCheckChange({ overridden: true }); }} hitSlop={8}>
-            <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Use as typed</Text>
+            <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Use as typed</Text>
           </Pressable>
         </View>
       )}

@@ -96,7 +96,7 @@ export function LineItemSheet({ visible, item, isNew, suggestions, onSave, onDel
           <View style={styles.header}>
             <Pressable onPress={onClose} hitSlop={10}><Text style={[typeScale.bodyLarge, { color: colors.textSecondary }]}>Cancel</Text></Pressable>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{isNew ? 'Add Item' : 'Edit Item'}</Text>
-            <Pressable onPress={save} hitSlop={10}><Text style={[typeScale.labelLarge, { color: colors.primary }]}>{isNew ? 'Add' : 'Done'}</Text></Pressable>
+            <Pressable onPress={save} hitSlop={10}><Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{isNew ? 'Add' : 'Done'}</Text></Pressable>
           </View>
 
           <ScrollView bounces={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingHorizontal: spacing.lg, gap: spacing.sm }}>

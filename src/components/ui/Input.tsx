@@ -63,7 +63,7 @@ export const Input = forwardRef<TextInput, InputProps>(
             <Icon
               name={icon}
               size={sizing.iconMd}
-              color={focused ? colors.primary : colors.textTertiary}
+              color={focused ? colors.primaryOnWhite : colors.textTertiary}
               style={styles.icon}
             />
           )}

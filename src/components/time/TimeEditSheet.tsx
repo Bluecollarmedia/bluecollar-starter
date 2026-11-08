@@ -38,7 +38,7 @@ function TimeOfDay({ value, onChange }: { value: Date; onChange: (d: Date) => vo
     });
   }
   if (Platform.OS === 'ios') {
-    return <DateTimePicker value={value} mode="time" display="compact" accentColor={colors.primary} onChange={(_e, d) => d && onChange(d)} />;
+    return <DateTimePicker value={value} mode="time" display="compact" accentColor={colors.primaryOnWhite} onChange={(_e, d) => d && onChange(d)} />;
   }
   return (
     <Pressable
@@ -46,7 +46,7 @@ function TimeOfDay({ value, onChange }: { value: Date; onChange: (d: Date) => vo
       onPress={() => DateTimePickerAndroid.open({ value, mode: 'time', onChange: (e: DateTimePickerEvent, d?: Date) => { if (e.type === 'set' && d) onChange(d); } })}
       hitSlop={8}
     >
-      <Text style={[typeScale.bodyLarge, { color: colors.primary }]}>{value.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
+      <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite }]}>{value.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text>
     </Pressable>
   );
 }
@@ -115,7 +115,7 @@ export function TimeEditSheet({ visible, title, description, fields, reasonRequi
                 </>
               ) : (
                 <Pressable onPress={() => setVals((p) => ({ ...p, [f.key]: localDateTime(f.defaultDate ?? localDateKey(new Date()), '16:00') }))} style={styles.row} accessibilityRole="button">
-                  <Text style={[typeScale.bodyLarge, { color: colors.primary }]}>{t('Set a time')}</Text>
+                  <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite }]}>{t('Set a time')}</Text>
                 </Pressable>
               )}
             </ListSection>

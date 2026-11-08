@@ -29,7 +29,7 @@ const METRICS: Metric[] = [
   { key: 'cloud', label: 'Cloud cover', icon: 'cloud-outline', kind: 'bars', max: 100, get: (h) => h.cloudPct, fmt: (v) => orDash(v, '%') },
 ];
 
-const INK = WX.deep;
+const INK = WX.deepText;
 const SOFT = WX.soft;
 const ON_DARK = WX.onDeep;
 const AXIS_W = 40;

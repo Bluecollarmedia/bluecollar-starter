@@ -1,8 +1,8 @@
 /**
  * The places Weather can show. Any town in the US can be picked (see placeSearch.ts); the settings file's nearby towns
  * (src/config/brand.js, weather.nearbyTowns) are listed first in the picker, and weather.defaultPlace is shown the first time.
- * Their keys and names must be the same as supabase/functions/weather/index.ts (a check keeps the two lists identical), where each
- * one's forecast grid is already verified. Any other place is looked up by its coordinates.
+ * The settings file is the ONLY town list: the weather server function keeps none and looks every place up by the map point the app
+ * sends (NWS /points).
  */
 import { brand } from '@/config/brand';
 
@@ -23,7 +23,6 @@ export const townCoords = (key: string): { lat: number; lon: number } => {
 
 /** The key for a place that is not one of the nearby towns: its point, to three decimals (about 100 metres). */
 export const placeKey = (lat: number, lon: number): string => `p:${lat.toFixed(3)},${lon.toFixed(3)}`;
-export const isBuiltInKey = (key: string): boolean => isTownKey(key);
 
 /** A saved place read back from the phone, or null when it is not a usable place. */
 export function asPlace(v: unknown): Place | null {

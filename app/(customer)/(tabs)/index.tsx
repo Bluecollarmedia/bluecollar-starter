@@ -70,7 +70,7 @@ function RequestServiceCard() {
         <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '800' }]}>{t('Request a service')}</Text>
         <Text style={[typeScale.bodyMedium, { color: colors.textSecondary }]}>{t("Tell us what you need and we'll reach out.")}</Text>
       </View>
-      <Icon name="chevron-right" size={18} color={colors.primary} />
+      <Icon name="chevron-right" size={18} color={colors.primaryOnWhite} />
     </Pressable>
   );
 }

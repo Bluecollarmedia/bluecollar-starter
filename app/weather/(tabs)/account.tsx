@@ -23,7 +23,7 @@ export default function WeatherAccount() {
       <Pressable onPress={() => router.push('/(auth)/welcome' as any)} accessibilityRole="button" accessibilityLabel={t('Sign In')} style={({ pressed }) => [{ marginTop: 22 }, pressed && { opacity: 0.8 }]}>
         <Panel>
           <View style={styles.row}>
-            <MaterialCommunityIcons name="account-circle-outline" size={28} color={WX.deep} />
+            <MaterialCommunityIcons name="account-circle-outline" size={28} color={WX.deepText} />
             <Text style={styles.rowText}>{t('Sign In')}</Text>
             <MaterialCommunityIcons name="chevron-right" size={24} color={WX.faint} />
           </View>
@@ -32,7 +32,7 @@ export default function WeatherAccount() {
       <Pressable onPress={() => { void Linking.openURL(COMPANY_PHONE_LINK); }} accessibilityRole="button" accessibilityLabel={`${t('Call us')} ${COMPANY_PHONE_DISPLAY}`} style={({ pressed }) => [{ marginTop: 12 }, pressed && { opacity: 0.8 }]}>
         <Panel>
           <View style={styles.row}>
-            <MaterialCommunityIcons name="phone-outline" size={26} color={WX.deep} />
+            <MaterialCommunityIcons name="phone-outline" size={26} color={WX.deepText} />
             <View style={{ flex: 1 }}>
               <Text style={styles.rowText}>{t('Call us')}</Text>
               <Text style={styles.rowSub}>{COMPANY_PHONE_DISPLAY}</Text>
@@ -43,7 +43,7 @@ export default function WeatherAccount() {
       <Pressable onPress={() => { void Linking.openURL(`mailto:${COMPANY_EMAIL}`); }} accessibilityRole="button" accessibilityLabel={`${t('Email us')} ${COMPANY_EMAIL}`} style={({ pressed }) => [{ marginTop: 12 }, pressed && { opacity: 0.8 }]}>
         <Panel>
           <View style={styles.row}>
-            <MaterialCommunityIcons name="email-outline" size={26} color={WX.deep} />
+            <MaterialCommunityIcons name="email-outline" size={26} color={WX.deepText} />
             <View style={{ flex: 1 }}>
               <Text style={styles.rowText}>{t('Email us')}</Text>
               <Text style={styles.rowSub}>{COMPANY_EMAIL}</Text>
@@ -59,7 +59,7 @@ export default function WeatherAccount() {
 }
 
 const styles = StyleSheet.create({
-  title: { color: WX.deep, fontSize: 28, fontWeight: '600' },
+  title: { color: WX.deepText, fontSize: 28, fontWeight: '600' },
   sub: { color: WX.soft, fontSize: 14, marginTop: 4 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 18, minHeight: 64 },
   rowText: { flex: 1, color: WX.ink, fontSize: 17, fontWeight: '600' },

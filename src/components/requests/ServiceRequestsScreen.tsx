@@ -74,12 +74,12 @@ export function ServiceRequestsScreen() {
                   {r.details ? <Text style={[typeScale.bodySmall, { color: colors.textPrimary, marginTop: spacing.xs }]}>{r.details}</Text> : null}
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md }}>
                     <Pressable onPress={() => { void Linking.openURL(`tel:${r.phone.replace(/[^\d+]/g, '')}`); }} accessibilityRole="button" accessibilityLabel={`Call ${r.name}`} style={[styles.contact, { borderColor: colors.border }]}>
-                      <Icon name="phone" size={16} color={colors.primary} />
+                      <Icon name="phone" size={16} color={colors.primaryOnWhite} />
                       <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>{r.phone}</Text>
                     </Pressable>
                     {r.email ? (
                       <Pressable onPress={() => { void Linking.openURL(`mailto:${r.email}`); }} accessibilityRole="button" accessibilityLabel={`Email ${r.name}`} style={[styles.contact, { borderColor: colors.border }]}>
-                        <Icon name="mail" size={16} color={colors.primary} />
+                        <Icon name="mail" size={16} color={colors.primaryOnWhite} />
                         <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]} numberOfLines={1}>{r.email}</Text>
                       </Pressable>
                     ) : null}

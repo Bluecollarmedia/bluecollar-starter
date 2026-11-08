@@ -45,7 +45,7 @@ export function PropertyHome({ data }: { data: CustomerHomeData }) {
                 accessibilityLabel={g.name}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.primary + '40' }]}
               >
-                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textPrimary, fontWeight: '700' }]} numberOfLines={1}>{g.name}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? colors.textOnPrimary : colors.textPrimary, fontWeight: '700' }]} numberOfLines={1}>{g.name}</Text>
               </Pressable>
             );
           })}
@@ -142,8 +142,8 @@ function SeeAll({ label, onPress, accent }: { label: string; onPress: () => void
   const { colors } = useTheme();
   return (
     <Pressable onPress={onPress} accessibilityRole="button" style={styles.seeAll}>
-      <Text style={[typeScale.labelLarge, { color: accent ?? colors.primary, fontWeight: '700', flex: 1 }]}>{label}</Text>
-      <Icon name="chevron-right" size={18} color={accent ?? colors.primary} />
+      <Text style={[typeScale.labelLarge, { color: accent ?? colors.primaryOnWhite, fontWeight: '700', flex: 1 }]}>{label}</Text>
+      <Icon name="chevron-right" size={18} color={accent ?? colors.primaryOnWhite} />
     </Pressable>
   );
 }
@@ -166,7 +166,7 @@ function PastRow({ item, first }: { item: HomeItem; first: boolean }) {
           {[item.address, item.completedAt ? t('Completed {date}', { date: fmtDate(item.completedAt) }) : t('Completed')].filter(Boolean).join(' · ')}
         </Text>
       </View>
-      <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('Open')}</Text>
+      <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{t('Open')}</Text>
     </Pressable>
   );
 }

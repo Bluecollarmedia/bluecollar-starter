@@ -109,7 +109,7 @@ export function ClearLogSheet({ visible, onClose, title, what = 'log', modes, ye
                         accessibilityState={{ selected: on }}
                         style={[styles.modeChip, { backgroundColor: on ? (m === 'delete' ? colors.error : colors.primary) : colors.backgroundTertiary }]}
                       >
-                        <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textPrimary }]}>{MODE_LABEL[m]}</Text>
+                        <Text style={[typeScale.labelLarge, { color: on ? (m === 'delete' ? fixed.white : colors.textOnPrimary) : colors.textPrimary }]}>{MODE_LABEL[m]}</Text>
                       </Pressable>
                     );
                   })}

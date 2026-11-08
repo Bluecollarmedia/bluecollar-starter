@@ -44,7 +44,7 @@ export function ProspectBanner({ projectId, style }: { projectId: string; style?
   return (
     <View style={[styles.wrap, { backgroundColor: ready ? colors.primarySurface : colors.backgroundSecondary, borderColor: colors.separator }, style]}>
       <View style={styles.row}>
-        <Icon name={ready ? 'check-circle' : 'clock'} size={18} color={ready ? colors.primary : colors.textSecondary} />
+        <Icon name={ready ? 'check-circle' : 'clock'} size={18} color={ready ? colors.primaryOnWhite : colors.textSecondary} />
         <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1 }]}>{text}</Text>
       </View>
       {ready ? (

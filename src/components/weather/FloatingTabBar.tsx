@@ -37,8 +37,8 @@ export function FloatingTabBar() {
               }}
               style={({ pressed }) => [styles.item, on && styles.itemOn, pressed && !on && { backgroundColor: WX.leafTint }]}
             >
-              <MaterialCommunityIcons name={tab.icon} size={23} color={on ? WX.deep : WX.soft} />
-              <Text style={[styles.label, on && { color: WX.deep, fontWeight: '700' }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{t(tab.label)}</Text>
+              <MaterialCommunityIcons name={tab.icon} size={23} color={on ? WX.deepText : WX.soft} />
+              <Text style={[styles.label, on && { color: WX.deepText, fontWeight: '700' }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>{t(tab.label)}</Text>
             </Pressable>
           );
         })}

@@ -63,7 +63,7 @@ export default function LaborReviewScreen() {
             </Text>
             {readyRows.length > 1 ? (
               <Pressable onPress={approveAll} disabled={busy} style={[styles.btn, { backgroundColor: colors.primary, opacity: busy ? 0.6 : 1 }]} accessibilityRole="button">
-                <Icon name="check-circle" size={16} color={fixed.white} /><Text style={[typeScale.labelSmall, { color: fixed.white }]}>Approve all {readyRows.length} ready days</Text>
+                <Icon name="check-circle" size={16} color={colors.textOnPrimary} /><Text style={[typeScale.labelSmall, { color: colors.textOnPrimary }]}>Approve all {readyRows.length} ready days</Text>
               </Pressable>
             ) : null}
           </Card>

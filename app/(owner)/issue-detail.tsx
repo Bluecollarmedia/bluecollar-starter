@@ -56,7 +56,7 @@ export default function IssueDetailScreen() {
         <GlassIconButton icon="chevron-left" onPress={() => router.back()} accessibilityLabel="Back" />
         <Text style={[typeScale.displaySmall, { color: colors.textPrimary, marginTop: spacing.lg }]}>{issueTypeLabel(issue.issueType)}</Text>
         <PressableScale onPress={openPlace} accessibilityRole="button" accessibilityLabel={`Open ${issue.placeName}`}>
-          <Text style={[typeScale.bodyLarge, { color: colors.primary, marginTop: 2, fontWeight: '600' }]}>{issue.placeName || 'Open place'}</Text>
+          <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite, marginTop: 2, fontWeight: '600' }]}>{issue.placeName || 'Open place'}</Text>
         </PressableScale>
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.xs }]}>
           Reported by {issue.reporterName} · {issueWhen(issue.createdAt)}
@@ -93,8 +93,8 @@ export default function IssueDetailScreen() {
               accessibilityLabel="Mark resolved"
               style={[styles.primary, { backgroundColor: colors.primary }]}
             >
-              <Icon name="check" size={18} color={fixed.white} />
-              <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '800' }]}>Mark Resolved</Text>
+              <Icon name="check" size={18} color={colors.textOnPrimary} />
+              <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary, fontWeight: '800' }]}>Mark Resolved</Text>
             </PressableScale>
           </>
         ) : (
@@ -104,7 +104,7 @@ export default function IssueDetailScreen() {
             </Text>
             {!!issue.resolutionNote && <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, marginTop: 4 }]}>{issue.resolutionNote}</Text>}
             <PressableScale onPress={() => reopenIssue(issue.id)} accessibilityRole="button" accessibilityLabel="Reopen" style={{ marginTop: spacing.sm }}>
-              <Text style={[typeScale.labelLarge, { color: colors.primary, fontWeight: '700' }]}>Reopen</Text>
+              <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, fontWeight: '700' }]}>Reopen</Text>
             </PressableScale>
           </View>
         )}

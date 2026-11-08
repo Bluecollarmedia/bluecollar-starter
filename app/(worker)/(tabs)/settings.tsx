@@ -63,7 +63,7 @@ export default function WorkerSettingsScreen() {
           <View style={styles.avatarWrap}>
             <Avatar firstName={user?.firstName ?? ''} lastName={user?.lastName ?? ''} size={56} uri={user?.avatarUrl} />
             <View style={[styles.cameraBadge, { backgroundColor: colors.primary, borderColor: colors.surface }]}>
-              <Feather name="camera" size={11} color={fixed.white} />
+              <Feather name="camera" size={11} color={colors.textOnPrimary} />
             </View>
           </View>
           <View style={{ marginLeft: spacing.md, flex: 1 }}>
@@ -163,7 +163,7 @@ export default function WorkerSettingsScreen() {
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1, marginLeft: spacing.md }]}>
                   {t(opt.label)}
                 </Text>
-                {settings.navApp === opt.value && <Feather name="check" size={18} color={colors.primary} />}
+                {settings.navApp === opt.value && <Feather name="check" size={18} color={colors.primaryOnWhite} />}
               </Pressable>
             ))}
           </Pressable>

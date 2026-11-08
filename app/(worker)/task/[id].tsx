@@ -221,8 +221,8 @@ export default function TaskDetailScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.pillButton}
               >
-                <Feather name="play" size={18} color={fixed.white} />
-                <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>{t('Start Task')}</Text>
+                <Feather name="play" size={18} color={colors.textOnPrimary} />
+                <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary, marginLeft: spacing.sm }]}>{t('Start Task')}</Text>
               </LinearGradient>
             </Pressable>
           )}
@@ -235,8 +235,8 @@ export default function TaskDetailScreen() {
                   disabled={busy}
                   style={[styles.outlineButton, { borderColor: colors.primary, opacity: busy ? 0.6 : 1 }]}
                 >
-                  <Feather name="camera" size={18} color={colors.primary} />
-                  <Text style={[typeScale.labelLarge, { color: colors.primary, marginLeft: spacing.sm }]}>
+                  <Feather name="camera" size={18} color={colors.primaryOnWhite} />
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, marginLeft: spacing.sm }]}>
                     {hasPhoto ? t('Retake Photo') : t('Take Photo')}
                   </Text>
                 </Pressable>
@@ -248,8 +248,8 @@ export default function TaskDetailScreen() {
                   end={{ x: 1, y: 1 }}
                   style={styles.pillButton}
                 >
-                  <Feather name="check" size={18} color={fixed.white} />
-                  <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>
+                  <Feather name="check" size={18} color={canComplete ? colors.textOnPrimary : colors.textSecondary} />
+                  <Text style={[typeScale.labelLarge, { color: canComplete ? colors.textOnPrimary : colors.textSecondary, marginLeft: spacing.sm }]}>
                     {t('Mark Complete')}
                   </Text>
                 </LinearGradient>

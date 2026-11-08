@@ -34,7 +34,7 @@ export function FormSheet({ visible, title, saveLabel = 'Save', onSave, onClose,
             <View style={[styles.side, { alignItems: 'flex-end' }]}>
               {onSave && (
                 <Pressable onPress={onSave} hitSlop={10} accessibilityRole="button">
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{saveLabel}</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{saveLabel}</Text>
                 </Pressable>
               )}
             </View>

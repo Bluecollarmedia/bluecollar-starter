@@ -136,10 +136,10 @@ export default function WorkerActivityScreen() {
                       style={styles.periodMenuItem}
                       onPress={() => { setPeriod(p.key); setPickerOpen(false); }}
                     >
-                      <Text style={[typeScale.bodyMedium, { color: period === p.key ? colors.primary : colors.textPrimary }]}>
+                      <Text style={[typeScale.bodyMedium, { color: period === p.key ? colors.primaryOnWhite : colors.textPrimary }]}>
                         {t(p.label)}
                       </Text>
-                      {period === p.key && <Feather name="check" size={16} color={colors.primary} />}
+                      {period === p.key && <Feather name="check" size={16} color={colors.primaryOnWhite} />}
                     </Pressable>
                   ))}
                 </View>

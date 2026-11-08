@@ -64,7 +64,7 @@ export function StaleSessionCard({ session, busy, nowMs, onAnswer, error }: {
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{detail}</Text>
           <View style={styles.actions}>
             <Pressable onPress={() => setOpen(true)} disabled={busy} style={[styles.btn, { backgroundColor: colors.primary, opacity: busy ? 0.6 : 1 }]} accessibilityRole="button">
-              {busy ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('I stopped at…')}</Text>}
+              {busy ? <ActivityIndicator color={colors.textOnPrimary} /> : <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>{t('I stopped at…')}</Text>}
             </Pressable>
             <Pressable onPress={() => pick(null)} disabled={busy} style={[styles.btn, { borderColor: colors.border, borderWidth: 1, opacity: busy ? 0.6 : 1 }]} accessibilityRole="button">
               <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>{t("I'm not sure")}</Text>

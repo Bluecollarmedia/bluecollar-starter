@@ -12,7 +12,7 @@ import { db, useDb } from '@/data/store';
 import { CREW_COLORS } from '@/types/crew';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic, fixed } from '@/theme/colors';
+import { semantic, fixed, onColor } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 import { w as settingsWords } from '@/config/brand';
@@ -101,7 +101,7 @@ export default function CrewEditScreen() {
                 accessibilityLabel={`Color ${c}`}
                 accessibilityState={{ selected: c === color }}
               >
-                {c === color && <Icon name="check" size={16} color={fixed.white} />}
+                {c === color && <Icon name="check" size={16} color={onColor(c)} />}
               </Pressable>
             ))}
           </View>
@@ -152,7 +152,7 @@ export default function CrewEditScreen() {
 
         <Pressable
           onPress={handleSave}
-          style={({ pressed }) => [styles.primaryButton, { backgroundColor: pressed ? colors.primaryDark : colors.primary }]}
+          style={({ pressed }) => [styles.primaryButton, { backgroundColor: pressed ? colors.primaryPressed : colors.primary }]}
           accessibilityRole="button"
         >
           <Icon name="check" size={18} color={colors.textOnPrimary} />

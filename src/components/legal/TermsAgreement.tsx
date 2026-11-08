@@ -27,13 +27,13 @@ export function TermsAgreement({ value, onChange }: { value: boolean; onChange: 
         accessibilityLabel={t('I agree to the Terms of Use and Privacy Policy')}
         style={[styles.box, { borderColor: value ? colors.primary : colors.border, backgroundColor: value ? colors.primary : colors.surface }]}
       >
-        {value ? <Icon name="check" size={14} color={fixed.white} /> : null}
+        {value ? <Icon name="check" size={14} color={colors.textOnPrimary} /> : null}
       </Pressable>
       <Text style={[typeScale.bodySmall, { color: colors.textSecondary, flex: 1 }]}>
         {t('I agree to the')}{' '}
-        <Text style={{ color: colors.primary, fontWeight: '600' }} onPress={() => setReading('terms')}>{t('Terms of Use')}</Text>
+        <Text style={{ color: colors.primaryOnWhite, fontWeight: '600' }} onPress={() => setReading('terms')}>{t('Terms of Use')}</Text>
         {' '}{t('and')}{' '}
-        <Text style={{ color: colors.primary, fontWeight: '600' }} onPress={() => setReading('privacy')}>{t('Privacy Policy')}</Text>.
+        <Text style={{ color: colors.primaryOnWhite, fontWeight: '600' }} onPress={() => setReading('privacy')}>{t('Privacy Policy')}</Text>.
       </Text>
       <LegalModal slug={reading} onClose={() => setReading(null)} />
     </View>

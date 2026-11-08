@@ -88,7 +88,7 @@ export default function ResetPasswordScreen() {
 
         {phase === 'done' ? (
           <View style={[styles.notice, { backgroundColor: colors.primarySurface, marginTop: spacing.lg }]}>
-            <Icon name="check-circle" size={18} color={colors.primary} />
+            <Icon name="check-circle" size={18} color={colors.primaryOnWhite} />
             <Text style={[typeScale.bodyMedium, { color: colors.textPrimary, flex: 1, marginLeft: spacing.sm }]}>
               {Platform.OS === 'web' ? `Your password was changed. Open the ${BUSINESS.appName} app and sign in with your new password.` : 'Your password was changed. Sign in with your new password.'}
             </Text>

@@ -282,7 +282,7 @@ export default function InviteScreen() {
             <Button title={isWorker ? t('Create My Login') : t('Create Account')} onPress={handleSubmit} loading={loading} fullWidth size="lg" icon="arrow-right" />
             <Pressable onPress={() => router.push('/(auth)/login')} hitSlop={8}>
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center' }]}>
-                {t('Already have an account?')} <Text style={{ color: colors.primary, fontWeight: '600' }}>{t('Sign in first')}</Text>{t(', then open this link again.')}
+                {t('Already have an account?')} <Text style={{ color: colors.primaryOnWhite, fontWeight: '600' }}>{t('Sign in first')}</Text>{t(', then open this link again.')}
               </Text>
             </Pressable>
           </View>

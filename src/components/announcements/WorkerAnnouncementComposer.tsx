@@ -128,13 +128,13 @@ export function WorkerAnnouncementComposer({ onSent }: { onSent?: () => void }) 
                 accessibilityRole="button"
                 accessibilityState={{ selected: active }}
               >
-                <Icon name={opt.icon as any} size={16} color={active ? colors.primary : colors.textSecondary} />
+                <Icon name={opt.icon as any} size={16} color={active ? colors.primaryOnWhite : colors.textSecondary} />
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: active ? '700' : '500', marginLeft: spacing.xs, flexShrink: 1 }]} numberOfLines={1}>
                   {opt.label}
                 </Text>
                 {active && (
                   <View style={[styles.checkBadge, { backgroundColor: colors.primary }]}>
-                    <Icon name="check" size={11} color={fixed.white} />
+                    <Icon name="check" size={11} color={colors.textOnPrimary} />
                   </View>
                 )}
               </Pressable>
@@ -154,8 +154,8 @@ export function WorkerAnnouncementComposer({ onSent }: { onSent?: () => void }) 
       </View>
 
       <Pressable style={[styles.sendButton, { backgroundColor: colors.primary }]} onPress={handleSend} accessibilityRole="button" accessibilityLabel="Send to all workers">
-        <Icon name="send" size={17} color={fixed.white} />
-        <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '700', marginLeft: spacing.xs }]}>Send to All Workers</Text>
+        <Icon name="send" size={17} color={colors.textOnPrimary} />
+        <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary, fontWeight: '700', marginLeft: spacing.xs }]}>Send to All Workers</Text>
       </Pressable>
     </View>
   );

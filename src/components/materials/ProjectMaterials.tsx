@@ -73,7 +73,7 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
       <View style={[styles.card, { backgroundColor: colors.surface }, shadow.sm]}>
         <View style={styles.cardRow}>
           <View style={[styles.iconTile, { backgroundColor: colors.primarySurface }]}>
-            <Icon name="clipboard" size={18} color={colors.primary} />
+            <Icon name="clipboard" size={18} color={colors.primaryOnWhite} />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>Materials checklist</Text>
@@ -114,7 +114,7 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
                 accessibilityRole="button"
                 accessibilityLabel={`Edit ${m.name}`}
               >
-                <Icon name={isDone(m) ? 'check-circle' : 'circle'} size={20} color={isDone(m) ? colors.primary : colors.border} />
+                <Icon name={isDone(m) ? 'check-circle' : 'circle'} size={20} color={isDone(m) ? colors.primaryOnWhite : colors.border} />
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }, isDone(m) && { color: colors.textSecondary }]} numberOfLines={2}>{m.name}</Text>
                   <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]} numberOfLines={1}>
@@ -145,7 +145,7 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
       {/* Reminder */}
       <ListSection title="PREP REMINDER">
         <Pressable onPress={() => setSheet('reminder')} style={styles.row} accessibilityRole="button">
-          <Icon name="bell" size={18} color={plan.reminderAt ? colors.primary : colors.textTertiary} />
+          <Icon name="bell" size={18} color={plan.reminderAt ? colors.primaryOnWhite : colors.textTertiary} />
           <View style={{ flex: 1 }}>
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>
               {plan.reminderAt ? formatReminder(plan.reminderAt) : 'Set a reminder'}
@@ -164,7 +164,7 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
       {/* Vendor & pickup */}
       <ListSection title="VENDOR & PICKUP">
         <Pressable onPress={() => setSheet('pickup')} style={styles.row} accessibilityRole="button">
-          <Icon name="truck" size={18} color={vendor || plan.pickupLocation ? colors.primary : colors.textTertiary} />
+          <Icon name="truck" size={18} color={vendor || plan.pickupLocation ? colors.primaryOnWhite : colors.textTertiary} />
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]} numberOfLines={1}>{vendor?.name ?? plan.pickupLocation ?? 'Add vendor and pickup'}</Text>
             {(vendor?.phone || plan.pickupLocation || plan.pickupInstructions) && (

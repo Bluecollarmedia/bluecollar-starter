@@ -95,6 +95,10 @@ interface Notification {
 }
 
 async function sendPush(db: Db, n: Notification): Promise<string> {
+  // The person's own "Push Notifications" switch (worker_settings.notifications_enabled, no row = on). Off = no phone push;
+  // the notice is still in their in-app notification list. (The database trigger already skips them; this is a second guard.)
+  const { data: own } = await db.from('worker_settings').select('notifications_enabled').eq('person_id', n.recipient_id).maybeSingle();
+  if (own && own.notifications_enabled === false) return 'push notifications are turned off by the recipient';
   // A customer message only reaches the phone when the owner's "Customer Message Notifications" is on (no row = on).
   // The message itself is already in their notification center either way.
   if (n.event_type === 'customer_message') {

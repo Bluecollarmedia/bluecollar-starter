@@ -48,7 +48,7 @@ export function PropertyChoice({ customerId, propertyId, onSelect }: Props) {
               accessibilityState={{ selected: on }}
               accessibilityLabel={`Use ${p.name || p.address}`}
             >
-              <Icon name="map-pin" size={13} color={colors.primary} />
+              <Icon name="map-pin" size={13} color={colors.primaryOnWhite} />
               <Text style={[typeScale.labelSmall, { color: colors.textPrimary }]} numberOfLines={1}>{p.name || p.address}</Text>
             </Pressable>
           );
@@ -60,7 +60,7 @@ export function PropertyChoice({ customerId, propertyId, onSelect }: Props) {
           accessibilityState={{ selected: !propertyId }}
           accessibilityLabel="Use a new address"
         >
-          <Icon name="plus" size={13} color={colors.primary} />
+          <Icon name="plus" size={13} color={colors.primaryOnWhite} />
           <Text style={[typeScale.labelSmall, { color: colors.textPrimary }]}>New address</Text>
         </Pressable>
       </ScrollView>

@@ -82,25 +82,25 @@ export default function HoursScreen() {
 
       <View style={[styles.weekNav, { borderBottomColor: colors.borderLight }]}>
         <Pressable onPress={() => setWeekOffset((w) => w - 1)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Previous week">
-          <Icon name="chevron-left" size={24} color={colors.primary} />
+          <Icon name="chevron-left" size={24} color={colors.primaryOnWhite} />
         </Pressable>
         <View style={styles.weekLabelWrap}>
           <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>
             {getWeekLabel(weekRange.start, weekRange.end)}
           </Text>
           {weekOffset === 0 && (
-            <Text style={[typeScale.caption, { color: colors.primary }]}>This Week</Text>
+            <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>This Week</Text>
           )}
         </View>
         <Pressable onPress={() => setWeekOffset((w) => w + 1)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Next week">
-          <Icon name="chevron-right" size={24} color={weekOffset >= 0 ? colors.textTertiary : colors.primary} />
+          <Icon name="chevron-right" size={24} color={weekOffset >= 0 ? colors.textTertiary : colors.primaryOnWhite} />
         </Pressable>
       </View>
 
       <ScrollView bounces={false} contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]} showsVerticalScrollIndicator={false}>
         <View style={[styles.summaryCard, { backgroundColor: colors.primarySurface }]}>
           <Text style={[typeScale.caption, { color: colors.textSecondary }]}>TEAM TOTAL</Text>
-          <Text style={[typeScale.displaySmall, { color: colors.primary }]}>
+          <Text style={[typeScale.displaySmall, { color: colors.primaryOnWhite }]}>
             {formatHours(totalTeamHours)}
           </Text>
           <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
@@ -158,7 +158,7 @@ function WorkerHoursCard({
             {data.dailyHours.filter((d) => d.totalMinutes > 0).length} days worked
           </Text>
         </View>
-        <Text style={[typeScale.headingLarge, { color: colors.primary }]}>
+        <Text style={[typeScale.headingLarge, { color: colors.primaryOnWhite }]}>
           {formatHours(data.totalHours)}
         </Text>
         <Icon

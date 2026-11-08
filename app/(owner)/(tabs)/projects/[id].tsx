@@ -37,7 +37,7 @@ import { haptics } from '@/lib/haptics';
 import { todayKey, localDateKey, isoToLocalDateKey } from '@/lib/ids';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic, fixed, whiteAlpha, blackAlpha, tones, neutral } from '@/theme/colors';
+import { semantic, fixed, whiteAlpha, blackAlpha, withAlpha, onColor, tones, neutral } from '@/theme/colors';
 import type { ProjectStatus, TaskStatus, HistoryEventType, ProjectPhoto, ProjectTask, PhotoType } from '@/types/project';
 import type { Assignment } from '@/types/schedule';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
@@ -400,7 +400,7 @@ export default function ProjectDetailScreen() {
           <View>
             <Text style={[typeScale.overline, { color: colors.textTertiary }]}>{w('JOB PROGRESS')}</Text>
             <View style={styles.progressHeaderRow}>
-              <Text style={[typeScale.displayLarge, { color: colors.primary }]}>{p.progress}%</Text>
+              <Text style={[typeScale.displayLarge, { color: colors.primaryOnWhite }]}>{p.progress}%</Text>
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>
                 {taskStats.completed} of {taskStats.total} tasks
               </Text>
@@ -431,14 +431,14 @@ export default function ProjectDetailScreen() {
                   accessibilityRole="button" accessibilityLabel="Lower progress by 5 percent"
                   style={{ paddingVertical: spacing.xs, paddingHorizontal: spacing.lg, borderRadius: radius.full, backgroundColor: colors.primarySurface }}
                 >
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>− 5%</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>− 5%</Text>
                 </Pressable>
                 <Pressable
                   onPress={() => updateProject({ progress: Math.min(100, p.progress + 5) })}
                   accessibilityRole="button" accessibilityLabel="Raise progress by 5 percent"
                   style={{ paddingVertical: spacing.xs, paddingHorizontal: spacing.lg, borderRadius: radius.full, backgroundColor: colors.primarySurface }}
                 >
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>+ 5%</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>+ 5%</Text>
                 </Pressable>
               </View>
             ) : null}
@@ -474,7 +474,7 @@ export default function ProjectDetailScreen() {
                     </Text>
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{fullAddress}</Text>
                   </View>
-                  <Icon name="navigation" size={16} color={colors.primary} />
+                  <Icon name="navigation" size={16} color={colors.primaryOnWhite} />
                 </Pressable>
               </>
             )}
@@ -538,7 +538,7 @@ export default function ProjectDetailScreen() {
                   hitSlop={8}
                   accessibilityLabel="Edit internal notes"
                 >
-                  <Icon name="edit-3" size={16} color={colors.primary} />
+                  <Icon name="edit-3" size={16} color={colors.primaryOnWhite} />
                 </Pressable>
               )}
             </View>
@@ -574,7 +574,7 @@ export default function ProjectDetailScreen() {
                   style={{ minHeight: 44, justifyContent: 'center' }}
                   accessibilityRole="button"
                 >
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{myNotes.length > 3 ? `See all ${myNotes.length} in My Notes` : 'Open My Notes'}</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{myNotes.length > 3 ? `See all ${myNotes.length} in My Notes` : 'Open My Notes'}</Text>
                 </Pressable>
               </View>
             ) : null}
@@ -644,13 +644,13 @@ export default function ProjectDetailScreen() {
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={`${formatFullDayHeading(dateStr)}${isSelected ? ', selected' : ''}`}
               >
-                <Text style={[typeScale.caption, { color: isSelected ? whiteAlpha(0.85) : colors.textSecondary }]}>
+                <Text style={[typeScale.caption, { color: isSelected ? withAlpha(colors.textOnPrimary, 0.85) : colors.textSecondary }]}>
                   {label.top}
                 </Text>
-                <Text style={[typeScale.headingLarge, { color: isSelected ? fixed.white : colors.textPrimary }]}>
+                <Text style={[typeScale.headingLarge, { color: isSelected ? colors.textOnPrimary : colors.textPrimary }]}>
                   {dayNum}
                 </Text>
-                <Text style={[typeScale.caption, { color: isSelected ? whiteAlpha(0.85) : colors.textTertiary }]}>
+                <Text style={[typeScale.caption, { color: isSelected ? withAlpha(colors.textOnPrimary, 0.85) : colors.textTertiary }]}>
                   {label.bottom}
                 </Text>
               </Pressable>
@@ -711,8 +711,8 @@ export default function ProjectDetailScreen() {
                     {isExpanded && (
                       <View style={[styles.assignmentActionsRow, { backgroundColor: colors.backgroundTertiary }]}>
                         <Pressable style={styles.assignmentActionBtn} onPress={() => handleMoveAssignment(a)}>
-                          <Icon name="arrow-right-circle" size={16} color={colors.primary} />
-                          <Text style={[typeScale.caption, { color: colors.primary }]}>Move</Text>
+                          <Icon name="arrow-right-circle" size={16} color={colors.primaryOnWhite} />
+                          <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>Move</Text>
                         </Pressable>
                         <Pressable style={styles.assignmentActionBtn} onPress={() => handleCancelAssignment(a)}>
                           <Icon name="x-circle" size={16} color={semantic.error} />
@@ -730,8 +730,8 @@ export default function ProjectDetailScreen() {
             style={[styles.scheduleWorkerBtn, { borderColor: colors.primary, marginTop: dayAssignments.length > 0 ? spacing.md : 0 }]}
             onPress={() => router.push(`/(owner)/schedule-create?projectId=${p.id}&date=${scheduleDate}` as any)}
           >
-            <Icon name="plus" size={16} color={colors.primary} />
-            <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Schedule Worker</Text>
+            <Icon name="plus" size={16} color={colors.primaryOnWhite} />
+            <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Schedule Worker</Text>
           </Pressable>
         </View>
       </View>
@@ -783,8 +783,8 @@ export default function ProjectDetailScreen() {
             style={[styles.addTeamMemberBtn, { backgroundColor: colors.primarySurface, flexShrink: 0 }]}
             onPress={() => setShowAddTeamMember(true)}
           >
-            <Icon name="plus" size={14} color={colors.primary} />
-            <Text style={[typeScale.labelSmall, { color: colors.primary, fontWeight: '700', marginLeft: 4 }]} numberOfLines={1}>
+            <Icon name="plus" size={14} color={colors.primaryOnWhite} />
+            <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite, fontWeight: '700', marginLeft: 4 }]} numberOfLines={1}>
               Add Team Member
             </Text>
           </Pressable>
@@ -828,7 +828,7 @@ export default function ProjectDetailScreen() {
         )}
 
         <View style={[styles.aboutTeamCard, { backgroundColor: colors.backgroundTertiary }]}>
-          <Icon name="info" size={16} color={colors.primary} />
+          <Icon name="info" size={16} color={colors.primaryOnWhite} />
           <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.sm, flex: 1 }]}>
             {w('Job team members have access to this job and can be assigned to tasks and schedules. This does not automatically mean they are scheduled to work here today.')}
           </Text>
@@ -862,7 +862,7 @@ export default function ProjectDetailScreen() {
                             {w.person.firstName} {w.person.lastName}
                           </Text>
                         </View>
-                        <Icon name="plus-circle" size={20} color={colors.primary} />
+                        <Icon name="plus-circle" size={20} color={colors.primaryOnWhite} />
                       </Pressable>
                     </View>
                   ))
@@ -1008,7 +1008,7 @@ export default function ProjectDetailScreen() {
                   onPress={handleMessageCustomer}
                   disabled={!p.customer.phone}
                 >
-                  <Icon name="message-circle" size={16} color={colors.primary} />
+                  <Icon name="message-circle" size={16} color={colors.primaryOnWhite} />
                   <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: 2 }]}>Message</Text>
                 </Pressable>
                 <Pressable
@@ -1111,7 +1111,7 @@ export default function ProjectDetailScreen() {
                 onPress={() => { setActiveSection('photos'); setPhotoFilter('shared'); }}
               >
                 <View style={[styles.customerContentIcon, { backgroundColor: colors.primarySurface }]}>
-                  <Icon name="image" size={16} color={colors.primary} />
+                  <Icon name="image" size={16} color={colors.primaryOnWhite} />
                 </View>
                 <View style={{ flex: 1, marginLeft: spacing.sm }}>
                   <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Shared Photos</Text>
@@ -1162,7 +1162,7 @@ export default function ProjectDetailScreen() {
                 onPress={() => { setCustomerSubTab('messages'); setCustomerDrilldown(true); }}
               >
                 <View style={[styles.customerContentIcon, { backgroundColor: colors.primarySurface }]}>
-                  <Icon name="send" size={16} color={colors.primary} />
+                  <Icon name="send" size={16} color={colors.primaryOnWhite} />
                 </View>
                 <View style={{ flex: 1, marginLeft: spacing.sm }}>
                   <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Messages</Text>
@@ -1508,7 +1508,7 @@ export default function ProjectDetailScreen() {
                       backgroundColor: on ? colors.primary : colors.primarySurface,
                     }}
                   >
-                    <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.primary }]}>{label}</Text>
+                    <Text style={[typeScale.labelLarge, { color: on ? colors.textOnPrimary : colors.primaryOnWhite }]}>{label}</Text>
                   </Pressable>
                 );
               })}
@@ -1525,7 +1525,7 @@ export default function ProjectDetailScreen() {
               style={[styles.taskFilterChip, { backgroundColor: taskFilter === opt.key ? colors.primarySurface : 'transparent' }]}
               onPress={() => applyTaskFilter(opt.key)}
             >
-              <Text style={[typeScale.labelSmall, { color: taskFilter === opt.key ? colors.primary : colors.textSecondary, fontWeight: taskFilter === opt.key ? '700' : '500' }]}>
+              <Text style={[typeScale.labelSmall, { color: taskFilter === opt.key ? colors.primaryOnWhite : colors.textSecondary, fontWeight: taskFilter === opt.key ? '700' : '500' }]}>
                 {opt.label} ({opt.count})
               </Text>
             </Pressable>
@@ -1544,8 +1544,8 @@ export default function ProjectDetailScreen() {
           style={[styles.scheduleWorkerBtn, { borderColor: colors.primary, marginTop: spacing.lg }]}
           onPress={() => setShowAddTask(true)}
         >
-          <Icon name="plus" size={16} color={colors.primary} />
-          <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Add Task</Text>
+          <Icon name="plus" size={16} color={colors.primaryOnWhite} />
+          <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Add Task</Text>
         </Pressable>
       </View>
     );
@@ -1660,13 +1660,13 @@ export default function ProjectDetailScreen() {
         <View style={styles.photoGridImageWrap}>
           <OptimizedImage source={photo.fileUrl} style={styles.photoGridImage} placeholder={photo.blurhash} />
           <View style={[styles.photoTypePill, { backgroundColor: typeColor }]}>
-            <Text style={[typeScale.caption, { color: fixed.white, fontWeight: '700' }]}>
+            <Text style={[typeScale.caption, { color: onColor(typeColor), fontWeight: '700' }]}>
               {PHOTO_TYPE_LABEL[photo.photoType] ?? photo.photoType}
             </Text>
           </View>
           <View style={[styles.photoVisibilityPill, { backgroundColor: photo.isCustomerVisible ? whiteAlpha(0.95) : blackAlpha(0.6) }]}>
-            <Icon name={photo.isCustomerVisible ? 'eye' : 'lock'} size={10} color={photo.isCustomerVisible ? colors.primary : fixed.white} />
-            <Text style={[typeScale.caption, { color: photo.isCustomerVisible ? colors.primary : fixed.white, marginLeft: 3, fontWeight: '700' }]}>
+            <Icon name={photo.isCustomerVisible ? 'eye' : 'lock'} size={10} color={photo.isCustomerVisible ? colors.primaryOnWhite : fixed.white} />
+            <Text style={[typeScale.caption, { color: photo.isCustomerVisible ? colors.primaryOnWhite : fixed.white, marginLeft: 3, fontWeight: '700' }]}>
               {photo.isCustomerVisible ? 'Shared' : 'Internal'}
             </Text>
           </View>
@@ -1721,8 +1721,8 @@ export default function ProjectDetailScreen() {
             </Text>
           </View>
           <Pressable style={[styles.addPhotoBtn, { backgroundColor: colors.primary }]} onPress={handleOpenAddPhoto}>
-            <Icon name="plus" size={16} color={fixed.white} />
-            <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Add Photo</Text>
+            <Icon name="plus" size={16} color={colors.textOnPrimary} />
+            <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>Add Photo</Text>
           </Pressable>
         </View>
 
@@ -1735,8 +1735,8 @@ export default function ProjectDetailScreen() {
                 style={[styles.photoFilterPill, { backgroundColor: isActive ? colors.primary : colors.backgroundTertiary }]}
                 onPress={() => setPhotoFilter(opt.key)}
               >
-                {opt.icon && <Icon name={opt.icon} size={12} color={isActive ? fixed.white : colors.textSecondary} />}
-                <Text style={[typeScale.labelSmall, { color: isActive ? fixed.white : colors.textSecondary, fontWeight: '600', marginLeft: opt.icon ? 4 : 0 }]}>
+                {opt.icon && <Icon name={opt.icon} size={12} color={isActive ? colors.textOnPrimary : colors.textSecondary} />}
+                <Text style={[typeScale.labelSmall, { color: isActive ? colors.textOnPrimary : colors.textSecondary, fontWeight: '600', marginLeft: opt.icon ? 4 : 0 }]}>
                   {opt.label} ({opt.count})
                 </Text>
               </Pressable>
@@ -1793,8 +1793,8 @@ export default function ProjectDetailScreen() {
               style={styles.visibilityToggle}
               onPress={() => setUpdateVisible(!updateVisible)}
             >
-              <Icon name={updateVisible ? 'eye' : 'eye-off'} size={16} color={updateVisible ? colors.primary : colors.textTertiary} />
-              <Text style={[typeScale.bodySmall, { color: updateVisible ? colors.primary : colors.textSecondary, marginLeft: spacing.sm }]}>
+              <Icon name={updateVisible ? 'eye' : 'eye-off'} size={16} color={updateVisible ? colors.primaryOnWhite : colors.textTertiary} />
+              <Text style={[typeScale.bodySmall, { color: updateVisible ? colors.primaryOnWhite : colors.textSecondary, marginLeft: spacing.sm }]}>
                 {updateVisible ? 'Visible to customer' : 'Internal only'}
               </Text>
             </Pressable>
@@ -1823,8 +1823,8 @@ export default function ProjectDetailScreen() {
                 <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1 }]}>{update.title}</Text>
                 {update.isCustomerVisible ? (
                   <View style={[styles.visibleBadge, { backgroundColor: colors.primarySurface }]}>
-                    <Icon name="eye" size={11} color={colors.primary} />
-                    <Text style={[typeScale.caption, { color: colors.primary }]}>Visible</Text>
+                    <Icon name="eye" size={11} color={colors.primaryOnWhite} />
+                    <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>Visible</Text>
                   </View>
                 ) : (
                   <View style={[styles.visibleBadge, { backgroundColor: colors.backgroundTertiary }]}>
@@ -1979,7 +1979,7 @@ export default function ProjectDetailScreen() {
                   )}
                   {req.responseNote && (
                     <View style={[styles.responseBox, { backgroundColor: colors.primarySurface }]}>
-                      <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '600' }]}>Response</Text>
+                      <Text style={[typeScale.caption, { color: colors.primaryOnWhite, fontWeight: '600' }]}>Response</Text>
                       <Text style={[typeScale.bodySmall, { color: colors.textPrimary, marginTop: spacing.xs }]}>
                         {req.responseNote}
                       </Text>
@@ -1987,8 +1987,8 @@ export default function ProjectDetailScreen() {
                   )}
                   {req.linkedTaskId && (
                     <View style={[styles.reviewMetaRow, { marginTop: spacing.sm }]}>
-                      <Icon name="link" size={12} color={colors.primary} />
-                      <Text style={[typeScale.caption, { color: colors.primary, marginLeft: spacing.xs }]}>
+                      <Icon name="link" size={12} color={colors.primaryOnWhite} />
+                      <Text style={[typeScale.caption, { color: colors.primaryOnWhite, marginLeft: spacing.xs }]}>
                         Linked to task
                       </Text>
                     </View>
@@ -2197,7 +2197,7 @@ export default function ProjectDetailScreen() {
         )}
 
         <View style={[styles.aboutTeamCard, { backgroundColor: colors.backgroundTertiary }]}>
-          <Icon name="info" size={16} color={colors.primary} />
+          <Icon name="info" size={16} color={colors.primaryOnWhite} />
           <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.sm, flex: 1 }]}>
             {w('This shows the complete history of activity on this job, including updates, task completions, team changes, and more.')}
           </Text>
@@ -2440,8 +2440,8 @@ export default function ProjectDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel="Back to More"
         >
-          <Icon name="chevron-left" size={20} color={colors.primary} />
-          <Text style={[typeScale.labelLarge, { color: colors.primary, marginLeft: spacing.xs }]}>
+          <Icon name="chevron-left" size={20} color={colors.primaryOnWhite} />
+          <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, marginLeft: spacing.xs }]}>
             {MORE_ITEMS.find(s => s.key === moreSubSection)?.label ?? 'More'}
           </Text>
         </Pressable>
@@ -2452,8 +2452,8 @@ export default function ProjectDetailScreen() {
           accessibilityRole="button"
           accessibilityLabel="Back to Customer"
         >
-          <Icon name="chevron-left" size={20} color={colors.primary} />
-          <Text style={[typeScale.labelLarge, { color: colors.primary, marginLeft: spacing.xs }]}>
+          <Icon name="chevron-left" size={20} color={colors.primaryOnWhite} />
+          <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, marginLeft: spacing.xs }]}>
             Updates &amp; Requests
           </Text>
         </Pressable>
@@ -2766,7 +2766,7 @@ export default function ProjectDetailScreen() {
               )}
 
               <View style={[styles.taskPhotoNote, { backgroundColor: newPhotoShare ? colors.primarySurface : colors.backgroundTertiary, marginTop: spacing.lg, alignItems: 'center' }]}>
-                <Icon name={newPhotoShare ? 'eye' : 'lock'} size={16} color={newPhotoShare ? colors.primary : colors.textSecondary} />
+                <Icon name={newPhotoShare ? 'eye' : 'lock'} size={16} color={newPhotoShare ? colors.primaryOnWhite : colors.textSecondary} />
                 <View style={{ flex: 1, marginLeft: spacing.sm }}>
                   <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '700' }]}>Share with the customer?</Text>
                   <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
@@ -2861,14 +2861,14 @@ export default function ProjectDetailScreen() {
                   />
                   {reviewPhoto.photoType && (
                     <View style={[styles.photoTypePill, { top: spacing.sm, left: spacing.sm, backgroundColor: getPhotoTypeColor(reviewPhoto.photoType, colors.primary) }]}>
-                      <Text style={[typeScale.caption, { color: fixed.white, fontWeight: '700' }]}>
+                      <Text style={[typeScale.caption, { color: onColor(getPhotoTypeColor(reviewPhoto.photoType, colors.primary)), fontWeight: '700' }]}>
                         {PHOTO_TYPE_LABEL[reviewPhoto.photoType] ?? reviewPhoto.photoType}
                       </Text>
                     </View>
                   )}
                   <View style={[styles.photoVisibilityPill, { top: spacing.sm, right: spacing.sm, backgroundColor: reviewPhoto.isCustomerVisible ? whiteAlpha(0.95) : blackAlpha(0.6) }]}>
-                    <Icon name={reviewPhoto.isCustomerVisible ? 'eye' : 'lock'} size={10} color={reviewPhoto.isCustomerVisible ? colors.primary : fixed.white} />
-                    <Text style={[typeScale.caption, { color: reviewPhoto.isCustomerVisible ? colors.primary : fixed.white, marginLeft: 3, fontWeight: '700' }]}>
+                    <Icon name={reviewPhoto.isCustomerVisible ? 'eye' : 'lock'} size={10} color={reviewPhoto.isCustomerVisible ? colors.primaryOnWhite : fixed.white} />
+                    <Text style={[typeScale.caption, { color: reviewPhoto.isCustomerVisible ? colors.primaryOnWhite : fixed.white, marginLeft: 3, fontWeight: '700' }]}>
                       {reviewPhoto.isCustomerVisible ? 'Shared' : 'Internal'}
                     </Text>
                   </View>
@@ -2956,7 +2956,7 @@ export default function ProjectDetailScreen() {
                           onPress={reviewPhoto.isCustomerVisible ? handleSaveCustomerDesc : () => setEditingCustomerDesc(false)}
                           style={styles.descEditBtn}
                         >
-                          <Text style={[typeScale.labelSmall, { color: colors.primary, fontWeight: '700' }]}>Save</Text>
+                          <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite, fontWeight: '700' }]}>Save</Text>
                         </Pressable>
                       </View>
                     </>
@@ -2972,13 +2972,13 @@ export default function ProjectDetailScreen() {
                 {reviewPhoto.isCustomerVisible ? (
                   <View style={[styles.visibilityCard, { backgroundColor: colors.primarySurface }]}>
                     <View style={styles.visibilityCardTop}>
-                      <Icon name="eye" size={16} color={colors.primary} />
-                      <Text style={[typeScale.bodySmall, { color: colors.primary, marginLeft: spacing.xs, fontWeight: '700' }]}>
+                      <Icon name="eye" size={16} color={colors.primaryOnWhite} />
+                      <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite, marginLeft: spacing.xs, fontWeight: '700' }]}>
                         Shared with customer
                       </Text>
                     </View>
                     {reviewPhoto.sharedAt && (
-                      <Text style={[typeScale.caption, { color: colors.primary, marginTop: 2 }]}>
+                      <Text style={[typeScale.caption, { color: colors.primaryOnWhite, marginTop: 2 }]}>
                         {formatPhotoDetailDateTime(reviewPhoto.sharedAt)}
                       </Text>
                     )}
@@ -2986,7 +2986,7 @@ export default function ProjectDetailScreen() {
                       The customer can see this photo and its description in their portal.
                     </Text>
                     <Pressable onPress={handleUnsharePhoto} style={[styles.unshareBtn, { borderColor: colors.primary }]}>
-                      <Text style={[typeScale.labelSmall, { color: colors.primary, fontWeight: '700' }]}>Unshare</Text>
+                      <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite, fontWeight: '700' }]}>Unshare</Text>
                     </Pressable>
                   </View>
                 ) : (
@@ -3109,8 +3109,8 @@ export default function ProjectDetailScreen() {
 
             <ScrollView bounces={false} style={styles.modalBody} showsVerticalScrollIndicator={false}>
               <View style={[styles.previewBanner, { backgroundColor: colors.primarySurface }]}>
-                <Icon name="eye" size={14} color={colors.primary} />
-                <Text style={[typeScale.caption, { color: colors.primary, marginLeft: spacing.xs, flex: 1 }]}>
+                <Icon name="eye" size={14} color={colors.primaryOnWhite} />
+                <Text style={[typeScale.caption, { color: colors.primaryOnWhite, marginLeft: spacing.xs, flex: 1 }]}>
                   Read-only preview. This uses the same customer-visibility rules as the real portal — internal photos, worker notes, and admin data are never shown here.
                 </Text>
               </View>

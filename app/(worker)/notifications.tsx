@@ -32,7 +32,7 @@ export default function NotificationsScreen() {
           {t('Notifications')}
         </Text>
 
-        <ListSection footer={t("Alerts about your jobs arrive on this phone when notifications are allowed for this app in your phone's Settings. This switch only saves your choice for now; to stop the alerts, turn notifications off in your phone's Settings.")}>
+        <ListSection footer={t("On: alerts about your jobs come to this phone. Off: no phone alerts are sent to you, but every notice still shows in the app. Your phone's own Settings must also allow notifications for this app.")}>
           <ListRow
             icon="bell"
             title={t('Push Notifications')}

@@ -102,8 +102,8 @@ export function ReportIssueScreen() {
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundTertiary }]}
               >
-                <Icon name={it.icon as any} size={16} color={on ? fixed.white : colors.textPrimary} />
-                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textPrimary, fontWeight: '600' }]}>{t(it.label)}</Text>
+                <Icon name={it.icon as any} size={16} color={on ? colors.textOnPrimary : colors.textPrimary} />
+                <Text style={[typeScale.labelLarge, { color: on ? colors.textOnPrimary : colors.textPrimary, fontWeight: '600' }]}>{t(it.label)}</Text>
               </PressableScale>
             );
           })}
@@ -158,8 +158,8 @@ export function ReportIssueScreen() {
           accessibilityLabel={t('Send report')}
           style={[styles.send, { backgroundColor: colors.primary, opacity: !type || busy ? 0.5 : 1 }]}
         >
-          {busy ? <ActivityIndicator color={fixed.white} /> : <Icon name="send" size={18} color={fixed.white} />}
-          <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '800', letterSpacing: 0.6 }]}>{busy ? t('SENDING…') : t('SEND REPORT')}</Text>
+          {busy ? <ActivityIndicator color={colors.textOnPrimary} /> : <Icon name="send" size={18} color={colors.textOnPrimary} />}
+          <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary, fontWeight: '800', letterSpacing: 0.6 }]}>{busy ? t('SENDING…') : t('SEND REPORT')}</Text>
         </PressableScale>
       </View>
     </View>

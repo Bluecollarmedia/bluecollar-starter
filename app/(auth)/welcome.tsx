@@ -53,7 +53,7 @@ export default function WelcomeScreen() {
 
         <View style={styles.actions}>
           <Pressable
-            style={({ pressed }) => [styles.primaryBtn, { backgroundColor: pressed ? colors.primaryDark : colors.primary }, pressed && styles.pressed]}
+            style={({ pressed }) => [styles.primaryBtn, { backgroundColor: pressed ? colors.primaryPressed : colors.primary }, pressed && styles.pressed]}
             onPress={() => router.push('/(auth)/login')}
           >
             <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>{t('Sign In')}</Text>
@@ -80,11 +80,11 @@ export default function WelcomeScreen() {
           {brandSettings.app.name}
         </Text>
         <View style={styles.legalRow}>
-          <Text style={[typeScale.caption, { color: colors.primary }]} onPress={() => setReading('privacy')}>{t('Privacy Policy')}</Text>
+          <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]} onPress={() => setReading('privacy')}>{t('Privacy Policy')}</Text>
           <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{'  ·  '}</Text>
-          <Text style={[typeScale.caption, { color: colors.primary }]} onPress={() => setReading('terms')}>{t('Terms of Use')}</Text>
+          <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]} onPress={() => setReading('terms')}>{t('Terms of Use')}</Text>
           <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{'  ·  '}</Text>
-          <Text style={[typeScale.caption, { color: colors.primary }]} onPress={() => setReading('support')}>{t('Support')}</Text>
+          <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]} onPress={() => setReading('support')}>{t('Support')}</Text>
         </View>
       </View>
       <LegalModal slug={reading} onClose={() => setReading(null)} />
@@ -110,7 +110,7 @@ function ChoiceCard({ icon, title, subtitle, onPress }: {
       onPress={onPress}
     >
       <View style={[styles.iconCircle, { backgroundColor: brand.primarySurface }]}>
-        <Icon name={icon} size={20} color={colors.primary} />
+        <Icon name={icon} size={20} color={colors.primaryOnWhite} />
       </View>
       <View style={styles.btnTextGroup}>
         <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>{title}</Text>

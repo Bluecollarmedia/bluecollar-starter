@@ -48,7 +48,7 @@ export function CategoryIcon({ category, size = 32 }: { category: ResourceCatego
   const { colors } = useTheme();
   return (
     <View style={[styles.iconWrap, { width: size, height: size, borderRadius: size / 2, backgroundColor: colors.primarySurface }]}>
-      <Icon name={RESOURCE_CATEGORIES[category].icon} size={size * 0.5} color={colors.primary} />
+      <Icon name={RESOURCE_CATEGORIES[category].icon} size={size * 0.5} color={colors.primaryOnWhite} />
     </View>
   );
 }
@@ -230,7 +230,7 @@ export function ProtectedCode({ label, reveal, onUnavailable }: ProtectedCodePro
         >
           {code ?? '••••••'}
         </Text>
-        {busy && <ActivityIndicator size="small" color={colors.primary} />}
+        {busy && <ActivityIndicator size="small" color={colors.primaryOnWhite} />}
       </View>
       <View style={styles.codeActions}>
         <Pressable
@@ -246,7 +246,7 @@ export function ProtectedCode({ label, reveal, onUnavailable }: ProtectedCodePro
         <Pressable
           onPress={handleCopy}
           disabled={busy}
-          style={({ pressed }) => [styles.codeBtn, { backgroundColor: pressed ? colors.primaryDark : colors.primary }]}
+          style={({ pressed }) => [styles.codeBtn, { backgroundColor: pressed ? colors.primaryPressed : colors.primary }]}
           accessibilityRole="button"
           accessibilityLabel={t('Copy code')}
         >

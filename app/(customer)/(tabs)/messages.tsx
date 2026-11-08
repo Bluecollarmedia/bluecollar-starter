@@ -71,7 +71,7 @@ export default function CustomerMessagesScreen() {
                 onPress={() => setSelectedId(p.id)}
                 style={[styles.chip, { backgroundColor: active ? colors.primary : colors.backgroundTertiary }]}
               >
-                <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>{p.name}</Text>
+                <Text style={[typeScale.labelSmall, { color: active ? colors.textOnPrimary : colors.textSecondary, fontWeight: '600' }]}>{p.name}</Text>
               </Pressable>
             );
           })}

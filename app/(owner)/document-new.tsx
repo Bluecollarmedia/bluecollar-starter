@@ -193,7 +193,7 @@ export default function NewDocumentScreen() {
       <>
         <ListSection title="INCLUDE FROM" footer="Line items are copied onto the invoice. You can adjust them next; the quote and change orders stay as they are.">
           {quote && (
-            <ListRow icon="check-circle" iconColor={colors.primary} title={`Approved quote ${quote.number}`} value={formatMoney(quote.total)} />
+            <ListRow icon="check-circle" iconColor={colors.primaryOnWhite} title={`Approved quote ${quote.number}`} value={formatMoney(quote.total)} />
           )}
           {changeOrders.map((c) => {
             const on = selected.includes(c.id);
@@ -206,7 +206,7 @@ export default function NewDocumentScreen() {
                 accessibilityState={{ checked: on }}
               >
                 <View style={[styles.box, { borderColor: on ? colors.primary : colors.border, backgroundColor: on ? colors.primary : 'transparent' }]}>
-                  {on && <Icon name="check" size={13} color={fixed.white} />}
+                  {on && <Icon name="check" size={13} color={colors.textOnPrimary} />}
                 </View>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Change order {c.number}</Text>
@@ -241,11 +241,11 @@ export default function NewDocumentScreen() {
       <View style={styles.header}>
         {quoteFor && !projectId && !params.projectId ? (
           <Pressable onPress={() => setQuoteFor(undefined)} hitSlop={12} style={styles.headerBtn} accessibilityRole="button" accessibilityLabel="Back">
-            <Icon name="chevron-left" size={24} color={colors.primary} />
+            <Icon name="chevron-left" size={24} color={colors.primaryOnWhite} />
           </Pressable>
         ) : (
           <Pressable onPress={() => router.back()} hitSlop={12} style={styles.headerBtn} accessibilityRole="button" accessibilityLabel="Cancel">
-            <Text style={[typeScale.bodyLarge, { color: colors.primary }]}>Cancel</Text>
+            <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite }]}>Cancel</Text>
           </Pressable>
         )}
         <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1, textAlign: 'center' }]}>{title}</Text>
@@ -271,7 +271,7 @@ function ChoiceCard({ icon, title, text, onPress }: { icon: 'folder' | 'plus-cir
       accessibilityLabel={title}
     >
       <View style={[styles.choiceIcon, { backgroundColor: colors.primarySurface }]}>
-        <Icon name={icon} size={22} color={colors.primary} />
+        <Icon name={icon} size={22} color={colors.primaryOnWhite} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{title}</Text>

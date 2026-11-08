@@ -303,7 +303,7 @@ export default function OwnerDashboard() {
               accessibilityRole="button"
               accessibilityLabel="Quick actions"
             >
-              <Icon name="plus" size={20} color={colors.primary} />
+              <Icon name="plus" size={20} color={colors.primaryOnWhite} />
             </Pressable>
             {/* Display only: the profile opens from your name in More > Settings, the one way in. */}
             <Avatar firstName={user?.firstName ?? ''} lastName={user?.lastName ?? ''} size={44} uri={user?.avatarUrl} />
@@ -342,9 +342,9 @@ export default function OwnerDashboard() {
           {setup.showChecklist && (
             <View style={[styles.setupCard, { backgroundColor: colors.surface, borderColor: colors.primaryLight }, shadow.sm]}>
               <View style={styles.sectionTitleRow}>
-                <Icon name="check-square" size={18} color={colors.primary} />
+                <Icon name="check-square" size={18} color={colors.primaryOnWhite} />
                 <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1 }]}>Finish your setup</Text>
-                <Text style={[typeScale.labelSmall, { color: colors.primary }]}>{setup.doneCount} of {setup.total}</Text>
+                <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>{setup.doneCount} of {setup.total}</Text>
               </View>
               <ProgressBar progress={Math.round((setup.doneCount / setup.total) * 100)} height={6} style={{ marginVertical: spacing.sm }} />
               {setup.steps.map((s) => (
@@ -404,7 +404,7 @@ export default function OwnerDashboard() {
               </View>
               {attentionTotalCount > 0 && (
                 <Pressable onPress={() => router.push('/(owner)/notification-center' as any)}>
-                  <Text style={[typeScale.labelSmall, { color: colors.primary }]}>See All</Text>
+                  <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>See All</Text>
                 </Pressable>
               )}
             </View>
@@ -429,7 +429,7 @@ export default function OwnerDashboard() {
                 {w('Crew Today ')}<Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {crewTodayTotal} scheduled</Text>
               </Text>
               <Pressable onPress={() => router.push('/(owner)/workers' as any)}>
-                <Text style={[typeScale.labelSmall, { color: colors.primary }]}>View Team</Text>
+                <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>View Team</Text>
               </Pressable>
             </View>
             {crewToday.length === 0 ? (
@@ -444,7 +444,7 @@ export default function OwnerDashboard() {
                 {crewToday.map(renderCrewCard)}
                 {crewTodayTotal > crewToday.length && (
                   <Pressable style={styles.crewMore} onPress={() => router.push('/(owner)/workers' as any)}>
-                    <Text style={[typeScale.labelSmall, { color: colors.primary }]}>
+                    <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>
                       +{crewTodayTotal - crewToday.length} more
                     </Text>
                   </Pressable>
@@ -460,7 +460,7 @@ export default function OwnerDashboard() {
                 {w('Active Jobs')} <Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {activeProjectsTotal} total</Text>
               </Text>
               <Pressable onPress={() => router.push('/(owner)/projects' as any)}>
-                <Text style={[typeScale.labelSmall, { color: colors.primary }]}>View All</Text>
+                <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>View All</Text>
               </Pressable>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.projectsRow}>
@@ -485,7 +485,7 @@ export default function OwnerDashboard() {
                   onPress={() => { setQuickActionsOpen(false); router.push(action.route as any); }}
                 >
                   <View style={[styles.sheetOptionIcon, { backgroundColor: colors.primarySurface }]}>
-                    <Icon name={action.icon} size={18} color={colors.primary} />
+                    <Icon name={action.icon} size={18} color={colors.primaryOnWhite} />
                   </View>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, marginLeft: spacing.md }]}>
                     {action.label}

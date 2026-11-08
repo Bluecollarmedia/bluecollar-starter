@@ -15,14 +15,16 @@ export const WX = {
   card: '#F5F5F5',
   /** Main text. */
   ink: '#111111',
-  /** Buttons, selected tabs and chips, strong text: the brand color. */
+  /** Buttons, selected tabs and chips: the brand color (text on it = onDeep). */
   deep: BRAND_COLOR,
+  /** Strong text and icons in the brand color on the white page (darkened when the brand color is too light to read). */
+  deepText: brand.primaryOnWhite,
   /** Secondary text. */
   soft: '#555555',
   /** Quiet labels. */
   faint: '#6B6B6B',
   /** The logo mark's tint and small highlights: the brand color. */
-  leaf: BRAND_COLOR,
+  leaf: brand.primaryOnWhite,
   /** Soft fill for pressed rows, selected tabs and read-outs. */
   leafTint: brand.primarySurface,
   /** Hairlines and panel borders. */
@@ -123,6 +125,6 @@ export const widgetColors = {
   ink: '#111111',
   soft: '#555555',
   page: '#FFFFFF',
-  accent: BRAND_COLOR,
+  accent: brand.primaryOnWhite,
   rule: '#E5E5E5',
 } as const;

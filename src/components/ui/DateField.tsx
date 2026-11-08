@@ -69,7 +69,7 @@ export function IosDateSheet({ visible, onClose, onPick, title, value, minimumDa
             <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button"><Text style={[typeScale.bodyLarge, { color: colors.textSecondary }]}>Cancel</Text></Pressable>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{title ?? 'Choose a date'}</Text>
             <Pressable onPress={() => { onPick(localDateKey(draft)); onClose(); }} hitSlop={10} accessibilityRole="button">
-              <Text style={[typeScale.bodyLarge, { color: colors.primary, fontWeight: '700' }]}>Done</Text>
+              <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite, fontWeight: '700' }]}>Done</Text>
             </Pressable>
           </View>
           <DateTimePicker
@@ -78,7 +78,7 @@ export function IosDateSheet({ visible, onClose, onPick, title, value, minimumDa
             display="spinner"
             minimumDate={minimumDate ? keyToDate(minimumDate) : undefined}
             maximumDate={maximumDate ? keyToDate(maximumDate) : undefined}
-            accentColor={colors.primary}
+            accentColor={colors.primaryOnWhite}
             onChange={(_e: DateTimePickerEvent, d?: Date) => d && setDraft(d)}
             style={{ alignSelf: 'center', width: '100%' }}
           />

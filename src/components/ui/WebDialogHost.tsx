@@ -37,7 +37,7 @@ export function WebDialogHost() {
                     { backgroundColor: primary ? (destructive ? colors.error : colors.primaryDark) : colors.backgroundTertiary, opacity: pressed ? 0.85 : 1 },
                   ]}
                 >
-                  <Text style={[typeScale.labelLarge, { color: primary ? fixed.white : colors.textPrimary }]}>{t(b.text ?? 'OK')}</Text>
+                  <Text style={[typeScale.labelLarge, { color: primary ? colors.textOnPrimary : colors.textPrimary }]}>{t(b.text ?? 'OK')}</Text>
                 </Pressable>
               );
             })}

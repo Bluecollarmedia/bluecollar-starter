@@ -53,7 +53,7 @@ export function ProjectFinancials({ projectId }: { projectId: string }) {
         appearance="light"
         backgroundColor={colors.backgroundTertiary}
         fontStyle={{ color: colors.textSecondary }}
-        activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+        activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
         style={styles.segment}
       />
 

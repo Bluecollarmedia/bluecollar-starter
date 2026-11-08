@@ -81,15 +81,15 @@ export function ReminderSheet({ visible, initial, initialNote, jobDate, hasRemin
   } else if (Platform.OS === 'ios') {
     control = (
       <View style={{ flexDirection: 'row' }}>
-        <DateTimePicker value={at} mode="date" display="compact" minimumDate={new Date()} accentColor={colors.primary} onChange={(_e, d) => d && setAt(d)} />
-        <DateTimePicker value={at} mode="time" display="compact" accentColor={colors.primary} onChange={(_e, d) => d && setAt(d)} />
+        <DateTimePicker value={at} mode="date" display="compact" minimumDate={new Date()} accentColor={colors.primaryOnWhite} onChange={(_e, d) => d && setAt(d)} />
+        <DateTimePicker value={at} mode="time" display="compact" accentColor={colors.primaryOnWhite} onChange={(_e, d) => d && setAt(d)} />
       </View>
     );
   } else {
     control = (
       <View style={{ flexDirection: 'row', gap: spacing.md }}>
-        <Pressable onPress={() => setAndroidPicker('date')} hitSlop={8}><Text style={[typeScale.bodyLarge, { color: colors.primary }]}>{at.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</Text></Pressable>
-        <Pressable onPress={() => setAndroidPicker('time')} hitSlop={8}><Text style={[typeScale.bodyLarge, { color: colors.primary }]}>{at.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text></Pressable>
+        <Pressable onPress={() => setAndroidPicker('date')} hitSlop={8}><Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite }]}>{at.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</Text></Pressable>
+        <Pressable onPress={() => setAndroidPicker('time')} hitSlop={8}><Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite }]}>{at.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</Text></Pressable>
       </View>
     );
   }
