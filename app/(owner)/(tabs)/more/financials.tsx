@@ -21,6 +21,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import type { FinancialDoc } from '@/types/financial';
+import { w } from '@/config/brand';
 
 type Filter = 'all' | 'awaiting' | 'approved' | 'drafts' | 'invoices';
 
@@ -101,7 +102,7 @@ export default function FinancialsOverviewScreen() {
           </Pressable>
         </View>
 
-        <SearchBar value={search} onChangeText={setSearch} placeholder="Search by customer, project or number" />
+        <SearchBar value={search} onChangeText={setSearch} placeholder={w('Search by customer, job or number')} />
         <FilterChips options={options} selected={filter} onSelect={setFilter} style={{ paddingVertical: spacing.sm }} />
 
         {!db.ready ? (
@@ -110,7 +111,7 @@ export default function FinancialsOverviewScreen() {
           <EmptyState
             icon="file-text"
             title={docs.length === 0 ? 'No quotes or invoices yet' : 'Nothing matches'}
-            description={docs.length === 0 ? 'Create a quote from any project to get started.' : 'Try a different search or filter.'}
+            description={docs.length === 0 ? w('Create a quote from any job to get started.') : 'Try a different search or filter.'}
           />
         ) : (
           <ListSection style={{ marginTop: spacing.sm }}>

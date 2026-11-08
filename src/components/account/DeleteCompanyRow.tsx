@@ -12,6 +12,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 /**
  * Owner only: "Delete Company" row plus its confirmation sheet (type the
@@ -114,7 +115,7 @@ export function DeleteCompanyRow() {
                 Delete {companyName || 'the company'}?
               </Text>
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>
-                This PERMANENTLY deletes the company and everything it owns: projects, hours and payroll records, photos, quotes, truck records and every worker's team membership and the accounts (including yours) of everyone who belongs only to this company. It cannot be undone and nothing can be recovered. Everything stored for the company, including photos, videos and documents, is removed from file storage too. People could sign up again as new users, but none of this data comes back. Anyone who also belongs to another company keeps their account.
+                {w(`This PERMANENTLY deletes the company and everything it owns: jobs, hours and payroll records, photos, quotes, truck records and every worker's team membership and the accounts (including yours) of everyone who belongs only to this company. It cannot be undone and nothing can be recovered. Everything stored for the company, including photos, videos and documents, is removed from file storage too. People could sign up again as new users, but none of this data comes back. Anyone who also belongs to another company keeps their account.`)}
               </Text>
               {stillGoing.map((t) => <Text key={t} style={[typeScale.bodySmall, { color: semantic.error, textAlign: 'center', marginTop: spacing.sm }]}>{t}</Text>)}
               {heads.map((t) => <Text key={t} style={[typeScale.caption, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xs }]}>{t}</Text>)}

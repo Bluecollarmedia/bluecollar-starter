@@ -31,6 +31,7 @@ import {
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { FinancialDocType, FinancialEvent } from '@/types/financial';
+import { w } from '@/config/brand';
 
 const EVENT_LABEL: Record<FinancialEvent['eventType'], string> = {
   created: 'Created',
@@ -170,9 +171,9 @@ export default function DocumentScreen() {
   // An approved quote on a Prospect: make it the real project (same record).
   const canStart = doc.kind === 'quote' && doc.status === 'approved' && canStartProject(doc.projectId);
   const startProject = () => confirmAction(
-    'Start this project?',
-    `${project?.name ?? 'The project'} becomes an active project with ${doc.number} attached. No one is scheduled until you add them.`,
-    'Start Project',
+    w('Start this job?'),
+    w('{name} becomes an active job with {number} attached. No one is scheduled until you add them.', { name: project?.name ?? w('The job'), number: doc.number }),
+    w('Start Job'),
     () => { if (startProjectFromQuote(doc.projectId)) router.push(`/(owner)/projects/${doc.projectId}` as any); },
   );
   const shareOrSend = () => (canSendLink ? setMenu('send') : shareTapped());
@@ -187,7 +188,7 @@ export default function DocumentScreen() {
   const moreActions: SheetAction[] = [
     ...(canSendLink ? [{ key: 'link', label: doc.kind === 'invoice' ? 'Send Invoice Link' : 'Send Approval Link', icon: 'send' as const, onPress: () => setMenu('send') }] : []),
     { key: 'pdf', label: isDraft ? 'Share Draft PDF' : 'Share PDF', icon: 'share-2', onPress: shareTapped },
-    ...(canStart ? [{ key: 'start', label: 'Start Project', icon: 'play-circle' as const, onPress: startProject }] : []),
+    ...(canStart ? [{ key: 'start', label: w('Start Job'), icon: 'play-circle' as const, onPress: startProject }] : []),
     ...(doc.kind === 'quote' && doc.status === 'approved'
       ? [
           { key: 'co', label: 'New Change Order', icon: 'layers' as const, onPress: () => router.push({ pathname: '/(owner)/document-new', params: { kind: 'change_order', projectId: doc.projectId, quoteId: doc.id } } as any) },
@@ -198,7 +199,7 @@ export default function DocumentScreen() {
       ? [{ key: 'expire', label: 'Mark Expired', icon: 'clock' as const, onPress: () => confirmAction('Mark as expired?', 'The customer will no longer be able to approve it.', 'Mark Expired', () => markExpired(doc.id)) }]
       : []),
     { key: 'history', label: 'History', icon: 'clock', onPress: () => setMenu('history') },
-    { key: 'project', label: 'View Project Financials', icon: 'briefcase', onPress: () => router.push(`/(owner)/projects/${doc.projectId}?section=financials` as any) },
+    { key: 'project', label: w('View Job Financials'), icon: 'briefcase', onPress: () => router.push(`/(owner)/projects/${doc.projectId}?section=financials` as any) },
     ...(!isDraft ? [{ key: 'dup', label: 'Duplicate as New Draft', icon: 'copy' as const, onPress: duplicate }] : []),
     ...(doc.kind === 'invoice' && doc.status === 'issued'
       ? [{ key: 'void', label: 'Void Invoice', icon: 'slash' as const, destructive: true, onPress: () => confirmAction(`Void ${doc.number}?`, 'It stays on record marked VOID. This can’t be undone.', 'Void', () => voidInvoice(doc.id), true) }]
@@ -228,7 +229,7 @@ export default function DocumentScreen() {
     primary = (
       <>
         <Button title="Share" variant="secondary" icon="share-2" onPress={shareTapped} loading={busy} style={styles.flex} />
-        <Button title="Start Project" icon="play-circle" onPress={startProject} style={styles.flex2} />
+        <Button title={w('Start Job')} icon="play-circle" onPress={startProject} style={styles.flex2} />
       </>
     );
   } else if (doc.kind === 'quote' && doc.status === 'approved') {
@@ -265,10 +266,10 @@ export default function DocumentScreen() {
         onPress={() => router.push(`/(owner)/projects/${doc.projectId}` as any)}
         style={[styles.summary, { backgroundColor: colors.surface, borderBottomColor: colors.separator }]}
         accessibilityRole="button"
-        accessibilityLabel={`Open project ${project?.name ?? ''}`}
+        accessibilityLabel={w('Open job {name}', { name: project?.name ?? '' })}
       >
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]} numberOfLines={1}>{project?.name ?? doc.projectName ?? 'Project'}</Text>
+          <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]} numberOfLines={1}>{project?.name ?? doc.projectName ?? w('Job')}</Text>
           <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>
             {customerName}
             {lastAnswer ? `  ·  ${EVENT_LABEL[lastAnswer.eventType]} ${formatDocDateTime(lastAnswer.createdAt)}` : ''}
@@ -296,7 +297,7 @@ export default function DocumentScreen() {
         message={`Use this when the customer answers by phone, email or in person. Customers can also approve in the app${approvalLinksEnabled ? ' or with the approval link' : ''}.`}
         onClose={() => setMenu(null)}
         actions={doc.kind === 'invoice' ? [] : [
-          { key: 'yes', label: 'Customer Approved', icon: 'check-circle', onPress: () => confirmAction(`Record ${doc.number} as approved?`, `${formatMoney(doc.total)} will count toward the project's approved amount.`, 'Approved', () => recordResponse(doc.kind as 'quote' | 'change_order', doc.id, true)) },
+          { key: 'yes', label: 'Customer Approved', icon: 'check-circle', onPress: () => confirmAction(`Record ${doc.number} as approved?`, w("{total} will count toward the job's approved amount.", { total: formatMoney(doc.total) }), 'Approved', () => recordResponse(doc.kind as 'quote' | 'change_order', doc.id, true)) },
           { key: 'no', label: 'Customer Declined', icon: 'x-circle', destructive: true, onPress: () => confirmAction(`Record ${doc.number} as declined?`, 'It stays on record as declined.', 'Declined', () => recordResponse(doc.kind as 'quote' | 'change_order', doc.id, false), true) },
         ]}
       />

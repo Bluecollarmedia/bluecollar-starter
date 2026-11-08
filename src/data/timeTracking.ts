@@ -142,9 +142,9 @@ export const endBreak = () => callDay('time_break_end', {}, "Couldn't end the br
 
 export interface Gps { lat?: number; lng?: number; accuracy?: number; state?: string; /** The phone's full reading, saved with the older check-in record. */ raw?: Record<string, unknown> | null }
 export const startVisit = (source: 'assignment', refId: string, gps: Gps = {}) =>
-  callDay('time_start_visit', { p_source: source, p_ref: refId, p_lat: gps.lat ?? null, p_lng: gps.lng ?? null, p_accuracy: gps.accuracy ?? null, p_location_state: gps.state ?? 'ok', p_gps: gps.raw ?? (gps.lat != null ? { lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy } : null) }, "Couldn't start this property.");
+  callDay('time_start_visit', { p_source: source, p_ref: refId, p_lat: gps.lat ?? null, p_lng: gps.lng ?? null, p_accuracy: gps.accuracy ?? null, p_location_state: gps.state ?? 'ok', p_gps: gps.raw ?? (gps.lat != null ? { lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy } : null) }, "Couldn't start at this job site.");
 export const completeVisit = (visitId: string, note?: string, gps: Gps = {}) =>
-  callDay('time_complete_visit', { p_visit_id: visitId, p_note: note ?? null, p_lat: gps.lat ?? null, p_lng: gps.lng ?? null, p_accuracy: gps.accuracy ?? null, p_location_state: gps.state ?? 'ok', p_gps: gps.raw ?? (gps.lat != null ? { lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy } : null) }, "Couldn't complete this property.");
+  callDay('time_complete_visit', { p_visit_id: visitId, p_note: note ?? null, p_lat: gps.lat ?? null, p_lng: gps.lng ?? null, p_accuracy: gps.accuracy ?? null, p_location_state: gps.state ?? 'ok', p_gps: gps.raw ?? (gps.lat != null ? { lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy } : null) }, "Couldn't finish at this job site.");
 
 export interface TruckChoice { id: string; name: string; inUse: boolean }
 export interface TruckOptions { assignedTruckId?: string; assignedTruckName?: string; trucks: TruckChoice[] }
@@ -241,7 +241,7 @@ export async function loadLabor(fromDate: string, toDate: string, personId?: str
       if (bk.error) return explainError(bk.error, "Couldn't load the breaks.");
       breaks.push(...(bk.data ?? []));
       const iv = await readAll<Raw>((a, b) => supabase.from('time_intervals').select('*, time_interval_rates(hourly_rate)').in('workday_id', part).range(a, b));
-      if (iv.error) return explainError(iv.error, "Couldn't load the property times.");
+      if (iv.error) return explainError(iv.error, "Couldn't load the job site times.");
       intervals.push(...iv.rows);
     }
     const visitIds = [...new Set(intervals.map((i) => i.visit_id as string))];
@@ -314,7 +314,7 @@ export async function loadVisitHistory(id: string, fromDate?: string, toDate?: s
   const intervals: LaborInterval[] = [];
   for (const part of chunks(visits.map((x) => x.id))) {
     const iv = await readAll<Raw>((a, b) => supabase.from('time_intervals').select('*, time_interval_rates(hourly_rate)').in('visit_id', part).range(a, b));
-    if (iv.error) return explainError(iv.error, "Couldn't load the property times.");
+    if (iv.error) return explainError(iv.error, "Couldn't load the job site times.");
     intervals.push(...iv.rows.map((i): LaborInterval => ({ id: i.id, visitId: i.visit_id, workdayId: i.workday_id, personId: i.person_id, startedAt: i.started_at, endedAt: i.ended_at ?? undefined, status: i.status, billable: !!i.billable, hourlyRate: rateOf(i.time_interval_rates) })));
   }
   const names: Record<string, string> = {};
@@ -432,9 +432,9 @@ export const editWorkday = (id: string, clockIn: Date | string | null, clockOut:
 export const addWorkday = (personId: string, workDate: string, clockIn: Date | string, clockOut: Date | string | null, reason: string, truckId?: string) =>
   rpcDone('time_staff_add_workday', { p_person: personId, p_work_date: workDate, p_clock_in: iso(clockIn), p_clock_out: iso(clockOut), p_reason: reason, p_truck: truckId ?? null }, "Couldn't add the workday.");
 export const editInterval = (id: string, started: Date | string | null, ended: Date | string | null, reason: string) =>
-  rpcDone('time_staff_edit_interval', { p_interval: id, p_started: iso(started), p_ended: iso(ended), p_reason: reason }, "Couldn't correct the property time.");
+  rpcDone('time_staff_edit_interval', { p_interval: id, p_started: iso(started), p_ended: iso(ended), p_reason: reason }, "Couldn't correct the job site time.");
 export const addInterval = (visitId: string, personId: string, started: Date | string, ended: Date | string | null, reason: string) =>
-  rpcDone('time_staff_add_interval', { p_visit: visitId, p_person: personId, p_started: iso(started), p_ended: iso(ended), p_reason: reason }, "Couldn't add the property time.");
+  rpcDone('time_staff_add_interval', { p_visit: visitId, p_person: personId, p_started: iso(started), p_ended: iso(ended), p_reason: reason }, "Couldn't add the job site time.");
 export const voidInterval = (id: string, reason: string) => rpcDone('time_staff_void_interval', { p_interval: id, p_reason: reason }, "Couldn't remove that time.");
 export const editBreak = (id: string, started: Date | string | null, ended: Date | string | null, reason: string) =>
   rpcDone('time_staff_edit_break', { p_break: id, p_started: iso(started), p_ended: iso(ended), p_reason: reason }, "Couldn't correct the break.");
@@ -461,7 +461,7 @@ export async function loadVisitDetail(id: string): Promise<Result<VisitDetail>> 
   if (v.error) return explainError(v.error, "Couldn't load the visit.");
   if (!v.data) return { ok: false, error: 'That visit could not be found.' };
   const iv = await supabase.from('time_intervals').select('*, time_interval_rates(hourly_rate)').eq('visit_id', id).order('started_at');
-  if (iv.error) return explainError(iv.error, "Couldn't load the property times.");
+  if (iv.error) return explainError(iv.error, "Couldn't load the job site times.");
   const intervals = (iv.data ?? []).map((i: Raw): LaborInterval => ({ id: i.id, visitId: i.visit_id, workdayId: i.workday_id, personId: i.person_id, startedAt: i.started_at, endedAt: i.ended_at ?? undefined, status: i.status, billable: !!i.billable, hourlyRate: rateOf(i.time_interval_rates) }));
   const names: Record<string, string> = {};
   const ids = [...new Set(intervals.map((i) => i.personId))];

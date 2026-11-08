@@ -7,6 +7,7 @@ import { useEffect, useMemo } from 'react';
 import { db, useDb } from '@/data/store';
 import { materialsFor, isDone, nextJobDate } from '@/data/materials';
 import { syncMaterialReminders, materialRemindersSupported, type ReminderToSchedule } from '@/lib/materialReminders';
+import { w } from '@/config/brand';
 
 export function useMaterialReminders(enabled: boolean) {
   const v = useDb();
@@ -18,7 +19,7 @@ export function useMaterialReminders(enabled: boolean) {
         const project = db.projects.find((x) => x.id === p.projectId);
         return {
           projectId: p.projectId,
-          projectName: project?.name ?? 'Project',
+          projectName: project?.name ?? w('Job'),
           at: p.reminderAt!,
           jobDate: nextJobDate(p.projectId) ?? p.reminderJobDate,
           outstanding: materialsFor(p.projectId).filter((m) => !isDone(m)).length,

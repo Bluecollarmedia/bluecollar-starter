@@ -14,7 +14,7 @@ let bad = 0;
 let n = 0;
 const check = (name, ok, detail = '') => { n += 1; if (!ok) bad += 1; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n} ${name}${ok ? '' : '  - ' + detail}`); };
 
-const item = (id, name, key, status = 'active', extra = {}) => ({ key: `project:${id}`, kind: 'project', typeLabel: 'Project', name, address: key ? `${key}, Springfield MA` : '', propertyKey: key, status, ...extra });
+const item = (id, name, key, status = 'active', extra = {}) => ({ key: `project:${id}`, kind: 'project', typeLabel: 'Job', name, address: key ? `${key}, Springfield MA` : '', propertyKey: key, status, ...extra });
 const patio = item('p1', 'Back Patio', '14 hillcrest ln');
 const pit = item('p2', 'Fire Pit', '14 hillcrest ln');
 const other = item('p3', 'Riverside Plaza', '410 river rd');

@@ -23,6 +23,7 @@ import { calcTotals, formatMoney, formatQuantity, formatPercent, parseAmount } f
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import type { FinancialDocType, LineItem } from '@/types/financial';
+import { w } from '@/config/brand';
 
 const STEPS = ['Details', 'Line Items', 'Review'];
 
@@ -258,9 +259,9 @@ export default function DocumentEditScreen() {
       >
         {step === 0 && (
           <>
-            <ListSection title="CUSTOMER & PROJECT" footer="The customer comes from the project. To change it, edit the project.">
+            <ListSection title={w('CUSTOMER & JOB')} footer={w('The customer comes from the job. To change it, edit the job.')}>
               <ValueRow label="Customer" value={customer ? `${customer.firstName} ${customer.lastName}`.trim() : 'None'} sub={customer?.email} />
-              <ValueRow label="Project" value={project?.name ?? '—'} sub={project?.status === 'prospect' ? `${address ? `${address} · ` : ''}Prospect until approved` : address} />
+              <ValueRow label={w('Job')} value={project?.name ?? '—'} sub={project?.status === 'prospect' ? `${address ? `${address} · ` : ''}Prospect until approved` : address} />
               {linkedQuote && <ValueRow label="Original quote" value={linkedQuote.number} sub={formatMoney(linkedQuote.total)} />}
             </ListSection>
 

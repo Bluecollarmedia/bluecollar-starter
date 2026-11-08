@@ -21,6 +21,7 @@ import {
   SUPABASE_FREE_PLAN_GB,
 } from '@/types/storage';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { w } from '@/config/brand';
 
 export default function StorageScreen() {
   const { colors } = useTheme();
@@ -204,7 +205,7 @@ export default function StorageScreen() {
         <Card title="File Breakdown" style={styles.card}>
           <StatRow
             icon="image"
-            label="Project Photos & Videos"
+            label={w('Job Photos & Videos')}
             value={String(usage?.photoCount ?? 0)}
             colors={colors}
           />

@@ -88,7 +88,7 @@ export default function CustomerMessagesScreen() {
           >
             <MessageList
               projectId={projectId}
-              emptyText={t('Questions about your project? Send a message and the team will reply here.')}
+              emptyText={t('Questions about your job? Send a message and the team will reply here.')}
             />
           </ScrollView>
           <View
@@ -106,7 +106,7 @@ export default function CustomerMessagesScreen() {
         <EmptyState
           icon="message-circle"
           title={t('No messages')}
-          description={t("Once you're added to a project, you can message the team here.")}
+          description={t("Once you're added to a job, you can message the team here.")}
         />
       )}
     </KeyboardAvoidingView>

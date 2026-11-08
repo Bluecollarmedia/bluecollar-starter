@@ -9,9 +9,14 @@ let bad = 0;
 const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}${ok ? '' : '  - ' + d}`); };
 
 (async () => {
-  const m = await import(pathToFileURL(path.join(__dirname, '..', '..', 'src', 'lib', 'customerAccess.ts')).href);
+  // Compiled with the settings words (w from src/config/brand.ts), the way the app reads it.
+  const ts = require(process.argv[2] || 'typescript');
+  const m = { exports: {} };
+  new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/customerAccess.ts'), { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(require, ts));
+  Object.assign(m, m.exports);
+  void pathToFileURL;
   const act = m.portalAccessView('active'), inv = m.portalAccessView('invited'), off = m.portalAccessView('inactive');
-  check('1 active = On, with a plain note', act.on && act.label === 'On' && /sign in and see their projects/.test(act.note));
+  check('1 active = On, with a plain note', act.on && act.label === 'On' && /sign in and see their jobs/.test(act.note));
   check('2 "Invite pending" is explained: added, no login yet, send the link; and the switch is on (they are allowed in)', inv.on && inv.label === 'Invite pending' && /haven't made their login yet/.test(inv.note) && /link/.test(inv.note));
   check('3 turned off: switch off, "can\'t sign in", records kept', !off.on && off.label === 'Off' && /can't sign in/.test(off.note) && /kept/.test(off.note));
   const t = m.turnOffText('Test');

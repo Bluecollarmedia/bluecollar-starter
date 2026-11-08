@@ -9,7 +9,7 @@
 import { useMemo, useSyncExternalStore } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DICTIONARY } from './dictionary';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w, wEs } from '@/config/brand';
 
 /** Spanish is offered in this app (settings file: features.spanish). When off, the app always stays English and hides the language switch. */
 export const SPANISH_ON = isFeatureOn('spanish');
@@ -30,9 +30,13 @@ function fill(text: string, vars?: Record<string, string | number>): string {
   return vars ? text.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)) : text;
 }
 
-/** Translates for a given language (English, or any text the dictionary does not have yet, comes back as written). */
+/** Translates for a given language (English, or any text the dictionary does not have yet, comes back as written).
+ *  The text is written with the default nouns (Job, Job site, Crew); the client's own words from the settings file are put in
+ *  AFTER the Spanish lookup (w / wEs in src/config/brand.ts), so the dictionary keys never change with the wording. Values that
+ *  go in through {name} are never touched. */
 export function translate(lang: Language, text: string, vars?: Record<string, string | number>): string {
-  return fill(lang === 'es' ? DICTIONARY[text] ?? text : text, vars);
+  const es = lang === 'es' ? DICTIONARY[text] : undefined;
+  return fill(es != null ? wEs(es, text) : w(text), vars); // w() first, then the values: a value is never re-worded
 }
 
 /** For code that is not a component (alerts, messages made in data functions): uses the language at the moment it is called. */

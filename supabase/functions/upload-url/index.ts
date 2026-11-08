@@ -55,7 +55,7 @@ serve(async (req: Request) => {
     if ((purpose === 'project-photo' || purpose === 'worker-photo') && entityId) {
       const authorized = await checkProjectAuth(auth, entityId);
       if (!authorized) {
-        return jsonError('You do not have access to this project', 403);
+        return jsonError('You do not have access to this job', 403);
       }
     }
 

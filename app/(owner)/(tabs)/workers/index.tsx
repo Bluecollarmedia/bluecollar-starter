@@ -10,6 +10,7 @@ import { useCrews } from '@/hooks/useCrews';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 type FilterKey = 'all' | 'working_today' | 'needs_confirmation' | 'inactive';
 
@@ -208,7 +209,7 @@ export default function WorkersListScreen() {
                       <View style={styles.detailRow}>
                         <Icon name="map-pin" size={12} color={colors.textTertiary} />
                         <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.xs }]} numberOfLines={1}>
-                          {assignment.project?.name ?? item.todayProject ?? 'Unknown project'}
+                          {assignment.project?.name ?? item.todayProject ?? w('Unknown job')}
                         </Text>
                       </View>
                       {(assignment.startTime || assignment.endTime) && (

@@ -21,7 +21,7 @@ check('5 active (incl. on hold) first; completed newest first; quotes and archiv
 check('6 on-hold and completed cards show no percentage; active projects use the real progress value', build({ projects: [proj('a', 'A', 'active'), proj('h', 'H', 'on_hold'), proj('c', 'C', 'completed')] }).map((i) => i.progress).join() === '40,,');
 const many = Array.from({ length: 5 }, (_, i) => ({ key: String(i) }));
 check('7 completed preview is 3 with a View all that shows everything', h.completedToShow(many, false).length === 3 && h.completedToShow(many, true).length === 5 && h.COMPLETED_PREVIEW === 3);
-check('8 type label and status words', same.every((i) => i.typeLabel === 'Project') && h.statusLabel(same[0]) === 'In progress' && h.statusLabel({ status: 'on_hold', kind: 'project' }) === 'On hold' && h.statusLabel({ status: 'completed', kind: 'project' }) === 'Completed');
+check('8 type label and status words', same.every((i) => i.typeLabel === 'Job') && h.statusLabel(same[0]) === 'In progress' && h.statusLabel({ status: 'on_hold', kind: 'project' }) === 'On hold' && h.statusLabel({ status: 'completed', kind: 'project' }) === 'Completed');
 const s = read('app/(customer)/(tabs)/index.tsx');
 const ph = read('src/components/customerHome/PropertyHome.tsx');
 check('9 screen: compact greeting, the property-first home, empty state, no project creation, a project opens its own page', /Welcome Back/.test(s) && /<PropertyHome/.test(s) && /emptyPortalText\(\)/.test(s) && /\/\(customer\)\/project\?id=/.test(ph) && !/Create|New Project/.test(s + ph));

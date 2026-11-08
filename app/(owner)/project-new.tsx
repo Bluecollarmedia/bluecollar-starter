@@ -24,6 +24,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { ProjectStatus } from '@/types/project';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 const STATUS_OPTIONS: { key: ProjectStatus; label: string }[] = [
   { key: 'active', label: 'Active' },
@@ -71,7 +72,7 @@ export default function NewProjectScreen() {
   async function handlePickPhoto() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      showAlert('Permission Needed', 'Photo library access is needed to choose a project photo.');
+      showAlert('Permission Needed', w('Photo library access is needed to choose a job photo.'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [16, 9], quality: 0.7 });
@@ -85,7 +86,7 @@ export default function NewProjectScreen() {
 
   async function handleSave() {
     if (!name.trim()) {
-      showAlert('Required', 'Please enter a project name.');
+      showAlert('Required', w('Please enter a job name.'));
       return;
     }
     const missingAddress = missingAddressPart({ address, city, state, zip });
@@ -145,7 +146,7 @@ export default function NewProjectScreen() {
       customerId, propertyId,
       fields: { address, city, state: state.trim().toUpperCase(), zip, latitude: check.latitude, longitude: check.longitude },
     });
-    if (linked.error) { showAlert('Couldn\'t save the property', linked.error); return; }
+    if (linked.error) { showAlert(w("Couldn't save the job site"), linked.error); return; }
     const fields = {
       propertyId: linked.propertyId,
       name: name.trim(),
@@ -182,7 +183,7 @@ export default function NewProjectScreen() {
       customerCanViewPhotos: true,
       customerCanComment: true,
     });
-    logProjectHistory(project.id, 'project_created', `Project created: ${fields.name}`);
+    logProjectHistory(project.id, 'project_created', w('Job created: {name}', { name: fields.name }));
     if (photoUri) attachImage('projects', project.id, 'coverPhotoUrl', photoUri, `projects/${project.id}`);
     router.back();
   }
@@ -195,7 +196,7 @@ export default function NewProjectScreen() {
             <Icon name="x" size={24} color={colors.textPrimary} />
           </Pressable>
           <Text style={[typeScale.headingLarge, { color: colors.textPrimary, flex: 1 }]}>
-            {isEdit ? 'Edit Project' : 'New Project'}
+            {w(isEdit ? 'Edit Job' : 'New Job')}
           </Text>
         </View>
       </View>
@@ -242,13 +243,13 @@ export default function NewProjectScreen() {
                 </Pressable>
               </View>
               <Text style={[typeScale.caption, { color: colors.textTertiary, textAlign: 'center' }]}>
-                The customer sees this on their project page.
+                {w('The customer sees this on their job page.')}
               </Text>
             </Card>
           )}
 
-          <Card title="Project Photo" style={{ marginBottom: spacing.lg }}>
-            <Pressable onPress={handlePickPhoto} accessibilityRole="button" accessibilityLabel="Choose project photo">
+          <Card title={w('Job Photo')} style={{ marginBottom: spacing.lg }}>
+            <Pressable onPress={handlePickPhoto} accessibilityRole="button" accessibilityLabel={w('Choose job photo')}>
               {photoUri || existing?.coverPhotoUrl ? (
                 <Image
                   source={{ uri: photoUri ?? (existing ? getProjectImageUri(existing) : undefined) }}
@@ -259,7 +260,7 @@ export default function NewProjectScreen() {
                 <View style={[styles.photoPreview, styles.photoEmpty, { borderColor: colors.border, backgroundColor: colors.backgroundTertiary }]}>
                   <Icon name="camera" size={24} color={colors.textTertiary} />
                   <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.xs }]}>
-                    Add a photo of the property (optional)
+                    {w('Add a photo of the job site (optional)')}
                   </Text>
                 </View>
               )}
@@ -284,7 +285,7 @@ export default function NewProjectScreen() {
           <Card title="Customer" style={{ marginBottom: spacing.lg }}>
             {customers.length === 0 ? (
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>
-                No customers yet. Add one below, then send them a private link from their page so they can see the project.
+                {w('No customers yet. Add one below, then send them a private link from their page so they can see the job.')}
               </Text>
             ) : (
               <View style={styles.chipRow}>
@@ -316,9 +317,9 @@ export default function NewProjectScreen() {
           </Card>
           )}
 
-          <Card title="Project Info">
+          <Card title={w('Job Info')}>
             <Input
-              label="Project Name"
+              label={w('Job Name')}
               placeholder="e.g. Smith Driveway Replacement"
               value={name}
               onChangeText={setName}
@@ -361,7 +362,7 @@ export default function NewProjectScreen() {
 
           <Card title="Internal Notes" style={{ marginTop: spacing.lg }}>
             <Input
-              placeholder="Any notes about this project (not visible to customer)"
+              placeholder={w('Any notes about this job (not visible to customer)')}
               value={notes}
               onChangeText={setNotes}
               multiline
@@ -372,7 +373,7 @@ export default function NewProjectScreen() {
 
           <View style={styles.actions}>
             <Button
-              title={isEdit ? 'Save Changes' : 'Create Project'}
+              title={isEdit ? 'Save Changes' : w('Create Job')}
               onPress={handleSave}
               loading={checking}
               icon={isEdit ? 'check' : 'plus'}

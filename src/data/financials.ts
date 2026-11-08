@@ -24,7 +24,7 @@ import type {
   Quote, ChangeOrder, Invoice, ProjectFinancialSummary, FinancialStatus,
 } from '@/types/financial';
 import type { Project } from '@/types/project';
-import { brand } from '@/config/brand';
+import { brand, w } from '@/config/brand';
 
 type TableFor = 'quotes' | 'change_orders' | 'invoices';
 
@@ -303,10 +303,10 @@ export function startProjectFromQuote(projectId: string): boolean {
   if (!canStartProject(projectId)) return false;
   const quote = db.quotes.find((q) => q.projectId === projectId && q.status === 'approved');
   updateRow('projects', projectId, { status: 'active' });
-  logProjectHistory(projectId, 'status_changed', `Project started from approved quote ${quote?.number ?? ''}`.trim(), {
+  logProjectHistory(projectId, 'status_changed', w('Job started from approved quote {number}', { number: quote?.number ?? '' }).trim(), {
     from: 'prospect', to: 'active', quoteId: quote?.id,
   });
-  addCustomerTimeline(projectId, 'project_started', 'Your project is confirmed');
+  addCustomerTimeline(projectId, 'project_started', w('Your job is confirmed'));
   return true;
 }
 

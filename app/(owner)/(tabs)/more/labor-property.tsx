@@ -13,6 +13,7 @@ import { todayKey } from '@/lib/ids';
 import { Card, Chip, Empty, KV, LaborScreen, fmtDay, shiftDay } from '@/components/time/LaborBits';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -73,7 +74,7 @@ export default function LaborPropertyScreen() {
   }
 
   return (
-    <LaborScreen title={name ?? 'Project'} subtitle="Labor by visit" loading={!data && !error} onRefresh={load}
+    <LaborScreen title={name ?? w('Job')} subtitle="Labor by visit" loading={!data && !error} onRefresh={load}
       right={rows.length ? <Pressable onPress={async () => { try { await shareCsv(`visits-${name ?? id}`, visitsCsv(rows)); } catch (e) { say("Couldn't export", e instanceof Error ? e.message : 'Try again.'); } }} hitSlop={10} accessibilityRole="button" accessibilityLabel="Export CSV"><Icon name="download" size={22} color={colors.textPrimary} /></Pressable> : undefined}>
       {error ? <Card><Text style={[typeScale.bodyMedium, { color: colors.error }]}>{error}</Text></Card> : null}
       <Card>
@@ -105,7 +106,7 @@ export default function LaborPropertyScreen() {
 
       {totals ? (
         <>
-          <Card title="PROJECT LABOR (ALL DAYS)">
+          <Card title={w('JOB LABOR (ALL DAYS)')}>
             <KV label="Work visits" value={String(totals.visits)} hint={totals.firstDate ? `${fmtDay(totals.firstDate)} to ${fmtDay(totals.lastDate ?? totals.firstDate)}` : undefined} />
             <KV label="Total crew labor" value={`${hoursText(totals.laborMs)} labor-hours`} bold />
             <KV label="Billable labor" value={`${hoursText(totals.billableLaborMs)} h`} />

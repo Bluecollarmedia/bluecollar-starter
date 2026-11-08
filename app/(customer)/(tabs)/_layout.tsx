@@ -29,7 +29,7 @@ function CustomerNativeTabs() {
           sf={{ default: 'house', selected: 'house.fill' }}
           src={<NativeTabs.Trigger.VectorIcon family={Feather} name="home" />}
         />
-        <NativeTabs.Trigger.Label>{t(words.places)}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t('Job sites')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       {MESSAGES_ON && (
@@ -79,7 +79,7 @@ function CustomerJSTabs() {
       <Tabs.Screen
         name="index"
         options={{
-          title: t(words.places),
+          title: t('Job sites'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),

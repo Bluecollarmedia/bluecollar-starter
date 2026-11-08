@@ -4,6 +4,7 @@
  * The database decides; this only asks and reports back in plain words.
  */
 import { db, deleteRow, isDemo, refresh, rowsOf, rpc } from '@/data/store';
+import { w } from '@/config/brand';
 
 export type DeleteMemberResult =
   | { ok: true }
@@ -24,7 +25,7 @@ export async function deleteUnusedMember(personId: string): Promise<DeleteMember
     const m = db.members.find((x) => x.personId === personId);
     if (!m) return { ok: false, hasHistory: false, error: 'Not found.' };
     const busy = db.assignments.some((a) => a.personId === personId) || db.projects.some((p) => p.customerId === personId);
-    if (busy) return { ok: false, hasHistory: true, error: 'They have jobs or projects, so they cannot be deleted. Deactivate them instead and their history stays.' };
+    if (busy) return { ok: false, hasHistory: true, error: w('They have jobs or job sites, so they cannot be deleted. Deactivate them instead and their history stays.') };
     for (const r of rowsOf('crew_members').filter((x) => x.personId === personId)) deleteRow('crew_members', r.id);
     deleteRow('company_members', m.id);
     return { ok: true };

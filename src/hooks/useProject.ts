@@ -2,6 +2,7 @@ import { useMemo, useCallback } from 'react';
 import type { Project, ProjectTask, ProjectSettings, ProjectPhoto, ProjectUpdate, ProjectRequest, RequestStatus } from '@/types/project';
 import { db, useDb, insertRow, updateRow, deleteRow, findRow } from '@/data/store';
 import { logProjectHistory, addCustomerTimeline, addProjectPhoto, notifyStaff, type NewPhoto } from '@/data/actions';
+import { w } from '@/config/brand';
 
 const STATUS_LABELS: Record<string, string> = {
   prospect: 'Prospect',
@@ -51,7 +52,7 @@ export function useProject(projectId: string) {
       logProjectHistory(projectId, 'status_changed', `Status changed to ${STATUS_LABELS[patch.status] ?? patch.status}`, {
         from: before.status, to: patch.status,
       });
-      if (patch.status === 'completed') addCustomerTimeline(projectId, 'project_completed', 'Project completed');
+      if (patch.status === 'completed') addCustomerTimeline(projectId, 'project_completed', w('Job completed'));
       if (patch.status === 'active' && before.status !== 'active' && !before.startDate) {
         addCustomerTimeline(projectId, 'project_started', 'Work has started');
       }
@@ -60,10 +61,10 @@ export function useProject(projectId: string) {
       logProjectHistory(projectId, 'progress_updated', `Progress updated to ${patch.progress}%`, {
         from: before.progress ?? 0, to: patch.progress,
       });
-      addCustomerTimeline(projectId, 'progress_updated', `Project is ${patch.progress}% complete`);
+      addCustomerTimeline(projectId, 'progress_updated', w('Job is {n}% complete', { n: patch.progress ?? 0 }));
     }
     if (patch.notes !== undefined && patch.notes !== before.notes) {
-      logProjectHistory(projectId, 'note_added', 'Project notes updated');
+      logProjectHistory(projectId, 'note_added', w('Job notes updated'));
     }
   }, [projectId]);
 
@@ -193,7 +194,7 @@ export function useProject(projectId: string) {
       ...input,
     }) as unknown as ProjectRequest;
     logProjectHistory(projectId, 'request_created', `Customer request: ${input.title}`, { requestId: row.id });
-    const projectName = db.projects.find((p) => p.id === projectId)?.name ?? 'a project';
+    const projectName = db.projects.find((p) => p.id === projectId)?.name ?? w('a job');
     notifyStaff('customer_request_submitted', 'New customer request', `${input.title} (${projectName})`, { type: 'project', id: projectId });
     return row;
   }, [projectId]);

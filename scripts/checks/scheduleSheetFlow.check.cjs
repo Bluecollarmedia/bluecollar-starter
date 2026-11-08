@@ -9,11 +9,11 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
 const s = read('app/(owner)/schedule-create.tsx');
 const proj = read('app/(owner)/(tabs)/projects/[id].tsx');
 
-check('1 Workers is the first section on the screen (above Project, Date and Time)', s.indexOf('title="Workers"') > 0 && s.indexOf('title="Workers"') < s.indexOf('title="Project"') && s.indexOf('title="Workers"') < s.indexOf('title="Date"'));
+check('1 Workers is the first section on the screen (above Project, Date and Time)', s.indexOf('title="Workers"') > 0 && s.indexOf('title="Workers"') < s.indexOf("title={w('Job')}") && s.indexOf('title="Workers"') < s.indexOf('title="Date"'));
 check('2 the worker list is inline: no second "Select Workers" sheet and no Add Workers button', !/title="Select Workers"/.test(s) && !/setShowWorkerSheet/.test(s) && !/Add Workers/.test(s));
 check('3 every worker row is on the screen itself, with the same availability rules as before', /\{!isMove \? \(\s*<View>\s*\{activeWorkers\.map\(w => \{/.test(s) && /existingOnJob\(w\.personId, projectId, date\)/.test(s) && /Select Anyway/.test(s));
-check('4 opened from inside a project, the Project question is not asked (the id is bound in the background)', /const projectKnown = !isMove && !!params\.projectId/.test(s) && /\{projectKnown \? null : \(\s*<Section\s*icon="home"\s*title="Project"/.test(s) && /useState\(params\.projectId \?\? ''\)/.test(s));
-check('5 from a generic Schedule button (no project given) the Project question is still asked', /projectKnown \? null : \(/.test(s) && /title="Project"/.test(s));
+check('4 opened from inside a project, the Project question is not asked (the id is bound in the background)', /const projectKnown = !isMove && !!params\.projectId/.test(s) && /\{projectKnown \? null : \(\s*<Section\s*icon="home"\s*title=\{w\('Job'\)\}/.test(s) && /useState\(params\.projectId \?\? ''\)/.test(s));
+check('5 from a generic Schedule button (no project given) the Project question is still asked', /projectKnown \? null : \(/.test(s) && /title=\{w\('Job'\)\}/.test(s));
 check('6 Time starts on Full Day', /const \[isFullDay, setIsFullDay\] = useState\(true\)/.test(s));
 check('7 Repeat is offered only when the settings file switches repeat jobs on (off by default: projects and one-off jobs go day by day)', /const ALLOW_REPEAT = isFeatureOn\('repeatJobs'\)/.test(s) && require('./_brand.cjs').brand.features.repeatJobs === false && /\{ALLOW_REPEAT \? \(\s*<Section icon="repeat" title="Repeat">/.test(s));
 check('8 the date cards on the project Schedule tab are labelled buttons that select the day', /accessibilityRole="button"\s*accessibilityState=\{\{ selected: isSelected \}\}/.test(proj) && /setScheduleDate\(dateStr\)/.test(proj));

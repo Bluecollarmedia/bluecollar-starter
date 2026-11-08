@@ -14,6 +14,7 @@ import { AUDIENCES, BODY_MAX, TITLE_MAX, audienceLabel, confirmText, messageProb
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
@@ -30,7 +31,7 @@ export function MessageCustomersPanel() {
   const [note, setNote] = useState<{ tone: 'success' | 'error'; text: string } | null>(null);
 
   const problem = messageProblem(title, body);
-  const help = AUDIENCES.find((a) => a.key === audience)?.help;
+  const help = w(AUDIENCES.find((a) => a.key === audience)?.help ?? '');
 
   async function send() {
     setNote(null);
@@ -47,7 +48,8 @@ export function MessageCustomersPanel() {
 
   function confirmSend() {
     if (problem) { setNote({ tone: 'error', text: problem }); return; }
-    const { title: t, message } = confirmText(audience);
+    const { title: t, message: rawMessage } = confirmText(audience);
+    const message = w(rawMessage);
     confirmAction(t, message, 'Send', () => { void send(); });
   }
 
@@ -65,7 +67,7 @@ export function MessageCustomersPanel() {
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.border }]}
               >
-                <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textSecondary }]}>{a.label}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textSecondary }]}>{w(a.label)}</Text>
                 {reach?.[a.key] != null ? (
                   <Text style={[typeScale.caption, { color: on ? '#FFFFFF' : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
                 ) : null}
@@ -96,7 +98,7 @@ export function MessageCustomersPanel() {
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>{a.title}</Text>
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={2}>{a.body}</Text>
                     <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>
-                      {audienceLabel(a.audience)} · {a.recipientIds?.length ?? 0} {(a.recipientIds?.length ?? 0) === 1 ? 'person' : 'people'} · {when(a.createdAt)}
+                      {w(audienceLabel(a.audience))} · {a.recipientIds?.length ?? 0} {(a.recipientIds?.length ?? 0) === 1 ? 'person' : 'people'} · {when(a.createdAt)}
                     </Text>
                   </View>
                 </View>

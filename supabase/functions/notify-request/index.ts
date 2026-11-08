@@ -46,7 +46,7 @@ export function buildRequestEmail(r: { name: string; town: string; property_type
     `Phone: ${r.phone}`,
     `Email: ${r.email || '(none given)'}`,
     `Town / ZIP: ${r.town}`,
-    `Property: ${kind}`,
+    `Job site: ${kind}`,
     `Services: ${r.services.join(', ')}`,
     `Details: ${r.details || '(none)'}`,
     `Sent: ${when}`,

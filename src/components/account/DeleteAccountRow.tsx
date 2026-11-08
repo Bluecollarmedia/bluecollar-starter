@@ -78,7 +78,7 @@ export function DeleteAccountRow() {
               {t('Delete your account?')}
             </Text>
             <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>
-              {t("Your login and contact details are erased and you're removed from the team. Your name stays on past records like hours and project history. This can't be undone.")}
+              {t("Your login and contact details are erased and you're removed from the team. Your name stays on past records like hours and job history. This can't be undone.")}
             </Text>
             {isOwner && (
               <View style={[styles.warnBox, { backgroundColor: semantic.warningLight }]}>

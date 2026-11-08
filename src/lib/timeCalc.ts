@@ -1,3 +1,4 @@
+import { w as settingsWords } from '@/config/brand'; // "w" is a workday in this file
 // Time tracking: the ONE place the hour, labor and cost definitions live, so every screen and export agrees. Pure functions.
 //
 // Conventions
@@ -212,7 +213,7 @@ export function buildTimeline(
   const items: { s: number; e: number | null; entry: TimelineEntry }[] = [];
   for (const i of intervals) {
     if (i.status === 'void') continue;
-    items.push({ s: ms(i.startedAt), e: i.endedAt ? ms(i.endedAt) : null, entry: { kind: i.endedAt ? 'visit' : 'open', startedAt: i.startedAt, endedAt: i.endedAt, label: i.label ?? 'Property visit', refId: i.id, ms: intervalMs(i, now) } });
+    items.push({ s: ms(i.startedAt), e: i.endedAt ? ms(i.endedAt) : null, entry: { kind: i.endedAt ? 'visit' : 'open', startedAt: i.startedAt, endedAt: i.endedAt, label: i.label ?? settingsWords('Job site visit'), refId: i.id, ms: intervalMs(i, now) } });
   }
   for (const b of breaks) {
     items.push({ s: ms(b.startedAt), e: b.endedAt ? ms(b.endedAt) : null, entry: { kind: 'break', startedAt: b.startedAt, endedAt: b.endedAt, label: b.paid ? 'Break (paid)' : 'Break (unpaid)', refId: b.id, ms: Math.max(0, (b.endedAt ? ms(b.endedAt) : now) - ms(b.startedAt)) } });
@@ -247,12 +248,12 @@ export function dayProblems(w: TimeWorkday, intervals: TimeInterval[], now: numb
   if (!w.clockOutAt && now - ms(w.clockInAt) > openHours * HOUR_MS) out.push({ kind: 'no_clock_out', message: `Still clocked in after more than ${openHours} hours. Needs review.`, refId: w.id });
   const live = intervals.filter((i) => i.status !== 'void').sort((a, b) => ms(a.startedAt) - ms(b.startedAt));
   for (const i of live) {
-    if (w.clockOutAt && !i.endedAt) out.push({ kind: 'open_interval_after_close', message: 'A property visit is still running after the clock-out.', refId: i.id });
-    if (ms(i.startedAt) < ms(w.clockInAt) || (w.clockOutAt && i.endedAt && ms(i.endedAt) > ms(w.clockOutAt))) out.push({ kind: 'visit_outside_day', message: 'A property visit falls outside the workday.', refId: i.id });
+    if (w.clockOutAt && !i.endedAt) out.push({ kind: 'open_interval_after_close', message: settingsWords('A job site visit is still running after the clock-out.'), refId: i.id });
+    if (ms(i.startedAt) < ms(w.clockInAt) || (w.clockOutAt && i.endedAt && ms(i.endedAt) > ms(w.clockOutAt))) out.push({ kind: 'visit_outside_day', message: settingsWords('A job site visit falls outside the workday.'), refId: i.id });
   }
   for (let k = 1; k < live.length; k++) {
     const prevEnd = live[k - 1].endedAt ? ms(live[k - 1].endedAt as string) : now;
-    if (ms(live[k].startedAt) < prevEnd) out.push({ kind: 'overlap', message: 'Two property visits overlap for this employee.', refId: live[k].id });
+    if (ms(live[k].startedAt) < prevEnd) out.push({ kind: 'overlap', message: settingsWords('Two job site visits overlap for this employee.'), refId: live[k].id });
   }
   return out;
 }

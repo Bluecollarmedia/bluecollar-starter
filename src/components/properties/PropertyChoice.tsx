@@ -10,6 +10,7 @@ import { useCustomerProperties } from '@/data/properties';
 import type { Property } from '@/types/property';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 interface Props {
   customerId?: string;
@@ -26,7 +27,7 @@ export function PropertyChoice({ customerId, propertyId, onSelect }: Props) {
   if (!customerId) {
     return (
       <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginBottom: spacing.sm }]}>
-        Choose the customer first. Their saved properties show up here, so an address is never typed twice.
+        {w('Choose the customer first. Their saved job sites show up here, so an address is never typed twice.')}
       </Text>
     );
   }
@@ -34,7 +35,7 @@ export function PropertyChoice({ customerId, propertyId, onSelect }: Props) {
 
   return (
     <View style={{ marginBottom: spacing.sm }}>
-      <Text style={[typeScale.caption, { color: colors.textSecondary, marginBottom: 6 }]}>Their properties</Text>
+      <Text style={[typeScale.caption, { color: colors.textSecondary, marginBottom: 6 }]}>{w('Their job sites')}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.xs }} keyboardShouldPersistTaps="handled">
         {properties.map((p) => {
           const on = propertyId === p.id;

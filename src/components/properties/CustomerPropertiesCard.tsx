@@ -12,6 +12,7 @@ import { ensureProperty, useCustomerProperties } from '@/data/properties';
 import { AddressFields } from '@/components/ui/AddressFields';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 const EMPTY = { name: '', address: '', city: '', state: '', zip: '' };
 
@@ -29,8 +30,8 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
     setSaving(true);
     const res = await ensureProperty(customerId, form);
     setSaving(false);
-    if (!res.ok) return showMessage("Couldn't add the property", res.missing ? 'This needs the latest database update (79).' : res.error);
-    if (!res.created) showMessage('Already saved', `${firstName} already has a property at that address, so it was not added twice.`);
+    if (!res.ok) return showMessage(w("Couldn't add the job site"), res.missing ? 'This needs the latest database update (79).' : res.error);
+    if (!res.created) showMessage('Already saved', w('{name} already has a job site at that address, so it was not added twice.', { name: firstName }));
     setForm(EMPTY);
     Keyboard.dismiss();
     setAdding(false);
@@ -39,19 +40,19 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
   return (
     <View style={[styles.card, { backgroundColor: colors.surface }, shadow.sm]}>
       <View style={styles.head}>
-        <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700', flex: 1 }]}>Properties ({properties.length})</Text>
+        <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700', flex: 1 }]}>{w('Job sites')} ({properties.length})</Text>
         {!adding ? <Button title="Add" icon="plus" size="sm" variant="secondary" onPress={() => setAdding(true)} /> : null}
       </View>
 
       {properties.length === 0 && !adding ? (
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>
-          No saved properties yet. Add one here, or pick this customer in any project form and their address is saved automatically.
+          {w('No saved job sites yet. Add one here, or pick this customer in any job form and their address is saved automatically.')}
         </Text>
       ) : null}
 
       {properties.map((p, i) => {
         const projects = db.projects.filter((x) => x.propertyId === p.id).length;
-        const uses = projects ? `${projects} project${projects === 1 ? '' : 's'}` : '';
+        const uses = projects ? `${projects} ${w(projects === 1 ? 'job' : 'jobs')}` : '';
         return (
           <View key={p.id} style={[styles.row, i > 0 || true ? { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight } : null]}>
             <Icon name="map-pin" size={18} color={colors.primary} />
@@ -66,7 +67,7 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
 
       {adding ? (
         <View style={{ gap: spacing.sm, marginTop: spacing.md }}>
-          <Input label="Property name (optional)" value={form.name} onChangeText={set('name')} placeholder="Oak Plaza" />
+          <Input label={w('Job site name (optional)')} value={form.name} onChangeText={set('name')} placeholder="Oak Plaza" />
           <AddressFields
             value={{ address: form.address, city: form.city, state: form.state, zip: form.zip }}
             onChange={(v) => setForm((f) => ({ ...f, ...v }))}
@@ -74,7 +75,7 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
           />
           <View style={{ flexDirection: 'row', gap: spacing.md }}>
             <Button title="Cancel" variant="ghost" onPress={() => { setAdding(false); setForm(EMPTY); }} />
-            <Button title="Save property" loading={saving} onPress={save} />
+            <Button title={w('Save job site')} loading={saving} onPress={save} />
           </View>
         </View>
       ) : null}

@@ -231,7 +231,7 @@ export default function InviteScreen() {
           {isWorker ? t('Join {company}', { company: info.companyName ?? '' }) : t('{company} invited you', { company: info.companyName ?? '' })}
         </Text>
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xs, marginBottom: spacing.xl }]}>
-          {isWorker ? t('Set up your login. Everything here is yours to fill in.') : t('Create your login to see your project.')}
+          {isWorker ? t('Set up your login. Everything here is yours to fill in.') : t('Create your login to see your job.')}
         </Text>
 
         {error ? (

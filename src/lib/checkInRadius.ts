@@ -1,3 +1,4 @@
+import { w } from '@/config/brand';
 // Is a worker close enough to a project to check in? Real geographic distance between the phone's GPS fix and the project's
 // coordinates, against the project's saved check-in distance. Pure, no network. The database repeats the same rule
 // (supabase/updates/052) so a modified app can't skip it.
@@ -55,7 +56,7 @@ export function checkInRefusal(
   switch (v.reason) {
     case 'too_far':
       return {
-        title: 'You are too far from this project to check in',
+        title: w('You are too far from this job to check in'),
         message: `You are about ${distanceText(v.distance ?? 0)} from ${jobName}. You need to be within ${distanceText(v.radius)} to check in.`,
         retry: false,
       };
@@ -70,8 +71,8 @@ export function checkInRefusal(
     case 'no_site':
     default:
       return {
-        title: "This project's location isn't set",
-        message: `We can't find ${jobName}'s address on the map, so your location can't be checked. Ask the office to fix the project address, then try again.`,
+        title: w("This job's location isn't set"),
+        message: w("We can't find {job}'s address on the map, so your location can't be checked. Ask the office to fix the job address, then try again.", { job: jobName }),
         retry: false,
       };
   }

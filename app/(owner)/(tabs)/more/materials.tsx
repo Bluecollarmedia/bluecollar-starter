@@ -19,6 +19,7 @@ import { formatQuantity } from '@/lib/money';
 import { offsetDateKey } from '@/lib/ids';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 export default function MaterialsOverviewScreen() {
   const { colors } = useTheme();
@@ -39,7 +40,7 @@ export default function MaterialsOverviewScreen() {
           <EmptyState
             icon="clipboard"
             title="No materials to prepare"
-            description="When a quote is approved, its job shows up here. Add materials from the project’s More → Materials."
+            description={w('When a quote is approved, its job shows up here. Add materials from the job’s More → Materials.')}
           />
         ) : rows.map((r) => {
           const pct = r.total ? Math.round((r.done / r.total) * 100) : 0;

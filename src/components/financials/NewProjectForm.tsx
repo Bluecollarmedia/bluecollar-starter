@@ -18,6 +18,7 @@ import { db, rowsOf } from '@/data/store';
 import { matchingProjects, createProspectProject } from '@/data/financials';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 
@@ -55,9 +56,9 @@ export function NewProjectForm({ onReady }: { onReady: (projectId: string, creat
     if (matches.length) {
       const m = matches[0];
       confirmAction(
-        'This address is already a project',
-        `“${m.name}” is at ${m.address}. The quote will go on that project instead of creating a second one.`,
-        'Use That Project',
+        w('This address is already a job'),
+        w('“{name}” is at {address}. The quote will go on that job instead of creating a second one.', { name: m.name, address: m.address ?? '' }),
+        w('Use That Job'),
         () => { setBusy(true); onReady(m.id, false); },
       );
       return;
@@ -81,7 +82,7 @@ export function NewProjectForm({ onReady }: { onReady: (projectId: string, creat
       }
     }
     if (!address.trim()) {
-      showMessage('Address needed', 'Enter the property’s street address so the quote shows where the work is.');
+      showMessage('Address needed', w('Enter the job site’s street address so the quote shows where the work is.'));
       return;
     }
 
@@ -170,7 +171,7 @@ export function NewProjectForm({ onReady }: { onReady: (projectId: string, creat
         </ListSection>
       )}
 
-      <ListSection title="PROPERTY" footer="Saved as a Prospect: not on the schedule and no crew until the quote is approved and you start the project.">
+      <ListSection title={w('JOB SITE')} footer={w('Saved as a Prospect: not on the schedule and no crew until the quote is approved and you start the job.')}>
         <InputRow
           label="Street"
           value={address}
@@ -185,7 +186,7 @@ export function NewProjectForm({ onReady }: { onReady: (projectId: string, creat
         <InputRow label="City" value={city} onChangeText={setCity} placeholder="Optional" autoCapitalize="words" />
         <InputRow label="State" value={state} onChangeText={setState} placeholder="Optional" autoCapitalize="characters" maxLength={2} />
         <InputRow label="ZIP" value={zip} onChangeText={setZip} placeholder="Optional" keyboardType="number-pad" maxLength={10} />
-        <InputRow label="Project name" value={name} onChangeText={setName} placeholder={defaultName || 'e.g. Smith Residence'} autoCapitalize="words" />
+        <InputRow label={w('Job name')} value={name} onChangeText={setName} placeholder={defaultName || 'e.g. Smith Residence'} autoCapitalize="words" />
       </ListSection>
 
       <Button title="Continue to Quote" onPress={submit} loading={busy} fullWidth />

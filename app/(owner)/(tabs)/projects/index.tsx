@@ -12,6 +12,7 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { ProjectStatus } from '@/types/project';
+import { w } from '@/config/brand';
 
 type FilterKey = ProjectStatus | 'all';
 
@@ -56,11 +57,11 @@ export default function ProjectsListScreen() {
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.md }]}>
         <View style={styles.titleRow}>
-          <Text style={[typeScale.displaySmall, { color: colors.textPrimary }]}>Projects</Text>
+          <Text style={[typeScale.displaySmall, { color: colors.textPrimary }]}>{w('Jobs')}</Text>
           <Pressable
             onPress={() => router.push('/(owner)/project-new')}
             style={[styles.addButton, { backgroundColor: colors.primary }]}
-            accessibilityLabel="Create new project"
+            accessibilityLabel={w('Create new job')}
           >
             <Icon name="plus" size={22} color={colors.textOnPrimary} />
           </Pressable>
@@ -68,7 +69,7 @@ export default function ProjectsListScreen() {
         <SearchBar
           value={search}
           onChangeText={setSearch}
-          placeholder="Search projects..."
+          placeholder={w('Search jobs...')}
           style={styles.searchBar}
         />
         <FilterChips
@@ -82,13 +83,13 @@ export default function ProjectsListScreen() {
         <View style={styles.emptyContainer}>
           <EmptyState
             icon="folder"
-            title={search ? 'No matching projects' : counts.all > 0 ? 'Nothing here right now' : 'No projects yet'}
+            title={w(search ? 'No matching jobs' : counts.all > 0 ? 'Nothing here right now' : 'No jobs yet')}
             description={
               search
                 ? 'Try adjusting your search or filter.'
                 : counts.all > 0
-                  ? 'Pick another filter, or tap All to see every project.'
-                  : 'Tap the + button to create your first project.'
+                  ? w('Pick another filter, or tap All to see every job.')
+                  : w('Tap the + button to create your first job.')
             }
           />
         </View>

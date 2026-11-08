@@ -141,7 +141,7 @@ export function describeRadius(feet: number): string {
   if (feet <= 300) return 'The lot plus the street out front';
   if (feet <= 500) return 'A few houses either way';
   if (feet <= 1000) return 'About the whole block';
-  if (feet <= 1320) return 'A few blocks around the property';
+  if (feet <= 1320) return 'A few blocks around the job site';
   if (feet <= 2640) return 'The surrounding neighborhood';
   return 'Very loose, for estates and acreage';
 }

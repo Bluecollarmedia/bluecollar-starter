@@ -15,7 +15,7 @@ import { useAccounts, type Account, type AccountStatus } from '@/hooks/useAccoun
 import { CollapsibleFilters } from '@/components/ui/CollapsibleFilters';
 import { haptics } from '@/lib/haptics';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
-import { roleLabel } from '@/config/brand';
+import { roleLabel, w } from '@/config/brand';
 
 type RoleFilter = 'all' | 'owner' | 'worker' | 'customer' | 'none';
 type StatusFilter = 'all' | AccountStatus;
@@ -218,7 +218,7 @@ export default function AccountsScreen() {
     },
     delete: {
       icon: 'alert-triangle', title: `Delete ${fullName(target)}’s account?`,
-      body: 'Their login and contact details are erased for good. Their name stays on past records like hours and project history. To come back they’d have to sign up again and be approved. This can’t be undone.',
+      body: w('Their login and contact details are erased for good. Their name stays on past records like hours and job history. To come back they’d have to sign up again and be approved. This can’t be undone.'),
       button: 'Delete Account',
     },
   }[pending.action] : null;

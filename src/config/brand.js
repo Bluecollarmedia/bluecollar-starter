@@ -94,6 +94,8 @@ module.exports = {
 
   // ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   // WORDING  -  what things are called in the app
+  // Write each word with a capital first letter and the rest as it should look mid-sentence ("Job site", not "Job Site"):
+  // the app lowercases it inside sentences, capitalizes it in titles and fixes "a" / "an" in front of it by itself.
   // ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   wording: {
     /** One piece of work for a customer, e.g. "Job" / "Jobs" or "Project" / "Projects". */
@@ -105,6 +107,10 @@ module.exports = {
     /** A team of workers. */
     crew: 'Crew',
     crews: 'Crews',
+    /** The same six words in Spanish (shown when a phone is set to Spanish), e.g. "Proyecto" / "Proyectos" or
+     *  "Propiedad" / "Propiedades". Every screen picks all of these words up by itself: the app's sentences are written
+     *  with Job / Job site / Crew and swapped for your words when they are shown. */
+    es: { job: 'Trabajo', jobs: 'Trabajos', place: 'Sitio de trabajo', places: 'Sitios de trabajo', crew: 'Cuadrilla', crews: 'Cuadrillas' },
     /** What the app calls a helper with extra rights (the "admin" role inside the database stays 'admin'). */
     leaderRoleLabel: 'Manager',
     /** What the optional clothing-size question is called (features.uniformSize). */

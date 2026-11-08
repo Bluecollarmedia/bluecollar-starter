@@ -8,6 +8,7 @@ import { db, useDb } from '@/data/store';
 import { Card, Empty, LaborScreen } from '@/components/time/LaborBits';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 /** Pick a project to see every visit and its labor. */
 export default function LaborPropertiesScreen() {
@@ -31,10 +32,10 @@ export default function LaborPropertiesScreen() {
   );
 
   return (
-    <LaborScreen title="Property & Project History">
-      <SearchBar value={q} onChangeText={setQ} placeholder="Search projects" />
-      <Card title="PROJECTS">
-        {projects.length === 0 ? <Empty icon="briefcase" text="No projects match." /> : projects.map((p) => row(p.id, p.name, p.status.replace(/_/g, ' '), () => open(p.id, p.name)))}
+    <LaborScreen title={w('Job site & Job History')}>
+      <SearchBar value={q} onChangeText={setQ} placeholder={w('Search jobs')} />
+      <Card title={w('JOBS')}>
+        {projects.length === 0 ? <Empty icon="briefcase" text={w('No jobs match.')} /> : projects.map((p) => row(p.id, p.name, p.status.replace(/_/g, ' '), () => open(p.id, p.name)))}
       </Card>
     </LaborScreen>
   );

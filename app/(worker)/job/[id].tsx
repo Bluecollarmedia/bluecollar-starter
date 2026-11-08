@@ -126,7 +126,7 @@ export default function JobDetailScreen() {
           <View style={[styles.card, { backgroundColor: colors.surface, marginTop: -28 }, shadow.md]}>
             <View style={styles.titleRow}>
               <Text style={[typeScale.displaySmall, { color: colors.textPrimary, flex: 1 }]}>
-                {assignment.project?.name ?? t('Unknown Project')}
+                {assignment.project?.name ?? t('Unknown Job')}
               </Text>
               <StatusBadge label={isPast ? t('Past') : t('Upcoming')} status={isPast ? 'neutral' : 'success'} />
             </View>

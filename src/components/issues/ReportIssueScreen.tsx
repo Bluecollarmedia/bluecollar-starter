@@ -74,7 +74,7 @@ export function ReportIssueScreen() {
     return (
       <View style={[styles.screen, { backgroundColor: colors.background, paddingTop: insets.top + spacing.md, paddingHorizontal: spacing.lg }]}>
         <GlassIconButton icon="chevron-left" onPress={() => router.back()} accessibilityLabel={t('Back')} />
-        <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, marginTop: spacing.xl }]}>{t('Open this from a property or job.')}</Text>
+        <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, marginTop: spacing.xl }]}>{t('Open this from a job or job site.')}</Text>
       </View>
     );
   }

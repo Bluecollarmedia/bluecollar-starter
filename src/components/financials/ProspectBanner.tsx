@@ -16,6 +16,7 @@ import { canStartProject, startProjectFromQuote, displayStatus, STATUS_LABEL } f
 import { formatMoney } from '@/lib/money';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 export function ProspectBanner({ projectId, style }: { projectId: string; style?: object }) {
   const { colors } = useTheme();
@@ -29,14 +30,14 @@ export function ProspectBanner({ projectId, style }: { projectId: string; style?
   const ready = canStartProject(projectId);
 
   let text: string;
-  if (ready && quote) text = `Quote ${quote.number} was approved (${formatMoney(quote.total)}). Start the project to schedule crews and add tasks.`;
-  else if (quote) text = `Prospect: quote ${quote.number} is ${STATUS_LABEL[displayStatus({ kind: 'quote', ...quote })].toLowerCase()}. It becomes a project once the quote is approved.`;
-  else text = 'Prospect: not on the schedule yet. Create a quote; once it’s approved you can start the project.';
+  if (ready && quote) text = w('Quote {number} was approved ({total}). Start the job to schedule crews and add tasks.', { number: quote.number, total: formatMoney(quote.total) });
+  else if (quote) text = w('Prospect: quote {number} is {status}. It becomes a job once the quote is approved.', { number: quote.number, status: STATUS_LABEL[displayStatus({ kind: 'quote', ...quote })].toLowerCase() });
+  else text = w('Prospect: not on the schedule yet. Create a quote; once it’s approved you can start the job.');
 
   const start = () => confirmAction(
-    'Start this project?',
-    `${project.name} becomes an active project with ${quote?.number ?? 'the approved quote'} attached. No one is scheduled until you add them.`,
-    'Start Project',
+    w('Start this job?'),
+    w('{name} becomes an active job with {number} attached. No one is scheduled until you add them.', { name: project.name, number: quote?.number ?? 'the approved quote' }),
+    w('Start Job'),
     () => startProjectFromQuote(projectId),
   );
 
@@ -47,7 +48,7 @@ export function ProspectBanner({ projectId, style }: { projectId: string; style?
         <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1 }]}>{text}</Text>
       </View>
       {ready ? (
-        <Button title="Start Project" icon="play-circle" onPress={start} fullWidth style={{ marginTop: spacing.sm }} />
+        <Button title={w('Start Job')} icon="play-circle" onPress={start} fullWidth style={{ marginTop: spacing.sm }} />
       ) : quote ? (
         <Button
           title={`View Quote ${quote.number}`}

@@ -20,6 +20,7 @@ import { useTodayKey } from '@/hooks/useTodayKey';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 function formatDateTop(dateStr: string, today: string): string {
   const d = new Date(dateStr + 'T12:00:00');
@@ -210,7 +211,7 @@ export default function ScheduleScreen() {
                       <View style={{ flex: 1 }}>
                         <View style={styles.projectNameRow}>
                           <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600', flexShrink: 1 }]} numberOfLines={1}>
-                            {a.project?.name ?? 'Unknown project'}
+                            {a.project?.name ?? w('Unknown job')}
                           </Text>
                           {a.seriesId && (
                             <Icon name="repeat" size={11} color={colors.primary} />
@@ -275,7 +276,7 @@ export default function ScheduleScreen() {
                 </Text>
                 {day.workerCount > 0 ? (
                   <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
-                    {day.workerCount} worker{day.workerCount > 1 ? 's' : ''} · {day.projectCount} project{day.projectCount > 1 ? 's' : ''}
+                    {day.workerCount} worker{day.workerCount > 1 ? 's' : ''} · {day.projectCount} {w(day.projectCount > 1 ? 'jobs' : 'job')}
                   </Text>
                 ) : (
                   <Text style={[typeScale.caption, { color: colors.textTertiary }]}>No assignments</Text>
@@ -442,7 +443,7 @@ function AssignmentSheet({
         <Icon name="home" size={16} color={colors.textSecondary} />
         <View style={{ flex: 1 }}>
           <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>
-            {assignment.project?.name ?? 'Unknown project'}
+            {assignment.project?.name ?? w('Unknown job')}
           </Text>
           {assignment.project?.address && (
             <Text style={[typeScale.bodySmall, { color: colors.textTertiary }]}>{assignment.project.address}</Text>
@@ -502,7 +503,7 @@ function AssignmentSheet({
 
       <Pressable style={styles.sheetActionRow} onPress={() => onViewProject(assignment)} accessibilityRole="button">
         <Icon name="external-link" size={18} color={colors.textPrimary} />
-        <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1 }]}>View Project</Text>
+        <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1 }]}>{w('View Job')}</Text>
         <Icon name="chevron-right" size={16} color={colors.textTertiary} />
       </Pressable>
 

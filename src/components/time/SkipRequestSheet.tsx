@@ -28,7 +28,7 @@ export function SkipRequestSheet({ visible, propertyName, onClose, onSend }: {
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.backdrop}>
         <View style={[styles.card, { backgroundColor: colors.surface }]}>
-          <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{t('Ask to skip {name}?', { name: propertyName ?? t('this property') })}</Text>
+          <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{t('Ask to skip {name}?', { name: propertyName ?? t('this job site') })}</Text>
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.xs }]}>
             {t("Tell the owner why it can't be done. It stays open until the owner approves the skip.")}
           </Text>

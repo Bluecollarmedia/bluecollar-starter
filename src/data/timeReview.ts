@@ -6,6 +6,7 @@
  */
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { explainError, type Result } from '@/data/timeTracking';
+import { w } from '@/config/brand';
 
 export type SuggestionSource = 'last_stop' | 'last_visit' | 'last_break' | 'worker_said';
 
@@ -81,4 +82,4 @@ export async function acceptAllSuggestedEnds(): Promise<Result<{ accepted: numbe
 }
 
 export const sourceText = (s?: SuggestionSource): string =>
-  s === 'last_stop' ? 'last stop finished' : s === 'last_visit' ? 'last property visit ended' : s === 'last_break' ? 'last break ended' : s === 'worker_said' ? 'what they said' : '';
+  s === 'last_stop' ? 'last stop finished' : s === 'last_visit' ? w('last job site visit ended') : s === 'last_break' ? 'last break ended' : s === 'worker_said' ? 'what they said' : '';

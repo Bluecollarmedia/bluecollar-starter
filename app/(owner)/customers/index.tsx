@@ -8,6 +8,7 @@ import { useCustomers } from '@/hooks/useCustomers';
 import { SearchBar, EmptyState, Avatar, StatusBadge, ScreenHeader, RaisedAddButton } from '@/components/ui';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 export default function CustomersListScreen() {
   const { colors } = useTheme();
@@ -33,7 +34,7 @@ export default function CustomersListScreen() {
         <SearchBar
           value={search}
           onChangeText={setSearch}
-          placeholder="Search customers or projects..."
+          placeholder={w('Search customers or jobs...')}
           style={styles.searchBar}
         />
       </View>
@@ -92,7 +93,7 @@ export default function CustomersListScreen() {
                   ) : (
                     <View style={styles.detailRow}>
                       <Icon name="home" size={12} color={colors.textTertiary} />
-                      <Text style={[typeScale.caption, { color: colors.textTertiary, marginLeft: spacing.xs }]}>No projects yet</Text>
+                      <Text style={[typeScale.caption, { color: colors.textTertiary, marginLeft: spacing.xs }]}>{w('No jobs yet')}</Text>
                     </View>
                   )}
 
