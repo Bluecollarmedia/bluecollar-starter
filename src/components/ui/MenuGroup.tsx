@@ -15,6 +15,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { haptics } from '@/lib/haptics';
+import { fixed } from '@/theme/colors';
 
 const ICON_CIRCLE = 36;
 
@@ -42,7 +43,7 @@ interface MenuRowProps {
   icon: string;
   label: string;
   subtitle?: string;
-  /** Shows a green count pill when > 0. */
+  /** Shows a count pill when > 0. */
   count?: number;
   onPress: () => void;
 }
@@ -109,5 +110,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  countText: { color: '#FFFFFF', fontWeight: '700' },
+  countText: { color: fixed.white, fontWeight: '700' },
 });

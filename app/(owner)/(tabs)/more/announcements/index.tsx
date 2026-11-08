@@ -19,6 +19,7 @@ import { spacing, radius, shadow } from '@/theme/spacing';
 import type { Announcement } from '@/types/announcement';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { blackAlpha } from '@/theme/colors';
 
 type Audience = 'workers' | 'customers';
 
@@ -119,7 +120,7 @@ export default function AnnouncementsScreen() {
       {/* A sent announcement, opened to read it in full */}
       <BottomSheetModal visible={!!expandedAnnouncement} onRequestClose={() => setExpandedAnnouncement(null)}>
         <Pressable style={styles.sheetBackdrop} onPress={() => setExpandedAnnouncement(null)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.lg }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.lg }]} onPress={() => {}}>
             <View style={[styles.sheetHandle, { backgroundColor: colors.borderLight }]} />
             {expandedAnnouncement ? (
               <>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   annFooter: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.md, paddingTop: spacing.sm, borderTopWidth: StyleSheet.hairlineWidth },
   sentCard: { flexDirection: 'row', alignItems: 'center', borderRadius: radius.md, borderWidth: 1, padding: spacing.md, marginBottom: spacing.sm },
   readRow: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  sheetBackdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  sheetBackdrop: { flex: 1, justifyContent: 'flex-end', backgroundColor: blackAlpha(0.4) },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg },
   sheetHandle: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: spacing.md },
 });

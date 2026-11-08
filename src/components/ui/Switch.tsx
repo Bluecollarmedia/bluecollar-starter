@@ -1,7 +1,7 @@
 /**
  * Switch — the one on/off toggle used everywhere in the app.
  *
- * iPhone: the system switch, untinted except for the green "on" track, so iOS
+ * iPhone: the system switch, untinted except for the brand-color "on" track, so iOS
  * draws its Liquid Glass thumb and stretch animation. Setting thumbColor (or
  * other tints) on the native switch turns that off, so this component doesn't
  * accept them.
@@ -15,6 +15,7 @@ import { Platform, Pressable, StyleSheet, Switch as NativeSwitch, ViewStyle } fr
 import Animated, { interpolate, interpolateColor, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { useTheme } from '@/providers/ThemeProvider';
 import { haptics } from '@/lib/haptics';
+import { fixed, whiteAlpha } from '@/theme/colors';
 
 export interface SwitchProps {
   value: boolean;
@@ -75,8 +76,8 @@ function GlassSwitch({ value, onValueChange, disabled, style, accessibilityLabel
       { scaleX: interpolate(pressed.value, [0, 1], [1, 1.32]) },
       { scaleY: interpolate(pressed.value, [0, 1], [1, 1.5]) },
     ],
-    backgroundColor: `rgba(255, 255, 255, ${interpolate(pressed.value, [0, 1], [1, 0.35])})`,
-    borderColor: `rgba(255, 255, 255, ${interpolate(pressed.value, [0, 1], [0, 0.9])})`,
+    backgroundColor: whiteAlpha(interpolate(pressed.value, [0, 1], [1, 0.35])),
+    borderColor: whiteAlpha(interpolate(pressed.value, [0, 1], [0, 0.9])),
   }));
 
   return (
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     height: THUMB_H,
     borderRadius: THUMB_H / 2,
     borderWidth: StyleSheet.hairlineWidth * 2,
-    shadowColor: '#000',
+    shadowColor: fixed.black,
     shadowOpacity: 0.18,
     shadowRadius: 4,
     shadowOffset: { width: 0, height: 2 },

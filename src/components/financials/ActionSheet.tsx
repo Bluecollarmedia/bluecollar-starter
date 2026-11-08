@@ -34,7 +34,7 @@ export function ActionSheet({ visible, title, message, actions, onClose, childre
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]}>
           <View style={[styles.grabber, { backgroundColor: colors.border }]} />
           {!!title && <Text style={[typeScale.headingSmall, { color: colors.textPrimary, paddingHorizontal: spacing.lg }]}>{title}</Text>}
           {!!message && (

@@ -10,7 +10,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useAnnouncements } from '@/hooks/useAnnouncements';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, tones } from '@/theme/colors';
 import type { WeatherActionType } from '@/types/operations';
 import { showMessage } from '@/components/financials/ActionSheet';
 
@@ -134,7 +134,7 @@ export function WorkerAnnouncementComposer({ onSent }: { onSent?: () => void }) 
                 </Text>
                 {active && (
                   <View style={[styles.checkBadge, { backgroundColor: colors.primary }]}>
-                    <Icon name="check" size={11} color="#FFFFFF" />
+                    <Icon name="check" size={11} color={fixed.white} />
                   </View>
                 )}
               </Pressable>
@@ -143,10 +143,10 @@ export function WorkerAnnouncementComposer({ onSent }: { onSent?: () => void }) 
         </View>
       </View>
 
-      <View style={[styles.pushInfoCard, { backgroundColor: '#DCE9FB' }]}>
-        <Icon name="bell" size={18} color="#2E6BD6" />
+      <View style={[styles.pushInfoCard, { backgroundColor: tones.neutral.bg }]}>
+        <Icon name="bell" size={18} color={tones.strong.fg} />
         <View style={{ marginLeft: spacing.sm, flex: 1 }}>
-          <Text style={[typeScale.bodySmall, { color: '#2E6BD6', fontWeight: '700' }]}>Push notifications will be sent</Text>
+          <Text style={[typeScale.bodySmall, { color: tones.strong.fg, fontWeight: '700' }]}>Push notifications will be sent</Text>
           <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: 2 }]}>
             All active workers will receive a push notification for this announcement.
           </Text>
@@ -154,8 +154,8 @@ export function WorkerAnnouncementComposer({ onSent }: { onSent?: () => void }) 
       </View>
 
       <Pressable style={[styles.sendButton, { backgroundColor: colors.primary }]} onPress={handleSend} accessibilityRole="button" accessibilityLabel="Send to all workers">
-        <Icon name="send" size={17} color="#FFFFFF" />
-        <Text style={[typeScale.labelLarge, { color: '#FFFFFF', fontWeight: '700', marginLeft: spacing.xs }]}>Send to All Workers</Text>
+        <Icon name="send" size={17} color={fixed.white} />
+        <Text style={[typeScale.labelLarge, { color: fixed.white, fontWeight: '700', marginLeft: spacing.xs }]}>Send to All Workers</Text>
       </Pressable>
     </View>
   );

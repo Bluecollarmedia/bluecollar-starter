@@ -6,6 +6,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { useT } from '@/i18n';
+import { blackAlpha } from '@/theme/colors';
 
 /**
  * "Can't service this property?": the worker says why and sends a request. It does NOT skip anything: the property stays open
@@ -58,7 +59,7 @@ export function SkipRequestSheet({ visible, propertyName, onClose, onSend }: {
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.5), alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   card: { width: '100%', maxWidth: 420, borderRadius: radius.xl, padding: spacing.xl },
   row: { flexDirection: 'row', gap: spacing.md, marginTop: spacing.lg },
 });

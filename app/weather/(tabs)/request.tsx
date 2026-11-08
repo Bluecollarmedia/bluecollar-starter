@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useT } from '@/i18n';
 import { Panel, WX } from '@/components/weather/WeatherUI';
+import { semantic } from '@/theme/colors';
 import { submitServiceRequest } from '@/data/serviceRequests';
 import {
   COMPANY_PHONE_DISPLAY, COMPANY_PHONE_LINK, DETAILS_MAX, SERVICE_CHOICES, requestProblem, toggleService,
@@ -160,7 +161,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  kicker: { color: '#2E5E34', fontSize: 11, fontWeight: '800', letterSpacing: 1.6 },
+  kicker: { color: WX.deep, fontSize: 11, fontWeight: '800', letterSpacing: 1.6 },
   title: { color: WX.deep, fontSize: 30, fontWeight: '700', letterSpacing: -0.4, marginTop: 8 },
   sub: { color: WX.soft, fontSize: 15, lineHeight: 22, marginTop: 8 },
   label: { color: WX.ink, fontSize: 13, fontWeight: '700', marginTop: 22, marginBottom: 8 },
@@ -168,24 +169,24 @@ const styles = StyleSheet.create({
   hint: { color: WX.soft, fontSize: 12.5 },
   segment: { flexDirection: 'row', gap: 6, padding: 4, backgroundColor: WX.leafTint, borderRadius: 14 },
   segItem: { flex: 1, minHeight: 44, borderRadius: 11, alignItems: 'center', justifyContent: 'center' },
-  segOn: { backgroundColor: WX.white, shadowColor: '#17301F', shadowOpacity: 0.15, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: 2 },
+  segOn: { backgroundColor: WX.white, shadowColor: WX.shadow, shadowOpacity: 0.15, shadowRadius: 3, shadowOffset: { width: 0, height: 1 }, elevation: 2 },
   segText: { color: WX.soft, fontSize: 15, fontWeight: '600' },
   segTextOn: { color: WX.ink, fontWeight: '700' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   chip: { width: '48.4%', minHeight: 58, flexDirection: 'row', alignItems: 'center', gap: 9, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 14, borderWidth: 1.5, borderColor: WX.line, backgroundColor: WX.white },
-  chipOn: { backgroundColor: '#2E5E34', borderColor: '#2E5E34' },
+  chipOn: { backgroundColor: WX.deep, borderColor: WX.deep },
   chipText: { flex: 1, color: WX.ink, fontSize: 14, fontWeight: '600', lineHeight: 17 },
-  dot: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: '#9DB0A2', alignItems: 'center', justifyContent: 'center' },
+  dot: { width: 20, height: 20, borderRadius: 10, borderWidth: 1.5, borderColor: WX.faint, alignItems: 'center', justifyContent: 'center' },
   dotOn: { backgroundColor: WX.white, borderColor: WX.white },
   input: { minHeight: 50, borderRadius: 14, borderWidth: 1.5, borderColor: WX.line, backgroundColor: WX.white, paddingHorizontal: 14, fontSize: 15, color: WX.ink },
-  problem: { color: '#B3261E', fontSize: 14, fontWeight: '600', marginTop: 14 },
-  primary: { height: 56, borderRadius: 16, backgroundColor: '#2E5E34', alignItems: 'center', justifyContent: 'center', shadowColor: '#2E5E34', shadowOpacity: 0.28, shadowRadius: 14, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
+  problem: { color: semantic.error, fontSize: 14, fontWeight: '600', marginTop: 14 },
+  primary: { height: 56, borderRadius: 16, backgroundColor: WX.deep, alignItems: 'center', justifyContent: 'center', shadowColor: WX.deep, shadowOpacity: 0.28, shadowRadius: 14, shadowOffset: { width: 0, height: 6 }, elevation: 4 },
   primaryText: { color: WX.white, fontSize: 17, fontWeight: '700' },
   secondary: { height: 54, borderRadius: 16, backgroundColor: WX.white, borderWidth: 1.5, borderColor: WX.line, flexDirection: 'row', gap: 8, alignItems: 'center', justifyContent: 'center' },
   secondaryText: { color: WX.ink, fontSize: 16, fontWeight: '700' },
   fine: { color: WX.soft, fontSize: 12.5, textAlign: 'center', marginTop: 12, lineHeight: 18 },
   doneBadge: { marginTop: 70, width: 76, height: 76, borderRadius: 38, backgroundColor: WX.leafTint, alignItems: 'center', justifyContent: 'center' },
-  doneDot: { width: 52, height: 52, borderRadius: 26, backgroundColor: '#2E5E34', alignItems: 'center', justifyContent: 'center' },
+  doneDot: { width: 52, height: 52, borderRadius: 26, backgroundColor: WX.deep, alignItems: 'center', justifyContent: 'center' },
   rule: { height: StyleSheet.hairlineWidth, backgroundColor: WX.line },
   sumLabel: { color: WX.soft, fontSize: 14 },
   sumValue: { flex: 1, color: WX.ink, fontSize: 14, fontWeight: '600', textAlign: 'right' },

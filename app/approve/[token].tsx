@@ -29,6 +29,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { FinancialDoc, FinancialEvent, DocumentSnapshot } from '@/types/financial';
 import { brand } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 interface Shared {
   doc: FinancialDoc;
@@ -229,7 +230,7 @@ export default function ApprovePage() {
               accessibilityState={{ checked: agreed }}
             >
               <View style={[styles.box, { borderColor: agreed ? colors.primary : colors.border, backgroundColor: agreed ? colors.primary : 'transparent' }]}>
-                {agreed && <Icon name="check" size={14} color="#fff" />}
+                {agreed && <Icon name="check" size={14} color={fixed.white} />}
               </View>
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1 }]}>
                 {t('I approve this {doc}, including the work, pricing and terms shown, for {total}.', { doc: label.toLowerCase(), total: formatMoney(doc.total) })}

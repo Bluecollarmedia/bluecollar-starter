@@ -1,10 +1,11 @@
 // The owner's private notes turned into a vendor-ready materials list. Pure helpers, no network.
 // The AI (supabase/functions/organize-materials) sorts the notes into items; whatever it returns is cleaned and capped here
 // before it is ever shown, saved or printed, so a strange answer can never put anything odd on a vendor sheet.
-import { brand } from '@/config/brand';
+import { documentColors } from '@/theme/colors';
 
 /** Group headings on the printed list use the brand color (settings file: look.brandColor). */
-const HEADING = /^#[0-9a-f]{6}$/i.test(brand.look.brandColor) ? brand.look.brandColor : '#2B2B2B';
+const HEADING = documentColors.heading;
+const D = documentColors;
 
 export interface MaterialItem {
   category: string;
@@ -96,12 +97,12 @@ export function materialListHtml(o: { list: MaterialList; projectName: string; a
     ? `<h3>Other notes</h3><ul>${o.list.otherNotes.map((n) => `<li>${esc(n)}</li>`).join('')}</ul>` : '';
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  body{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1B1B1B;margin:28px;font-size:14px;line-height:1.45}
-  h1{font-size:22px;margin:0 0 2px} .sub{color:#555;margin:0 0 18px}
-  h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:${HEADING};margin:18px 0 4px;border-bottom:1px solid #ccd5cf;padding-bottom:3px}
-  table{width:100%;border-collapse:collapse} td{padding:6px 4px;border-bottom:1px solid #eee;vertical-align:top}
-  .box{width:22px;font-size:16px} .qty{width:34%;text-align:right;font-weight:600} .note{color:#666;font-size:12px;margin-top:2px}
-  ul{margin:6px 0 0 18px;padding:0} .foot{margin-top:26px;color:#777;font-size:11px}
+  body{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:${D.ink};margin:28px;font-size:14px;line-height:1.45}
+  h1{font-size:22px;margin:0 0 2px} .sub{color:${D.muted};margin:0 0 18px}
+  h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:${HEADING};margin:18px 0 4px;border-bottom:1px solid ${D.rule};padding-bottom:3px}
+  table{width:100%;border-collapse:collapse} td{padding:6px 4px;border-bottom:1px solid ${D.soft};vertical-align:top}
+  .box{width:22px;font-size:16px} .qty{width:34%;text-align:right;font-weight:600} .note{color:${D.muted};font-size:12px;margin-top:2px}
+  ul{margin:6px 0 0 18px;padding:0} .foot{margin-top:26px;color:${D.faint};font-size:11px}
 </style></head><body>
 <h1>${esc(o.list.title)}</h1>
 <p class="sub">${esc(o.projectName)}${o.address ? ` &middot; ${esc(o.address)}` : ''} &middot; ${esc(o.dateText)}</p>

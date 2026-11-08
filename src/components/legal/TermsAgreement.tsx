@@ -7,6 +7,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { useT } from '@/i18n';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { fixed } from '@/theme/colors';
 
 export const TERMS_REQUIRED_MESSAGE = 'Please agree to the Terms of Use and Privacy Policy to continue.';
 
@@ -26,7 +27,7 @@ export function TermsAgreement({ value, onChange }: { value: boolean; onChange: 
         accessibilityLabel={t('I agree to the Terms of Use and Privacy Policy')}
         style={[styles.box, { borderColor: value ? colors.primary : colors.border, backgroundColor: value ? colors.primary : colors.surface }]}
       >
-        {value ? <Icon name="check" size={14} color="#FFFFFF" /> : null}
+        {value ? <Icon name="check" size={14} color={fixed.white} /> : null}
       </Pressable>
       <Text style={[typeScale.bodySmall, { color: colors.textSecondary, flex: 1 }]}>
         {t('I agree to the')}{' '}

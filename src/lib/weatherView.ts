@@ -1,3 +1,4 @@
+import { tempScale, uvScale } from '@/theme/weather';
 /**
  * Plain helpers for showing a weather answer (pure: no React, no network). The answer's shape is defined by the weather function
  * (supabase/functions/weather/index.ts); the types are repeated here so the app does not import server code.
@@ -105,13 +106,13 @@ export function barSpan(day: { lowF: number | null; highF: number | null }, days
 
 /** A colour for a temperature, cold to hot (the day bars and the chart). Chosen to read on white. */
 export function tempColor(f: number | null): string {
-  if (f === null) return '#9FB3A6';
-  if (f <= 32) return '#5BB3F0';
-  if (f <= 50) return '#3FBF9A';
-  if (f <= 65) return '#7CC25A';
-  if (f <= 80) return '#E8C23A';
-  if (f <= 90) return '#EE8B3A';
-  return '#E5604F';
+  if (f === null) return tempScale.none;
+  if (f <= 32) return tempScale.freezing;
+  if (f <= 50) return tempScale.cold;
+  if (f <= 65) return tempScale.mild;
+  if (f <= 80) return tempScale.warm;
+  if (f <= 90) return tempScale.hot;
+  return tempScale.veryHot;
 }
 
 const DAY_MS = 86_400_000;
@@ -240,12 +241,12 @@ export function uvLevel(uv: number): UvLevel {
 }
 export function uvColor(uv: number | null): string {
   // Darker than a traffic light on purpose, so the number stays readable as text on white.
-  if (uv === null) return '#6F8B80';
-  if (uv <= 2) return '#2E8B45';
-  if (uv <= 5) return '#9C7500';
-  if (uv <= 7) return '#C2620F';
-  if (uv <= 10) return '#C2381F';
-  return '#8E3FBF';
+  if (uv === null) return uvScale.none;
+  if (uv <= 2) return uvScale.low;
+  if (uv <= 5) return uvScale.moderate;
+  if (uv <= 7) return uvScale.high;
+  if (uv <= 10) return uvScale.veryHigh;
+  return uvScale.extreme;
 }
 export function uvAdvice(level: UvLevel): string {
   return level === 'Low' ? 'No sun protection needed for most people.'

@@ -17,6 +17,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing, sizing } from '@/theme/spacing';
 import { localDateKey } from '@/lib/ids';
+import { semantic } from '@/theme/colors';
 
 /** "2026-10-19" -> a Date at local noon (noon keeps it on the right day in every timezone). */
 export function keyToDate(key?: string | null): Date {
@@ -63,7 +64,7 @@ export function IosDateSheet({ visible, onClose, onPick, title, value, minimumDa
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface }]} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated }]} onPress={() => {}}>
           <View style={styles.sheetHead}>
             <Pressable onPress={onClose} hitSlop={10} accessibilityRole="button"><Text style={[typeScale.bodyLarge, { color: colors.textSecondary }]}>Cancel</Text></Pressable>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{title ?? 'Choose a date'}</Text>
@@ -103,7 +104,7 @@ export function DateField({ label, value, onChange, onClear, minimumDate, maximu
   const { colors } = useTheme();
   const [sheet, setSheet] = useState(false);
   const text = displayDateKey(value);
-  const borderColor = error ? '#C62828' : colors.border;
+  const borderColor = error ? semantic.error : colors.border;
 
   function open() {
     if (Platform.OS === 'android') openAndroidDatePicker({ value, minimumDate, maximumDate, initialPickerDate, onPick: onChange });
@@ -144,7 +145,7 @@ export function DateField({ label, value, onChange, onClear, minimumDate, maximu
           )}
         </Pressable>
       )}
-      {error ? <Text style={[styles.note, { color: '#C62828' }]}>{error}</Text> : hint ? <Text style={[styles.note, { color: colors.textTertiary }]}>{hint}</Text> : null}
+      {error ? <Text style={[styles.note, { color: semantic.error }]}>{error}</Text> : hint ? <Text style={[styles.note, { color: colors.textTertiary }]}>{hint}</Text> : null}
       {Platform.OS === 'ios' && (
         <IosDateSheet
           visible={sheet}

@@ -5,6 +5,7 @@ import { typeScale } from '@/theme/typography';
 import { mediaQueue, useMediaJob } from '@/lib/mediaQueueRuntime';
 import { formatBytes } from '@/lib/mediaPlan';
 import { useT } from '@/i18n';
+import { fixed, whiteAlpha, blackAlpha, withAlpha, semantic } from '@/theme/colors';
 
 const alertedFailures = new Set<string>();
 
@@ -32,8 +33,8 @@ export function MediaJobOverlay({ rowId, onDiscard, localOnly }: { rowId?: strin
   // A local file with no job behind it (for example the app lost its queue) must still say it is not saved.
   if (!job && localOnly) {
     return (
-      <View style={[StyleSheet.absoluteFill, styles.box, { backgroundColor: 'rgba(120,20,20,0.78)' }]}>
-        <Icon name="alert-circle" size={16} color="#FFFFFF" />
+      <View style={[StyleSheet.absoluteFill, styles.box, { backgroundColor: withAlpha(semantic.errorDark, 0.85) }]}>
+        <Icon name="alert-circle" size={16} color={fixed.white} />
         <Text style={[typeScale.caption, styles.text]}>{t('Not saved')}</Text>
       </View>
     );
@@ -42,9 +43,9 @@ export function MediaJobOverlay({ rowId, onDiscard, localOnly }: { rowId?: strin
 
   if (job.status === 'failed') {
     return (
-      <View style={[StyleSheet.absoluteFill, styles.box, { backgroundColor: 'rgba(120,20,20,0.78)' }]}>
+      <View style={[StyleSheet.absoluteFill, styles.box, { backgroundColor: withAlpha(semantic.errorDark, 0.85) }]}>
         <Pressable onPress={() => showWhyNotSaved(t, job.error)} hitSlop={6} accessibilityRole="button" accessibilityLabel={t('Why it was not saved')} style={{ alignItems: 'center', gap: 2 }}>
-          <Icon name="alert-circle" size={16} color="#FFFFFF" />
+          <Icon name="alert-circle" size={16} color={fixed.white} />
           <Text style={[typeScale.caption, styles.text]} numberOfLines={2}>{t('Not saved')}</Text>
           <Text style={[typeScale.caption, styles.text, { fontSize: 9, opacity: 0.85 }]}>{t('Tap for why')}</Text>
         </Pressable>
@@ -61,7 +62,7 @@ export function MediaJobOverlay({ rowId, onDiscard, localOnly }: { rowId?: strin
             onPress={() => { void mediaQueue.cancel(job.id); onDiscard?.(); }}
             hitSlop={6} accessibilityRole="button" accessibilityLabel={t('Remove')} style={styles.btn}
           >
-            <Icon name="x" size={12} color="#FFFFFF" />
+            <Icon name="x" size={12} color={fixed.white} />
           </Pressable>
         </View>
       </View>
@@ -73,7 +74,7 @@ export function MediaJobOverlay({ rowId, onDiscard, localOnly }: { rowId?: strin
   // first moment of the upload), a spinner.
   const pct = job.status === 'uploading' && typeof job.progress === 'number' ? Math.round(Math.max(0, Math.min(1, job.progress)) * 100) : null;
   return (
-    <View style={[StyleSheet.absoluteFill, styles.box, { backgroundColor: 'rgba(0,0,0,0.45)' }]} accessibilityLabel={pct !== null ? `${label} ${pct}%` : job.bytesOut && job.bytesIn ? t('{label}, {from} to {to}', { label, from: formatBytes(job.bytesIn), to: formatBytes(job.bytesOut) }) : label}>
+    <View style={[StyleSheet.absoluteFill, styles.box, { backgroundColor: blackAlpha(0.45) }]} accessibilityLabel={pct !== null ? `${label} ${pct}%` : job.bytesOut && job.bytesIn ? t('{label}, {from} to {to}', { label, from: formatBytes(job.bytesIn), to: formatBytes(job.bytesOut) }) : label}>
       {pct !== null ? (
         <>
           <Text style={[typeScale.caption, styles.text, { fontWeight: '700' }]}>{pct}%</Text>
@@ -84,7 +85,7 @@ export function MediaJobOverlay({ rowId, onDiscard, localOnly }: { rowId?: strin
         </>
       ) : (
         <>
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={fixed.white} />
           <Text style={[typeScale.caption, styles.text]}>{label}</Text>
         </>
       )}
@@ -94,10 +95,10 @@ export function MediaJobOverlay({ rowId, onDiscard, localOnly }: { rowId?: strin
 
 const styles = StyleSheet.create({
   box: { alignItems: 'center', justifyContent: 'center', gap: 4, padding: 4 },
-  text: { color: '#FFFFFF', textAlign: 'center' },
+  text: { color: fixed.white, textAlign: 'center' },
   row: { flexDirection: 'row', gap: 6, alignItems: 'center' },
-  btn: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.25)' },
-  btnText: { color: '#FFFFFF', fontWeight: '700' },
-  track: { alignSelf: 'stretch', marginHorizontal: 6, height: 4, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.3)', overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: 2, backgroundColor: '#FFFFFF' },
+  btn: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 10, backgroundColor: whiteAlpha(0.25) },
+  btnText: { color: fixed.white, fontWeight: '700' },
+  track: { alignSelf: 'stretch', marginHorizontal: 6, height: 4, borderRadius: 2, backgroundColor: whiteAlpha(0.3), overflow: 'hidden' },
+  fill: { height: '100%', borderRadius: 2, backgroundColor: fixed.white },
 });

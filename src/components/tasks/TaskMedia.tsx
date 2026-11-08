@@ -15,6 +15,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { useT, tr } from '@/i18n';
+import { fixed, whiteAlpha, neutral } from '@/theme/colors';
 
 export interface TaskMediaItem {
   key: string;
@@ -54,7 +55,7 @@ export function TaskMediaStrip({ items, onOpen, onAdd, onRemove, drafts }: TaskM
         <View key={item.key}>
           <Pressable
             onPress={() => onOpen(i)}
-            style={[styles.tile, { backgroundColor: item.mediaType === 'video' ? '#1B3A2D' : colors.backgroundTertiary }]}
+            style={[styles.tile, { backgroundColor: item.mediaType === 'video' ? neutral.gray800 : colors.backgroundTertiary }]}
             accessibilityRole="button"
             accessibilityLabel={item.mediaType === 'video' ? t('Play video') : t('View photo')}
           >
@@ -64,7 +65,7 @@ export function TaskMediaStrip({ items, onOpen, onAdd, onRemove, drafts }: TaskM
               <>
                 <VideoThumb uri={item.uri} />
                 <View style={styles.playCircle}>
-                  <Icon name="play" size={18} color="#FFFFFF" />
+                  <Icon name="play" size={18} color={fixed.white} />
                 </View>
               </>
             )}
@@ -119,10 +120,10 @@ export function TaskMediaViewer({ items, index, onIndexChange, onClose }: TaskMe
       <View style={styles.backdrop}>
         <View style={[styles.viewerHeader, { paddingTop: insets.top + spacing.sm }]}>
           <Pressable onPress={onClose} hitSlop={12} style={styles.viewerButton} accessibilityRole="button" accessibilityLabel={t('Close')}>
-            <Icon name="x" size={22} color="#FFFFFF" />
+            <Icon name="x" size={22} color={fixed.white} />
           </Pressable>
           {items.length > 1 && index != null && (
-            <Text style={[typeScale.bodyLarge, { color: '#FFFFFF' }]}>{t('{n} of {total}', { n: index + 1, total: items.length })}</Text>
+            <Text style={[typeScale.bodyLarge, { color: fixed.white }]}>{t('{n} of {total}', { n: index + 1, total: items.length })}</Text>
           )}
           <View style={{ width: 38 }} />
         </View>
@@ -145,7 +146,7 @@ export function TaskMediaViewer({ items, index, onIndexChange, onClose }: TaskMe
               accessibilityRole="button"
               accessibilityLabel={t('Previous')}
             >
-              <Icon name="chevron-left" size={22} color="#FFFFFF" />
+              <Icon name="chevron-left" size={22} color={fixed.white} />
             </Pressable>
             <Pressable
               onPress={() => onIndexChange(Math.min(items.length - 1, index + 1))}
@@ -154,7 +155,7 @@ export function TaskMediaViewer({ items, index, onIndexChange, onClose }: TaskMe
               accessibilityRole="button"
               accessibilityLabel={t('Next')}
             >
-              <Icon name="chevron-right" size={22} color="#FFFFFF" />
+              <Icon name="chevron-right" size={22} color={fixed.white} />
             </Pressable>
           </View>
         )}
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.22)',
+    backgroundColor: whiteAlpha(0.22),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -216,7 +217,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  backdrop: { flex: 1, backgroundColor: '#000' },
+  backdrop: { flex: 1, backgroundColor: fixed.black },
   viewerHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 19,
-    backgroundColor: 'rgba(255,255,255,0.15)',
+    backgroundColor: whiteAlpha(0.15),
     alignItems: 'center',
     justifyContent: 'center',
   },

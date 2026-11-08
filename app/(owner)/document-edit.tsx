@@ -24,6 +24,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import type { FinancialDocType, LineItem } from '@/types/financial';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 const STEPS = ['Details', 'Line Items', 'Review'];
 
@@ -239,8 +240,8 @@ export default function DocumentEditScreen() {
               <Pressable key={s} style={styles.stepItem} onPress={() => i !== step && goTo(i)} accessibilityRole="tab" accessibilityState={{ selected: active }}>
                 <View style={[styles.stepDot, { backgroundColor: active || done ? colors.primary : colors.backgroundTertiary }]}>
                   {done
-                    ? <Icon name="check" size={12} color="#FFFFFF" />
-                    : <Text style={[typeScale.labelSmall, { color: active ? '#FFFFFF' : colors.textSecondary }]}>{i + 1}</Text>}
+                    ? <Icon name="check" size={12} color={fixed.white} />
+                    : <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary }]}>{i + 1}</Text>}
                 </View>
                 <Text style={[typeScale.labelSmall, { color: active ? colors.textPrimary : colors.textSecondary }]}>{s}</Text>
               </Pressable>

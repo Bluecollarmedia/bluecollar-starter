@@ -136,7 +136,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
           {photoUri ? (
             <>
               <OptimizedImage source={photoUri} style={styles.photoPreview} />
-              <View style={[styles.photoBadge, { backgroundColor: colors.primary }]}><Icon name="camera" size={14} color="#FFFFFF" /></View>
+              <View style={[styles.photoBadge, { backgroundColor: colors.primary }]}><Icon name="camera" size={14} color={colors.textOnPrimary} /></View>
             </>
           ) : (
             <>
@@ -208,7 +208,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
 
       <BottomSheetModal visible={photoSheet} onRequestClose={() => setPhotoSheet(false)}>
         <Pressable style={styles.backdrop} onPress={() => setPhotoSheet(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
             <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center', marginBottom: spacing.md }]}>Vehicle Photo</Text>
             <Pressable style={styles.option} onPress={() => pick('camera')}><Icon name="camera" size={18} color={colors.textPrimary} /><Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Take Photo</Text></Pressable>

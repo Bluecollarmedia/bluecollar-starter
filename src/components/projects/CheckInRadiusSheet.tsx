@@ -11,6 +11,7 @@ import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 interface CheckInRadiusSheetProps {
   visible: boolean;
@@ -118,7 +119,7 @@ export function CheckInRadiusSheet({ visible, place, radiusMeters, onClose, onSa
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
           <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
           <View style={styles.header}>
             <Text style={[typeScale.headingLarge, { color: colors.textPrimary }]}>Check-in distance</Text>
@@ -155,10 +156,10 @@ export function CheckInRadiusSheet({ visible, place, radiusMeters, onClose, onSa
               {CHECKIN_RADIUS_STOPS_FT.map((ft, i) => (
                 <View
                   key={ft}
-                  style={[styles.tick, { left: (i / LAST) * trackWidth - 2, backgroundColor: i <= index ? '#FFFFFF' : colors.textTertiary }]}
+                  style={[styles.tick, { left: (i / LAST) * trackWidth - 2, backgroundColor: i <= index ? fixed.white : colors.textTertiary }]}
                 />
               ))}
-              <View style={[styles.thumb, { left: thumbLeft - THUMB / 2, backgroundColor: '#FFFFFF', borderColor: colors.primary }]} />
+              <View style={[styles.thumb, { left: thumbLeft - THUMB / 2, backgroundColor: fixed.white, borderColor: colors.primary }]} />
             </View>
           </View>
           <View style={styles.ends}>
@@ -183,7 +184,7 @@ export function CheckInRadiusSheet({ visible, place, radiusMeters, onClose, onSa
             accessibilityState={{ disabled: !canSave }}
             style={({ pressed }) => [styles.save, { backgroundColor: colors.primary, opacity: !canSave ? 0.4 : pressed ? 0.85 : 1 }]}
           >
-            <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>Save distance</Text>
+            <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Save distance</Text>
           </Pressable>
         </Pressable>
       </Pressable>

@@ -20,6 +20,7 @@ import { UnreadBadge } from './UnreadBadge';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { fixed } from '@/theme/colors';
 
 const HAS_LIQUID_GLASS = isLiquidGlassAvailable();
 const BUTTON_SIZE = 44;
@@ -74,7 +75,7 @@ interface RaisedAddButtonProps {
   icon?: string;
 }
 
-/** The + button: a flat deep-forest circle with a white plus. Springs when tapped. */
+/** The + button: a flat brand-color circle with a white plus. Springs when tapped. */
 export function RaisedAddButton({ onPress, accessibilityLabel, icon = 'plus' }: RaisedAddButtonProps) {
   const { colors } = useTheme();
   return (
@@ -87,7 +88,7 @@ export function RaisedAddButton({ onPress, accessibilityLabel, icon = 'plus' }: 
       accessibilityLabel={accessibilityLabel}
     >
       <View style={[styles.raisedButton, { backgroundColor: colors.primary }]}>
-        <Icon name={icon as any} size={22} color="#FFFFFF" />
+        <Icon name={icon as any} size={22} color={fixed.white} />
       </View>
     </PressableScale>
   );
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       android: { elevation: 1 },
       default: {
-        shadowColor: '#000',
+        shadowColor: fixed.black,
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
         shadowRadius: 3,

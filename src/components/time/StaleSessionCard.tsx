@@ -13,6 +13,7 @@ import { stopTimeChoices } from '@/lib/clockSession';
 import { useT } from '@/i18n';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 export interface StaleSession {
   id: string;
@@ -63,7 +64,7 @@ export function StaleSessionCard({ session, busy, nowMs, onAnswer, error }: {
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{detail}</Text>
           <View style={styles.actions}>
             <Pressable onPress={() => setOpen(true)} disabled={busy} style={[styles.btn, { backgroundColor: colors.primary, opacity: busy ? 0.6 : 1 }]} accessibilityRole="button">
-              {busy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('I stopped at…')}</Text>}
+              {busy ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('I stopped at…')}</Text>}
             </Pressable>
             <Pressable onPress={() => pick(null)} disabled={busy} style={[styles.btn, { borderColor: colors.border, borderWidth: 1, opacity: busy ? 0.6 : 1 }]} accessibilityRole="button">
               <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>{t("I'm not sure")}</Text>
@@ -75,7 +76,7 @@ export function StaleSessionCard({ session, busy, nowMs, onAnswer, error }: {
 
       <BottomSheetModal visible={open} onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
-          <Pressable style={[styles.sheet, { backgroundColor: colors.surface }]} onPress={() => {}}>
+          <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated }]} onPress={() => {}}>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center' }]}>{t('When did you stop?')}</Text>
             <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.md }]}>
               {t('This is only sent to your boss. They set the real time.')}
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   head: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.xs },
   btn: { flex: 1, height: 44, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center' },
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, paddingBottom: spacing['3xl'] },
   row: { minHeight: 52, justifyContent: 'center', borderBottomWidth: StyleSheet.hairlineWidth },
 });

@@ -37,7 +37,7 @@ import { haptics } from '@/lib/haptics';
 import { todayKey, localDateKey, isoToLocalDateKey } from '@/lib/ids';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, whiteAlpha, blackAlpha, tones, neutral } from '@/theme/colors';
 import type { ProjectStatus, TaskStatus, HistoryEventType, ProjectPhoto, ProjectTask, PhotoType } from '@/types/project';
 import type { Assignment } from '@/types/schedule';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
@@ -101,32 +101,32 @@ const MORE_ITEMS = ([
   {
     key: 'financials', label: 'Financials', icon: 'file-text' as const,
     description: w('Quotes, change orders and invoices for this job'),
-    iconBg: '#E3F1E4', iconColor: '#2E7D32',
+    iconBg: tones.neutral.bg, iconColor: tones.strong.fg,
   },
   {
     key: 'materials', label: 'Materials', icon: 'clipboard' as const,
     description: 'Materials to order or pick up, vendor and prep reminder',
-    iconBg: '#F3EEDF', iconColor: '#8A6D1F',
+    iconBg: tones.neutral.bg, iconColor: tones.strong.fg,
   },
   {
     key: 'notes', label: 'My Notes', icon: 'edit-3' as const,
     description: 'Your private notes, pictures and materials list. Only you see these',
-    iconBg: '#FBEFD9', iconColor: '#9A6A12',
+    iconBg: tones.neutral.bg, iconColor: tones.strong.fg,
   },
   {
     key: 'people', label: 'People', icon: 'users' as const,
     description: w('View and manage the customer and job team members'),
-    iconBg: '#DCE9FB', iconColor: '#2E6BD6',
+    iconBg: tones.neutral.bg, iconColor: tones.strong.fg,
   },
   {
     key: 'activity', label: 'Activity Log', icon: 'activity' as const,
     description: w('See the full history of activity on this job'),
-    iconBg: '#DDF0DF', iconColor: '#2E9E45',
+    iconBg: tones.neutral.bg, iconColor: tones.strong.fg,
   },
   {
     key: 'settings', label: w('Job Settings'), icon: 'settings' as const,
     description: w('Configure job-level settings and requirements'),
-    iconBg: '#E9E9EC', iconColor: '#5B5B63',
+    iconBg: tones.neutral.bg, iconColor: tones.strong.fg,
   },
 ]).filter((item) => (item.key !== 'financials' || isFeatureOn('financials')) && (item.key !== 'materials' || isFeatureOn('materials')));
 
@@ -138,16 +138,16 @@ const PHOTO_TYPE_LABEL: Record<string, string> = {
 };
 
 function getPhotoTypeColor(photoType: string, primaryColor: string): string {
-  const colors: Record<string, string> = { before: '#3A3A3A', progress: '#2E4A6B', after: primaryColor, issue: '#7A2E2E', general: '#3A3A3A' };
-  return colors[photoType] ?? '#3A3A3A';
+  const colors: Record<string, string> = { before: neutral.gray800, progress: neutral.gray700, after: primaryColor, issue: semantic.error, general: neutral.gray800 };
+  return colors[photoType] ?? neutral.gray800;
 }
 
 const statusDotColors: Record<ProjectStatus, string> = {
-  prospect: '#9E9E9E',
+  prospect: neutral.gray500,
   active: semantic.success,
   on_hold: semantic.warning,
   completed: semantic.info,
-  archived: '#9E9E9E',
+  archived: neutral.gray500,
 };
 
 const statusConfig: Record<ProjectStatus, { label: string; type: 'success' | 'warning' | 'info' | 'neutral' }> = {
@@ -189,19 +189,19 @@ const historyIcons: Record<string, keyof typeof Feather.glyphMap> = {
 };
 
 const historyIconColors: Record<string, { bg: string; fg: string }> = {
-  project_created: { bg: '#E9E9EC', fg: '#5B5B63' },
-  status_changed: { bg: '#E9E9EC', fg: '#5B5B63' },
-  progress_updated: { bg: '#DDF0DF', fg: '#2E9E45' },
-  team_member_added: { bg: '#DCE9FB', fg: '#2E6BD6' },
-  team_member_removed: { bg: '#DCE9FB', fg: '#2E6BD6' },
-  task_created: { bg: '#D9F2EF', fg: '#1F9E8E' },
-  task_completed: { bg: '#D9F2EF', fg: '#1F9E8E' },
-  photo_added: { bg: '#EDE3FB', fg: '#7C4FD1' },
-  update_posted: { bg: '#EDE3FB', fg: '#7C4FD1' },
-  request_created: { bg: '#FCE8D8', fg: '#B8621B' },
-  request_responded: { bg: '#FCE8D8', fg: '#B8621B' },
-  settings_changed: { bg: '#E9E9EC', fg: '#5B5B63' },
-  note_added: { bg: '#E9E9EC', fg: '#5B5B63' },
+  project_created: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  status_changed: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  progress_updated: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  team_member_added: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  team_member_removed: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  task_created: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  task_completed: { bg: tones.success.bg, fg: tones.success.fg },
+  photo_added: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  update_posted: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  request_created: { bg: tones.warning.bg, fg: tones.warning.fg },
+  request_responded: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  settings_changed: { bg: tones.neutral.bg, fg: tones.neutral.fg },
+  note_added: { bg: tones.neutral.bg, fg: tones.neutral.fg },
 };
 
 /** "Completed by Rosa Lopez · Oct 15 at 2:30 PM" */
@@ -379,18 +379,18 @@ export default function ProjectDetailScreen() {
       <View>
         <View style={styles.coverWrap}>
           <BrandCover uri={getProjectImageUri(p)} style={styles.coverImage} />
-          <View style={[styles.coverStatusPill, { backgroundColor: 'rgba(20,20,20,0.55)' }]}>
+          <View style={[styles.coverStatusPill, { backgroundColor: blackAlpha(0.55) }]}>
             <View style={[styles.coverStatusDot, { backgroundColor: statusDotColors[p.status] }]} />
-            <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>{config.label}</Text>
+            <Text style={[typeScale.labelSmall, { color: fixed.white }]}>{config.label}</Text>
           </View>
           <Pressable
             onPress={handleChangeCoverPhoto}
-            style={[styles.coverChangeButton, { backgroundColor: 'rgba(20,20,20,0.55)' }]}
+            style={[styles.coverChangeButton, { backgroundColor: blackAlpha(0.55) }]}
             accessibilityRole="button"
             accessibilityLabel={w('Change job photo')}
           >
-            <Icon name="camera" size={14} color="#FFFFFF" />
-            <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Change photo</Text>
+            <Icon name="camera" size={14} color={fixed.white} />
+            <Text style={[typeScale.labelSmall, { color: fixed.white }]}>Change photo</Text>
           </Pressable>
         </View>
 
@@ -644,13 +644,13 @@ export default function ProjectDetailScreen() {
                 accessibilityState={{ selected: isSelected }}
                 accessibilityLabel={`${formatFullDayHeading(dateStr)}${isSelected ? ', selected' : ''}`}
               >
-                <Text style={[typeScale.caption, { color: isSelected ? 'rgba(255,255,255,0.85)' : colors.textSecondary }]}>
+                <Text style={[typeScale.caption, { color: isSelected ? whiteAlpha(0.85) : colors.textSecondary }]}>
                   {label.top}
                 </Text>
-                <Text style={[typeScale.headingLarge, { color: isSelected ? '#FFFFFF' : colors.textPrimary }]}>
+                <Text style={[typeScale.headingLarge, { color: isSelected ? fixed.white : colors.textPrimary }]}>
                   {dayNum}
                 </Text>
-                <Text style={[typeScale.caption, { color: isSelected ? 'rgba(255,255,255,0.85)' : colors.textTertiary }]}>
+                <Text style={[typeScale.caption, { color: isSelected ? whiteAlpha(0.85) : colors.textTertiary }]}>
                   {label.bottom}
                 </Text>
               </Pressable>
@@ -1144,8 +1144,8 @@ export default function ProjectDetailScreen() {
                 style={styles.customerContentRow}
                 onPress={() => { setCustomerSubTab('requests'); setCustomerDrilldown(true); }}
               >
-                <View style={[styles.customerContentIcon, { backgroundColor: '#FCE8D8' }]}>
-                  <Icon name="message-circle" size={16} color="#B8621B" />
+                <View style={[styles.customerContentIcon, { backgroundColor: tones.neutral.bg }]}>
+                  <Icon name="message-circle" size={16} color={tones.strong.fg} />
                 </View>
                 <View style={{ flex: 1, marginLeft: spacing.sm }}>
                   <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Customer Requests</Text>
@@ -1508,7 +1508,7 @@ export default function ProjectDetailScreen() {
                       backgroundColor: on ? colors.primary : colors.primarySurface,
                     }}
                   >
-                    <Text style={[typeScale.labelLarge, { color: on ? '#fff' : colors.primary }]}>{label}</Text>
+                    <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.primary }]}>{label}</Text>
                   </Pressable>
                 );
               })}
@@ -1660,13 +1660,13 @@ export default function ProjectDetailScreen() {
         <View style={styles.photoGridImageWrap}>
           <OptimizedImage source={photo.fileUrl} style={styles.photoGridImage} placeholder={photo.blurhash} />
           <View style={[styles.photoTypePill, { backgroundColor: typeColor }]}>
-            <Text style={[typeScale.caption, { color: '#FFFFFF', fontWeight: '700' }]}>
+            <Text style={[typeScale.caption, { color: fixed.white, fontWeight: '700' }]}>
               {PHOTO_TYPE_LABEL[photo.photoType] ?? photo.photoType}
             </Text>
           </View>
-          <View style={[styles.photoVisibilityPill, { backgroundColor: photo.isCustomerVisible ? 'rgba(255,255,255,0.95)' : 'rgba(20,20,20,0.6)' }]}>
-            <Icon name={photo.isCustomerVisible ? 'eye' : 'lock'} size={10} color={photo.isCustomerVisible ? colors.primary : '#FFFFFF'} />
-            <Text style={[typeScale.caption, { color: photo.isCustomerVisible ? colors.primary : '#FFFFFF', marginLeft: 3, fontWeight: '700' }]}>
+          <View style={[styles.photoVisibilityPill, { backgroundColor: photo.isCustomerVisible ? whiteAlpha(0.95) : blackAlpha(0.6) }]}>
+            <Icon name={photo.isCustomerVisible ? 'eye' : 'lock'} size={10} color={photo.isCustomerVisible ? colors.primary : fixed.white} />
+            <Text style={[typeScale.caption, { color: photo.isCustomerVisible ? colors.primary : fixed.white, marginLeft: 3, fontWeight: '700' }]}>
               {photo.isCustomerVisible ? 'Shared' : 'Internal'}
             </Text>
           </View>
@@ -1721,8 +1721,8 @@ export default function ProjectDetailScreen() {
             </Text>
           </View>
           <Pressable style={[styles.addPhotoBtn, { backgroundColor: colors.primary }]} onPress={handleOpenAddPhoto}>
-            <Icon name="plus" size={16} color="#FFFFFF" />
-            <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>Add Photo</Text>
+            <Icon name="plus" size={16} color={fixed.white} />
+            <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Add Photo</Text>
           </Pressable>
         </View>
 
@@ -1735,8 +1735,8 @@ export default function ProjectDetailScreen() {
                 style={[styles.photoFilterPill, { backgroundColor: isActive ? colors.primary : colors.backgroundTertiary }]}
                 onPress={() => setPhotoFilter(opt.key)}
               >
-                {opt.icon && <Icon name={opt.icon} size={12} color={isActive ? '#FFFFFF' : colors.textSecondary} />}
-                <Text style={[typeScale.labelSmall, { color: isActive ? '#FFFFFF' : colors.textSecondary, fontWeight: '600', marginLeft: opt.icon ? 4 : 0 }]}>
+                {opt.icon && <Icon name={opt.icon} size={12} color={isActive ? fixed.white : colors.textSecondary} />}
+                <Text style={[typeScale.labelSmall, { color: isActive ? fixed.white : colors.textSecondary, fontWeight: '600', marginLeft: opt.icon ? 4 : 0 }]}>
                   {opt.label} ({opt.count})
                 </Text>
               </Pressable>
@@ -2253,8 +2253,8 @@ export default function ProjectDetailScreen() {
         {p.customer && (
           <View style={[styles.settingsCardBlock, { backgroundColor: colors.surface }, shadow.sm]}>
             <View style={styles.settingsCardHeader}>
-              <View style={[styles.settingsCardIcon, { backgroundColor: '#E9E9EC' }]}>
-                <Icon name="user" size={16} color="#5B5B63" />
+              <View style={[styles.settingsCardIcon, { backgroundColor: tones.neutral.bg }]}>
+                <Icon name="user" size={16} color={tones.strong.fg} />
               </View>
               <View style={{ marginLeft: spacing.sm, flex: 1 }}>
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Customer Login</Text>
@@ -2280,8 +2280,8 @@ export default function ProjectDetailScreen() {
         {/* Customer Interaction */}
         <View style={[styles.settingsCardBlock, { backgroundColor: colors.surface }, shadow.sm]}>
           <View style={styles.settingsCardHeader}>
-            <View style={[styles.settingsCardIcon, { backgroundColor: '#DCE9FB' }]}>
-              <Icon name="message-circle" size={16} color="#2E6BD6" />
+            <View style={[styles.settingsCardIcon, { backgroundColor: tones.neutral.bg }]}>
+              <Icon name="message-circle" size={16} color={tones.strong.fg} />
             </View>
             <View style={{ marginLeft: spacing.sm, flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Customer Interaction</Text>
@@ -2329,8 +2329,8 @@ export default function ProjectDetailScreen() {
         {/* Work Requirements */}
         <View style={[styles.settingsCardBlock, { backgroundColor: colors.surface }, shadow.sm]}>
           <View style={styles.settingsCardHeader}>
-            <View style={[styles.settingsCardIcon, { backgroundColor: '#E9E9EC' }]}>
-              <Icon name="tool" size={16} color="#5B5B63" />
+            <View style={[styles.settingsCardIcon, { backgroundColor: tones.neutral.bg }]}>
+              <Icon name="tool" size={16} color={tones.strong.fg} />
             </View>
             <View style={{ marginLeft: spacing.sm, flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Work Requirements</Text>
@@ -2861,19 +2861,19 @@ export default function ProjectDetailScreen() {
                   />
                   {reviewPhoto.photoType && (
                     <View style={[styles.photoTypePill, { top: spacing.sm, left: spacing.sm, backgroundColor: getPhotoTypeColor(reviewPhoto.photoType, colors.primary) }]}>
-                      <Text style={[typeScale.caption, { color: '#FFFFFF', fontWeight: '700' }]}>
+                      <Text style={[typeScale.caption, { color: fixed.white, fontWeight: '700' }]}>
                         {PHOTO_TYPE_LABEL[reviewPhoto.photoType] ?? reviewPhoto.photoType}
                       </Text>
                     </View>
                   )}
-                  <View style={[styles.photoVisibilityPill, { top: spacing.sm, right: spacing.sm, backgroundColor: reviewPhoto.isCustomerVisible ? 'rgba(255,255,255,0.95)' : 'rgba(20,20,20,0.6)' }]}>
-                    <Icon name={reviewPhoto.isCustomerVisible ? 'eye' : 'lock'} size={10} color={reviewPhoto.isCustomerVisible ? colors.primary : '#FFFFFF'} />
-                    <Text style={[typeScale.caption, { color: reviewPhoto.isCustomerVisible ? colors.primary : '#FFFFFF', marginLeft: 3, fontWeight: '700' }]}>
+                  <View style={[styles.photoVisibilityPill, { top: spacing.sm, right: spacing.sm, backgroundColor: reviewPhoto.isCustomerVisible ? whiteAlpha(0.95) : blackAlpha(0.6) }]}>
+                    <Icon name={reviewPhoto.isCustomerVisible ? 'eye' : 'lock'} size={10} color={reviewPhoto.isCustomerVisible ? colors.primary : fixed.white} />
+                    <Text style={[typeScale.caption, { color: reviewPhoto.isCustomerVisible ? colors.primary : fixed.white, marginLeft: 3, fontWeight: '700' }]}>
                       {reviewPhoto.isCustomerVisible ? 'Shared' : 'Internal'}
                     </Text>
                   </View>
                   <View style={styles.expandIcon}>
-                    <Icon name="maximize-2" size={14} color="#FFFFFF" />
+                    <Icon name="maximize-2" size={14} color={fixed.white} />
                   </View>
                 </Pressable>
 
@@ -3211,7 +3211,7 @@ const styles = StyleSheet.create({
   },
   moreMenuOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.15)',
+    backgroundColor: blackAlpha(0.15),
   },
   moreMenuCard: {
     position: 'absolute',
@@ -3433,7 +3433,7 @@ const styles = StyleSheet.create({
   },
   taskFilterRow: {
     flexDirection: 'row',
-    backgroundColor: '#0000000A',
+    backgroundColor: blackAlpha(0.04),
     borderRadius: radius.lg,
     padding: 3,
     marginBottom: spacing.lg,
@@ -3726,7 +3726,7 @@ const styles = StyleSheet.create({
   // Photo review modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: blackAlpha(0.5),
     justifyContent: 'flex-end',
   },
   modalContent: {
@@ -3798,7 +3798,7 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: 'rgba(20,20,20,0.55)',
+    backgroundColor: blackAlpha(0.55),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -3809,7 +3809,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
     paddingBottom: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(0,0,0,0.08)',
+    borderBottomColor: blackAlpha(0.08),
   },
   detailMetaCol: {
     flexShrink: 1,

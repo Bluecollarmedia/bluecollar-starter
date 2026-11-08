@@ -3,6 +3,7 @@ import { View, StyleSheet, ViewStyle, ImageStyle } from 'react-native';
 import { Image } from 'expo-image';
 import { Text } from 'react-native';
 import { fontWeight } from '@/theme/typography';
+import { fixed, swatches } from '@/theme/colors';
 
 interface AvatarProps {
   firstName: string;
@@ -12,10 +13,7 @@ interface AvatarProps {
   uri?: string;
 }
 
-const BG_COLORS = [
-  '#7CB342', '#1976D2', '#E64A19', '#00897B',
-  '#5E35B1', '#C62828', '#00838F', '#AD1457',
-];
+const BG_COLORS = swatches;
 
 function getColor(name: string): string {
   let hash = 0;
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   initials: {
-    color: '#FFFFFF',
+    color: fixed.white,
     fontWeight: fontWeight.semibold,
   },
 });

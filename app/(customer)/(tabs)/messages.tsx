@@ -12,6 +12,7 @@ import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { db, useDb } from '@/data/store';
+import { fixed } from '@/theme/colors';
 
 /**
  * Customer ↔ owner chat. The message box sits at the bottom of the screen
@@ -70,7 +71,7 @@ export default function CustomerMessagesScreen() {
                 onPress={() => setSelectedId(p.id)}
                 style={[styles.chip, { backgroundColor: active ? colors.primary : colors.backgroundTertiary }]}
               >
-                <Text style={[typeScale.labelSmall, { color: active ? '#FFFFFF' : colors.textSecondary, fontWeight: '600' }]}>{p.name}</Text>
+                <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>{p.name}</Text>
               </Pressable>
             );
           })}

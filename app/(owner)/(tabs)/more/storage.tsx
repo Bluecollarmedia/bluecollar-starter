@@ -10,7 +10,7 @@ import { Card, LoadingSpinner, GlassIconButton } from '@/components/ui';
 import { PressScale, UsageBar } from '@/components/settings/SettingsList';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed } from '@/theme/colors';
 import { useStorageInfo, useStorageLimit, useMaxFileSize } from '@/hooks/useStorage';
 import { MAX_FILE_PRESETS_MB, SERVER_MAX_FILE_MB, mbLabel, parseMaxFileMb } from '@/lib/uploadLimit';
 import { haptics } from '@/lib/haptics';
@@ -152,7 +152,7 @@ export default function StorageScreen() {
             appearance="light"
             backgroundColor={colors.groupedBackground}
             fontStyle={{ color: colors.textSecondary }}
-            activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+            activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
             style={styles.segment}
           />
           {selectedIndex === customIndex && (
@@ -180,7 +180,7 @@ export default function StorageScreen() {
                 ]}
                 accessibilityLabel="Save storage limit"
               >
-                <Text style={[typeScale.labelLarge, { color: customValid ? '#FFFFFF' : colors.textTertiary }]}>
+                <Text style={[typeScale.labelLarge, { color: customValid ? fixed.white : colors.textTertiary }]}>
                   {customValid && customGb === limitGb ? 'Saved' : 'Save'}
                 </Text>
               </PressScale>
@@ -251,7 +251,7 @@ export default function StorageScreen() {
                   accessibilityLabel={`Set the max file size to ${mbLabel(mb)}`}
                   style={[styles.maxChip, { backgroundColor: maxMb === mb ? colors.primary : colors.groupedBackground }]}
                 >
-                  <Text style={[typeScale.labelLarge, { color: maxMb === mb ? '#FFFFFF' : colors.textSecondary }]}>{mb}</Text>
+                  <Text style={[typeScale.labelLarge, { color: maxMb === mb ? fixed.white : colors.textSecondary }]}>{mb}</Text>
                 </Pressable>
               ))}
             </View>
@@ -276,7 +276,7 @@ export default function StorageScreen() {
                 style={[styles.customSave, { backgroundColor: typedMax ? colors.primary : colors.backgroundTertiary }]}
                 accessibilityLabel="Save max file size"
               >
-                <Text style={[typeScale.labelLarge, { color: typedMax ? '#FFFFFF' : colors.textTertiary }]}>Save</Text>
+                <Text style={[typeScale.labelLarge, { color: typedMax ? fixed.white : colors.textTertiary }]}>Save</Text>
               </PressScale>
             </View>
           </View>

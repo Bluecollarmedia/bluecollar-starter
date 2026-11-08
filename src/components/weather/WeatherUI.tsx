@@ -1,27 +1,15 @@
 /**
- * The building blocks of the Weather screens: the light palette (white air and tints of the logo's leaf green, text in the logo's deep
- * green), the flat white cards, the weather pictures and a small helper for the page behind everything. Flat and solid on purpose: no blur, no
+ * The building blocks of the Weather screens: the plain palette (white page, light gray panels, near-black text, the brand color for
+ * buttons and selected things), the flat cards, the weather pictures and a small helper for the page behind everything. Flat and solid on purpose: no blur, no
  * see-through panels. Used only by the Weather screens.
  */
 import React from 'react';
 import { Image, StyleSheet, View, type ImageSourcePropType, type StyleProp, type ViewStyle } from 'react-native';
 import type { WxIcon } from '@/lib/weatherView';
+import { WX, wxArt } from '@/theme/weather';
 
-/** The brand greens come from the logo file (deep #0B4736, fresh #53A246); the rest are tints and neutrals chosen to sit with them. */
-export const WX = {
-  page: '#F7FAF4',
-  card: '#FFFFFF',
-  ink: '#12392B',
-  deep: '#0B4736',
-  soft: '#4B6B5D',
-  faint: '#5E7A6F',
-  leaf: '#53A246',
-  leafTint: '#E3F1DC',
-  line: '#E1EADC',
-  amber: '#A86300',
-  rain: '#2A72B5',
-  white: '#FFFFFF',
-} as const;
+/** The weather palette lives in the theme (src/theme/weather.ts): plain neutrals and the brand color. */
+export { WX };
 
 /** A flat white card with a soft shadow. Pass `bg` for a coloured card (alerts). */
 export function Panel({ children, style, bg }: { children?: React.ReactNode; style?: StyleProp<ViewStyle>; bg?: string }) {
@@ -54,10 +42,10 @@ const PICTURES: Record<Pic, ImageSourcePropType> = {
 };
 
 /** The Meteocons clouds are pale, so each picture sits on a round colour: sky blue by day, deep blue at night, slate for storms. */
-const CHIP_DAY = '#A9C9EA';
-const CHIP_NIGHT = '#27375F';
-const CHIP_STORM = '#8EA3C4';
-const CHIP: Partial<Record<WxIcon, string>> = { moon: CHIP_NIGHT, partlynight: CHIP_NIGHT, storm: CHIP_STORM, heavyrain: CHIP_STORM, hail: CHIP_STORM, heavysnow: CHIP_STORM, sleet: CHIP_STORM, smoke: '#B8BEC6', dust: '#D6C7A6' };
+const CHIP_DAY = wxArt.chipDay;
+const CHIP_NIGHT = wxArt.chipNight;
+const CHIP_STORM = wxArt.chipStorm;
+const CHIP: Partial<Record<WxIcon, string>> = { moon: CHIP_NIGHT, partlynight: CHIP_NIGHT, storm: CHIP_STORM, heavyrain: CHIP_STORM, hail: CHIP_STORM, heavysnow: CHIP_STORM, sleet: CHIP_STORM, smoke: wxArt.chipSmoke, dust: wxArt.chipDust };
 
 export function WxPicture({ icon, size = 24, bare = false }: { icon: Pic; size?: number; bare?: boolean }) {
   const source = PICTURES[icon] ?? PICTURES.cloud;
@@ -83,7 +71,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     borderWidth: 1,
     borderColor: WX.line,
-    shadowColor: '#14803C',
+    shadowColor: WX.shadow,
     shadowOpacity: 0.1,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 8 },

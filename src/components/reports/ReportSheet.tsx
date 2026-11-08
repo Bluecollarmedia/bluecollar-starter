@@ -12,6 +12,7 @@ import { db } from '@/data/store';
 import { submitReport } from '@/data/contentReports';
 import { REPORT_REASONS, MAX_REPORT_DETAILS, type ReportContentType, type ReportReason } from '@/lib/contentReports';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { blackAlpha } from '@/theme/colors';
 
 export interface ReportTarget {
   projectId: string;
@@ -58,7 +59,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
   return (
     <BottomSheetModal visible={!!target} onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.md }]} onPress={() => {}}>
           <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
           {sent ? (
             <View style={{ alignItems: 'center', paddingVertical: spacing.lg }}>
@@ -120,7 +121,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg },
   handle: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: spacing.md },
   reason: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: radius.lg, padding: spacing.md, marginBottom: spacing.sm },

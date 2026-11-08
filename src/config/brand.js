@@ -81,13 +81,19 @@ module.exports = {
   // LOOK  -  colors and pictures
   // ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
   look: {
-    /** The ONE brand color, as a 6-digit hex code: main buttons, selected tabs, links and small highlights. */
+    /** The ONE brand color, as a 6-digit hex code: main buttons, selected tabs, links and small highlights.
+     *  The rest of the app stays plain (white pages, light gray cards, near-black text); green / red / amber only mean
+     *  done / error / warning. Charcoal (#2B2B2B) by default. */
     brandColor: '#2B2B2B',
-    /** Picture files (swap the files themselves to change them; keep these paths). */
+    /** Picture files (swap the files themselves to change them; keep these paths). The kit ships plain placeholders made by
+     *  `node scripts/make-placeholder-art.cjs` (a brand-color "S" mark and the words "Starter App"). The small mark used in
+     *  headers, the weather screen and the widget is assets/images/logo-mark.png. After swapping logo-full.png, rebuild
+     *  src/lib/brandLogo.ts (the logo inside quote / invoice PDFs; see the note in that file). */
     logo: './assets/images/logo-full.png',
     icon: './assets/images/icon.png',
+    /** Android: the front layer (the white mark) sits on this background color. Usually the brand color. */
     androidIconForeground: './assets/images/icon-foreground.png',
-    androidIconBackground: '#FFFFFF',
+    androidIconBackground: '#2B2B2B',
     splashImage: './assets/images/logo-full.png',
     splashBackground: '#FFFFFF',
   },

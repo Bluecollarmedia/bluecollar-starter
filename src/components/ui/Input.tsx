@@ -20,6 +20,7 @@ import { Icon } from './Icon';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing, sizing } from '@/theme/spacing';
+import { semantic } from '@/theme/colors';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
   label?: string;
@@ -37,7 +38,7 @@ export const Input = forwardRef<TextInput, InputProps>(
 
     const isPassword = secureTextEntry !== undefined;
     const borderColor = error
-      ? '#C62828'
+      ? semantic.error
       : focused
         ? colors.borderFocus
         : colors.border;
@@ -104,7 +105,7 @@ export const Input = forwardRef<TextInput, InputProps>(
           <Text
             style={[
               styles.helper,
-              { color: error ? '#C62828' : colors.textTertiary },
+              { color: error ? semantic.error : colors.textTertiary },
             ]}
           >
             {error || hint}

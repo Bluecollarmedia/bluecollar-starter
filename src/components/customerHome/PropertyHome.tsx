@@ -17,7 +17,7 @@ import type { HomeItem } from '@/lib/customerHome';
 import type { PropertyGroup } from '@/lib/customerProperty';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, blackAlpha } from '@/theme/colors';
 
 const fmtDate = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -45,7 +45,7 @@ export function PropertyHome({ data }: { data: CustomerHomeData }) {
                 accessibilityLabel={g.name}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.primary + '40' }]}
               >
-                <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textPrimary, fontWeight: '700' }]} numberOfLines={1}>{g.name}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textPrimary, fontWeight: '700' }]} numberOfLines={1}>{g.name}</Text>
               </Pressable>
             );
           })}
@@ -125,7 +125,7 @@ function ProjectCard({ item }: { item: HomeItem }) {
           {shown.map((p, i) => (
             <Pressable key={p.id} onPress={() => setViewing({ photos: shared.map((s) => ({ id: s.id, url: s.fileUrl })), startId: p.id })} accessibilityRole="button" accessibilityLabel={t('View photo')} style={[styles.tile, { backgroundColor: colors.borderLight }]}>
               <OptimizedImage source={p.fileUrl} style={StyleSheet.absoluteFill as never} />
-              {i === shown.length - 1 && extra > 0 ? <View style={styles.tileMore}><Text style={[typeScale.headingSmall, { color: '#FFFFFF' }]}>+{extra}</Text></View> : null}
+              {i === shown.length - 1 && extra > 0 ? <View style={styles.tileMore}><Text style={[typeScale.headingSmall, { color: fixed.white }]}>+{extra}</Text></View> : null}
             </Pressable>
           ))}
         </View>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   chip: { flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: spacing.md, height: 40, borderRadius: radius.full, borderWidth: 1, maxWidth: 220 },
   tiles: { flexDirection: 'row', gap: spacing.sm },
   tile: { flex: 1, aspectRatio: 1, borderRadius: radius.lg, overflow: 'hidden' },
-  tileMore: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: 'rgba(15,25,35,0.5)', alignItems: 'center', justifyContent: 'center' },
+  tileMore: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: blackAlpha(0.5), alignItems: 'center', justifyContent: 'center' },
   seeAll: { flexDirection: 'row', alignItems: 'center', minHeight: 44 },
   projectCard: { borderRadius: radius.xl, borderWidth: StyleSheet.hairlineWidth, padding: spacing.lg, gap: spacing.sm },
   rowBetween: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },

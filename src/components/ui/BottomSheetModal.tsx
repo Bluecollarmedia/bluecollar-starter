@@ -22,6 +22,7 @@ import React, { createContext, useContext, useEffect, useRef, useState } from 'r
 import { Modal, Platform, StyleSheet, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView, type GestureType } from 'react-native-gesture-handler';
 import Animated, { Easing, runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming, type SharedValue } from 'react-native-reanimated';
+import { blackAlpha } from '@/theme/colors';
 
 interface BottomSheetModalProps {
   visible: boolean;
@@ -163,6 +164,6 @@ export function BottomSheetModal({ visible, onRequestClose, children, scrollOffs
 }
 
 const styles = StyleSheet.create({
-  backdrop: { backgroundColor: 'rgba(0,0,0,0.32)' },
+  backdrop: { backgroundColor: blackAlpha(0.32) },
   fill: { flex: 1 },
 });

@@ -15,7 +15,7 @@ import { CrewChips, type CrewPerson } from '@/components/crews/CrewChips';
 import { bookedOn } from '@/lib/crewBooking';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed, blackAlpha } from '@/theme/colors';
 import { db, useDb } from '@/data/store';
 import { todayKey, localDateKey } from '@/lib/ids';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
@@ -452,7 +452,7 @@ export default function ScheduleCreateScreen() {
                 appearance="light"
                 backgroundColor={colors.groupedBackground}
                 fontStyle={{ color: colors.textSecondary }}
-                activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                 style={styles.segmentControl}
               />
 
@@ -513,7 +513,7 @@ export default function ScheduleCreateScreen() {
                 appearance="light"
                 backgroundColor={colors.groupedBackground}
                 fontStyle={{ color: colors.textSecondary }}
-                activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                 style={styles.segmentControl}
               />
 
@@ -555,7 +555,7 @@ export default function ScheduleCreateScreen() {
                         appearance="light"
                         backgroundColor={colors.groupedBackground}
                         fontStyle={{ color: colors.textSecondary }}
-                        activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                        activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                         style={[styles.segmentControl, { flex: 1 }]}
                       />
                     </View>
@@ -570,7 +570,7 @@ export default function ScheduleCreateScreen() {
                     appearance="light"
                     backgroundColor={colors.groupedBackground}
                     fontStyle={{ color: colors.textSecondary }}
-                    activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                    activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                     style={styles.segmentControl}
                   />
 
@@ -584,7 +584,7 @@ export default function ScheduleCreateScreen() {
                     appearance="light"
                     backgroundColor={colors.groupedBackground}
                     fontStyle={{ color: colors.textSecondary }}
-                    activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+                    activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
                     style={styles.segmentControl}
                   />
 
@@ -873,7 +873,7 @@ function SheetModal({
   if (Platform.OS === 'ios') {
     return (
       <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-        <View style={[styles.sheetIosContainer, { backgroundColor: colors.surface }]}>{body}</View>
+        <View style={[styles.sheetIosContainer, { backgroundColor: colors.surfaceElevated }]}>{body}</View>
       </Modal>
     );
   }
@@ -881,7 +881,7 @@ function SheetModal({
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.sheetOverlay} onPress={onClose}>
-        <Pressable style={[styles.sheetCard, { backgroundColor: colors.surface }]} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={[styles.sheetCard, { backgroundColor: colors.surfaceElevated }]} onPress={(e) => e.stopPropagation()}>
           <View style={[styles.sheetGrabber, { backgroundColor: colors.border }]} />
           {body}
         </Pressable>
@@ -967,7 +967,7 @@ const styles = StyleSheet.create({
   },
 
   sheetIosContainer: { flex: 1, paddingHorizontal: spacing.lg },
-  sheetOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' },
+  sheetOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: blackAlpha(0.4) },
   sheetCard: {
     maxHeight: '80%',
     paddingHorizontal: spacing.lg,

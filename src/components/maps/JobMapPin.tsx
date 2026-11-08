@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/providers/ThemeProvider';
 import { shadow } from '@/theme/spacing';
 import type { Place } from '@/lib/maps';
+import { mapColors } from '@/theme/colors';
 
 export interface JobMapProps {
   place: Place;
@@ -11,7 +12,7 @@ export interface JobMapProps {
   style?: ViewStyle;
 }
 
-const MAP_TINT = '#E4EAF0';
+const MAP_TINT = mapColors.tint;
 
 /**
  * The drawn pin card for a job's address, used wherever the real map can't be. The real map is iPhone-only (JobMap.ios.tsx,

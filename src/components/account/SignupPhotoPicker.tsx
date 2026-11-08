@@ -13,6 +13,7 @@ import { useProfilePhoto } from '@/hooks/useProfilePhoto';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { useT } from '@/i18n';
+import { fixed } from '@/theme/colors';
 
 interface Props {
   uri: string | null;
@@ -50,7 +51,7 @@ export function SignupPhotoPicker({ uri, onChange, onError, firstName, lastName 
       <View>
         <Avatar firstName={firstName?.trim() || ' '} lastName={lastName ?? ''} size={88} uri={uri ?? undefined} />
         <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: colors.background }]}>
-          <Icon name="camera" size={14} color="#FFFFFF" />
+          <Icon name="camera" size={14} color={fixed.white} />
         </View>
       </View>
       <Text style={[typeScale.labelLarge, { color: colors.primary, marginTop: spacing.sm }]}>

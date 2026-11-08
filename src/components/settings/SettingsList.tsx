@@ -13,19 +13,15 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, sizing } from '@/theme/spacing';
 import { haptics } from '@/lib/haptics';
+import { brand, neutral, semantic } from '@/theme/colors';
 
 type IconName = keyof typeof Feather.glyphMap;
 
-/** Saturated tile colors, one per kind of setting, so each row is easy to spot. */
+/** Row icon colors: the brand color for every kind of setting (plain look), gray for quiet rows, red only for destructive ones. */
 export const tileColors = {
-  green: '#34A853',
-  teal: '#14A38B',
-  blue: '#2F80ED',
-  indigo: '#5B5BD6',
-  orange: '#F2994A',
-  pink: '#E0457B',
-  gray: '#8E8E93',
-  red: '#E5484D',
+  brand: brand.primary,
+  gray: neutral.gray500,
+  red: semantic.error,
 } as const;
 
 const SPRING = { damping: 18, stiffness: 320, mass: 0.6 };
@@ -116,7 +112,7 @@ interface SettingsRowProps {
   children?: React.ReactNode;
 }
 
-export function SettingsRow({ icon, tint = tileColors.green, title, subtitle, value, selected, destructive, onPress, children }: SettingsRowProps) {
+export function SettingsRow({ icon, tint = tileColors.brand, title, subtitle, value, selected, destructive, onPress, children }: SettingsRowProps) {
   const { colors } = useTheme();
   const titleColor = destructive ? colors.error : colors.textPrimary;
 

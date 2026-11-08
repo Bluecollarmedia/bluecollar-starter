@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', paddingVertical: 7, paddingHorizontal: 6, borderRadius: 99,
     backgroundColor: WX.white, borderWidth: 1, borderColor: WX.line,
-    shadowColor: '#14803C', shadowOpacity: 0.2, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8,
+    shadowColor: WX.shadow, shadowOpacity: 0.2, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8,
   },
   item: { flex: 1, alignItems: 'center', minHeight: 48, justifyContent: 'center', paddingHorizontal: 4, borderRadius: 99 },
   itemOn: { backgroundColor: WX.leafTint },

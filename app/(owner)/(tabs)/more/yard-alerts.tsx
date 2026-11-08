@@ -13,6 +13,7 @@ import { haptics } from '@/lib/haptics';
 import { loadYardAlerts, saveYardAlerts, YARD_RADII, DEFAULT_RADIUS_M, type YardAlerts } from '@/data/yard';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { fixed } from '@/theme/colors';
 
 type Feedback = { tone: 'success' | 'error'; text: string } | null;
 
@@ -118,7 +119,7 @@ export default function YardAlertsScreen() {
                 return (
                   <Pressable key={o.meters} onPress={() => setRadiusM(o.meters)} accessibilityRole="button" accessibilityState={{ selected: on }}
                     style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundSecondary, borderColor: on ? colors.primary : colors.border }]}>
-                    <Text style={[typeScale.bodySmall, { color: on ? '#FFFFFF' : colors.textPrimary, fontWeight: '700' }]}>{o.label}</Text>
+                    <Text style={[typeScale.bodySmall, { color: on ? fixed.white : colors.textPrimary, fontWeight: '700' }]}>{o.label}</Text>
                   </Pressable>
                 );
               })}

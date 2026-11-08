@@ -14,6 +14,7 @@ import { clampOffset, clampZoom, cropBox, displayScale, fractionToZoom, zoomToFr
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { useT } from '@/i18n';
+import { fixed, whiteAlpha, blackAlpha } from '@/theme/colors';
 
 interface Props {
   visible: boolean;
@@ -95,10 +96,10 @@ export function AvatarCropper({ visible, uri, width, height, onCancel, onDone }:
     <Modal visible={visible} animationType="fade" onRequestClose={onCancel} statusBarTranslucent>
       <View style={[styles.screen, { paddingTop: insets.top + spacing.sm, paddingBottom: insets.bottom + spacing.lg }]}>
         <View style={styles.top}>
-          <Pressable onPress={onCancel} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('Cancel')}><Text style={[typeScale.bodyLarge, { color: '#FFFFFF' }]}>{t('Cancel')}</Text></Pressable>
-          <Text style={[typeScale.headingSmall, { color: '#FFFFFF' }]}>{t('Move and zoom')}</Text>
+          <Pressable onPress={onCancel} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('Cancel')}><Text style={[typeScale.bodyLarge, { color: fixed.white }]}>{t('Cancel')}</Text></Pressable>
+          <Text style={[typeScale.headingSmall, { color: fixed.white }]}>{t('Move and zoom')}</Text>
           <Pressable onPress={done} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('Done')} disabled={busy}>
-            {busy ? <ActivityIndicator color="#FFFFFF" /> : <Text style={[typeScale.bodyLarge, { color: '#9FE1CB', fontWeight: '700' }]}>{t('Done')}</Text>}
+            {busy ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.bodyLarge, { color: fixed.white, fontWeight: '700' }]}>{t('Done')}</Text>}
           </Pressable>
         </View>
 
@@ -110,21 +111,21 @@ export function AvatarCropper({ visible, uri, width, height, onCancel, onDone }:
               resizeMode="cover"
             />
             {/* Darkens everything outside the circle: a huge ring-shaped border around a circle of exactly the frame size. */}
-            <View pointerEvents="none" style={{ position: 'absolute', left: -frame, top: -frame, width: frame * 3, height: frame * 3, borderRadius: frame * 1.5, borderWidth: frame, borderColor: 'rgba(0,0,0,0.62)' }} />
-            <View pointerEvents="none" style={{ position: 'absolute', left: 0, top: 0, width: frame, height: frame, borderRadius: frame / 2, borderWidth: 2, borderColor: '#FFFFFF' }} />
+            <View pointerEvents="none" style={{ position: 'absolute', left: -frame, top: -frame, width: frame * 3, height: frame * 3, borderRadius: frame * 1.5, borderWidth: frame, borderColor: blackAlpha(0.62) }} />
+            <View pointerEvents="none" style={{ position: 'absolute', left: 0, top: 0, width: frame, height: frame, borderRadius: frame / 2, borderWidth: 2, borderColor: fixed.white }} />
           </View>
-          <Text style={[typeScale.caption, { color: 'rgba(255,255,255,0.75)', marginTop: spacing.md }]}>{t('Drag the photo to move it')}</Text>
+          <Text style={[typeScale.caption, { color: whiteAlpha(0.75), marginTop: spacing.md }]}>{t('Drag the photo to move it')}</Text>
         </View>
 
         <View style={styles.zoomRow}>
-          <Icon name="minus" size={18} color="#FFFFFF" />
+          <Icon name="minus" size={18} color={fixed.white} />
           <View style={styles.sliderTouch} {...sliderPan.panHandlers} accessibilityRole="adjustable" accessibilityLabel={t('Zoom')} accessibilityValue={{ min: 1, max: MAX_ZOOM, now: Math.round(zoom * 10) / 10 }}>
             <View style={styles.track} onLayout={(e: LayoutChangeEvent) => setTrackWidth(e.nativeEvent.layout.width)} pointerEvents="none">
               <View style={[styles.trackFill, { width: thumbLeft, backgroundColor: colors.primary }]} />
               <View style={[styles.thumb, { left: thumbLeft - THUMB / 2, borderColor: colors.primary }]} />
             </View>
           </View>
-          <Icon name="plus" size={18} color="#FFFFFF" />
+          <Icon name="plus" size={18} color={fixed.white} />
         </View>
         {Platform.OS === 'web' ? <Text style={[typeScale.caption, styles.hint]}>{t('You can also scroll or pinch to zoom')}</Text> : null}
       </View>
@@ -133,14 +134,14 @@ export function AvatarCropper({ visible, uri, width, height, onCancel, onDone }:
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#111111', paddingHorizontal: spacing.lg },
+  screen: { flex: 1, backgroundColor: fixed.viewer, paddingHorizontal: spacing.lg },
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: 44 },
   stage: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  frame: { overflow: 'hidden', backgroundColor: '#000000' },
+  frame: { overflow: 'hidden', backgroundColor: fixed.black },
   zoomRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingHorizontal: spacing.sm },
   sliderTouch: { flex: 1, paddingVertical: spacing.lg, paddingHorizontal: THUMB / 2 },
-  track: { height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.25)', justifyContent: 'center' },
+  track: { height: 6, borderRadius: 3, backgroundColor: whiteAlpha(0.25), justifyContent: 'center' },
   trackFill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: 3 },
-  thumb: { position: 'absolute', width: THUMB, height: THUMB, borderRadius: THUMB / 2, borderWidth: 3, backgroundColor: '#FFFFFF' },
-  hint: { color: 'rgba(255,255,255,0.65)', textAlign: 'center', marginTop: -spacing.sm },
+  thumb: { position: 'absolute', width: THUMB, height: THUMB, borderRadius: THUMB / 2, borderWidth: 3, backgroundColor: fixed.white },
+  hint: { color: whiteAlpha(0.65), textAlign: 'center', marginTop: -spacing.sm },
 });

@@ -2,9 +2,9 @@
  * Button — Primary UI Component
  *
  * Variants:
- *  - primary:   Solid brand-green background, white text
- *  - secondary: Outlined with brand-green border and text
- *  - ghost:     No border, brand-green text (for inline actions)
+ *  - primary:   Solid brand-color background, white text
+ *  - secondary: Outlined with brand-color border and text
+ *  - ghost:     No border, brand-color text (for inline actions)
  *  - danger:    Solid red background (for destructive actions)
  *
  * Sizes: sm | md | lg
@@ -25,7 +25,7 @@ import { Icon } from './Icon';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing, sizing } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed } from '@/theme/colors';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -98,8 +98,8 @@ export function Button({
         textColor = colors.primary;
         break;
       case 'danger':
-        bg = pressed ? '#B71C1C' : semantic.error;
-        textColor = '#FFFFFF';
+        bg = pressed ? semantic.errorDark : semantic.error;
+        textColor = fixed.white;
         break;
       default:
         bg = colors.primary;

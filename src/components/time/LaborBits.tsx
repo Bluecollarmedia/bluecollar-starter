@@ -11,6 +11,7 @@ import { REVIEW_LABEL, type ReviewState } from '@/lib/timeCalc';
 import { localDateKey } from '@/lib/ids';
 import { useT, tr } from '@/i18n';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { fixed } from '@/theme/colors';
 
 export const fmtClock = (iso?: string | null) => (iso ? new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '–');
 export const fmtDay = (key: string) => new Date(`${key}T12:00:00`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
@@ -98,8 +99,8 @@ export function Chip({ label, onPress, on, icon }: { label: string; onPress: () 
   const { colors } = useTheme();
   return (
     <Pressable onPress={onPress} accessibilityRole="button" style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundTertiary }]}>
-      {icon ? <Icon name={icon} size={14} color={on ? '#FFFFFF' : colors.textPrimary} /> : null}
-      <Text style={[typeScale.labelSmall, { color: on ? '#FFFFFF' : colors.textPrimary }]}>{label}</Text>
+      {icon ? <Icon name={icon} size={14} color={on ? fixed.white : colors.textPrimary} /> : null}
+      <Text style={[typeScale.labelSmall, { color: on ? fixed.white : colors.textPrimary }]}>{label}</Text>
     </Pressable>
   );
 }

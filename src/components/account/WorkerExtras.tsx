@@ -11,6 +11,7 @@ import { HOODIE_SIZES, ID_PRIVACY_TEXT, type HoodieSize } from '@/lib/workerDeta
 import { getIdViewUrl, loadHoodieSizes, loadIdKeys } from '@/data/workerDetails';
 import { useT } from '@/i18n';
 import { isFeatureOn, words } from '@/config/brand';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 /** The optional clothing-size question (settings file: features.uniformSize; its name is wording.uniformSizeLabel). */
 export const UNIFORM_SIZE_ON = isFeatureOn('uniformSize');
@@ -62,7 +63,7 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.border }]}
               >
-                <Text style={[typeScale.labelSmall, { color: on ? '#FFFFFF' : colors.textPrimary }]}>{s}</Text>
+                <Text style={[typeScale.labelSmall, { color: on ? fixed.white : colors.textPrimary }]}>{s}</Text>
               </Pressable>
             );
           })}
@@ -134,16 +135,16 @@ export function IdViewerModal({ visible, idKey, onClose }: { visible: boolean; i
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.backdrop}>
         <Pressable onPress={onClose} style={[styles.close, { top: insets.top + spacing.md }]} hitSlop={12} accessibilityLabel={t('Close')}>
-          <Feather name="x" size={26} color="#FFFFFF" />
+          <Feather name="x" size={26} color={fixed.white} />
         </Pressable>
         {url ? (
           <Image source={{ uri: url }} style={styles.full} contentFit="contain" />
         ) : error ? (
-          <Text style={[typeScale.bodyMedium, { color: '#FFFFFF', textAlign: 'center', padding: spacing.xl }]}>{error}</Text>
+          <Text style={[typeScale.bodyMedium, { color: fixed.white, textAlign: 'center', padding: spacing.xl }]}>{error}</Text>
         ) : (
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={fixed.white} />
         )}
-        <Text style={[typeScale.caption, { color: '#BBBBBB', position: 'absolute', bottom: insets.bottom + spacing.lg }]}>
+        <Text style={[typeScale.caption, { color: fixed.viewerMuted, position: 'absolute', bottom: insets.bottom + spacing.lg }]}>
           {t('Private. Only the worker and the owner can see this.')}
         </Text>
       </View>
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
   onFile: { flexDirection: 'row', alignItems: 'center', padding: spacing.md, borderRadius: radius.md, marginBottom: spacing.sm },
   btnRow: { flexDirection: 'row', gap: spacing.sm },
   btn: { flex: 1, height: 44, borderRadius: radius.md, borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.92)', alignItems: 'center', justifyContent: 'center' },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.92), alignItems: 'center', justifyContent: 'center' },
   close: { position: 'absolute', right: spacing.lg, zIndex: 2 },
   full: { width: '100%', height: '80%' },
   viewRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.sm },

@@ -8,6 +8,7 @@ import { WX } from '@/components/weather/WeatherUI';
 import { pushRecent, readRecents } from '@/data/weather';
 import { parsePlaces, searchPlaces, type FoundPlace } from '@/lib/placeSearch';
 import { DEFAULT_PLACE, WEATHER_TOWNS, placeKey, type Place } from '@/lib/weatherTowns';
+import { fixed } from '@/theme/colors';
 
 let loaded: FoundPlace[] | null = null;
 /** The list of US places, read the first time someone searches (it has about 43,000 entries). */
@@ -97,8 +98,8 @@ export function PlacePicker({ visible, current, onClose, onPick }: { visible: bo
 }
 
 const styles = StyleSheet.create({
-  sheet: { backgroundColor: '#FFFFFF', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingTop: 10 },
-  grip: { alignSelf: 'center', width: 36, height: 4, borderRadius: 2, backgroundColor: '#D9D7CE', marginBottom: 12 },
+  sheet: { backgroundColor: fixed.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingTop: 10 },
+  grip: { alignSelf: 'center', width: 36, height: 4, borderRadius: 2, backgroundColor: WX.grip, marginBottom: 12 },
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   title: { color: WX.ink, fontSize: 18, fontWeight: '700' },
   cancelBtn: { minHeight: 44, justifyContent: 'center' },

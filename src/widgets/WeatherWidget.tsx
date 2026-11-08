@@ -14,21 +14,17 @@ import type { WidgetProps } from '@/lib/widgetData';
 const WeatherWidget = (p: WidgetProps, env: WidgetEnvironment) => {
   'widget';
   const family = env.widgetFamily;
-  // The approved rendering is the light design on the home screen whatever the phone's mode, so these colours never switch to dark.
-  const dark = false;
-  const ink = dark ? '#EAF3E6' : '#17301F';
-  const soft = dark ? '#A9C0AC' : '#4C6B53';
-  const page = dark ? '#18241C' : '#FBFDF8';
-  const green = dark ? '#8CCB63' : '#2E5E34';
-  const rule = dark ? '#2B3B30' : '#DCE6D5';
+  // The plain light design on the home screen whatever the phone's mode. The colors arrive in the props (src/theme/weather.ts,
+  // handed over by src/lib/widgetData.ts), because the widget cannot import the theme.
+  const { ink, soft, page, accent, rule } = p.colors;
   const open = widgetURL(p.link) /* the app's own weather link, from the settings file (app.scheme) via widgetData.ts */;
-  // The leaf is a picture file at its full size: it must be made resizable and fitted, or the frame alone does not shrink it and it covers the widget.
+  // The logo mark is a picture file at its full size: it must be made resizable and fitted, or the frame alone does not shrink it and it covers the widget.
   const leafMods = (n: number) => [resizable(), aspectRatio({ contentMode: 'fit' }), frame({ width: n, height: n }), clipped()];
 
   const brand = (label: string, size: number) => (
     <HStack spacing={5}>
       {p.leaf ? <Image uiImage={p.leaf} modifiers={leafMods(size)} /> : null}
-      <Text modifiers={[font({ size: 9.5, weight: 'heavy' }), kerning(1.6), foregroundStyle(green), lineLimit(1)]}>{label}</Text>
+      <Text modifiers={[font({ size: 9.5, weight: 'heavy' }), kerning(1.6), foregroundStyle(accent), lineLimit(1)]}>{label}</Text>
     </HStack>
   );
 

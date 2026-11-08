@@ -15,6 +15,7 @@ import { localDateKey } from '@/lib/ids';
 import { getProjectImageUriById, getWorkerHeaderImageUri } from '@/lib/projectImages';
 import { BrandCover } from '@/components/branding/BrandCover';
 import { useT, tr } from '@/i18n';
+import { fixed } from '@/theme/colors';
 
 function formatTime(time?: string) {
   if (!time) return '';
@@ -125,7 +126,7 @@ export default function WorkerJobsScreen() {
           appearance="light"
           backgroundColor={colors.groupedBackground}
           fontStyle={{ color: colors.textSecondary }}
-          activeFontStyle={{ color: '#FFFFFF', fontWeight: '600' }}
+          activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
           style={styles.segmentControl}
         />
       </View>

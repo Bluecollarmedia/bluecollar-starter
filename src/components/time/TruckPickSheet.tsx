@@ -7,6 +7,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { TruckOptions } from '@/data/timeTracking';
 import { useT } from '@/i18n';
+import { blackAlpha } from '@/theme/colors';
 
 /** "Which truck are you taking?": shown when clocking in and the owner has not assigned a truck. Shared by every Clock In. */
 export function TruckPickSheet({ options, onPick, onClose }: { options: TruckOptions | null; onPick: (truckId?: string) => void; onClose: () => void }) {
@@ -15,7 +16,7 @@ export function TruckPickSheet({ options, onPick, onClose }: { options: TruckOpt
   return (
     <BottomSheetModal visible={!!options} onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface }]} onPress={() => {}}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated }]} onPress={() => {}}>
           <Text style={[typeScale.headingSmall, { color: colors.textPrimary, textAlign: 'center' }]}>{t('Which truck are you taking?')}</Text>
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginBottom: spacing.md }]}>{t('No truck has been assigned to you today.')}</Text>
           {options?.trucks.map((truck) => (
@@ -36,7 +37,7 @@ export function TruckPickSheet({ options, onPick, onClose }: { options: TruckOpt
 }
 
 const styles = StyleSheet.create({
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, paddingBottom: spacing['3xl'] },
   truckRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth },
 });

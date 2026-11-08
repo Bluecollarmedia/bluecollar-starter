@@ -8,6 +8,7 @@ import { offsetDateKey, todayKey } from '@/lib/ids';
 import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { blackAlpha } from '@/theme/colors';
 
 const REASONS_IN = ['Forgot to clock in', 'Phone problem', 'Started early'];
 const REASONS_OUT = ['Forgot to clock out', 'Phone problem', 'Sent home'];
@@ -74,7 +75,7 @@ export function OwnerClockCard({ personId, firstName }: { personId: string; firs
 
       <Modal visible={!!mode} transparent animationType="fade" onRequestClose={close}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.backdrop}>
-          <View style={[styles.sheet, { backgroundColor: colors.surface }]}>
+          <View style={[styles.sheet, { backgroundColor: colors.surfaceElevated }]}>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{mode === 'in' ? `Clock in ${firstName} now?` : `Clock out ${firstName} now?`}</Text>
             <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.xs }]}>
               This is saved in the time history as your change, with the reason below. {firstName}'s phone updates within a minute.
@@ -104,7 +105,7 @@ const styles = StyleSheet.create({
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: spacing.sm },
   dot: { width: 9, height: 9, borderRadius: 5 },
   button: { height: 48, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center', marginTop: spacing.md },
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.5), alignItems: 'center', justifyContent: 'center', padding: spacing.xl },
   sheet: { width: '100%', maxWidth: 420, borderRadius: radius.xl, padding: spacing.xl },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md },
   chip: { paddingHorizontal: spacing.md, paddingVertical: spacing.sm, borderRadius: radius.full },

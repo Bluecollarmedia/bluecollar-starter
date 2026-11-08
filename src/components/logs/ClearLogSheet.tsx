@@ -16,6 +16,7 @@ import {
   MODE_HELP, MODE_LABEL, clearConfirmation, scopeChoices, scopeLabel, scopeRange,
   type ClearMode, type ClearRange, type ClearScope,
 } from '@/lib/logClear';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
 
@@ -75,7 +76,7 @@ export function ClearLogSheet({ visible, onClose, title, what = 'log', modes, ye
   return (
     <BottomSheetModal visible={visible} onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <Pressable style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.lg }]} onPress={(e) => e.stopPropagation()}>
+        <Pressable style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.lg }]} onPress={(e) => e.stopPropagation()}>
           <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
           <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{title}</Text>
 
@@ -108,7 +109,7 @@ export function ClearLogSheet({ visible, onClose, title, what = 'log', modes, ye
                         accessibilityState={{ selected: on }}
                         style={[styles.modeChip, { backgroundColor: on ? (m === 'delete' ? colors.error : colors.primary) : colors.backgroundTertiary }]}
                       >
-                        <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textPrimary }]}>{MODE_LABEL[m]}</Text>
+                        <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textPrimary }]}>{MODE_LABEL[m]}</Text>
                       </Pressable>
                     );
                   })}
@@ -144,7 +145,7 @@ export function ClearLogSheet({ visible, onClose, title, what = 'log', modes, ye
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  overlay: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg },
   handle: { width: 36, height: 4, borderRadius: 2, alignSelf: 'center', marginBottom: spacing.md },
   modes: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.md, flexWrap: 'wrap' },

@@ -7,6 +7,7 @@
  */
 import { hourLabel, type WeatherPayload, type WxHour, type WxIcon } from '@/lib/weatherView';
 import { brand } from '@/config/brand';
+import { widgetColors, widgetSymbolColors } from '@/theme/weather';
 
 /** The widget runs in its own small runtime and cannot read the settings file, so these two settings travel in its props. */
 const WIDGET_LINK = `${brand.app.scheme}://weather`;
@@ -26,7 +27,7 @@ export interface WidgetProps {
   /** "No rain expected", "Rain chance 60%", or empty when there is no figure. */
   rain: string;
   hours: WidgetHour[];
-  /** The leaf logo as a file address in the widgets' shared folder, or null (then the widgets just leave it out). */
+  /** The logo mark as a file address in the widgets' shared folder, or null (then the widgets just leave it out). */
   leaf: string | null;
   /** For the lock screen circle: where the temperature sits between today's low and high. */
   gauge: { now: number; low: number; high: number } | null;
@@ -34,28 +35,31 @@ export interface WidgetProps {
   link: string;
   /** The company name in capitals, shown next to the logo mark (settings file: company.name). */
   company: string;
+  /** The widget's colors (the plain look, src/theme/weather.ts): the widget cannot read the theme itself. */
+  colors: WidgetColors;
 }
+export interface WidgetColors { ink: string; soft: string; page: string; accent: string; rule: string }
 export interface WidgetEntry { date: Date; props: WidgetProps }
 
 const SYMBOL: Record<WxIcon, { name: string; color: string; word: string }> = {
-  sun: { name: 'sun.max.fill', color: '#F2B632', word: 'Sunny' },
-  moon: { name: 'moon.stars.fill', color: '#7C8FC0', word: 'Clear' },
-  partly: { name: 'cloud.sun.fill', color: '#E0A93A', word: 'Partly cloudy' },
-  partlynight: { name: 'cloud.moon.fill', color: '#7C8FC0', word: 'Partly cloudy' },
-  cloud: { name: 'cloud.fill', color: '#9DB0A2', word: 'Cloudy' },
-  drizzle: { name: 'cloud.drizzle.fill', color: '#5F9BC9', word: 'Drizzle' },
-  rain: { name: 'cloud.rain.fill', color: '#3F86C0', word: 'Rain' },
-  heavyrain: { name: 'cloud.heavyrain.fill', color: '#2F6FA8', word: 'Heavy rain' },
-  storm: { name: 'cloud.bolt.rain.fill', color: '#6A6FA8', word: 'Thunderstorms' },
-  snow: { name: 'cloud.snow.fill', color: '#7FB2D9', word: 'Snow' },
-  heavysnow: { name: 'snowflake', color: '#5E9BD0', word: 'Heavy snow' },
-  sleet: { name: 'cloud.sleet.fill', color: '#6C9CBF', word: 'Sleet' },
-  hail: { name: 'cloud.hail.fill', color: '#6C9CBF', word: 'Hail' },
-  fog: { name: 'cloud.fog.fill', color: '#9AA8A0', word: 'Fog' },
-  haze: { name: 'sun.haze.fill', color: '#D2A857', word: 'Hazy' },
-  smoke: { name: 'smoke.fill', color: '#8A8F8C', word: 'Smoke' },
-  dust: { name: 'sun.dust.fill', color: '#C4A06A', word: 'Dust' },
-  wind: { name: 'wind', color: '#6FA7A0', word: 'Windy' },
+  sun: { name: 'sun.max.fill', color: widgetSymbolColors.sun, word: 'Sunny' },
+  moon: { name: 'moon.stars.fill', color: widgetSymbolColors.moon, word: 'Clear' },
+  partly: { name: 'cloud.sun.fill', color: widgetSymbolColors.partly, word: 'Partly cloudy' },
+  partlynight: { name: 'cloud.moon.fill', color: widgetSymbolColors.partlynight, word: 'Partly cloudy' },
+  cloud: { name: 'cloud.fill', color: widgetSymbolColors.cloud, word: 'Cloudy' },
+  drizzle: { name: 'cloud.drizzle.fill', color: widgetSymbolColors.drizzle, word: 'Drizzle' },
+  rain: { name: 'cloud.rain.fill', color: widgetSymbolColors.rain, word: 'Rain' },
+  heavyrain: { name: 'cloud.heavyrain.fill', color: widgetSymbolColors.heavyrain, word: 'Heavy rain' },
+  storm: { name: 'cloud.bolt.rain.fill', color: widgetSymbolColors.storm, word: 'Thunderstorms' },
+  snow: { name: 'cloud.snow.fill', color: widgetSymbolColors.snow, word: 'Snow' },
+  heavysnow: { name: 'snowflake', color: widgetSymbolColors.heavysnow, word: 'Heavy snow' },
+  sleet: { name: 'cloud.sleet.fill', color: widgetSymbolColors.sleet, word: 'Sleet' },
+  hail: { name: 'cloud.hail.fill', color: widgetSymbolColors.hail, word: 'Hail' },
+  fog: { name: 'cloud.fog.fill', color: widgetSymbolColors.fog, word: 'Fog' },
+  haze: { name: 'sun.haze.fill', color: widgetSymbolColors.haze, word: 'Hazy' },
+  smoke: { name: 'smoke.fill', color: widgetSymbolColors.smoke, word: 'Smoke' },
+  dust: { name: 'sun.dust.fill', color: widgetSymbolColors.dust, word: 'Dust' },
+  wind: { name: 'wind', color: widgetSymbolColors.wind, word: 'Windy' },
 };
 const FALLBACK = SYMBOL.cloud;
 const symbolOf = (icon: WxIcon | undefined) => (icon && SYMBOL[icon]) || FALLBACK;
@@ -100,7 +104,7 @@ export function buildWidgetEntries(data: WeatherPayload, now: number, leaf: stri
       date: new Date(now),
       props: {
         place: data.townName, temp: deg(c?.tempF), condition: c?.text || s.word, symbol: s.name, symbolColor: s.color, highLow, uv: '', rain: '',
-        hours: [], leaf, gauge: gaugeOf(c?.tempF ?? null), link: WIDGET_LINK, company: WIDGET_NAME,
+        hours: [], leaf, gauge: gaugeOf(c?.tempF ?? null), link: WIDGET_LINK, company: WIDGET_NAME, colors: { ...widgetColors },
       },
     }];
   }
@@ -133,6 +137,7 @@ export function buildWidgetEntries(data: WeatherPayload, now: number, leaf: stri
         leaf,
         link: WIDGET_LINK,
         company: WIDGET_NAME,
+        colors: { ...widgetColors },
         gauge: gaugeOf(temp ?? null),
       },
     });

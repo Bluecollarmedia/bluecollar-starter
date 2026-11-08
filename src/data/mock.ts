@@ -26,7 +26,7 @@ export const mockPeople: Record<string, PersonSummary> = {
     lastName: 'Morgan',
     email: 'alex@example.com',
     phone: '(216) 555-0100',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Morgan&background=7CB342&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Morgan&background=555555&color=fff&size=128',
   },
   worker1: {
     id: 'worker1',
@@ -34,7 +34,7 @@ export const mockPeople: Record<string, PersonSummary> = {
     lastName: 'Rivera',
     email: 'marcus@example.com',
     phone: '(216) 555-0201',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Marcus+Rivera&background=1976D2&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Marcus+Rivera&background=555555&color=fff&size=128',
   },
   worker2: {
     id: 'worker2',
@@ -42,7 +42,7 @@ export const mockPeople: Record<string, PersonSummary> = {
     lastName: 'Brooks',
     email: 'tyler@example.com',
     phone: '(216) 555-0202',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Tyler+Brooks&background=E64A19&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Tyler+Brooks&background=555555&color=fff&size=128',
   },
   worker3: {
     id: 'worker3',
@@ -50,7 +50,7 @@ export const mockPeople: Record<string, PersonSummary> = {
     lastName: 'Williams',
     email: 'deshawn@example.com',
     phone: '(216) 555-0203',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Deshawn+Williams&background=00897B&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Deshawn+Williams&background=555555&color=fff&size=128',
   },
   worker4: {
     id: 'worker4',
@@ -58,7 +58,7 @@ export const mockPeople: Record<string, PersonSummary> = {
     lastName: 'Mendez',
     email: 'carlos@example.com',
     phone: '(216) 555-0204',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Carlos+Mendez&background=5E35B1&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Carlos+Mendez&background=555555&color=fff&size=128',
   },
   worker5: {
     id: 'worker5',
@@ -66,7 +66,7 @@ export const mockPeople: Record<string, PersonSummary> = {
     lastName: 'Patterson',
     email: 'jake@example.com',
     phone: '(216) 555-0205',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Jake+Patterson&background=C62828&color=fff&size=128',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Jake+Patterson&background=555555&color=fff&size=128',
   },
   customer1: {
     id: 'customer1',
@@ -1044,7 +1044,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
   proj1: [
     {
       id: 'ph1', projectId: 'proj1', taskId: 't1', uploadedBy: 'worker1',
-      fileKey: 'proj1/demo-before.jpg', fileUrl: 'https://placehold.co/800x600/e8d5b7/1B3A2D?text=Before+Demo',
+      fileKey: 'proj1/demo-before.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Before+Demo',
       caption: 'Existing patio before demolition',
       isCustomerVisible: false,
       photoType: 'before', takenAt: '2026-07-15T08:00:00Z', createdAt: '2026-07-15T08:05:00Z',
@@ -1052,7 +1052,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph2', projectId: 'proj1', taskId: 't1', uploadedBy: 'worker1',
-      fileKey: 'proj1/demo-after.jpg', fileUrl: 'https://placehold.co/800x600/a0b8a0/1B3A2D?text=Demo+Complete',
+      fileKey: 'proj1/demo-after.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Demo+Complete',
       caption: 'Area cleared after demo',
       isCustomerVisible: false,
       photoType: 'after', takenAt: '2026-07-20T15:30:00Z', createdAt: '2026-07-20T15:35:00Z',
@@ -1060,7 +1060,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph3', projectId: 'proj1', taskId: 't3', uploadedBy: 'worker1',
-      fileKey: 'proj1/footings.jpg', fileUrl: 'https://placehold.co/800x600/8b8b7a/ffffff?text=Wall+Footings',
+      fileKey: 'proj1/footings.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Wall+Footings',
       caption: 'Retaining wall footings poured',
       isCustomerVisible: false,
       photoType: 'progress', takenAt: '2026-08-01T14:00:00Z', createdAt: '2026-08-01T14:05:00Z',
@@ -1068,7 +1068,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph4', projectId: 'proj1', taskId: 't4', uploadedBy: 'worker1',
-      fileKey: 'proj1/wall-progress.jpg', fileUrl: 'https://placehold.co/800x600/9caf88/1B3A2D?text=Wall+Progress',
+      fileKey: 'proj1/wall-progress.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Wall+Progress',
       caption: 'Retaining wall halfway done — natural fieldstone',
       isCustomerVisible: false,
       photoType: 'progress', takenAt: '2026-08-10T11:00:00Z', createdAt: '2026-08-10T11:05:00Z',
@@ -1076,7 +1076,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph5', projectId: 'proj1', taskId: 't4', uploadedBy: 'worker1',
-      fileKey: 'proj1/wall-complete.jpg', fileUrl: 'https://placehold.co/800x600/7CB342/ffffff?text=Wall+Complete',
+      fileKey: 'proj1/wall-complete.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Wall+Complete',
       caption: 'Retaining wall finished',
       customerDescription: 'Your retaining wall is complete! We used Pennsylvania natural fieldstone as discussed.',
       isCustomerVisible: true, sharedBy: 'owner1', sharedAt: '2026-08-16T10:05:00Z',
@@ -1085,7 +1085,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph6', projectId: 'proj1', taskId: 't6', uploadedBy: 'worker1',
-      fileKey: 'proj1/pavers-progress.jpg', fileUrl: 'https://placehold.co/800x600/c2b280/1B3A2D?text=Pavers+In+Progress',
+      fileKey: 'proj1/pavers-progress.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Pavers+In+Progress',
       caption: 'Laying natural stone pavers — about 60% done',
       isCustomerVisible: false,
       photoType: 'progress', takenAt: '2026-08-27T14:00:00Z', createdAt: '2026-08-27T14:05:00Z',
@@ -1093,7 +1093,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph7', projectId: 'proj1', taskId: 't6', uploadedBy: 'worker1',
-      fileKey: 'proj1/pavers-complete.jpg', fileUrl: 'https://placehold.co/800x600/7CB342/ffffff?text=Pavers+Done',
+      fileKey: 'proj1/pavers-complete.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Pavers+Done',
       caption: 'All pavers installed',
       customerDescription: 'All the natural stone pavers are laid. The pattern came out beautifully!',
       isCustomerVisible: true, sharedBy: 'owner1', sharedAt: '2026-09-03T17:05:00Z',
@@ -1102,7 +1102,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph8', projectId: 'proj1', taskId: 't7', uploadedBy: 'worker2',
-      fileKey: 'proj1/border-stones.jpg', fileUrl: 'https://placehold.co/800x600/8b7d6b/ffffff?text=Border+Stones',
+      fileKey: 'proj1/border-stones.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Border+Stones',
       caption: 'Border stones set along patio edge',
       isCustomerVisible: false,
       photoType: 'progress', takenAt: '2026-09-02T14:00:00Z', createdAt: '2026-09-02T14:05:00Z',
@@ -1110,7 +1110,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph9', projectId: 'proj1', taskId: 't8', uploadedBy: 'worker1',
-      fileKey: 'proj1/joints-done.jpg', fileUrl: 'https://placehold.co/800x600/d4c5a0/1B3A2D?text=Sand+Joints',
+      fileKey: 'proj1/joints-done.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Sand+Joints',
       caption: 'Polymeric sand applied to all joints',
       isCustomerVisible: false,
       photoType: 'after', takenAt: '2026-09-04T10:30:00Z', createdAt: '2026-09-04T10:35:00Z',
@@ -1118,7 +1118,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph10', projectId: 'proj1', taskId: 't9', uploadedBy: 'worker2',
-      fileKey: 'proj1/lighting-issue.jpg', fileUrl: 'https://placehold.co/800x600/cc0000/ffffff?text=Wire+Issue',
+      fileKey: 'proj1/lighting-issue.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Wire+Issue',
       caption: 'Found existing wire running through the planned lighting trench — need owner input',
       isCustomerVisible: false,
       photoType: 'issue', takenAt: '2026-09-05T09:00:00Z', createdAt: '2026-09-05T09:05:00Z',
@@ -1126,7 +1126,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph11', projectId: 'proj1', taskId: 't9', uploadedBy: 'worker1',
-      fileKey: 'proj1/lighting-installed.jpg', fileUrl: 'https://placehold.co/800x600/2e4a3a/ffffff?text=Lighting+Installed',
+      fileKey: 'proj1/lighting-installed.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Lighting+Installed',
       caption: 'Outdoor lighting installed',
       isCustomerVisible: false,
       photoType: 'after', takenAt: offsetDate(-3) + 'T14:02:00Z', createdAt: offsetDate(-3) + 'T14:02:00Z',
@@ -1134,7 +1134,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph12', projectId: 'proj1', taskId: 't10', uploadedBy: 'worker1',
-      fileKey: 'proj1/pavers-sealed.jpg', fileUrl: 'https://placehold.co/800x600/6b8f5a/ffffff?text=Pavers+Sealed',
+      fileKey: 'proj1/pavers-sealed.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Pavers+Sealed',
       caption: 'Pavers sealed',
       isCustomerVisible: false,
       photoType: 'after', takenAt: offsetDate(-3) + 'T16:02:00Z', createdAt: offsetDate(-3) + 'T16:02:00Z',
@@ -1144,7 +1144,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
   proj2: [
     {
       id: 'ph20', projectId: 'proj2', taskId: 't20', uploadedBy: 'worker3',
-      fileKey: 'proj2/driveway-removed.jpg', fileUrl: 'https://placehold.co/800x600/8b7d6b/ffffff?text=Old+Driveway+Removed',
+      fileKey: 'proj2/driveway-removed.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Old+Driveway+Removed',
       caption: 'Old driveway cleared',
       isCustomerVisible: false,
       photoType: 'after', takenAt: '2026-08-10T13:00:00Z', createdAt: '2026-08-10T13:05:00Z',
@@ -1152,7 +1152,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph21', projectId: 'proj2', taskId: 't21', uploadedBy: 'worker3',
-      fileKey: 'proj2/trench.jpg', fileUrl: 'https://placehold.co/800x600/6b5b3e/ffffff?text=Drainage+Trench',
+      fileKey: 'proj2/trench.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Drainage+Trench',
       caption: 'Trenching complete for drainage pipe',
       customerDescription: 'Drainage trenches are dug and ready for pipe installation.',
       isCustomerVisible: true, sharedBy: 'owner1', sharedAt: '2026-08-19T09:00:00Z',
@@ -1161,7 +1161,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph22', projectId: 'proj2', taskId: 't20', uploadedBy: 'worker1',
-      fileKey: 'proj2/driveway-removed-2.jpg', fileUrl: 'https://placehold.co/800x600/8b7d6b/ffffff?text=Old+Driveway+Removed',
+      fileKey: 'proj2/driveway-removed-2.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Old+Driveway+Removed',
       caption: 'Old driveway removed',
       isCustomerVisible: false,
       photoType: 'after', takenAt: offsetDate(-2) + 'T09:32:00Z', createdAt: offsetDate(-2) + 'T09:32:00Z',
@@ -1169,7 +1169,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph23', projectId: 'proj2', taskId: 't21', uploadedBy: 'worker1',
-      fileKey: 'proj2/trench-2.jpg', fileUrl: 'https://placehold.co/800x600/6b5b3e/ffffff?text=Drainage+Trench',
+      fileKey: 'proj2/trench-2.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Drainage+Trench',
       caption: 'Drainage trenches dug',
       isCustomerVisible: false,
       photoType: 'progress', takenAt: offsetDate(-2) + 'T12:05:00Z', createdAt: offsetDate(-2) + 'T12:05:00Z',
@@ -1177,7 +1177,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph24', projectId: 'proj2', taskId: 't22', uploadedBy: 'worker1',
-      fileKey: 'proj2/drainage-installed.jpg', fileUrl: 'https://placehold.co/800x600/5a7a6b/ffffff?text=Drainage+Installed',
+      fileKey: 'proj2/drainage-installed.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Drainage+Installed',
       caption: 'Drainage system installed',
       isCustomerVisible: false,
       photoType: 'after', takenAt: offsetDate(-2) + 'T13:50:00Z', createdAt: offsetDate(-2) + 'T13:50:00Z',
@@ -1187,7 +1187,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
   proj3: [
     {
       id: 'ph30', projectId: 'proj3', taskId: undefined, uploadedBy: 'worker2',
-      fileKey: 'proj3/firepit-area.jpg', fileUrl: 'https://placehold.co/800x600/7a6b5b/ffffff?text=Fire+Pit+Area',
+      fileKey: 'proj3/firepit-area.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Fire+Pit+Area',
       caption: 'Fire pit foundation work',
       isCustomerVisible: false,
       photoType: 'progress', takenAt: '2026-08-20T11:00:00Z', createdAt: '2026-08-20T11:05:00Z',
@@ -1195,7 +1195,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph31', projectId: 'proj3', uploadedBy: 'worker1',
-      fileKey: 'proj3/edges-sealed.jpg', fileUrl: 'https://placehold.co/800x600/6b8f5a/ffffff?text=Edges+Sealed',
+      fileKey: 'proj3/edges-sealed.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Edges+Sealed',
       caption: 'Edges sealed',
       isCustomerVisible: false,
       photoType: 'after', takenAt: offsetDate(-3) + 'T08:32:00Z', createdAt: offsetDate(-3) + 'T08:32:00Z',
@@ -1203,7 +1203,7 @@ export const mockProjectPhotos: Record<string, ProjectPhoto[]> = {
     },
     {
       id: 'ph32', projectId: 'proj3', uploadedBy: 'worker1',
-      fileKey: 'proj3/edges-restored.jpg', fileUrl: 'https://placehold.co/800x600/8b7355/ffffff?text=Edges+Restored',
+      fileKey: 'proj3/edges-restored.jpg', fileUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Edges+Restored',
       caption: 'Edges restored',
       isCustomerVisible: false,
       photoType: 'after', takenAt: offsetDate(-3) + 'T10:32:00Z', createdAt: offsetDate(-3) + 'T10:32:00Z',
@@ -1231,7 +1231,7 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
     {
       id: 'ct3', projectId: 'proj1', eventType: 'photo_shared',
       title: 'New photo shared', description: 'Your retaining wall is complete! We used Pennsylvania natural fieldstone as discussed.',
-      photoUrl: 'https://placehold.co/800x600/7CB342/ffffff?text=Wall+Complete',
+      photoUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Wall+Complete',
       timestamp: '2026-08-16T10:05:00Z',
     },
     {
@@ -1248,7 +1248,7 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
     {
       id: 'ct6', projectId: 'proj1', eventType: 'photo_shared',
       title: 'New photo shared', description: 'All the natural stone pavers are laid. The pattern came out beautifully!',
-      photoUrl: 'https://placehold.co/800x600/7CB342/ffffff?text=Pavers+Done',
+      photoUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Pavers+Done',
       timestamp: '2026-09-03T17:05:00Z',
     },
     {
@@ -1272,7 +1272,7 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
     {
       id: 'ct21', projectId: 'proj2', eventType: 'photo_shared',
       title: 'New photo shared', description: 'Drainage trenches are dug and ready for pipe installation.',
-      photoUrl: 'https://placehold.co/800x600/6b5b3e/ffffff?text=Drainage+Trench',
+      photoUrl: 'https://placehold.co/800x600/E5E5E5/2B2B2B?text=Drainage+Trench',
       timestamp: '2026-08-19T09:00:00Z',
     },
     {

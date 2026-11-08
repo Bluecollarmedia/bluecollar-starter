@@ -15,6 +15,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction } from '@/components/financials/ActionSheet';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
@@ -67,9 +68,9 @@ export function MessageCustomersPanel() {
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.border }]}
               >
-                <Text style={[typeScale.labelLarge, { color: on ? '#FFFFFF' : colors.textSecondary }]}>{w(a.label)}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? fixed.white : colors.textSecondary }]}>{w(a.label)}</Text>
                 {reach?.[a.key] != null ? (
-                  <Text style={[typeScale.caption, { color: on ? '#FFFFFF' : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
+                  <Text style={[typeScale.caption, { color: on ? fixed.white : colors.textTertiary, opacity: on ? 0.85 : 1 }]}>{reach[a.key]}</Text>
                 ) : null}
               </Pressable>
             );

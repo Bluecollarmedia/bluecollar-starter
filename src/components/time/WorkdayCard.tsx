@@ -12,6 +12,7 @@ import { StaleSessionCard } from '@/components/time/StaleSessionCard';
 import type { TruckOptions } from '@/data/timeTracking';
 import { useT, tr } from '@/i18n';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { fixed, blackAlpha } from '@/theme/colors';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -128,7 +129,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             </View>
           </View>
           <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} style={[styles.primary, { backgroundColor: colors.primary, opacity: w.busy || loadingTrucks ? 0.6 : 1 }]} accessibilityRole="button">
-            {w.busy || loadingTrucks ? <ActivityIndicator color="#FFFFFF" /> : <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('Clock In')}</Text>}
+            {w.busy || loadingTrucks ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('Clock In')}</Text>}
           </Pressable>
         </>
       ) : null}
@@ -188,8 +189,8 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
               </Pressable>
             ) : null}
             <Pressable onPress={onClockOut} disabled={w.busy} style={[styles.secondary, portal ? { height: 56, backgroundColor: colors.error, borderColor: colors.error } : { borderColor: colors.border }, { opacity: w.busy ? 0.5 : 1 }]} accessibilityRole="button">
-              <Feather name="log-out" size={portal ? 18 : 15} color={portal ? '#FFFFFF' : colors.textPrimary} />
-              <Text style={[portal ? typeScale.labelLarge : typeScale.labelSmall, { color: portal ? '#FFFFFF' : colors.textPrimary }]}>{t('Clock Out')}</Text>
+              <Feather name="log-out" size={portal ? 18 : 15} color={portal ? fixed.white : colors.textPrimary} />
+              <Text style={[portal ? typeScale.labelLarge : typeScale.labelSmall, { color: portal ? fixed.white : colors.textPrimary }]}>{t('Clock Out')}</Text>
             </Pressable>
           </View>
           {current && !w.onBreak ? (
@@ -213,12 +214,12 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             <>
               <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t('Clocked out by mistake? Clock back in and your day keeps going.')}</Text>
               <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} accessibilityRole="button" style={[styles.primary, { backgroundColor: colors.primary, opacity: w.busy || loadingTrucks ? 0.6 : 1 }]}>
-                {w.busy || loadingTrucks ? <ActivityIndicator color="#FFFFFF" /> : <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('Clock back in')}</Text>}
+                {w.busy || loadingTrucks ? <ActivityIndicator color={fixed.white} /> : <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('Clock back in')}</Text>}
               </Pressable>
             </>
           ) : w.day?.canClockIn !== false && moreWork ? (
             <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} accessibilityRole="button" style={[styles.secondary, { backgroundColor: colors.primaryDark, borderColor: colors.primaryDark, marginTop: spacing.sm, alignItems: 'center' }]}>
-              <Text style={[typeScale.labelLarge, { color: '#FFFFFF' }]}>{t('You have more work today. Clock back in')}</Text>
+              <Text style={[typeScale.labelLarge, { color: fixed.white }]}>{t('You have more work today. Clock back in')}</Text>
             </Pressable>
           ) : w.day?.canClockIn !== false ? (
             <Pressable onPress={onClockIn} disabled={w.busy || loadingTrucks} hitSlop={8} style={{ marginTop: spacing.sm }}>
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
   primary: { height: 52, borderRadius: radius.full, alignItems: 'center', justifyContent: 'center', marginTop: spacing.md },
   buttons: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.md },
   secondary: { flex: 1, height: 44, borderRadius: radius.full, borderWidth: 1, flexDirection: 'row', gap: spacing.xs, alignItems: 'center', justifyContent: 'center' },
-  backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
+  backdrop: { flex: 1, backgroundColor: blackAlpha(0.4), justifyContent: 'flex-end' },
   sheet: { borderTopLeftRadius: radius.xl, borderTopRightRadius: radius.xl, padding: spacing.lg, paddingBottom: spacing['3xl'] },
   truckRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, minHeight: 52, borderBottomWidth: StyleSheet.hairlineWidth },
 });

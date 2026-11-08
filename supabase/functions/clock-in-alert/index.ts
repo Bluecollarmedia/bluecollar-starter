@@ -86,16 +86,16 @@ export function buildAlert(o: AlertInput): { subject: string; text: string; html
   lines.push('');
   lines.push(`You get this email because "Email me when someone clocks in away from the yard" is on in Settings. ${o.company}`);
   const text = lines.join('\n');
-  const html = `<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:#1F2328;max-width:560px">
+  const html = `<div style="font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;color:#111111;max-width:560px">
 <p style="margin:0 0 12px"><strong>${esc(o.worker)}</strong> clocked in at ${esc(when)}${has ? ', and was <strong>not at the yard</strong>' : ', but their phone could not give a location'}.</p>
-${has ? `<div style="background:#F6F5F1;border-radius:12px;padding:14px 16px;margin:0 0 14px">
-<div style="font-size:12px;font-weight:700;letter-spacing:.6px;color:#6A6E75;margin-bottom:6px">WHERE THEY CLOCKED IN FROM</div>
+${has ? `<div style="background:#F5F5F5;border-radius:12px;padding:14px 16px;margin:0 0 14px">
+<div style="font-size:12px;font-weight:700;letter-spacing:.6px;color:#6B6B6B;margin-bottom:6px">WHERE THEY CLOCKED IN FROM</div>
 ${o.address ? `<div style="font-size:16px;font-weight:600">${esc(o.address)}</div>` : ''}
-<div style="color:#4B564F;margin-top:4px">${o.lat!.toFixed(6)}, ${o.lng!.toFixed(6)}${o.accuracyM !== null ? ` · accurate to about ${Math.round(o.accuracyM * 3.28084)} ft` : ''}</div>
+<div style="color:#555555;margin-top:4px">${o.lat!.toFixed(6)}, ${o.lng!.toFixed(6)}${o.accuracyM !== null ? ` · accurate to about ${Math.round(o.accuracyM * 3.28084)} ft` : ''}</div>
 ${o.distanceM !== null ? `<div style="margin-top:6px">About <strong>${esc(distanceText(o.distanceM))}</strong> from ${esc(o.yardLabel || 'the yard')}.</div>` : ''}
 </div>
 <p style="margin:0 0 14px"><a href="${esc(map)}" style="background:${BRAND_COLOR};color:#fff;text-decoration:none;font-weight:700;border-radius:10px;padding:10px 16px;display:inline-block">Open on the map</a></p>` : '<p style="margin:0 0 12px">Clocking in was still allowed. You can ask them where they were.</p>'}
-<p style="margin:0;font-size:12px;color:#6A6E75">You get this because "Email me when someone clocks in away from the yard" is on in Settings. ${esc(o.company)}</p>
+<p style="margin:0;font-size:12px;color:#6B6B6B">You get this because "Email me when someone clocks in away from the yard" is on in Settings. ${esc(o.company)}</p>
 </div>`;
   return { subject, text, html };
 }

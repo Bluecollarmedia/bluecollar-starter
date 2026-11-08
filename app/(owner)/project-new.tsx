@@ -25,6 +25,7 @@ import { spacing, radius } from '@/theme/spacing';
 import type { ProjectStatus } from '@/types/project';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 import { w } from '@/config/brand';
+import { fixed } from '@/theme/colors';
 
 const STATUS_OPTIONS: { key: ProjectStatus; label: string }[] = [
   { key: 'active', label: 'Active' },
@@ -214,7 +215,7 @@ export default function NewProjectScreen() {
                       onPress={() => setStatus(opt.key)}
                       style={[styles.chip, { backgroundColor: active ? colors.primary : colors.backgroundTertiary }]}
                     >
-                      <Text style={[typeScale.labelSmall, { color: active ? '#FFFFFF' : colors.textSecondary, fontWeight: '600' }]}>
+                      <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>
                         {opt.label}
                       </Text>
                     </Pressable>
@@ -293,7 +294,7 @@ export default function NewProjectScreen() {
                   onPress={() => changeCustomer(undefined)}
                   style={[styles.chip, { backgroundColor: !customerId ? colors.primary : colors.backgroundTertiary }]}
                 >
-                  <Text style={[typeScale.labelSmall, { color: !customerId ? '#FFFFFF' : colors.textSecondary, fontWeight: '600' }]}>
+                  <Text style={[typeScale.labelSmall, { color: !customerId ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>
                     None
                   </Text>
                 </Pressable>
@@ -305,7 +306,7 @@ export default function NewProjectScreen() {
                       onPress={() => changeCustomer(c.person.id)}
                       style={[styles.chip, { backgroundColor: active ? colors.primary : colors.backgroundTertiary }]}
                     >
-                      <Text style={[typeScale.labelSmall, { color: active ? '#FFFFFF' : colors.textSecondary, fontWeight: '600' }]}>
+                      <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary, fontWeight: '600' }]}>
                         {`${c.person.firstName} ${c.person.lastName}`.trim() || c.person.email}
                       </Text>
                     </Pressable>

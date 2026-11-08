@@ -105,7 +105,7 @@ export function DeleteCompanyRow() {
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
           <Pressable style={styles.overlay} onPress={close}>
             <Pressable
-              style={[styles.sheet, { backgroundColor: colors.surface, paddingBottom: insets.bottom + spacing.lg }]}
+              style={[styles.sheet, { backgroundColor: colors.surfaceElevated, paddingBottom: insets.bottom + spacing.lg }]}
               onPress={(e) => e.stopPropagation()}
             >
               <View style={[styles.iconWrap, { backgroundColor: semantic.errorLight }]}>

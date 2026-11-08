@@ -13,6 +13,7 @@ import React from 'react';
 import { Platform, StyleProp, TextStyle } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import type { ComponentProps } from 'react';
+import { fixed } from '@/theme/colors';
 
 let SymbolView: any = null;
 try {
@@ -121,7 +122,7 @@ interface IconProps {
   style?: StyleProp<TextStyle>;
 }
 
-export function Icon({ name, size = 20, color = '#000000', style }: IconProps) {
+export function Icon({ name, size = 20, color = fixed.black, style }: IconProps) {
   const sfName = FEATHER_TO_SF[name as string];
 
   if (Platform.OS === 'ios' && SymbolView && sfName) {

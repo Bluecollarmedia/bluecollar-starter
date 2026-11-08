@@ -16,6 +16,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
+import { fixed, whiteAlpha, blackAlpha } from '@/theme/colors';
 
 /** Height of the photo header on the worker Today screen. */
 export const WORKER_HERO_HEIGHT = 400;
@@ -37,17 +38,17 @@ export function HeaderPhotoOverlay({ kind, compact }: { kind: HeaderPhotoKind; c
   if (kind === 'dashboard') {
     return (
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LinearGradient colors={['rgba(10,20,15,0.25)', 'rgba(8,16,12,0.85)']} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={[blackAlpha(0.25), blackAlpha(0.85)]} style={StyleSheet.absoluteFill} />
         <View style={[styles.overlayText, { padding: compact ? spacing.md : spacing.lg }]}>
-          <Text style={[typeScale.overline, { color: 'rgba(255,255,255,0.8)' }]}>TODAY</Text>
-          <Text style={[compact ? typeScale.headingSmall : typeScale.headingLarge, { color: '#FFFFFF', marginTop: 2, marginBottom: compact ? spacing.sm : spacing.md }]}>
+          <Text style={[typeScale.overline, { color: whiteAlpha(0.8) }]}>TODAY</Text>
+          <Text style={[compact ? typeScale.headingSmall : typeScale.headingLarge, { color: fixed.white, marginTop: 2, marginBottom: compact ? spacing.sm : spacing.md }]}>
             3 jobs in progress
           </Text>
           <View style={[styles.statsRow, { marginBottom: compact ? spacing.sm : spacing.lg }]}>
             {['Workers', 'On site', 'Upcoming', 'Attention'].map((statLabel, i) => (
               <View key={statLabel}>
-                <Text style={[compact ? typeScale.bodyLarge : typeScale.headingLarge, { color: '#FFFFFF' }]}>{[4, 2, 2, 3][i]}</Text>
-                <Text style={[typeScale.caption, { color: 'rgba(255,255,255,0.85)' }]}>{statLabel}</Text>
+                <Text style={[compact ? typeScale.bodyLarge : typeScale.headingLarge, { color: fixed.white }]}>{[4, 2, 2, 3][i]}</Text>
+                <Text style={[typeScale.caption, { color: whiteAlpha(0.85) }]}>{statLabel}</Text>
               </View>
             ))}
           </View>
@@ -64,7 +65,7 @@ export function HeaderPhotoOverlay({ kind, compact }: { kind: HeaderPhotoKind; c
         style={StyleSheet.absoluteFill}
       />
       <View style={[styles.overlayText, { padding: compact ? spacing.md : spacing.lg, paddingBottom: compact ? '18%' : 100 }]}>
-        <Text style={[compact ? typeScale.headingSmall : typeScale.displayLarge, styles.shadow, { color: '#FFFFFF' }]}>
+        <Text style={[compact ? typeScale.headingSmall : typeScale.displayLarge, styles.shadow, { color: fixed.white }]}>
           Good morning,{'\n'}crew
         </Text>
       </View>
@@ -74,7 +75,7 @@ export function HeaderPhotoOverlay({ kind, compact }: { kind: HeaderPhotoKind; c
 
 interface HeaderPhotoFieldProps {
   kind: HeaderPhotoKind;
-  /** The photo shown now (saved or just cropped); undefined means the green backdrop. */
+  /** The photo shown now (saved or just cropped); undefined means the brand-color backdrop. */
   value?: string;
   onChange: (uri: string | undefined) => void;
 }
@@ -114,7 +115,7 @@ export function HeaderPhotoField({ kind, value, onChange }: HeaderPhotoFieldProp
         <HeaderPhotoOverlay kind={kind} compact />
         {!value && (
           <View style={styles.defaultTag}>
-            <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Brand color (default)</Text>
+            <Text style={[typeScale.labelSmall, { color: fixed.white }]}>Brand color (default)</Text>
           </View>
         )}
       </Pressable>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   },
   overlayText: { flex: 1, justifyContent: 'flex-end' },
   shadow: {
-    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowColor: blackAlpha(0.35),
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
   },
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
   fakeButton: {
     height: 44,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(255,255,255,0.92)',
+    backgroundColor: whiteAlpha(0.92),
   },
   defaultTag: {
     position: 'absolute',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.sm,
     paddingVertical: 4,
     borderRadius: radius.full,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: blackAlpha(0.35),
   },
   actions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
   action: {

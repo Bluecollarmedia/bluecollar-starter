@@ -12,7 +12,7 @@ import { db, useDb } from '@/data/store';
 import { CREW_COLORS } from '@/types/crew';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
-import { semantic } from '@/theme/colors';
+import { semantic, fixed } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
@@ -100,7 +100,7 @@ export default function CrewEditScreen() {
                 accessibilityLabel={`Color ${c}`}
                 accessibilityState={{ selected: c === color }}
               >
-                {c === color && <Icon name="check" size={16} color="#FFFFFF" />}
+                {c === color && <Icon name="check" size={16} color={fixed.white} />}
               </Pressable>
             ))}
           </View>

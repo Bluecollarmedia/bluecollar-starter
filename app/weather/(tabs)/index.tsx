@@ -20,8 +20,10 @@ import { PlacePicker } from '@/components/weather/PlacePicker';
 import { Panel, WX, WxPicture } from '@/components/weather/WeatherUI';
 import { ScrubArea } from '@/components/weather/ScrubArea';
 import { WeatherDetails, type DetailsStart, type MetricKey } from '@/components/weather/WeatherDetails';
+import { fixed } from '@/theme/colors';
+import { wxArt } from '@/theme/weather';
 
-const ON_DARK = '#FFFFFF';
+const ON_DARK = WX.onDeep;
 const INK = WX.deep;
 const SOFT = WX.soft;
 const FAINT = WX.faint;
@@ -144,7 +146,7 @@ function MiniBars({ values, max, color, describe, caption }: { values: Array<num
           {values.map((v, i) => (
             <View key={i} style={styles.miniCol}>
               {v === null
-                ? <View style={[styles.miniBar, { height: 2, backgroundColor: '#DDE7D8' }]} />
+                ? <View style={[styles.miniBar, { height: 2, backgroundColor: wxArt.emptyBar }]} />
                 : <View style={[styles.miniBar, { height: Math.max(3, (Math.min(v, max) / max) * 44), backgroundColor: color, opacity: sel === null || sel === i ? 1 : 0.35 }]} />}
             </View>
           ))}
@@ -281,10 +283,10 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
         refreshControl={<RefreshControl refreshing={busy} onRefresh={refresh} tintColor={INK} />}
         contentContainerStyle={{ paddingTop: insets.top + 10, paddingHorizontal: 18, paddingBottom: insets.bottom + 130 }}
       >
-        <Image source={require('../../../assets/images/weather-hero.jpg')} style={{ position: 'absolute', top: 0, left: 0, width: screenW, height: screenW * HERO_RATIO }} resizeMode="cover" accessible={false} />
+        <Image source={require('../../../assets/images/weather-hero.png')} style={{ position: 'absolute', top: 0, left: 0, width: screenW, height: screenW * HERO_RATIO }} resizeMode="cover" accessible={false} />
         <View style={styles.top}>
           <View style={styles.brand}>
-            <Image source={require('../../../assets/images/logo-leaf.png')} style={styles.leaf} />
+            <Image source={require('../../../assets/images/logo-mark.png')} style={styles.leaf} />
             <View>
               <Text style={styles.brandName}>YOUR COMPANY</Text>
               <Text style={styles.brandSub}>FORECAST</Text>
@@ -356,9 +358,9 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
           <View style={[styles.gap, { gap: 10 }]}>
             {data.alerts.map((a) => (
               <Pressable key={a.id} onPress={() => setOpenAlert(a)} accessibilityRole="button" accessibilityLabel={`${a.event}. ${t('View alert')}`} style={({ pressed }) => pressed && { opacity: 0.75 }}>
-                <Panel bg="#FFF4DC" style={{ borderColor: '#F0D9A4' }}>
+                <Panel bg={WX.alertBg} style={{ borderColor: WX.alertLine }}>
                   <View style={styles.alertRow}>
-                    <MaterialCommunityIcons name="alert-outline" size={24} color="#B86E00" />
+                    <MaterialCommunityIcons name="alert-outline" size={24} color={WX.amber} />
                     <View style={{ flex: 1 }}>
                       <Text style={styles.alertTitle}>{a.event}</Text>
                       <Text style={styles.alertSub}>{a.sender}{a.expires ? ` · ${t('Until {time}', { time: timeLabel(a.expires, locale) })}` : ''}</Text>
@@ -473,14 +475,14 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
                   </Text>
                   {uvNow !== null ? (
                     <View style={styles.uvTrack}>
-                      <LinearGradient colors={['#3E9E52', '#E8C23A', '#F08A24', '#E0503A', '#8E3FBF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={wxArt.uvLegend} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
                       <View style={[styles.humDot, { left: `${Math.max(2, Math.min(98, (Math.min(uvNow, 11) / 11) * 100))}%` }]} />
                     </View>
                   ) : null}
                   <MiniBars
                     values={next24.map((h) => h.uvIndex)}
                     max={11}
-                    color="#F0A21A"
+                    color={wxArt.uvMarker}
                     caption={t('Slide your finger across to read any hour')}
                     describe={(i) => `${hourLabel(next24[i].time, locale)} · ${t('UV index {n}', { n: next24[i].uvIndex ?? 0 })} · ${t(uvLevel(next24[i].uvIndex ?? 0))}`}
                   />
@@ -523,7 +525,7 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
                   </Text>
                   {first.humidityPct !== null ? (
                     <View style={styles.humTrack}>
-                      <LinearGradient colors={['#4A90E2', '#5CCB7A', '#F2D45C', '#EF6A5A']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
+                      <LinearGradient colors={wxArt.humidityLegend} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
                       <View style={[styles.humDot, { left: `${Math.max(2, Math.min(98, first.humidityPct))}%` }]} />
                     </View>
                   ) : null}
@@ -540,7 +542,7 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
                   <MiniBars
                     values={next24.map((h) => h.popPct)}
                     max={100}
-                    color="#6AA9DE"
+                    color={wxArt.rainChance}
                     caption={t('Chance of rain, next 24 hours. Slide your finger across to read any hour.')}
                     describe={(i) => `${hourLabel(next24[i].time, locale)} · ${next24[i].popPct === null ? t('Unavailable') : `${next24[i].popPct}% ${t('chance of rain')}`}`}
                   />
@@ -583,7 +585,7 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
                     const cx = arcW / 2 - 16 + arcR * Math.cos(ang);
                     const cy = arcR - arcR * Math.sin(ang);
                     const done = sunProgress >= p && sunProgress <= 1;
-                    return <View key={k} style={{ position: 'absolute', left: cx + 8 - 2.5, top: cy + 6, width: 5, height: 5, borderRadius: 3, backgroundColor: done ? '#E8A21E' : '#D5E2CF' }} />;
+                    return <View key={k} style={{ position: 'absolute', left: cx + 8 - 2.5, top: cy + 6, width: 5, height: 5, borderRadius: 3, backgroundColor: done ? wxArt.sunDone : wxArt.sunLeft }} />;
                   })}
                   {sunProgress >= 0 && sunProgress <= 1 ? (() => {
                     const ang = Math.PI * (1 - sunProgress);
@@ -608,14 +610,14 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
               <CardHead icon="moon-waning-crescent" title={t('Moon')} />
               <View style={styles.moonRow}>
                 <View style={{ alignItems: 'center', width: 130 }}>
-                  <MaterialCommunityIcons name={MOON_ICON[moon.name]} size={84} color="#D9B24A" />
+                  <MaterialCommunityIcons name={MOON_ICON[moon.name]} size={84} color={wxArt.moon} />
                   <Text style={styles.moonName}>{t(moon.name)}</Text>
                   <Text style={styles.cardBody}>{t('Illumination {n}%', { n: Math.round(moon.illumination * 100) })}</Text>
                 </View>
                 <View style={{ flex: 1, gap: 10 }}>
                   {nextMoons(now).map((m) => (
                     <View key={m.name} style={styles.moonNext}>
-                      <MaterialCommunityIcons name={MOON_ICON[m.name]} size={26} color="#D9B24A" />
+                      <MaterialCommunityIcons name={MOON_ICON[m.name]} size={26} color={wxArt.moon} />
                       <View>
                         <Text style={styles.moonNextName}>{t(m.name)}</Text>
                         <Text style={styles.moonNextDate}>{shortDate(m.at, locale)}</Text>
@@ -729,7 +731,7 @@ const styles = StyleSheet.create({
   dayIcon: { width: 44, alignItems: 'center' },
   dayPop: { color: WX.rain, fontSize: 10.5, fontWeight: '700' },
   dayLow: { color: SOFT, fontSize: 14, width: 32, textAlign: 'right' },
-  barTrack: { flex: 1, height: 6, borderRadius: 3, backgroundColor: '#E8EFE4', overflow: 'hidden' },
+  barTrack: { flex: 1, height: 6, borderRadius: 3, backgroundColor: WX.track, overflow: 'hidden' },
   barFill: { position: 'absolute', top: 0, bottom: 0, borderRadius: 3 },
   dayHigh: { color: INK, fontSize: 14, fontWeight: '700', width: 32 },
   bigRow: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
@@ -742,7 +744,7 @@ const styles = StyleSheet.create({
   uvBar: { width: 26, height: 5, borderRadius: 3, marginTop: 4 },
   uvTrack: { height: 10, borderRadius: 5, overflow: 'hidden', marginTop: 14 },
   humTrack: { height: 10, borderRadius: 5, overflow: 'hidden', marginTop: 14 },
-  humDot: { position: 'absolute', top: -2, width: 14, height: 14, borderRadius: 7, marginLeft: -7, backgroundColor: '#FFFFFF', borderWidth: 3, borderColor: WX.deep },
+  humDot: { position: 'absolute', top: -2, width: 14, height: 14, borderRadius: 7, marginLeft: -7, backgroundColor: fixed.white, borderWidth: 3, borderColor: WX.deep },
   two: { flexDirection: 'row', gap: 14 },
   arcMid: { position: 'absolute', left: 0, right: 0, top: '42%', alignItems: 'center' },
   arcMain: { color: INK, fontSize: 14, fontWeight: '600' },
@@ -762,15 +764,15 @@ const styles = StyleSheet.create({
   mini: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   miniRow: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 10, paddingHorizontal: 16 },
   miniText: { color: INK, fontSize: 14, fontWeight: '700' },
-  sheet: { backgroundColor: '#FFFFFF', borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingTop: 10 },
-  grip: { alignSelf: 'center', width: 36, height: 4, borderRadius: 2, backgroundColor: '#D9D7CE', marginBottom: 12 },
+  sheet: { backgroundColor: fixed.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingHorizontal: 20, paddingTop: 10 },
+  grip: { alignSelf: 'center', width: 36, height: 4, borderRadius: 2, backgroundColor: WX.grip, marginBottom: 12 },
   sheetHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  sheetTitle: { color: '#26332B', fontSize: 18, fontWeight: '600' },
-  sheetCancel: { color: '#5C6A61', fontSize: 14 },
-  sheetNote: { color: '#5C6A61', fontSize: 12.5, marginTop: 8, marginBottom: 6 },
-  townItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: '#E7E5DC' },
-  townItemText: { color: '#26332B', fontSize: 16 },
-  alertSender: { color: '#5C6A61', fontSize: 13, marginTop: 8 },
-  alertHeadline: { color: '#26332B', fontSize: 15, fontWeight: '600', marginTop: 10 },
-  alertBody: { color: '#3D4A42', fontSize: 14, lineHeight: 21, marginTop: 10 },
+  sheetTitle: { color: WX.ink, fontSize: 18, fontWeight: '600' },
+  sheetCancel: { color: WX.soft, fontSize: 14 },
+  sheetNote: { color: WX.soft, fontSize: 12.5, marginTop: 8, marginBottom: 6 },
+  townItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 14, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: WX.line },
+  townItemText: { color: WX.ink, fontSize: 16 },
+  alertSender: { color: WX.soft, fontSize: 13, marginTop: 8 },
+  alertHeadline: { color: WX.ink, fontSize: 15, fontWeight: '600', marginTop: 10 },
+  alertBody: { color: WX.body, fontSize: 14, lineHeight: 21, marginTop: 10 },
 });

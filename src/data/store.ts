@@ -30,7 +30,7 @@ import type {
 } from '@/types/project';
 import type { Assignment, ScheduleChange, ScheduleSeries } from '@/types/schedule';
 import type { Truck } from '@/types/truck';
-import type { Crew } from '@/types/crew';
+import { CREW_COLORS, type Crew } from '@/types/crew';
 import type { Announcement, AnnouncementRead } from '@/types/announcement';
 import type { CheckIn, CheckOut, WorkerActivity, WorkerSettings } from '@/types/worker';
 import type {
@@ -796,7 +796,7 @@ export function startDemoSession(personId: string, role: SessionRole): void {
     raw.resource_access = mock.mockResourceAccess.map((a) => ({ ...a }));
     raw.resource_audit_log = [];
     // A sample crew so the Crews row has something to show.
-    raw.crews = [{ id: 'crew-a', companyId: mock.mockCompany.id, name: 'Crew A', color: '#7CB342', createdAt: '2025-03-01T08:00:00Z', updatedAt: '2025-03-01T08:00:00Z' }];
+    raw.crews = [{ id: 'crew-a', companyId: mock.mockCompany.id, name: 'Crew A', color: CREW_COLORS[0], createdAt: '2025-03-01T08:00:00Z', updatedAt: '2025-03-01T08:00:00Z' }];
     raw.crew_members = ['worker2', 'worker4'].map((pid) => ({ id: `crew-a-${pid}`, companyId: mock.mockCompany.id, crewId: 'crew-a', personId: pid, createdAt: '2025-03-01T08:00:00Z' }));
     const fin = (require('./mockFinancials') as typeof import('./mockFinancials')).buildMockFinancials(mock.mockProjects);
     raw.quotes = fin.quotes;

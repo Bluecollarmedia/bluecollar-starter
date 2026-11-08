@@ -309,7 +309,7 @@ function mockPresignedUrl(request: UploadRequest): PresignedUploadResponse {
   return {
     uploadUrl: `https://mock-r2.local/upload/${fileKey}`,
     fileKey,
-    publicUrl: `https://placehold.co/800x600/7CB342/FFFFFF?text=${encodeURIComponent(request.fileName)}`,
+    publicUrl: `https://placehold.co/800x600/E5E5E5/2B2B2B?text=${encodeURIComponent(request.fileName)}`,
     expiresAt: timestamp + 300_000,
   };
 }

@@ -14,16 +14,17 @@ import {
 } from '@/hooks/useWorkerActivitySummary';
 import type { WorkerActivity, WorkerActivityType } from '@/types/worker';
 import { useT } from '@/i18n';
+import { fixed, brand, neutral, semantic } from '@/theme/colors';
 
 const EVENT_CONFIG: Record<WorkerActivityType, { icon: keyof typeof Feather.glyphMap; color: string }> = {
-  checked_in: { icon: 'log-in', color: '#1976D2' },
-  task_started: { icon: 'play', color: '#F9A825' },
-  task_completed: { icon: 'check', color: '#43A047' },
-  photo_taken: { icon: 'camera', color: '#8E24AA' },
-  checked_out: { icon: 'log-out', color: '#D32F2F' },
-  schedule_confirmed: { icon: 'check-circle', color: '#43A047' },
-  schedule_acknowledged: { icon: 'eye', color: '#1976D2' },
-  overtime_flagged: { icon: 'alert-circle', color: '#F9A825' },
+  checked_in: { icon: 'log-in', color: brand.primary },
+  task_started: { icon: 'play', color: neutral.gray700 },
+  task_completed: { icon: 'check', color: semantic.success },
+  photo_taken: { icon: 'camera', color: neutral.gray700 },
+  checked_out: { icon: 'log-out', color: neutral.gray600 },
+  schedule_confirmed: { icon: 'check-circle', color: semantic.success },
+  schedule_acknowledged: { icon: 'eye', color: brand.primary },
+  overtime_flagged: { icon: 'alert-circle', color: semantic.warning },
 };
 
 function formatDateHeading(dateKey: string): string {
@@ -115,7 +116,7 @@ export default function DayDetailScreen() {
                       >
                         <View style={styles.timelineGutter}>
                           <View style={[styles.timelineDot, { backgroundColor: config.color }]}>
-                            <Feather name={config.icon} size={10} color="#FFFFFF" />
+                            <Feather name={config.icon} size={10} color={fixed.white} />
                           </View>
                           {!isLast && <View style={[styles.timelineLine, { backgroundColor: colors.borderLight }]} />}
                         </View>

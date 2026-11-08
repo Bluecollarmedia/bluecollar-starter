@@ -14,7 +14,7 @@
 import { BRAND_LOGO_DATA_URI } from './brandLogo';
 import { isValidSignaturePath } from '@/lib/signature';
 import { formatMoney, formatQuantity, formatPercent, sumMoney } from './money';
-import { brand } from '@/theme/colors';
+import { brand, fixed, documentColors } from '@/theme/colors';
 import type { FinancialDoc, DocumentSnapshot, FinancialEvent, LineItem, LineItemCategory } from '@/types/financial';
 
 /** Line item groups, in the order documents print them. */
@@ -72,13 +72,13 @@ export interface DocumentHtmlOptions {
   hideApprovalHint?: boolean;
 }
 
-const INK = '#1F2A24';
-const MUTED = '#5F6B64';
-const FAINT = '#8A948E';
-const RULE = '#E4E1DA';
-const WARM = '#F7F6F2';
-const ACCENT = brand.accent; // deep forest green from the wordmark
-const GREEN = brand.primary; // the app's green token, used sparingly
+const INK = documentColors.ink;
+const MUTED = documentColors.muted;
+const FAINT = documentColors.faint;
+const RULE = documentColors.rule;
+const WARM = documentColors.soft;
+const ACCENT = brand.accent; // a deep shade of the brand color
+const BRAND = brand.primary; // the brand color, used sparingly
 
 export function escapeHtml(text: string | undefined | null): string {
   return String(text ?? '')
@@ -161,7 +161,7 @@ function approvalBlock(doc: FinancialDoc, s: DocumentSnapshot, opts: DocumentHtm
     const by = doc.approvedName || who(doc.approvedBy);
     // The drawn signature is only ever plain path text (the database refuses anything else), re-checked here before it is drawn.
     const sig = isValidSignaturePath(doc.approvedSignature)
-      ? `<div style="margin-top:8px"><svg viewBox="0 0 300 120" width="180" height="72" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signature"><path d="${doc.approvedSignature}" fill="none" stroke="#111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
+      ? `<div style="margin-top:8px"><svg viewBox="0 0 300 120" width="180" height="72" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Signature"><path d="${doc.approvedSignature}" fill="none" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`
       : '';
     return `<div class="block approval"><div class="label">Approval</div><div class="prose">Approved${by ? ` by ${escapeHtml(by)}` : ''} on ${escapeHtml(formatDocDateTime(doc.approvedAt))}.</div>${sig}</div>`;
   }
@@ -229,9 +229,9 @@ export function renderDocumentHtml(doc: FinancialDoc, s: DocumentSnapshot, opts:
     font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: ${INK}; font-size: 10pt; line-height: 1.45;
     -webkit-print-color-adjust: exact; print-color-adjust: exact;
-    background: ${pdf ? '#fff' : '#ECEAE4'};
+    background: ${pdf ? documentColors.page : documentColors.soft};
   }
-  .page { background: #fff; position: relative; ${pdf ? '' : 'max-width: 8.5in; margin: 0 auto; padding: 0.55in 0.55in 0.6in; min-height: 100vh;'} }
+  .page { background: ${documentColors.page}; position: relative; ${pdf ? '' : 'max-width: 8.5in; margin: 0 auto; padding: 0.55in 0.55in 0.6in; min-height: 100vh;'} }
   .calc { display: none; color: ${MUTED}; font-size: 8.75pt; margin-top: 2px; font-variant-numeric: tabular-nums; }
   .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 
@@ -259,7 +259,7 @@ export function renderDocumentHtml(doc: FinancialDoc, s: DocumentSnapshot, opts:
   table.items { width: 100%; border-collapse: collapse; table-layout: fixed; }
   table.items thead { display: table-header-group; }
   table.items th { font-size: 7.5pt; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: ${ACCENT};
-    background: ${WARM}; padding: 8px 10px; text-align: left; border-top: 2px solid ${GREEN}; }
+    background: ${WARM}; padding: 8px 10px; text-align: left; border-top: 2px solid ${BRAND}; }
   table.items th.num { text-align: right; }
   table.items td { padding: 9px 10px; border-bottom: 1px solid ${RULE}; vertical-align: top; }
   table.items tr { page-break-inside: avoid; break-inside: avoid; }
@@ -291,7 +291,7 @@ export function renderDocumentHtml(doc: FinancialDoc, s: DocumentSnapshot, opts:
   .thanks { margin-top: 18px; font-size: 9.5pt; color: ${ACCENT}; font-weight: 500; page-break-inside: avoid; page-break-before: avoid; break-before: avoid; }
   ${pdf ? '' : `.footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid ${RULE}; font-size: 8pt; color: ${FAINT}; }`}
   .void-mark { position: absolute; top: 34%; left: 0; right: 0; text-align: center; font-size: 96pt; font-weight: 800;
-    color: rgba(211, 47, 47, 0.10); transform: rotate(-24deg); pointer-events: none; letter-spacing: 0.1em; }
+    color: ${documentColors.stamp}; transform: rotate(-24deg); pointer-events: none; letter-spacing: 0.1em; }
   ${pdf ? '' : `@media (max-width: 600px) {
     .page { padding: 22px 18px 28px; }
     header { flex-direction: column; gap: 10px; }
