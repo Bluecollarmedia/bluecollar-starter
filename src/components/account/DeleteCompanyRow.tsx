@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Platform, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ListRow, Button } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
@@ -11,6 +11,7 @@ import { db } from '@/data/store';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 /**
  * Owner only: "Delete Company" row plus its confirmation sheet (type the
@@ -38,7 +39,7 @@ export function DeleteCompanyRow() {
   const [typed, setTyped] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  // What is still going on right now (from the database). Closing is refused while someone is clocked in or a storm is dispatched.
+  // What is still going on right now (from the database). Closing is refused while someone is clocked in.
   const [preview, setPreview] = useState<Record<string, number> | null>(null);
 
   // Only the owner (not an admin) can delete the company; the database checks too.
@@ -58,7 +59,6 @@ export function DeleteCompanyRow() {
   const stillGoing: string[] = [];
   if (preview) {
     if (preview.on_the_clock > 0) stillGoing.push(`${preview.on_the_clock} person(s) are clocked in right now. Clock them out first (Hours & Labor).`);
-    if (preview.dispatched_storms > 0) stillGoing.push(`${preview.dispatched_storms} snow storm(s) are still dispatched. End them first.`);
   }
   const heads: string[] = [];
   if (preview) {
@@ -76,7 +76,7 @@ export function DeleteCompanyRow() {
     if (!ready) return;
     if (!isSupabaseConfigured) {
       const msg = 'The company can’t be deleted in demo mode.';
-      if (Platform.OS === 'web') alert(msg); else Alert.alert('Demo mode', msg);
+      showMessage('Demo mode', msg);
       return;
     }
     setBusy(true);
@@ -114,7 +114,7 @@ export function DeleteCompanyRow() {
                 Delete {companyName || 'the company'}?
               </Text>
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>
-                This PERMANENTLY deletes the company and everything it owns: projects, hours and payroll records, photos, storm and route history, quotes, maintenance records and every worker's team membership and the accounts (including yours) of everyone who belongs only to this company. It cannot be undone and nothing can be recovered. Everything stored for the company, including photos, videos and documents, is removed from file storage too. People could sign up again as new users, but none of this data comes back. Anyone who also belongs to another company keeps their account.
+                This PERMANENTLY deletes the company and everything it owns: projects, hours and payroll records, photos, quotes, truck records and every worker's team membership and the accounts (including yours) of everyone who belongs only to this company. It cannot be undone and nothing can be recovered. Everything stored for the company, including photos, videos and documents, is removed from file storage too. People could sign up again as new users, but none of this data comes back. Anyone who also belongs to another company keeps their account.
               </Text>
               {stillGoing.map((t) => <Text key={t} style={[typeScale.bodySmall, { color: semantic.error, textAlign: 'center', marginTop: spacing.sm }]}>{t}</Text>)}
               {heads.map((t) => <Text key={t} style={[typeScale.caption, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xs }]}>{t}</Text>)}

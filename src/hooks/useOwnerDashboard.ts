@@ -4,8 +4,6 @@ import { useSchedule } from '@/hooks/useSchedule';
 import { useAttendance } from '@/hooks/useOperations';
 import { db, useDb } from '@/data/store';
 import { todayKey } from '@/lib/ids';
-import { maintenanceToday } from '@/data/maintenanceToday';
-import { useClockedInToday } from '@/hooks/useClockedInToday';
 import type { Project } from '@/types/project';
 import type { Assignment } from '@/types/schedule';
 import type { PersonSummary } from '@/types/company';
@@ -111,19 +109,12 @@ export function useOwnerDashboard() {
     return map;
   }, [attendance]);
 
-  // Maintenance routes count too: the crew and leader of today's routes are scheduled, the crew at a property they checked in at is on
-  // site, and a person on both a job and a route is counted once.
-  const maint = useMemo(() => maintenanceToday(db.maintenance.routes, today), [v, today]);
-  const clocked = useClockedInToday();
 
   const jobWorkerIds = useMemo(
     () => [...new Set(todayAssignments.map(a => a.personId))],
     [todayAssignments],
   );
-  const workerIds = useMemo(
-    () => [...new Set([...jobWorkerIds, ...maint.scheduled])],
-    [jobWorkerIds, maint],
-  );
+  const workerIds = jobWorkerIds;
 
   const onSiteWorkerIds = useMemo(() => {
     const set = new Set<string>();
@@ -134,17 +125,15 @@ export function useOwnerDashboard() {
     return set;
   }, [todayAssignments, attendanceByAssignment]);
 
-  const allOnSiteIds = useMemo(() => new Set([...onSiteWorkerIds, ...maint.onSite]), [onSiteWorkerIds, maint]);
-
-  // Upcoming = scheduled and not on site yet. Someone whose only work today is routes that are all finished is not upcoming.
+  // Upcoming = scheduled and not on site yet.
   const upcomingWorkerCount = useMemo(
-    () => workerIds.filter(id => !allOnSiteIds.has(id) && !(maint.finished.has(id) && !jobWorkerIds.includes(id))).length,
-    [workerIds, allOnSiteIds, maint, jobWorkerIds],
+    () => workerIds.filter(id => !onSiteWorkerIds.has(id)).length,
+    [workerIds, onSiteWorkerIds],
   );
 
   const jobsInProgress = useMemo(
-    () => new Set(todayAssignments.map(a => a.projectId)).size + maint.propertyIds.size,
-    [todayAssignments, maint],
+    () => new Set(todayAssignments.map(a => a.projectId)).size,
+    [todayAssignments],
   );
 
   // ── Needs Attention: actionable exceptions only ─────────────────
@@ -289,13 +278,6 @@ export function useOwnerDashboard() {
         completed: 'Completed',
       };
 
-      // Someone on a job AND a maintenance route is one row; if their route crew is at a property now they are on site.
-      const mw = maint.where.get(personId);
-      if (mw && maint.onSite.has(personId) && status !== 'on_site' && status !== 'late') {
-        status = 'on_site';
-        timeLabel = mw.arrivedAt ? formatClockIso(mw.arrivedAt) : timeLabel;
-      }
-
       members.push({
         personId,
         person: primary.person,
@@ -306,27 +288,9 @@ export function useOwnerDashboard() {
       });
     }
 
-    // Maintenance crew who are not on a landscaping job today get their own row (never a second row for the same person).
-    for (const personId of maint.scheduled) {
-      if (byWorker.has(personId)) continue;
-      const mw = maint.where.get(personId);
-      const person = db.people[personId];
-      const isOn = maint.onSite.has(personId);
-      const done = maint.finished.has(personId);
-      const status: CrewStatus = isOn ? 'on_site' : done ? 'completed' : 'scheduled';
-      members.push({
-        personId,
-        person,
-        status,
-        statusLabel: isOn ? 'On Site' : done ? 'Route done' : clocked.known && clocked.ids.has(personId) ? 'Clocked in' : 'Scheduled',
-        timeLabel: isOn && mw?.arrivedAt ? formatClockIso(mw.arrivedAt) : undefined,
-        projectName: isOn && mw?.atProperty ? `${mw.atProperty} (maintenance)` : mw?.routeName,
-      });
-    }
-
     const order: Record<CrewStatus, number> = { on_site: 0, late: 0, awaiting_confirmation: 1, scheduled: 1, completed: 2 };
     return members.sort((a, b) => order[a.status] - order[b.status]);
-  }, [todayAssignments, attendanceByAssignment, maint, clocked, v]);
+  }, [todayAssignments, attendanceByAssignment]);
 
   // ── Active Projects: today's activity surfaced first ─────────────
   const activeProjects = useMemo<ProjectHomeSummary[]>(() => {
@@ -356,7 +320,7 @@ export function useOwnerDashboard() {
     todayStats: {
       jobsInProgress,
       workersScheduled: workerIds.length,
-      onSite: allOnSiteIds.size,
+      onSite: onSiteWorkerIds.size,
       upcoming: upcomingWorkerCount,
     },
     attentionItems: attentionItems.slice(0, 3),

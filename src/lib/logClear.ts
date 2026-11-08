@@ -1,4 +1,4 @@
-// Clearing an activity log (Snow Activity, and a project's Activity Log): which period, what it does, what we ask. Pure, no network.
+// Clearing an activity log (a project's Activity Log): which period, what it does, what we ask. Pure, no network.
 
 export type ClearScope =
   | { kind: 'today' }

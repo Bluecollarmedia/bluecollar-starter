@@ -14,7 +14,7 @@ import { supabase, isSupabaseConfigured } from './supabase';
 import { uuid } from './ids';
 import { explainUploadError, SIGNED_OUT_UPLOAD_MESSAGE } from './uploadErrors';
 import { tooLargeMessage } from './uploadLimit';
-import { audioFormatOf, videoFormatOf } from './mediaFormats';
+import { videoFormatOf } from './mediaFormats';
 
 export const MEDIA_BUCKET = 'media';
 
@@ -24,9 +24,7 @@ export const r2Enabled = !!process.env.EXPO_PUBLIC_R2_PUBLIC_URL;
 function guessContentType(uri: string, mimeType?: string): { contentType: string; ext: string } {
   const lower = uri.split('?')[0].toLowerCase();
   const mime = (mimeType ?? '').toLowerCase();
-  // Audio and video: the same shared rules as Our Work's pickers (src/lib/mediaFormats.ts).
-  const audio = audioFormatOf(lower, mime);
-  if (audio) return { contentType: audio.contentType, ext: audio.ext };
+  // Video: the shared format list (src/lib/mediaFormats.ts).
   const video = videoFormatOf(lower, mime);
   if (video) return { contentType: video.contentType, ext: video.ext };
   if (mime.startsWith('video/') || lower.endsWith('.m4v')) return { contentType: 'video/mp4', ext: 'mp4' };
@@ -51,7 +49,7 @@ export async function uploadImage(localUri: string, folder: string, mimeType?: s
   await requireSession();
   // Every photo is compressed before it leaves the phone (about 50% quality, long side at most 1600 px), whichever screen it came from.
   // Files the shared media queue already prepared are not touched again, and PDFs/videos pass through (videos: see mediaQueue).
-  // `raw` is for a caller that has already made the picture exactly as it wants it (Our Work: high-quality photos and its own small copies).
+  // `raw` is for a caller that has already made the picture exactly as it wants it (for example high-quality photos with their own small copies).
   if (contentType.startsWith('image/') && !opts?.raw) {
     const { prepareImage, isPrepared } = require('./mediaCompress') as typeof import('./mediaCompress');
     if (!isPrepared(localUri)) {

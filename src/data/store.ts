@@ -39,7 +39,6 @@ import type {
 } from '@/types/operations';
 import type { Quote, ChangeOrder, Invoice, FinancialEvent, LineItem, FinancialSettings } from '@/types/financial';
 import type { MaterialVendor, ProjectMaterial, MaterialPlan } from '@/types/materials';
-import { deriveMaintenance, emptyMaintenanceDb, type MaintenanceDb } from './maintenanceDerive';
 import type {
   MembershipAuditEvent,
   CompanyMembership,
@@ -57,10 +56,10 @@ interface TableDef {
 }
 
 const TABLES = {
-  companies: { scope: 'company_self', cols: ['id', 'name', 'logoUrl', 'phone', 'email', 'address', 'city', 'state', 'zip', 'yardAddress', 'yardCity', 'yardState', 'yardZip', 'yardLatitude', 'yardLongitude', 'coverPhotoUrl', 'workerCoverPhotoUrl', 'storageLimitGb', 'maxFileSizeMb', 'taskLeadOnly', 'targetPayEnabled', 'activeMode', 'activeModeChangedAt', 'activeModeChangedBy', 'setupState', 'setupCompletedAt', 'createdAt', 'updatedAt'] },
+  companies: { scope: 'company_self', cols: ['id', 'name', 'logoUrl', 'phone', 'email', 'address', 'city', 'state', 'zip', 'yardAddress', 'yardCity', 'yardState', 'yardZip', 'yardLatitude', 'yardLongitude', 'coverPhotoUrl', 'workerCoverPhotoUrl', 'storageLimitGb', 'maxFileSizeMb', 'taskLeadOnly', 'targetPayEnabled', 'setupState', 'setupCompletedAt', 'createdAt', 'updatedAt'] },
   people: { scope: 'all', cols: ['id', 'userId', 'email', 'firstName', 'lastName', 'avatarUrl', 'phone', 'createdAt', 'updatedAt'] },
-  company_members: { scope: 'company', cols: ['id', 'companyId', 'personId', 'role', 'status', 'workerType', 'worksLandscaping', 'worksMaintenance', 'joinMethod', 'joinRequestId', 'approvedBy', 'approvedAt', 'deactivatedAt', 'deactivatedBy', 'createdAt', 'updatedAt'] },
-  projects: { scope: 'company', cols: ['id', 'companyId', 'customerId', 'propertyId', 'name', 'taskLeadId', 'address', 'city', 'state', 'zip', 'latitude', 'longitude', 'status', 'progress', 'startDate', 'estimatedEndDate', 'completedAt', 'notes', 'coverPhotoUrl', 'customerProjectCode', 'customerClaimedBy', 'customerClaimedAt', 'createdAt', 'updatedAt'] },
+  company_members: { scope: 'company', cols: ['id', 'companyId', 'personId', 'role', 'status', 'joinMethod', 'joinRequestId', 'approvedBy', 'approvedAt', 'deactivatedAt', 'deactivatedBy', 'createdAt', 'updatedAt'] },
+  projects: { scope: 'company', cols: ['id', 'companyId', 'customerId', 'propertyId', 'name', 'taskLeadId', 'address', 'city', 'state', 'zip', 'latitude', 'longitude', 'status', 'progress', 'startDate', 'estimatedEndDate', 'completedAt', 'notes', 'coverPhotoUrl', 'customerClaimedBy', 'customerClaimedAt', 'createdAt', 'updatedAt'] },
   project_team: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'personId', 'addedAt', 'removedAt'] },
   project_tasks: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'title', 'description', 'status', 'sortOrder', 'assignedTo', 'completedAt', 'completedBy', 'createdAt', 'updatedAt'] },
   project_settings: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'customerInteractionEnabled', 'completionPhotoRequired', 'checkinRadiusMeters', 'customerCanRequest', 'customerCanViewPhotos', 'customerCanComment', 'autoProgress', 'createdAt', 'updatedAt'] },
@@ -81,7 +80,7 @@ const TABLES = {
   // Repeating schedules (supabase/updates/012). Their days are filled in as
   // assignments by extend_schedule_series().
   // Crews (supabase/updates/014). A worker is in at most one crew.
-  crews: { scope: 'company', cols: ['id', 'companyId', 'name', 'color', 'isMaintenance', 'createdAt', 'updatedAt'] },
+  crews: { scope: 'company', cols: ['id', 'companyId', 'name', 'color', 'createdAt', 'updatedAt'] },
   crew_members: { scope: 'company', cols: ['id', 'companyId', 'crewId', 'personId', 'createdAt'] },
   schedule_series: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'personId', 'frequency', 'intervalDays', 'horizonDays', 'startDate', 'endDate', 'startTime', 'endTime', 'isFullDay', 'truckId', 'notes', 'createdBy', 'stoppedAt', 'createdAt', 'updatedAt'] },
   schedule_changes: { scope: 'company', cols: ['id', 'companyId', 'assignmentId', 'changedBy', 'changeType', 'previousValue', 'newValue', 'notes', 'createdAt'] },
@@ -117,22 +116,9 @@ const TABLES = {
   task_attachments: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'taskId', 'mediaType', 'fileUrl', 'fileKey', 'sizeBytes', 'createdBy', 'createdAt'] },
   project_materials: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'name', 'quantity', 'unit', 'status', 'vendorId', 'notes', 'source', 'sortOrder', 'createdBy', 'createdAt', 'updatedAt'] },
   project_material_plans: { scope: 'company', pk: 'projectId', cols: ['projectId', 'companyId', 'vendorId', 'pickupLocation', 'pickupInstructions', 'handlingNotes', 'reminderAt', 'reminderJobDate', 'reminderNote', 'dismissedSources', 'updatedAt'] },
-  // Maintenance (supabase/updates/018). Workers only receive what the database
-  // rules let them see: properties, and the routes they're assigned to.
-  // Attendance and events are written by database functions (src/data/maintenance.ts).
+  // Job sites (customer properties).
   properties: { scope: 'company', cols: ['id', 'companyId', 'customerId', 'name', 'address', 'city', 'state', 'zip', 'latitude', 'longitude', 'notes', 'addressKey', 'isActive', 'createdBy', 'createdAt', 'updatedAt'] },
-  maintenance_properties: { scope: 'company', cols: ['id', 'companyId', 'name', 'customerId', 'propertyId', 'sourceProjectId', 'address', 'city', 'state', 'zip', 'latitude', 'longitude', 'checkinRadiusM', 'accessNotes', 'notes', 'isActive', 'deactivatedAt', 'createdBy', 'createdAt', 'updatedAt'] },
-  maintenance_contracts: { scope: 'company', cols: ['id', 'companyId', 'propertyId', 'name', 'status', 'seasonStart', 'seasonEnd', 'notes', 'deactivatedAt', 'createdBy', 'createdAt', 'updatedAt'] },
-  maintenance_service_rules: { scope: 'company', cols: ['id', 'companyId', 'contractId', 'propertyId', 'serviceType', 'label', 'frequency', 'intervalDays', 'startsOn', 'windowStart', 'windowEnd', 'scheduledDates', 'seasonQuantity', 'priorCompletedCount', 'lastCompletedOn', 'requiresPhotos', 'minPhotos', 'defaultChecklist', 'instructions', 'isActive', 'sortOrder', 'createdAt', 'updatedAt'] },
-  maintenance_routes: { scope: 'company', cols: ['id', 'companyId', 'serviceDate', 'name', 'notes', 'leadPersonId', 'truckId', 'status', 'createdBy', 'createdAt', 'updatedAt'] },
-  maintenance_route_crew: { scope: 'company', cols: ['id', 'companyId', 'routeId', 'personId', 'addedBy', 'createdAt'] },
-  maintenance_stops: { scope: 'company', cols: ['id', 'companyId', 'routeId', 'propertyId', 'contractId', 'sortOrder', 'status', 'instructions', 'requiresPhotos', 'minPhotos', 'arrivedAt', 'arrivedBy', 'arrivalLocationStatus', 'completedAt', 'completedBy', 'completionLocationStatus', 'completionNote', 'skippedAt', 'skippedBy', 'skipReason', 'createdAt', 'updatedAt'] },
-  maintenance_stop_services: { scope: 'company', cols: ['id', 'companyId', 'routeId', 'stopId', 'propertyId', 'ruleId', 'serviceType', 'label', 'completed', 'completedAt', 'createdAt'] },
-  maintenance_stop_tasks: { scope: 'company', cols: ['id', 'companyId', 'routeId', 'stopId', 'title', 'isRequired', 'sortOrder', 'completedAt', 'completedBy', 'createdAt', 'updatedAt'] },
-  maintenance_photos: { scope: 'company', cols: ['id', 'companyId', 'routeId', 'stopId', 'propertyId', 'uploadedBy', 'fileUrl', 'fileKey', 'sizeBytes', 'caption', 'isCustomerVisible', 'sharedBy', 'sharedAt', 'timePhase', 'taskId', 'takenAt', 'createdAt'] },
-  maintenance_day_attendance: { scope: 'company', cols: ['id', 'companyId', 'personId', 'serviceDate', 'routeId', 'startedAt', 'source', 'latitude', 'longitude', 'accuracyM', 'distanceM', 'locationStatus', 'originalStartedAt', 'correctedAt', 'correctedBy', 'correctionNote', 'createdAt', 'updatedAt'] },
-  property_issues: { scope: 'company', cols: ['id', 'companyId', 'reportedBy', 'issueType', 'notes', 'photos', 'maintenancePropertyId', 'projectId', 'placeName', 'status', 'resolvedBy', 'resolvedAt', 'resolutionNote', 'createdAt', 'updatedAt'] },
-  maintenance_events: { scope: 'company', cols: ['id', 'companyId', 'routeId', 'stopId', 'personId', 'eventType', 'occurredAt', 'latitude', 'longitude', 'accuracyM', 'distanceM', 'locationStatus', 'note', 'metadata', 'createdAt'] },
+  property_issues: { scope: 'company', cols: ['id', 'companyId', 'reportedBy', 'issueType', 'notes', 'photos', 'projectId', 'placeName', 'status', 'resolvedBy', 'resolvedAt', 'resolutionNote', 'createdAt', 'updatedAt'] },
 } satisfies Record<string, TableDef>;
 
 export type TableName = keyof typeof TABLES;
@@ -251,8 +237,6 @@ export interface Db {
   /** Per project, in checklist order. */
   materials: Record<string, ProjectMaterial[]>;
   materialPlans: Record<string, MaterialPlan>;
-  /** Maintenance properties, contracts, routes, attendance (see maintenanceDerive.ts). */
-  maintenance: MaintenanceDb;
 }
 
 const DEFAULT_OVERTIME: OvertimeRule = {
@@ -315,7 +299,6 @@ export const db: Db = {
   vendors: [],
   materials: {},
   materialPlans: {},
-  maintenance: emptyMaintenanceDb(),
 };
 
 function groupBy<T extends Row>(rows: T[], key: string): Record<string, T[]> {
@@ -574,7 +557,6 @@ function derive() {
   }
   db.materialPlans = plans;
 
-  db.maintenance = deriveMaintenance(raw, people);
 }
 
 // ── Subscription ────────────────────────────────────────────────────────────
@@ -813,8 +795,8 @@ export function startDemoSession(personId: string, role: SessionRole): void {
     raw.resource_access = mock.mockResourceAccess.map((a) => ({ ...a }));
     raw.resource_audit_log = [];
     // A sample crew so the Crews row has something to show.
-    raw.crews = [{ id: 'crew-maint', companyId: mock.mockCompany.id, name: 'Maintenance Crew', color: '#7CB342', createdAt: '2025-03-01T08:00:00Z', updatedAt: '2025-03-01T08:00:00Z' }];
-    raw.crew_members = ['worker2', 'worker4'].map((pid) => ({ id: `crew-maint-${pid}`, companyId: mock.mockCompany.id, crewId: 'crew-maint', personId: pid, createdAt: '2025-03-01T08:00:00Z' }));
+    raw.crews = [{ id: 'crew-a', companyId: mock.mockCompany.id, name: 'Crew A', color: '#7CB342', createdAt: '2025-03-01T08:00:00Z', updatedAt: '2025-03-01T08:00:00Z' }];
+    raw.crew_members = ['worker2', 'worker4'].map((pid) => ({ id: `crew-a-${pid}`, companyId: mock.mockCompany.id, crewId: 'crew-a', personId: pid, createdAt: '2025-03-01T08:00:00Z' }));
     const fin = (require('./mockFinancials') as typeof import('./mockFinancials')).buildMockFinancials(mock.mockProjects);
     raw.quotes = fin.quotes;
     raw.change_orders = fin.changeOrders;
@@ -824,11 +806,6 @@ export function startDemoSession(personId: string, role: SessionRole): void {
     raw.material_vendors = fin.vendors;
     raw.project_materials = fin.materials;
     raw.project_material_plans = fin.materialPlans;
-    // Sample maintenance properties and a route (labelled as samples).
-    const maint = (require('./mockMaintenance') as typeof import('./mockMaintenance')).buildMockMaintenance(mock.mockCompany.id);
-    for (const [t, rows] of Object.entries(maint.tables)) raw[t as TableName] = rows;
-    raw.company_members = raw.company_members.map((m) => (maint.maintenanceWorkerIds.includes(m.personId) ? { ...m, workerType: 'maintenance', worksLandscaping: false, worksMaintenance: true } : m));
-    raw.crews = raw.crews.map((c) => (c.id === 'crew-maint' ? { ...c, isMaintenance: true } : c));
     db.ready = true;
   }
   emitChange();

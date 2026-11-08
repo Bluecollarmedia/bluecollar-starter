@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useHasSnow } from '@/hooks/useHasSnow';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -21,7 +20,6 @@ import { db, useDb } from '@/data/store';
  */
 export default function CustomerMessagesScreen() {
   const t = useT();
-  const hasSnow = useHasSnow();
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
@@ -90,7 +88,7 @@ export default function CustomerMessagesScreen() {
           >
             <MessageList
               projectId={projectId}
-              emptyText={t('Questions about your project? Send a message and your landscaper will reply here.')}
+              emptyText={t('Questions about your project? Send a message and the team will reply here.')}
             />
           </ScrollView>
           <View
@@ -108,9 +106,7 @@ export default function CustomerMessagesScreen() {
         <EmptyState
           icon="message-circle"
           title={t('No messages')}
-          description={hasSnow
-            ? t('Messages are for landscaping projects. Your snow updates and photos are on the Account tab.')
-            : t("Once you're added to a project, you can message your landscaper here.")}
+          description={t("Once you're added to a project, you can message the team here.")}
         />
       )}
     </KeyboardAvoidingView>

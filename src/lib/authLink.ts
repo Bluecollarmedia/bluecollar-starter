@@ -1,9 +1,9 @@
 // Pure helpers for the links in Supabase's emails (confirm your email, reset your password) when they open the app itself.
-// The email link goes through Supabase, which then redirects to brighton-lawn://auth-callback with the short-lived sign-in
+// The email link goes through Supabase, which then redirects to starter://auth-callback with the short-lived sign-in
 // token in the address (after the "#"). No network here.
 
 /** Where Supabase sends the person after they tap the email link. Must also be in Supabase > Auth > URL Configuration > Redirect URLs. */
-export const AUTH_CALLBACK_URL = 'brighton-lawn://auth-callback';
+export const AUTH_CALLBACK_URL = 'starter://auth-callback'; // must match "scheme" in app.json
 
 export type AuthLink =
   | { kind: 'session'; purpose: 'recovery' | 'confirm'; accessToken: string; refreshToken: string }

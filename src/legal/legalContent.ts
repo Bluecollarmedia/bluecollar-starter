@@ -1,14 +1,17 @@
 // The text of the Privacy Policy, Terms of Use and Support pages. One source: the app screens (app/legal/*) and the
 // public web pages (public/legal/*.html, made by scripts/build-legal-pages.cjs) both come from here.
 
+// PLACEHOLDERS: a new client fills these in before publishing the pages (Step 3 moves them to the brand settings).
+// Then run `node scripts/build-legal-pages.cjs` to remake public/legal/*.html.
 export const BUSINESS = {
-  name: 'Brighton Lawn and Landscape',
-  appName: 'Brighton Lawn + Landscape',
-  addressLines: ['111 Spruce Street', 'Lakewood, New Jersey 08701'],
+  name: 'Your Company LLC',
+  appName: 'Starter App',
+  addressLines: ['123 Main St', 'Your Town, ST 00000'],
   email: 'support@yourcompany.com',
-  phone: '848-226-0090',
-  website: 'https://app.brightonlawn.com',
-  effective: 'October 29, 2026',
+  phone: '(555) 555-0100',
+  website: 'https://app.yourcompany.com',
+  state: 'Your State',
+  effective: 'January 1, 2027',
 } as const;
 
 export type LegalSection = { heading: string; paragraphs?: string[]; bullets?: string[] };
@@ -24,7 +27,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: 'Who uses the app and who controls the data',
       paragraphs: [
-        'The app is a business tool for landscaping, maintenance and snow-removal companies. A company owner sets up the company, and its workers, snow crew and customers join with a code or invitation.',
+        'The app is a business tool for contracting and trade companies. A company owner sets up the company, and its workers and customers join with a private invitation link.',
         'Information about a company\'s projects, properties, customers, schedules and records belongs to that company, and the company decides who on its team can see it. If you are a customer or worker, your company can also answer questions about your records.',
       ],
     },
@@ -34,9 +37,8 @@ export const PRIVACY: LegalDoc = {
         'Account details: your name, email address and password (the password is stored in scrambled form and is never visible to us). Optional: phone number, birthday and profile photo.',
         'Company details entered by the owner: company name, address, phone, email, logo and header photos.',
         'Customer and property details entered by the company: names, phone numbers, email addresses, service addresses, contact and gate or access instructions, and notes.',
-        'Work records: projects, tasks, schedules, hours worked, pay rates and payroll estimates, maintenance routes and visit history, snow storms, routes, stops and clock-in/clock-out times.',
-        'Photos and videos you take or choose (job photos, stop photos, problem reports, profile photos). The app asks for camera and photo-library permission before it can use them.',
-        'Our Work: the company owner can add photos, videos (reels), stories and music (an audio file chosen from the phone, or the sound taken from one of its videos) to show finished projects. When the owner turns Our Work on, these are public: anyone who opens the app, including people who are not signed in, can see them. They show the town of a project, never the name or address of a customer.',
+        'Work records: projects, tasks, schedules, hours worked, pay rates and payroll estimates, visit history, and clock-in/clock-out times.',
+        'Photos and videos you take or choose (job photos, problem reports, profile photos). The app asks for camera and photo-library permission before it can use them.',
         'Service requests: if you use the Request page (you do not need an account), the name, phone number, optional email address, town or ZIP code, kind of property, services you choose and any details you write. They are saved for the company, shown to its owner and administrators in the app, and emailed to them.',
         'Weather: the Weather page shows a forecast for a town you choose from a list or type. It does not track you and does not read your location.',
         'Messages sent inside a project, and reports of problems at a property.',
@@ -176,7 +178,7 @@ export const TERMS: LegalDoc = {
       heading: 'Changes and law',
       paragraphs: [
         'We may update these terms and will change the date at the top. Continuing to use the app after a change means you accept it.',
-        'These terms are governed by the laws of the State of New Jersey, and any dispute will be handled in the courts located in New Jersey.',
+        `These terms are governed by the laws of the State of ${BUSINESS.state}, and any dispute will be handled in the courts located in ${BUSINESS.state}.`,
       ],
     },
     { heading: 'Contact us', paragraphs: [contactLine] },

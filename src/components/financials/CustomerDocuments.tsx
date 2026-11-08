@@ -1,6 +1,6 @@
 /**
  * Customer project → Overview: the project's quotes, change orders and
- * invoices that Brighton has sent. Anything waiting for the customer's
+ * invoices that the company has sent. Anything waiting for the customer's
  * answer is shown first.
  */
 

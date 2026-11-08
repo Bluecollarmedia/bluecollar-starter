@@ -1,7 +1,6 @@
 /**
  * Pick ONE customer from the customers you already have: "Add a new customer" right at the top, a search box (once the list is
- * long) and compact rows. Used everywhere a form needs a customer (Snow property, Add Snow
- * Property), so the list, the search and the wording stay the same.
+ * long) and compact rows. For any form that needs a customer, so the list, the search and the wording stay the same.
  */
 import React, { useMemo, useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';

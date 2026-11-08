@@ -11,7 +11,7 @@ import { haptics } from '@/lib/haptics';
 import { StaleSessionCard } from '@/components/time/StaleSessionCard';
 import type { TruckOptions } from '@/data/timeTracking';
 import { useT, tr } from '@/i18n';
-import { useMyMaintenanceRoutes } from '@/hooks/useMaintenance';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -33,7 +33,6 @@ const dayAndTime = (iso: string) => `${new Date(iso).toLocaleDateString('en-US',
 export function WorkdayCard({ compact = false, gate = false, portal = false, preShiftTitle, preShiftText }: { compact?: boolean; gate?: boolean; /** The Clock tab: big Clock Out, and a clear Clock back in after clocking out. */ portal?: boolean; preShiftTitle?: string; preShiftText?: string } = {}) {
   const { colors } = useTheme();
   const { workday: w, todayAssignments } = useWorkerContext();
-  const myRoutes = useMyMaintenanceRoutes();
   const t = useT();
   const [pickTruck, setPickTruck] = useState<TruckOptions | null>(null);
   const [loadingTrucks, setLoadingTrucks] = useState(false);
@@ -56,11 +55,11 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
   const active = w.active;
   const closedToday = !active ? w.today : undefined;
   const current = w.day?.current;
-  // No route or job today: no Clock In button at all (the database refuses a clock-in too).
+  // No job today: no Clock In button at all (the database refuses a clock-in too).
   // Clocking in is always possible, with or without work scheduled (the database no longer refuses it).
   const noWork = false;
-  // Clocked out for the day, but work was added afterwards (a new job today, or route stops still open): offer to clock back in right away.
-  const moreWork = todayAssignments.some((a) => a.status !== 'completed' && a.status !== 'cancelled') || myRoutes.some((r) => r.stops.some((st) => st.status === 'pending' || st.status === 'arrived'));
+  // Clocked out for the day, but work was added afterwards (a new job today): offer to clock back in right away.
+  const moreWork = todayAssignments.some((a) => a.status !== 'completed' && a.status !== 'cancelled');
 
   async function onClockIn() {
     haptics.select();
@@ -84,7 +83,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
       ? tr('Clocking out also ends your time at {place}. Your total for today is {total}.', { place: current.label ?? tr('the property you are at'), total })
       : tr('Your total for today is {total}.', { total });
     const go = async () => { const r = await w.clockOut(); if (r.ok) haptics.success(); else say(tr("Can't clock out yet"), r.error); };
-    Alert.alert(tr('Clock out?'), message, [{ text: tr('Not yet'), style: 'cancel' }, { text: tr('Clock Out'), style: 'destructive', onPress: go }]);
+    confirmAction(tr('Clock out?'), message, tr('Clock Out'), () => { void go(); }, true, tr('Not yet'));
   }
   async function onBreak() {
     haptics.select();
@@ -113,7 +112,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             <View style={[styles.icon, { backgroundColor: colors.backgroundTertiary }]}><Feather name="calendar" size={18} color={colors.textSecondary} /></View>
             <View style={{ flex: 1 }}>
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{t('No work scheduled today')}</Text>
-              <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{t('Clock In appears once you are put on a route or a job for the day.')}</Text>
+              <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{t('Clock In appears once you are put on a job for the day.')}</Text>
             </View>
           </View>
         </>

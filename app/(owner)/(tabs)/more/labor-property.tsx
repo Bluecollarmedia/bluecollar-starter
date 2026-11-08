@@ -20,14 +20,13 @@ function say(title: string, message: string) {
 }
 
 /**
- * Every visit to one recurring property (or every day worked on one project): elapsed time vs crew labor kept apart, averages, the
- * owner's target, labor cost, and for a project the estimate vs the real labor-hours.
+ * Every day worked on one project: elapsed time vs crew labor kept apart, averages, the owner's target, labor cost, and the estimate vs
+ * the real labor-hours.
  */
 export default function LaborPropertyScreen() {
-  const { kind, id, name } = useLocalSearchParams<{ kind: 'maintenance_property' | 'project'; id: string; name?: string }>();
+  const { id, name } = useLocalSearchParams<{ id: string; name?: string }>();
   const { colors } = useTheme();
   const router = useRouter();
-  const isProject = kind === 'project';
   const [from, setFrom] = useState(shiftDay(todayKey(), -180));
   const [to, setTo] = useState(todayKey());
   const [billableOnly, setBillableOnly] = useState(false);
@@ -39,19 +38,19 @@ export default function LaborPropertyScreen() {
   const [savedEst, setSavedEst] = useState<number | null>(null);
 
   const load = useCallback(async () => {
-    const r = await loadVisitHistory(kind, id, from, to);
+    const r = await loadVisitHistory(id, from, to);
     if (r.ok) { setData(r.data); setError(null); } else setError(r.error);
-  }, [kind, id, from, to]);
+  }, [id, from, to]);
   useEffect(() => { load(); }, [load]);
   useEffect(() => {
     loadTargets().then((r) => {
       if (!r.ok) return;
-      const t = r.data.find((x) => (isProject ? x.projectId === id : x.maintenancePropertyId === id));
+      const t = r.data.find((x) => x.projectId === id);
       setSavedTarget(t?.targetMinutes ?? null);
       setTargetText(t ? String(t.targetMinutes) : '');
     });
-    if (isProject) loadProjectEstimate(id).then((r) => { if (r.ok) { setSavedEst(r.data?.laborHours ?? null); setEstText(r.data ? String(r.data.laborHours) : ''); } });
-  }, [id, isProject]);
+    loadProjectEstimate(id).then((r) => { if (r.ok) { setSavedEst(r.data?.laborHours ?? null); setEstText(r.data ? String(r.data.laborHours) : ''); } });
+  }, [id]);
 
   const now = Date.now();
   const rows = useMemo(() => (data ? visitRows(data.visits.map((v) => ({ id: v.id, label: v.label, status: v.status, billable: v.billable, visitDate: v.visitDate, source: v.source, targetMinutes: v.targetMinutes })), data.intervals, data.names, now) : []), [data, Math.floor(now / 30000)]);
@@ -63,7 +62,7 @@ export default function LaborPropertyScreen() {
   async function saveTargetMinutes() {
     const n = targetText.trim() === '' ? null : Number(targetText);
     if (n != null && !(n >= 5 && n <= 1440)) { say('Check the target', 'A target is a number of minutes between 5 and 1440.'); return; }
-    const r = await saveTarget(db.companyId ?? '', kind, id, n, db.personId);
+    const r = await saveTarget(db.companyId ?? '', id, n, db.personId);
     if (!r.ok) say("Couldn't save", r.error); else { Keyboard.dismiss(); setSavedTarget(n); say(n == null ? 'Target removed' : 'Target saved', n == null ? 'No alert will use a target here.' : `New visits will use ${n} minutes. Visits already recorded keep the target they started with.`); }
   }
   async function saveEstimate() {
@@ -74,7 +73,7 @@ export default function LaborPropertyScreen() {
   }
 
   return (
-    <LaborScreen title={name ?? (isProject ? 'Project' : 'Property')} subtitle={isProject ? 'Labor by visit' : 'Visit history'} loading={!data && !error} onRefresh={load}
+    <LaborScreen title={name ?? 'Project'} subtitle="Labor by visit" loading={!data && !error} onRefresh={load}
       right={rows.length ? <Pressable onPress={async () => { try { await shareCsv(`visits-${name ?? id}`, visitsCsv(rows)); } catch (e) { say("Couldn't export", e instanceof Error ? e.message : 'Try again.'); } }} hitSlop={10} accessibilityRole="button" accessibilityLabel="Export CSV"><Icon name="download" size={22} color={colors.textPrimary} /></Pressable> : undefined}>
       {error ? <Card><Text style={[typeScale.bodyMedium, { color: colors.error }]}>{error}</Text></Card> : null}
       <Card>
@@ -100,11 +99,11 @@ export default function LaborPropertyScreen() {
         <Input label="Target (minutes)" value={targetText} onChangeText={setTargetText} keyboardType="number-pad" placeholder="e.g. 120" />
         <View style={{ flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm }}>
           <Button title="Save target" size="sm" onPress={saveTargetMinutes} />
-          {savedTarget != null ? <Button title="Remove" size="sm" variant="ghost" onPress={() => { setTargetText(''); saveTarget(db.companyId ?? '', kind, id, null, db.personId).then((r) => { if (r.ok) setSavedTarget(null); else say("Couldn't remove", r.error); }); }} /> : null}
+          {savedTarget != null ? <Button title="Remove" size="sm" variant="ghost" onPress={() => { setTargetText(''); saveTarget(db.companyId ?? '', id, null, db.personId).then((r) => { if (r.ok) setSavedTarget(null); else say("Couldn't remove", r.error); }); }} /> : null}
         </View>
       </Card>
 
-      {isProject && totals ? (
+      {totals ? (
         <>
           <Card title="PROJECT LABOR (ALL DAYS)">
             <KV label="Work visits" value={String(totals.visits)} hint={totals.firstDate ? `${fmtDay(totals.firstDate)} to ${fmtDay(totals.lastDate ?? totals.firstDate)}` : undefined} />

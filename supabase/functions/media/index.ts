@@ -12,11 +12,6 @@
  * Who may write where:
  *   avatars/{myPersonId}/...   any signed-in person (their own picture)
  *   {companyId}/...            active members of that company
- * Snow media is private. Its permission rules already live in the database
- * (storage policies on the "snow-media" bucket), so each file keeps a 1-byte
- * stand-in in that bucket and we ask Supabase, as the signed-in person, whether
- * they may see/write it. R2 holds the real file. Actions: snow-put, snow-sign,
- * snow-delete.
  * Delete: the same prefixes; for company files, staff or the member who
  * uploaded it is not tracked, so owner/admin/manager/lead/worker may delete
  * inside their own company (customers may not).
@@ -26,7 +21,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
 import { AwsClient } from 'https://esm.sh/aws4fetch@1.0.20';
 /**
  * Which stored files are private (kept in the private bucket). Written out here, identical to supabase/functions/_shared/privateKeys.ts
- * and src/lib/privateMedia.ts (a check keeps the three the same), so this one file can be pasted into the Supabase dashboard as it is.
+ * (a check keeps the two the same), so this one file can be pasted into the Supabase dashboard as it is.
  */
 const PRIVATE_FOLDERS = new Set<string>([]);
 function isPrivateKey(key: string): boolean {
@@ -83,19 +78,6 @@ const TYPES: Record<string, string> = {
   'application/pdf': 'pdf',
   'video/mp4': 'mp4',
   'video/quicktime': 'mov',
-  // Our Work music (the owner's own tracks)
-  'audio/mpeg': 'mp3',
-  'audio/mp3': 'mp3',
-  'audio/mp4': 'm4a',
-  'audio/x-m4a': 'm4a',
-  'audio/aac': 'aac',
-  'audio/wav': 'wav',
-  'audio/x-wav': 'wav',
-  'audio/aiff': 'aiff',
-  'audio/x-aiff': 'aiff',
-  'audio/x-caf': 'caf',
-  'audio/flac': 'flac',
-  'audio/x-flac': 'flac',
   // More video containers every phone plays
   'video/x-m4v': 'm4v',
   'video/3gpp': '3gp',
@@ -103,19 +85,12 @@ const TYPES: Record<string, string> = {
 const MAX_BYTES = 200 * 1024 * 1024;
 const CAN_DELETE = new Set(['owner', 'admin', 'manager', 'lead', 'worker']);
 
-const SNOW_BUCKET = 'snow-media';
-
 /** A private, short-lived read link for an R2 file. */
 async function presignGet(key: string, seconds: number): Promise<string> {
   const url = new URL(`${await locate(key)}/${key}`);
   url.searchParams.set('X-Amz-Expires', String(seconds));
   const signed = await r2.sign(new Request(url.toString(), { method: 'GET' }), { aws: { signQuery: true } });
   return signed.url;
-}
-
-async function inR2(key: string): Promise<boolean> {
-  const res = await r2.fetch(`${await locate(key)}/${key}`, { method: 'HEAD' });
-  return res.ok;
 }
 
 /** Deletes a file wherever it is (both buckets, so a half-moved file leaves nothing behind). */
@@ -126,15 +101,6 @@ async function deleteEverywhere(key: string): Promise<boolean> {
     if (!res.ok && res.status !== 404) ok = false;
   }
   return ok;
-}
-
-/** Whether the 1-byte stand-in for this Snow key is in the Supabase bucket. */
-async function standInExists(key: string): Promise<boolean> {
-  const slash = key.lastIndexOf('/');
-  const { data } = await createClient(SUPABASE_URL, SERVICE_KEY).storage
-    .from(SNOW_BUCKET)
-    .list(key.slice(0, slash), { search: key.slice(slash + 1), limit: 5 });
-  return (data ?? []).some((o) => o.name === key.slice(slash + 1));
 }
 
 function reply(body: unknown, status = 200) {
@@ -239,68 +205,12 @@ serve(async (req: Request) => {
       return reply({ url: await presignGet(key, 300) });
     }
 
-    // Maintenance photos opened through a short-lived private link. The database decides who may open which file
-    // (maintenance_photos_i_can_open, update 71): owner/admin, the crew on the route, or the linked customer for a shared photo on a
-    // finished stop. Only the keys it allows are signed. NOT used by the app yet; it only protects once the files themselves are private.
-    if (body.action === 'maint-sign') {
-      const keys: string[] = Array.isArray(body.keys) ? body.keys.filter(safePath).slice(0, 100) : [];
-      const userClient = createClient(SUPABASE_URL, ANON_KEY, {
-        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
-      });
-      const { data, error } = await userClient.rpc('maintenance_photos_i_can_open', { p_keys: keys });
-      if (error) return reply({ error: 'Could not check access' }, 502);
-      const urls: Record<string, string> = {};
-      await Promise.all(((data ?? []) as string[]).map(async (k) => { urls[k] = await presignGet(k, 3600); }));
-      return reply({ urls });
-    }
-
-    if (body.action === 'snow-put') {
-      const key = body.key;
-      const ext = TYPES[String(body.contentType ?? '').toLowerCase()];
-      if (!ext || !safePath(key) || !key.endsWith(`.${ext}`)) return reply({ error: 'Bad file' }, 400);
-      if (!(key.split('/')[0] in me.roles)) return reply({ error: 'You cannot upload there' }, 403);
-      // The database already let this person write the stand-in, so they may write here.
-      if (!(await standInExists(key))) return reply({ error: 'Upload not allowed' }, 403);
-      const url = new URL(`${writeBase(key)}/${key}`);
-      url.searchParams.set('X-Amz-Expires', '600');
-      const signed = await r2.sign(
-        new Request(url.toString(), { method: 'PUT', headers: { 'Content-Type': body.contentType } }),
-        { aws: { signQuery: true } },
-      );
-      return reply({ uploadUrl: signed.url });
-    }
-
-    if (body.action === 'snow-sign') {
-      const keys: string[] = Array.isArray(body.keys) ? body.keys.filter(safePath).slice(0, 200) : [];
-      // Asking Supabase as this person applies the bucket's own permission rules.
-      const userClient = createClient(SUPABASE_URL, ANON_KEY, {
-        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
-      });
-      const { data } = await userClient.storage.from(SNOW_BUCKET).createSignedUrls(keys, 3600);
-      const urls: Record<string, string> = {};
-      await Promise.all((data ?? []).map(async (item) => {
-        if (!item.path || !item.signedUrl || item.error) return; // not allowed to see it
-        urls[item.path] = (await inR2(item.path)) ? await presignGet(item.path, 3600) : item.signedUrl;
-      }));
-      return reply({ urls });
-    }
-
-    if (body.action === 'snow-delete') {
-      const key = body.key;
-      if (!safePath(key)) return reply({ error: 'Bad key' }, 400);
-      // Only once the database let the stand-in go (saved media is kept).
-      if (await standInExists(key)) return reply({ ok: false, kept: true });
-      return reply({ ok: await deleteEverywhere(key) });
-    }
-
     if (body.action === 'usage') {
       // Adds up this company's files (and the caller's own avatars) in R2.
       const prefixes = [...Object.keys(me.roles).map((c) => `${c}/`), `avatars/${me.personId}/`];
       let bytes = 0;
       let photos = 0;
       let avatars = 0;
-      let work = 0;
-      let workBytes = 0;
       for (const base of [BUCKET_URL, PRIVATE_BUCKET_URL].filter(Boolean)) for (const prefix of prefixes) {
         let token = '';
         do {
@@ -312,15 +222,13 @@ serve(async (req: Request) => {
           for (const m of xml.matchAll(/<Contents>[\s\S]*?<\/Contents>/g)) {
             const size = Number(/<Size>(\d+)<\/Size>/.exec(m[0])?.[1] ?? 0);
             bytes += size;
-            // Our Work files live under <company>/portfolio/ and are counted on their own line.
             if (prefix.startsWith('avatars/')) avatars++;
-            else if ((/<Key>([^<]*)<\/Key>/.exec(m[0])?.[1] ?? '').includes('/portfolio/')) { work++; workBytes += size; }
             else photos++;
           }
           token = /<NextContinuationToken>([^<]+)<\/NextContinuationToken>/.exec(xml)?.[1] ?? '';
         } while (token);
       }
-      return reply({ bytes, photos, avatars, work, workBytes });
+      return reply({ bytes, photos, avatars });
     }
 
     return reply({ error: 'Unknown action' }, 400);

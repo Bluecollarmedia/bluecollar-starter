@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
@@ -12,6 +12,7 @@ import { semantic, brand } from '@/theme/colors';
 import { useNotifications } from '@/hooks/useOperations';
 import { ownerNotificationTarget } from '@/lib/notificationTarget';
 import type { NotificationEventType } from '@/types/operations';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 const EVENT_ICONS: Record<NotificationEventType, { icon: string; color: string }> = {
   issue_reported: { icon: 'alert-triangle', color: semantic.warning },
@@ -63,10 +64,7 @@ export default function NotificationCenterScreen() {
   function confirmClearAll() {
     const title = 'Clear all notifications?';
     const message = 'This will remove all notifications from your notification center. Your messages and project data will not be deleted.';
-    Alert.alert(title, message, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Clear All', style: 'destructive', onPress: clearAll },
-    ]);
+    confirmAction(title, message, 'Clear All', clearAll, true);
   }
 
   const sorted = [...notifications].sort(

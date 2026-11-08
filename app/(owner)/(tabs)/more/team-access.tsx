@@ -10,15 +10,12 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
-import { SNOW_SERVICES, useTeamAccess, type SnowService, type TeamPerson, type TeamState } from '@/hooks/useTeamAccess';
+import { useTeamAccess, type TeamPerson, type TeamState } from '@/hooks/useTeamAccess';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 
 type Sheet =
   | { kind: 'deactivate'; person: TeamPerson; warnings: string[]; blocking: string[] }
   | { kind: 'reactivate'; person: TeamPerson }
-  | { kind: 'snow'; person: TeamPerson }
-  | { kind: 'landscaping'; person: TeamPerson; give: boolean }
-  | { kind: 'removeSnow'; person: TeamPerson }
   | { kind: 'role'; person: TeamPerson; to: 'admin' | 'worker' };
 
 const ROLE_LABEL: Record<string, string> = { owner: 'Owner', admin: 'Admin', worker: 'Worker' };
@@ -26,8 +23,8 @@ const name = (p: TeamPerson) => `${p.firstName} ${p.lastName}`.trim() || p.email
 const when = (iso?: string) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
 
 /**
- * Team access: who works in Landscaping, who works in Snow, who is an admin, who is deactivated. Four different actions with four different names:
- * Remove landscaping access, Remove snow access, Deactivate worker (everything, both modes), and (elsewhere, owner only) Delete company.
+ * Team access: who is on the team, who is an admin, who is deactivated. Deactivate worker (all company access) is not the same as
+ * (elsewhere, owner only) Delete company.
  */
 export default function TeamAccessScreen() {
   const { colors } = useTheme();
@@ -39,8 +36,6 @@ export default function TeamAccessScreen() {
   const [open, setOpen] = useState<string | null>(null);
   const [sheet, setSheet] = useState<Sheet | null>(null);
   const [ack, setAck] = useState(false);
-  const [lands, setLands] = useState(true);
-  const [svcs, setSvcs] = useState<SnowService[]>([]);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -52,8 +47,6 @@ export default function TeamAccessScreen() {
   function show(s: Sheet) {
     haptics.select();
     setErr(''); setAck(false); setBusy(false);
-    if (s.kind === 'snow') setSvcs(s.person.snowServices);
-    if (s.kind === 'reactivate') { setLands(true); setSvcs([]); }
     setSheet(s);
   }
   async function startDeactivate(p: TeamPerson) {
@@ -61,7 +54,6 @@ export default function TeamAccessScreen() {
     if (typeof c === 'string') { show({ kind: 'deactivate', person: p, warnings: [], blocking: [c] }); return; }
     show({ kind: 'deactivate', person: p, warnings: c.warnings, blocking: c.blocking });
   }
-  const toggleSvc = (s: SnowService) => setSvcs((cur) => (cur.includes(s) ? cur.filter((x) => x !== s) : [...cur, s]));
 
   async function confirm() {
     if (!sheet || busy) return;  // a second tap while it runs does nothing
@@ -69,10 +61,7 @@ export default function TeamAccessScreen() {
     const p = sheet.person;
     let e = '';
     if (sheet.kind === 'deactivate') e = await T.deactivate(p.personId, ack || sheet.warnings.length === 0);
-    else if (sheet.kind === 'reactivate') e = await T.reactivate(p.personId, lands, p.workerType ?? 'landscaping', svcs);
-    else if (sheet.kind === 'snow') e = await T.setModes(p.personId, p.landscaping, svcs);
-    else if (sheet.kind === 'landscaping') e = await T.setModes(p.personId, sheet.give, p.snowServices);
-    else if (sheet.kind === 'removeSnow') e = await T.setModes(p.personId, p.landscaping, []);
+    else if (sheet.kind === 'reactivate') e = await T.reactivate(p.personId);
     else if (sheet.kind === 'role') e = await T.setRole(p.personId, sheet.to);
     setBusy(false);
     if (e) { setErr(e); return; }
@@ -84,13 +73,8 @@ export default function TeamAccessScreen() {
     if (!sheet) return null;
     const n = name(sheet.person);
     switch (sheet.kind) {
-      case 'deactivate': return { title: `Deactivate ${n}?`, body: 'They lose ALL company access right away: Landscaping and Snow. Their hours, photos, storm history and records stay exactly as they are, and you can reactivate them later.', button: 'Deactivate Worker', danger: true };
-      case 'reactivate': return { title: `Reactivate ${n}`, body: 'Choose what they can do now. Old admin rights are never restored, and nothing is assigned to them automatically.', button: 'Reactivate', danger: false };
-      case 'snow': return { title: `Snow services for ${n}`, body: 'Pick the snow services they may work. Having snow access does not send them to a storm: you still assign them.', button: 'Save Snow Access', danger: false };
-      case 'landscaping': return sheet.give
-        ? { title: `Give ${n} landscaping access?`, body: 'They will see landscaping jobs and routes assigned to them. Snow access is not changed.', button: 'Give Landscaping Access', danger: false }
-        : { title: `Remove landscaping access for ${n}?`, body: 'They stay on the team and keep their snow access. They stop seeing landscaping work. (This is not the same as deactivating them.)', button: 'Remove Landscaping Access', danger: true };
-      case 'removeSnow': return { title: `Remove snow access for ${n}?`, body: 'They stay on the team and keep landscaping access. Their snow history is kept. (This is not the same as deactivating them.)', button: 'Remove Snow Access', danger: true };
+      case 'deactivate': return { title: `Deactivate ${n}?`, body: 'They lose ALL company access right away. Their hours, photos and records stay exactly as they are, and you can reactivate them later.', button: 'Deactivate Worker', danger: true };
+      case 'reactivate': return { title: `Reactivate ${n}`, body: 'They get their worker access back. Old admin rights are never restored, and nothing is assigned to them automatically.', button: 'Reactivate', danger: false };
       case 'role': return sheet.to === 'admin'
         ? { title: `Make ${n} an admin?`, body: 'Admins help run the company. You can limit what admins may do under Admin powers, and take this back any time.', button: 'Make Admin', danger: false }
         : { title: `Remove admin from ${n}?`, body: 'They stay on the team as a worker. Their history is kept.', button: 'Remove Admin', danger: true };
@@ -98,8 +82,6 @@ export default function TeamAccessScreen() {
   })();
   const blocked = sheet?.kind === 'deactivate' && sheet.blocking.length > 0;
   const needsAck = sheet?.kind === 'deactivate' && sheet.warnings.length > 0 && !ack;
-  const reactivateEmpty = sheet?.kind === 'reactivate' && !lands && svcs.length === 0;
-  const snowEmpty = sheet?.kind === 'snow' && svcs.length === 0;
 
   function card(p: TeamPerson) {
     const expanded = open === p.personId;
@@ -113,8 +95,7 @@ export default function TeamAccessScreen() {
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>{name(p)}{p.isMe ? ' (you)' : ''}</Text>
             <View style={styles.badges}>
               {p.role ? <StatusBadge label={ROLE_LABEL[p.role] ?? p.role} status="info" /> : null}
-              {p.landscaping ? <StatusBadge label={p.workerType === 'maintenance' ? 'Maintenance' : 'Landscaping'} status="success" /> : null}
-              {p.snowServices.length ? <StatusBadge label={`Snow: ${p.snowServices.join(', ')}`} status="success" /> : null}
+              {p.state === 'active' ? <StatusBadge label="Active" status="success" /> : null}
               {p.state === 'waiting' ? <StatusBadge label="Invited" status="info" /> : null}
               {p.state === 'deactivated' ? <StatusBadge label="Deactivated" status="error" /> : null}
             </View>
@@ -138,17 +119,6 @@ export default function TeamAccessScreen() {
               <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Only the owner can change an admin.</Text>
             ) : (
               <>
-                {p.role === 'worker' ? (
-                  <>
-                    {p.landscaping
-                      ? <Button title="Remove landscaping access" size="sm" variant="secondary" disabled={p.snowServices.length === 0} onPress={() => show({ kind: 'landscaping', person: p, give: false })} />
-                      : <Button title="Give landscaping access" size="sm" variant="secondary" onPress={() => show({ kind: 'landscaping', person: p, give: true })} />}
-                    <Button title={p.snowServices.length ? 'Change snow services' : 'Give snow access'} size="sm" variant="secondary" onPress={() => show({ kind: 'snow', person: p })} />
-                    {p.snowServices.length > 0 ? <Button title="Remove snow access" size="sm" variant="secondary" disabled={!p.landscaping} onPress={() => show({ kind: 'removeSnow', person: p })} /> : null}
-                  </>
-                ) : (
-                  <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Admins work in both modes.</Text>
-                )}
                 {isOwner ? (
                   p.role === 'admin'
                     ? <Button title="Remove admin" size="sm" variant="secondary" onPress={() => show({ kind: 'role', person: p, to: 'worker' })} />
@@ -215,26 +185,9 @@ export default function TeamAccessScreen() {
                   </View>
                 ) : null}
 
-                {sheet.kind === 'reactivate' ? (
-                  <View style={{ marginTop: spacing.md, gap: spacing.sm }}>
-                    <View style={styles.ackRow}><Switch value={lands} onValueChange={setLands} /><Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>Landscaping access</Text></View>
-                    <Text style={[typeScale.overline, { color: colors.textTertiary }]}>SNOW SERVICES</Text>
-                  </View>
-                ) : null}
-                {sheet.kind === 'snow' || sheet.kind === 'reactivate' ? (
-                  <View style={styles.chips}>
-                    {SNOW_SERVICES.map((s) => (
-                      <Pressable key={s.key} onPress={() => toggleSvc(s.key)} accessibilityRole="checkbox" accessibilityState={{ checked: svcs.includes(s.key) }}
-                        style={[styles.chip, { backgroundColor: svcs.includes(s.key) ? colors.primary : colors.backgroundTertiary }]}>
-                        <Text style={[typeScale.labelSmall, { color: svcs.includes(s.key) ? '#FFFFFF' : colors.textPrimary }]}>{s.label}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                ) : null}
-                {reactivateEmpty ? <Text style={[typeScale.caption, { color: semantic.error, marginTop: spacing.sm }]}>Choose landscaping access, snow access, or both.</Text> : null}
                 {err ? <Text style={[typeScale.caption, { color: semantic.error, marginTop: spacing.sm }]}>{err}</Text> : null}
                 <View style={{ gap: spacing.sm, marginTop: spacing.lg }}>
-                  <Button title={copy.button} onPress={confirm} variant={copy.danger ? 'danger' : 'primary'} fullWidth loading={busy} disabled={blocked || needsAck || reactivateEmpty || snowEmpty} />
+                  <Button title={copy.button} onPress={confirm} variant={copy.danger ? 'danger' : 'primary'} fullWidth loading={busy} disabled={blocked || needsAck} />
                   <Button title="Cancel" onPress={() => { if (!busy) setSheet(null); }} variant="ghost" fullWidth />
                 </View>
               </>
@@ -259,6 +212,4 @@ const styles = StyleSheet.create({
   sheet: { borderTopLeftRadius: radius.lg, borderTopRightRadius: radius.lg, paddingHorizontal: spacing.lg, paddingTop: spacing.xl },
   note: { borderRadius: radius.sm, padding: spacing.md, marginTop: spacing.md, gap: spacing.xs },
   ackRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginTop: spacing.sm },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.md, justifyContent: 'center' },
-  chip: { paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: radius.lg },
 });

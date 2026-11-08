@@ -1,7 +1,7 @@
 /**
  * Sign-in welcome animation.
  *
- *  1. Tap Sign In → the screen fades to white and the Brighton leaf springs in,
+ *  1. Tap Sign In → the screen fades to white and the logo mark springs in,
  *     breathing with a soft green ripple while the password is checked.
  *  2. Signed in → the leaf settles and lifts, "Welcome back, <name>" rises in.
  *  3. Brief hold, then the whole thing fades away into the app.

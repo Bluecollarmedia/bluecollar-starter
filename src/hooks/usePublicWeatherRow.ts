@@ -18,16 +18,16 @@ export function usePublicWeatherRow() {
     setBusy(true);
     const r = await setPublicWeatherEnabled(next);
     setBusy(false);
-    if (!r.ok) { showMessage("Couldn't change Brighton Weather", r.error); return; }
+    if (!r.ok) { showMessage("Couldn't change Public Weather", r.error); return; }
     setEnabled(next);
   }, []);
 
   const confirm = useCallback(() => {
     if (!canChange || busy || enabled === null) return;
     if (enabled) {
-      confirmAction('Turn off Brighton Weather?', 'Visitors who are not signed in will see the usual welcome and sign-in screen again, and shared storm links stop showing storm updates.', 'Turn off', () => change(false));
+      confirmAction('Turn off Public Weather?', 'Visitors who are not signed in will see the usual welcome and sign-in screen again.', 'Turn off', () => change(false));
     } else {
-      confirmAction('Turn on Brighton Weather?', 'Anyone who opens the app without being signed in will see Brighton Weather (local forecasts) instead of the welcome screen, with a Sign In button. People who are signed in are not affected.', 'Turn on', () => change(true));
+      confirmAction('Turn on Public Weather?', 'Anyone who opens the app without being signed in will see Public Weather (local forecasts) instead of the welcome screen, with a Sign In button. People who are signed in are not affected.', 'Turn on', () => change(true));
     }
   }, [canChange, busy, enabled, change]);
 

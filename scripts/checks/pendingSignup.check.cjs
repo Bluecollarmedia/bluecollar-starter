@@ -1,5 +1,5 @@
 // Run: node scripts/checks/pendingSignup.check.cjs
-// Photo, birthday, hoodie and ID chosen at sign-up are not lost when the account waits for email confirmation.
+// Photo, birthday, shirt size and ID chosen at sign-up are not lost when the account waits for email confirmation.
 const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');
@@ -16,16 +16,16 @@ check('3 when everything saved, nothing is left', lib.remainingAfter(all, ['phot
 let left = lib.remainingAfter(all, ['birthday', 'details']);
 check('4 a photo that failed stays for the next try, the rest are cleared', left && left.photoUri === 'file:///p.jpg' && !left.birthdayIso && !left.hoodieSize && !left.idUri, JSON.stringify(left));
 left = lib.remainingAfter(all, ['photo', 'birthday']);
-check('5 hoodie and ID stay together if they failed', left && left.hoodieSize === 'L' && left.idUri === 'file:///id.jpg' && !left.photoUri, JSON.stringify(left));
+check('5 shirt size and ID stay together if they failed', left && left.hoodieSize === 'L' && left.idUri === 'file:///id.jpg' && !left.photoUri, JSON.stringify(left));
 check('6 nothing saved keeps everything', JSON.stringify(lib.remainingAfter(all, [])) === JSON.stringify(all));
 
 const invite = read('app/invite/[token].tsx');
 const signup = read('app/(auth)/create-company.tsx');
 const layout = read('app/_layout.tsx');
 const inv = invite.slice(invite.indexOf('if (result.needsEmailConfirmation)'), invite.indexOf("router.replace('/(auth)/login')"));
-check('7 the invite sign-up keeps photo, birthday, hoodie and ID when email confirmation is needed', /stashPendingSignup\(/.test(inv) && /photoUri/.test(inv) && /birthdayIso/.test(inv) && /hoodieSize/.test(inv) && /idUri/.test(inv));
+check('7 the invite sign-up keeps photo, birthday, shirt size and ID when email confirmation is needed', /stashPendingSignup\(/.test(inv) && /photoUri/.test(inv) && /birthdayIso/.test(inv) && /hoodieSize/.test(inv) && /idUri/.test(inv));
 check('8 the Create a Company screen keeps the photo when email confirmation is needed', /stashPendingSignup\(\{ email: email\.trim\(\), photoUri \}\)/.test(signup));
 check('9 the saved extras are applied once the person is signed in', /applyPendingSignup\(user\.email\)/.test(layout) && /appState === 'active' && isAuthenticated/.test(layout));
-check('10 the worker invite shows birthday, hoodie size and ID', /WorkerExtrasFields/.test(invite) && /Birthday/.test(invite));
+check('10 the worker invite shows birthday, shirt size and ID', /WorkerExtrasFields/.test(invite) && /Birthday/.test(invite));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

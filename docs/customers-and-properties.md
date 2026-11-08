@@ -6,7 +6,7 @@ screens. Updates 75 and 76 are written but NOT run; nothing in the app uses the 
 ## What exists today (verified in the code)
 
 - A **customer** is a `people` row plus a `company_members` row with role `customer` (no separate table, no company name, no edit screen).
-- A landscaping **property** is only the address columns on the `projects` row. Quotes, change orders and invoices have `project_id` and
+- A project **property** is only the address columns on the `projects` row. Quotes, change orders and invoices have `project_id` and
   `customer_id` and no address of their own; a sent document freezes company, customer and property in its `snapshot`.
 - **Maintenance** has `maintenance_properties` (own address, optional `customer_id`, `source_project_id` for a copied address).
 - **Snow** has `snow_properties` (own address, no customer column; its customer is a linked contact in `snow_property_contacts`).

@@ -1,6 +1,6 @@
 import { useTeamAccess } from '@/hooks/useTeamAccess';
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert, Linking } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Linking } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
@@ -10,8 +10,6 @@ import { useSchedule } from '@/hooks/useSchedule';
 import { useResources } from '@/hooks/useResources';
 import { StatusBadge, Avatar, EmptyState, CrewLabels } from '@/components/ui';
 import { useCrews } from '@/hooks/useCrews';
-import { worksOnMaintenance } from '@/lib/workerAreas';
-import { WorkerAreasCard } from '@/components/team/WorkerAreasCard';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
@@ -23,6 +21,7 @@ import { OwnerWorkerExtras } from '@/components/account/WorkerExtras';
 import { OwnerClockCard } from '@/components/time/OwnerClockCard';
 import { formatBirthday, birthdaySoon } from '@/lib/birthday';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 const today = todayKey();
 
@@ -98,7 +97,6 @@ export default function WorkerDetailScreen() {
   const isActive = w.member.status === 'active';
 
   const workerCrews = crewsOf(p.id);
-  const isMaint = worksOnMaintenance(w.member);
 
   const todayAssignments = schedule.getByWorker(p.id, today);
   const tomorrowAssignments = schedule.getByWorker(p.id, offsetDate(1));
@@ -118,53 +116,45 @@ export default function WorkerDetailScreen() {
       updateWorker(p.id, { status: 'inactive' });
       router.back();
     };
-    Alert.alert(
+    confirmAction(
       'Deactivate Worker',
       `${p.firstName} ${p.lastName} will lose access. Historical records (hours, payroll, attendance) will be preserved.`,
-      [{ text: 'Cancel', style: 'cancel' }, { text: 'Deactivate', style: 'destructive', onPress: doDeactivate }],
+      'Deactivate',
+      doDeactivate,
+      true,
     );
   }
 
-  /** Brings a deactivated worker back (Landscaping access; Snow and Maintenance can be set on Team Access). Old admin rights are never restored. */
+  /** Brings a deactivated worker back. Old admin rights are never restored. */
   function handleReactivate() {
-    Alert.alert(
+    confirmAction(
       `Reactivate ${p.firstName} ${p.lastName}?`,
-      'They get Landscaping access again. Nothing is assigned to them automatically, and their history stays as it is.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reactivate',
-          onPress: async () => {
-            const why = await team.reactivate(p.id, true, worksOnMaintenance(w.member) ? 'maintenance' : 'landscaping', []);
-            if (why) Alert.alert("Couldn't reactivate", why);
-            else haptics.success();
-          },
-        },
-      ],
+      'They get access again. Nothing is assigned to them automatically, and their history stays as it is.',
+      'Reactivate',
+      async () => {
+        const why = await team.reactivate(p.id);
+        if (why) showMessage("Couldn't reactivate", why);
+        else haptics.success();
+      },
     );
   }
 
   /** Deletes a worker with no login and no records. Anyone else can only be deactivated, which keeps their history and payroll. */
   function handleDelete() {
-    Alert.alert(
+    confirmAction(
       `Delete ${p.firstName} ${p.lastName}?`,
       'This removes them completely and cannot be undone. It only works for a worker who never logged in and has no hours, jobs or other records.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            const res = await deleteUnusedMember(p.id);
-            if (res.ok) { haptics.destructive(); router.back(); return; }
-            if (res.hasHistory && isActive) {
-              Alert.alert("Can't delete", res.error, [{ text: 'Cancel', style: 'cancel' }, { text: 'Deactivate instead', onPress: handleDeactivate }]);
-            } else {
-              Alert.alert(res.hasHistory ? "Can't delete" : "Couldn't delete", res.error);
-            }
-          },
-        },
-      ],
+      'Delete',
+      async () => {
+        const res = await deleteUnusedMember(p.id);
+        if (res.ok) { haptics.destructive(); router.back(); return; }
+        if (res.hasHistory && isActive) {
+          confirmAction("Can't delete", res.error, 'Deactivate instead', handleDeactivate);
+        } else {
+          showMessage(res.hasHistory ? "Can't delete" : "Couldn't delete", res.error);
+        }
+      },
+      true,
     );
   }
 
@@ -230,9 +220,6 @@ export default function WorkerDetailScreen() {
             {personId ? <OwnerWorkerExtras personId={personId} /> : null}
           </View>
 
-          {/* What this worker works on */}
-          <WorkerAreasCard member={w.member} person={p} />
-
           {/* Crew */}
           <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
             <View style={styles.sectionHeaderRow}>
@@ -244,22 +231,17 @@ export default function WorkerDetailScreen() {
             <View style={styles.crewChoices}>
               {crews.map(c => {
                 const selected = workerCrews.some(wc => wc.id === c.id);
-                // Landscaping workers can't join the Maintenance Crew.
-                const blocked = !!c.isMaintenance && !isMaint;
                 return (
                   <Pressable
                     key={c.id ?? 'none'}
                     onPress={() => { haptics.select(); setWorkerInCrew(p.id, c.id, !selected); }}
-                    disabled={blocked}
                     style={({ pressed }) => [
                       styles.crewChoice,
                       { borderColor: selected ? c.color : colors.border, backgroundColor: selected ? `${c.color}1F` : 'transparent' },
-                      blocked && { opacity: 0.4 },
                       pressed && { opacity: 0.7 },
                     ]}
                     accessibilityRole="checkbox"
-                    accessibilityState={{ checked: selected, disabled: blocked }}
-                    accessibilityHint={blocked ? 'Only maintenance workers can join this crew' : undefined}
+                    accessibilityState={{ checked: selected }}
                   >
                     <View style={[styles.crewDot, { backgroundColor: c.color }]} />
                     <Text style={[typeScale.bodySmall, { color: selected ? c.color : colors.textSecondary, fontWeight: selected ? '700' : '500' }]}>

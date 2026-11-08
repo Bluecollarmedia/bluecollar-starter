@@ -7,9 +7,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useT } from '@/i18n';
 import { LanguageSwitch } from '@/components/ui/LanguageSwitch';
 import { Panel, WX } from '@/components/weather/WeatherUI';
-import { BRIGHTON_EMAIL, BRIGHTON_PHONE_DISPLAY, BRIGHTON_PHONE_LINK } from '@/lib/serviceRequest';
+import { COMPANY_EMAIL, COMPANY_PHONE_DISPLAY, COMPANY_PHONE_LINK } from '@/lib/serviceRequest';
 
-/** Brighton (this tab used to be called Account). Sign In opens the app's existing welcome and sign-in screens, unchanged; Call and Email reach Brighton directly. */
+/** Contact (this tab used to be called Account). Sign In opens the app's existing welcome and sign-in screens, unchanged; Call and Email reach the company directly. */
 export default function WeatherAccount() {
   const t = useT();
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function WeatherAccount() {
   useScrollToTop('/weather/account', useCallback(() => { pageRef.current?.scrollTo({ y: 0, animated: true }); }, []));
   return (
     <ScrollView ref={pageRef} contentContainerStyle={{ paddingTop: insets.top + 14, paddingHorizontal: 18, paddingBottom: insets.bottom + 130 }}>
-      <Text style={styles.title}>{t('Brighton')}</Text>
+      <Text style={styles.title}>{t('Contact')}</Text>
       <Text style={styles.sub}>{t('Need work done, or already part of the team?')}</Text>
       <Pressable onPress={() => router.push('/(auth)/welcome' as any)} accessibilityRole="button" accessibilityLabel={t('Sign In')} style={({ pressed }) => [{ marginTop: 22 }, pressed && { opacity: 0.8 }]}>
         <Panel>
@@ -29,24 +29,24 @@ export default function WeatherAccount() {
           </View>
         </Panel>
       </Pressable>
-      <Pressable onPress={() => { void Linking.openURL(BRIGHTON_PHONE_LINK); }} accessibilityRole="button" accessibilityLabel={`${t('Call us')} ${BRIGHTON_PHONE_DISPLAY}`} style={({ pressed }) => [{ marginTop: 12 }, pressed && { opacity: 0.8 }]}>
+      <Pressable onPress={() => { void Linking.openURL(COMPANY_PHONE_LINK); }} accessibilityRole="button" accessibilityLabel={`${t('Call us')} ${COMPANY_PHONE_DISPLAY}`} style={({ pressed }) => [{ marginTop: 12 }, pressed && { opacity: 0.8 }]}>
         <Panel>
           <View style={styles.row}>
             <MaterialCommunityIcons name="phone-outline" size={26} color={WX.deep} />
             <View style={{ flex: 1 }}>
               <Text style={styles.rowText}>{t('Call us')}</Text>
-              <Text style={styles.rowSub}>{BRIGHTON_PHONE_DISPLAY}</Text>
+              <Text style={styles.rowSub}>{COMPANY_PHONE_DISPLAY}</Text>
             </View>
           </View>
         </Panel>
       </Pressable>
-      <Pressable onPress={() => { void Linking.openURL(`mailto:${BRIGHTON_EMAIL}`); }} accessibilityRole="button" accessibilityLabel={`${t('Email us')} ${BRIGHTON_EMAIL}`} style={({ pressed }) => [{ marginTop: 12 }, pressed && { opacity: 0.8 }]}>
+      <Pressable onPress={() => { void Linking.openURL(`mailto:${COMPANY_EMAIL}`); }} accessibilityRole="button" accessibilityLabel={`${t('Email us')} ${COMPANY_EMAIL}`} style={({ pressed }) => [{ marginTop: 12 }, pressed && { opacity: 0.8 }]}>
         <Panel>
           <View style={styles.row}>
             <MaterialCommunityIcons name="email-outline" size={26} color={WX.deep} />
             <View style={{ flex: 1 }}>
               <Text style={styles.rowText}>{t('Email us')}</Text>
-              <Text style={styles.rowSub}>{BRIGHTON_EMAIL}</Text>
+              <Text style={styles.rowSub}>{COMPANY_EMAIL}</Text>
             </View>
           </View>
         </Panel>

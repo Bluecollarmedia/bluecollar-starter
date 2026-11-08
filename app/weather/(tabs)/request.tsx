@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useScrollToTop } from '@/lib/scrollTop';
 import { Linking, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -9,37 +8,36 @@ import { useT } from '@/i18n';
 import { Panel, WX } from '@/components/weather/WeatherUI';
 import { submitServiceRequest } from '@/data/serviceRequests';
 import {
-  BRIGHTON_PHONE_DISPLAY, BRIGHTON_PHONE_LINK, DETAILS_MAX, SERVICE_CHOICES, requestProblem, toggleService,
+  COMPANY_PHONE_DISPLAY, COMPANY_PHONE_LINK, DETAILS_MAX, SERVICE_CHOICES, requestProblem, toggleService,
   type PropertyType,
 } from '@/lib/serviceRequest';
 
+/** Contact details to start the form with (a signed-in customer's own name, phone and email). */
+export interface RequestPrefill { name?: string; phone?: string; email?: string }
+
 /**
- * Request tab: anyone who is not signed in can ask Brighton for work. Property type, what they want (the same choices as the website's
- * "Request a Quote" form), a description, where the property is and how to reach them. It goes to the owner's phone as a notification and
- * lands in the owner's Service Requests list (update 114). No account is needed.
+ * Request tab: anyone who is not signed in can ask the company for work. Property type, what they want, a description, where the property
+ * is and how to reach them. It goes to the owner's phone as a notification and lands in the owner's Service Requests list (update 114).
+ * No account is needed. A signed-in customer gets the same form from their Home (app/(customer)/request.tsx), with their details filled in.
  */
 export default function WeatherRequest() {
+  return <RequestForm />;
+}
+
+export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/request' }: { prefill?: RequestPrefill; signedIn?: boolean; scrollPath?: string }) {
   const pageRef = useRef<React.ElementRef<typeof KeyboardAwareScrollView>>(null);
-  useScrollToTop('/weather/request', useCallback(() => { pageRef.current?.scrollTo({ y: 0, animated: true }); }, []));
+  useScrollToTop(scrollPath, useCallback(() => { pageRef.current?.scrollTo({ y: 0, animated: true }); }, []));
   const t = useT();
   const insets = useSafeAreaInsets();
   const [propertyType, setPropertyType] = useState<PropertyType>('residential');
   const [services, setServices] = useState<string[]>([]);
   const [details, setDetails] = useState('');
   const [town, setTown] = useState('');
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState(prefill?.name ?? '');
+  const [phone, setPhone] = useState(prefill?.phone ?? '');
+  const [email, setEmail] = useState(prefill?.email ?? '');
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
-  // "Want something like this?" on a project opens this form with that project's services ticked and a note started.
-  const params = useLocalSearchParams<{ services?: string; note?: string }>();
-  useEffect(() => {
-    if (!params.services && !params.note) return;
-    const wanted = (params.services ?? '').split('|').filter((s) => (SERVICE_CHOICES as readonly string[]).includes(s));
-    if (wanted.length) setServices(toggleAll(wanted));
-    if (params.note) setDetails((d) => d || params.note || '');
-  }, [params.services, params.note]);
   const [sent, setSent] = useState<{ type: PropertyType; services: string[]; town: string } | null>(null);
 
   async function send() {
@@ -53,7 +51,9 @@ export default function WeatherRequest() {
     setBusy(false);
     if (!r.ok) return setProblem(r.error);
     setSent({ type: propertyType, services, town: town.trim() });
-    setServices([]); setDetails(''); setTown(''); setName(''); setPhone(''); setEmail('');
+    setServices([]); setDetails(''); setTown('');
+    // A signed-in customer keeps their own details for the next request; a visitor's are cleared.
+    setName(prefill?.name ?? ''); setPhone(prefill?.phone ?? ''); setEmail(prefill?.email ?? '');
   }
 
   const pad = { paddingTop: insets.top + 14, paddingHorizontal: 18, paddingBottom: insets.bottom + 130 };
@@ -76,9 +76,9 @@ export default function WeatherRequest() {
         <Pressable onPress={() => setSent(null)} accessibilityRole="button" style={({ pressed }) => [styles.primary, { alignSelf: 'stretch', marginTop: 22 }, pressed && { opacity: 0.85 }]}>
           <Text style={styles.primaryText}>{t('Send another request')}</Text>
         </Pressable>
-        <Pressable onPress={() => { void Linking.openURL(BRIGHTON_PHONE_LINK); }} accessibilityRole="button" style={({ pressed }) => [styles.secondary, { alignSelf: 'stretch', marginTop: 10 }, pressed && { opacity: 0.85 }]}>
+        <Pressable onPress={() => { void Linking.openURL(COMPANY_PHONE_LINK); }} accessibilityRole="button" style={({ pressed }) => [styles.secondary, { alignSelf: 'stretch', marginTop: 10 }, pressed && { opacity: 0.85 }]}>
           <MaterialCommunityIcons name="phone-outline" size={19} color={WX.deep} />
-          <Text style={styles.secondaryText}>{t('Call {phone}', { phone: BRIGHTON_PHONE_DISPLAY })}</Text>
+          <Text style={styles.secondaryText}>{t('Call {phone}', { phone: COMPANY_PHONE_DISPLAY })}</Text>
         </Pressable>
       </KeyboardAwareScrollView>
     );
@@ -86,9 +86,9 @@ export default function WeatherRequest() {
 
   return (
     <KeyboardAwareScrollView ref={pageRef} contentContainerStyle={pad} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-      <Text style={styles.kicker}>BRIGHTON LAWN &amp; LANDSCAPE</Text>
+      <Text style={styles.kicker}>YOUR COMPANY</Text>
       <Text style={styles.title}>{t('Request a service')}</Text>
-      <Text style={styles.sub}>{t("Tell us what you need and we'll reach out. No account needed.")}</Text>
+      <Text style={styles.sub}>{signedIn ? t("Tell us what you need and we'll reach out.") : t("Tell us what you need and we'll reach out. No account needed.")}</Text>
 
       <Text style={styles.label}>{t('Property type')}</Text>
       <View style={styles.segment}>
@@ -148,11 +148,6 @@ export default function WeatherRequest() {
       <Text style={styles.fine}>{t("We'll only use your details to answer this request.")}</Text>
     </KeyboardAwareScrollView>
   );
-}
-
-/** The services from a project, in the website's order. */
-function toggleAll(wanted: string[]): string[] {
-  return SERVICE_CHOICES.filter((s) => wanted.includes(s));
 }
 
 function SummaryRow({ label, value }: { label: string; value: string }) {

@@ -1,5 +1,5 @@
 // Run: node scripts/checks/widgets.check.cjs [path to typescript package]
-// The Brighton Forecast widgets. UNIT tests run the real data builder (src/lib/widgetData.ts) in Node; STATIC checks read file text.
+// The Forecast widgets. UNIT tests run the real data builder (src/lib/widgetData.ts) in Node; STATIC checks read file text.
 // Not covered here (needs a real iPhone with a new build): how the widgets actually look, the gallery, refresh timing, the lock screen.
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
@@ -44,16 +44,15 @@ check('UV is shown only when there is a figure of 1 or more', e[0].props.uv === 
 check('a missing temperature is an en dash, never 0', first(payload({ current: { tempF: null, text: '', icon: 'sun', isDaytime: true }, hourly: hours({ tempF: null }) })).temp === '–');
 check('missing high and low show nothing rather than 0', first(payload({ today: { highF: null, lowF: null } })).highLow === '');
 
-check('a posted storm outlook never appears on the widgets (the owner does not want it there)', !('storm' in first(payload())) && !/STORM OUTLOOK|\.storm/.test(read('src/widgets/BrightonWeather.tsx')) && !/storm/i.test(read('src/data/widgetSync.ts').replace(/\/\*[\s\S]*?\*\//g, '')));
 
 const bare = buildWidgetEntries(payload({ hourly: [] }), NOW, null);
 check('with no hourly forecast there is one honest entry from the current conditions', bare.length === 1 && bare[0].props.temp === '41°' && bare[0].props.hours.length === 0);
 check('every entry carries the place; the gauge only appears when low and high make sense', e.every((x) => x.props.place === 'Lakewood') && !!e[0].props.gauge && e[0].props.gauge.low === 38 && first(payload({ today: { highF: 40, lowF: 40 } })).gauge === null);
 
 // ── static ──
-const w = read('src/widgets/BrightonWeather.tsx');
-check('the widget declares the widget directive and every approved size', w.includes("'widget';") && ['systemSmall', 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'].every((f) => w.includes(f)) && w.includes('BRIGHTON FORECAST'));
-check('tapping any widget opens the weather screen', w.includes('brighton-lawn://weather'));
+const w = read('src/widgets/WeatherWidget.tsx');
+check('the widget declares the widget directive and every approved size', w.includes("'widget';") && ['systemSmall', 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'].every((f) => w.includes(f)) && w.includes('YOUR COMPANY FORECAST'));
+check('tapping any widget opens the weather screen', w.includes(`'${JSON.parse(read('app.json')).expo.scheme}://weather'`));
 const sync = read('src/data/widgetSync.ts');
 check('syncing does nothing off the iPhone and never throws (older builds without widgets just skip it)', sync.includes("Platform.OS !== 'ios'") && /try \{[\s\S]*require\('expo-widgets'\)[\s\S]*\} catch/.test(sync));
 check('the weather screen feeds the widgets', read('app/weather/(tabs)/index.tsx').includes('syncWidgets(data)'));
@@ -61,5 +60,5 @@ const hook = read('src/hooks/useWidgetSync.ts');
 check('the widgets are fed in the background for everyone, signed in or not (mounted in the root layout, not in the weather screen)', /useWidgetSync\(\);/.test(read('app/_layout.tsx')) && /loadWeather\(place\)/.test(hook) && /readLastWeather/.test(hook) && !/useAuth|isAuthenticated/.test(hook));
 const app = JSON.parse(read('app.json'));
 const plug = app.expo.plugins.find((p) => Array.isArray(p) && p[0] === 'expo-widgets');
-check('app.json sets up the widget with an app group and the five sizes', !!plug && plug[1].groupIdentifier === 'group.com.brightonlawn.app' && plug[1].widgets[0].name === 'BrightonWeather' && plug[1].widgets[0].ios.supportedFamilies.length === 5);
+check('app.json sets up the widget with an app group and the five sizes', !!plug && plug[1].groupIdentifier === `group.${app.expo.ios.bundleIdentifier}` && plug[1].widgets[0].name === 'ForecastWidget' && /createWidget\('ForecastWidget'/.test(w) && plug[1].widgets[0].ios.supportedFamilies.length === 5);
 process.exit(bad ? 1 : 0);

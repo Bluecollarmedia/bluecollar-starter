@@ -21,7 +21,7 @@ check('3 the app icon has no transparency (color type 2 = RGB, no tRNS)', icon.c
 const fg = png(app.android.adaptiveIcon.foregroundImage.replace('./', ''));
 check('4 the Android icon foreground is a 1024 x 1024 PNG', fg.isPng && fg.w === 1024 && fg.h === 1024);
 check('5 iPhone only for the first release (no iPad screenshots or iPad review needed)', app.ios.supportsTablet === false);
-check('6 bundle id, version and encryption answer are set', app.ios.bundleIdentifier === 'com.brightonlawn.app' && !!app.version && app.ios.infoPlist.ITSAppUsesNonExemptEncryption === false);
+check('6 bundle id, version and encryption answer are set', app.ios.bundleIdentifier === 'com.yourcompany.starter' && !!app.version && app.ios.infoPlist.ITSAppUsesNonExemptEncryption === false);
 check('7 camera, photo, microphone and location texts explain why', ['photosPermission', 'cameraPermission', 'microphonePermission'].every((k) => JSON.stringify(app.plugins).includes(k)) && JSON.stringify(app.plugins).includes('locationWhenInUsePermission'));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

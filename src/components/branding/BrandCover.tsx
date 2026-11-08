@@ -13,7 +13,7 @@ const PATTERN_ROWS = 10;
 const PATTERN_COLS = 9;
 
 interface BrandCoverProps {
-  /** The owner's own photo. When missing, the Brighton green backdrop shows instead of a stock photo. */
+  /** The owner's own photo. When missing, the brand-color backdrop shows instead of a stock photo. */
   uri?: string;
   style?: StyleProp<ImageStyle>;
   /** 'hero' adds the faint leaf pattern for big headers; 'tile' is a plain gradient with one leaf for thumbnails. */

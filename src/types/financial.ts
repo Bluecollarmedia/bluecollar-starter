@@ -26,7 +26,7 @@ export interface LineItem {
   /** Optional second line (scope details, materials, etc.). */
   details?: string;
   quantity: number;
-  /** e.g. "sq ft", "yd", "plant", "hr", "ea". */
+  /** e.g. "sq ft", "yd", "ton", "hr", "ea". */
   unit?: string;
   unitPrice: number;
   /** quantity × unitPrice, rounded to cents. */

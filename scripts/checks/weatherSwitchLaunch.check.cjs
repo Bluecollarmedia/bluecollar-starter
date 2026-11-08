@@ -1,5 +1,5 @@
 // Run: node scripts/checks/weatherSwitchLaunch.check.cjs [path to typescript package]
-// Brighton Weather, Phase 1: the master switch and the signed-out launch route.
+// Weather, Phase 1: the master switch and the signed-out launch route.
 //   UNIT tests (1-24): the real decision code (src/lib/weatherSwitch.ts, src/lib/launchRoute.ts) run in Node with a fake clock and a fake network.
 //   STATIC checks (25+): they read FILE TEXT. They show the code is what it should be; they do NOT prove the running app behaves that way.
 //   Not covered here (needs a real phone or simulator): the real network call, the 1.5 s cap on a real network, launch time, the splash,
@@ -108,7 +108,7 @@ const settle = () => new Promise((r) => setImmediate(r));
   check('20b a remembered answer that loads AFTER a fresh answer never replaces it', r.sw.getEnabled() === false);
 
   // ── launchRoute ──
-  const segments = ['(auth)', undefined, 'index', '(owner)', '(worker)', '(customer)', '(onboarding)', 'snow', 'weather', 'approve', 'other'];
+  const segments = ['(auth)', undefined, 'index', '(owner)', '(worker)', '(customer)', '(onboarding)', 'weather', 'approve', 'other'];
   const oracle = (seg) => (seg === '(auth)' ? null : '/(auth)/welcome'); // a copy of the original code: stay in the sign-in area, else go to welcome
   check('21 with Weather OFF every signed-out location gets exactly what the original code gave', segments.every((s) => signedOutRedirect({ firstSegment: s, weatherOn: false }) === oracle(s)));
   check('22 with Weather ON: stay in the sign-in area or Weather, otherwise go to /weather', segments.every((s) => signedOutRedirect({ firstSegment: s, weatherOn: true }) === (s === '(auth)' || s === 'weather' ? null : '/weather')));
@@ -123,24 +123,25 @@ const settle = () => new Promise((r) => setImmediate(r));
   const sha = (s) => crypto.createHash('sha256').update(s.replace(/\r\n/g, '\n')).digest('hex');
   const layout = read('app/_layout.tsx');
   const cut = (s) => { const a = s.indexOf('    // The setup hub links to the create-company screen'); const b = s.indexOf('  }, [isLoading, isAuthenticated, user, appState,'); return s.slice(a, b); };
-  check('25 the onboarding and signed-in blocks of the launch routing are identical to before (text fingerprint)', sha(cut(layout)) === '184a5f2db9b9501fe1964153407c29e743474a544d6ad4f73f6cf34480f9804d');
+  check('25 the onboarding and signed-in blocks of the launch routing are identical to before (text fingerprint, retaken in Step 2a)', sha(cut(layout)) === 'c7fd905489ade11ee9fa9191397de2041b79681735087363f664abc4427d767c');
   const pub = layout.split(/\r?\n/).filter((l) => l.includes('const isPublicPage = [')).join('|');
   check('26 the list of public pages (invite, approve, legal, reset-password, auth-callback) is identical to before', sha(pub) === 'a14557971050ff7ae964d67dabb476b97a4c0dd60442ae6a37a1fa2c30923eb2');
   check('27 the signed-out branch now asks signedOutRedirect and nothing else changed there', /const goTo = signedOutRedirect\(\{ firstSegment: \(segments as string\[\]\)\[0\], weatherOn \}\);\s*if \(goTo\) router\.replace\(goTo as any\);/.test(layout) && /weatherOn\]\);/.test(layout) && !/router\.replace\('\/\(auth\)\/welcome'\)/.test(layout));
+  // Fingerprints retaken in Step 2c (the original company name and trade-specific wording were removed from these screens).
   const fp = {
-    'app/(auth)/welcome.tsx': 'e072b7c4b686fea44bdfda6a8d196c701755684be20fbf76a9954f928e5e1eff',
-    'app/(auth)/login.tsx': '96e642a626bcbf92dde34cd4a3d89fc578c22956870096039b0484c97132c3c0',
+    'app/(auth)/welcome.tsx': '097af38a1ffaadbe96867147aafe3be88d4abe6aa6e28f759acf586a71558228',
+    'app/(auth)/login.tsx': '879b7e355d33e5c88ce975be9e67018e38b94b70edbc415f351275bcdf73cf13',
     'app/(auth)/forgot-password.tsx': '5c502ed34a4ff2df6dd22d8dcb3f2b9387e9d816221ccab9a21f0eff27a016f5',
-    'app/(auth)/create-company.tsx': '0ca0a4155d56b0987a2c1816bdb775981fa7f16643e6a00ea0a8e0136c920366',
+    'app/(auth)/create-company.tsx': 'f14632b48b248abdcf29889873b81f168d4202caee61f57cf04766fa8c5c6446',
     'app/(auth)/_layout.tsx': '1d276fc0fd221a87d2e47732dd860a9f5000475e4e1e78bf5ca0eab379074109',
-    'src/components/branding/WelcomeOverlay.tsx': '71f0ae5eb68fa93c4f412893887373ff64e7099ea76adccecabeaebfba885aef',
+    'src/components/branding/WelcomeOverlay.tsx': '85244eedb874729513efdac4c3a7b19be9abd9190ee6f8d0ab6ed94bd18398e4',
   };
   const changed = Object.entries(fp).filter(([f, h]) => sha(read(f)) !== h).map(([f]) => f);
   check('28 the welcome, sign-in, forgot-password, create-company screens, the auth layout and the sign-in welcome overlay are unchanged', changed.length === 0, changed.join(', '));
   const wfiles = fs.existsSync(path.join(root, 'app/weather')) ? fs.readdirSync(path.join(root, 'app/weather')).sort().join() : '';
-  check('29 the Weather area is exactly its layout and its screens (home, outlook, history, request, account, Our Work with its project and video), and no other new area exists', wfiles === '(tabs),_layout.tsx,work-post.tsx,work-story.tsx,work-video.tsx' && fs.readdirSync(path.join(root, 'app/weather/(tabs)')).sort().join() === '_layout.tsx,account.tsx,history.tsx,index.tsx,outlook.tsx,request.tsx,work.tsx', wfiles);
+  check('29 the Weather area is exactly its layout and its screens (home, request, account), and no other new area exists', wfiles === '(tabs),_layout.tsx' && fs.readdirSync(path.join(root, 'app/weather/(tabs)')).sort().join() === '_layout.tsx,account.tsx,index.tsx,request.tsx', wfiles);
   check('30 the Weather screens are built, and the owner\'s switch still decides: the database default is OFF', WEATHER_EXPERIENCE_BUILT === true && /enabled boolean not null default false/.test(read('supabase/updates/103_public_weather_switch.sql')));
-  check('31 app.json has nothing about weather or location changes apart from the widget setup (permission text untouched)', !/weather/i.test(JSON.stringify(JSON.parse(read('app.json'), (k, v) => (Array.isArray(v) && v[0] === 'expo-widgets' ? undefined : v)))) && /Brighton Lawn uses your location to check you in when you arrive at a job site\./.test(read('app.json')));
+  check('31 app.json has nothing about weather or location changes apart from the widget setup (permission text untouched)', !/weather/i.test(JSON.stringify(JSON.parse(read('app.json'), (k, v) => (Array.isArray(v) && v[0] === 'expo-widgets' ? undefined : v)))) && /Starter App uses your location to check you in when you arrive at a job site\./.test(read('app.json')));
   const walk = (d) => fs.readdirSync(path.join(root, d), { withFileTypes: true }).flatMap((e) => e.isDirectory() ? (e.name === 'node_modules' ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)]);
   const callers = [...walk('app'), ...walk('src')].filter((f) => /\.(ts|tsx)$/.test(f) && /set_public_weather_enabled/.test(read(f)));
   check('32 the owner-only switch function is called from exactly one place (the data file the owner\'s Settings row uses), and that row is shown only to the owner', callers.map((f) => f.replace(/\\/g, '/')).join() === 'src/data/publicWeather.ts' && /db\.role === 'owner'/.test(read('src/hooks/usePublicWeatherRow.ts')) && /weatherRow\.canChange/.test(read('app/(owner)/(tabs)/more/settings.tsx')));

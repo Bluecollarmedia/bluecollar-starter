@@ -12,9 +12,6 @@ import { useWorkerActivitySummary, formatWorkedDuration, ACTIVITY_PERIODS, type 
 import { getWorkerHeaderImageUri } from '@/lib/projectImages';
 import { BrandCover } from '@/components/branding/BrandCover';
 import { useT, tr } from '@/i18n';
-import { db } from '@/data/store';
-import { useMaintenance } from '@/hooks/useMaintenance';
-import MaintenanceActivityScreen from '../maintenance/activity';
 
 
 function formatDayHeading(dateKey: string): string {
@@ -108,11 +105,6 @@ export default function WorkerActivityScreen() {
   const [period, setPeriod] = useState<ActivityPeriod>('this_week');
   const [pickerOpen, setPickerOpen] = useState(false);
   const summary = useWorkerActivitySummary(period);
-  const maintenance = useMaintenance();
-  // A worker whose work is route stops (not project jobs) has nothing in this list, so show their route history instead of an empty page.
-  const hasRouteHistory = maintenance.routes.some((r) => r.status !== 'cancelled' && (r.leadPersonId === db.personId || r.crewIds.includes(db.personId)) && r.stops.some((x) => x.status === 'completed' || x.status === 'skipped'))
-    || maintenance.events.some((e) => e.personId === db.personId);
-  if (summary.days.length === 0 && hasRouteHistory) return <MaintenanceActivityScreen />;
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.background }]}>

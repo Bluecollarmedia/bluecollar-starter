@@ -1,4 +1,3 @@
-import { useFileAddress } from '@/lib/privateMedia';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal, FlatList, View, Text, Pressable, StyleSheet, useWindowDimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
@@ -7,11 +6,10 @@ import { Icon } from '@/components/ui/Icon';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 
-export interface PagerPhoto { id: string; url: string; /** For a private photo: the stored key, opened through a short-lived link. */ key?: string }
+export interface PagerPhoto { id: string; url: string }
 
 function PagerImage({ photo }: { photo: PagerPhoto }) {
-  const uri = useFileAddress(photo.url, photo.key);
-  return uri ? <Image source={{ uri }} style={StyleSheet.absoluteFill} contentFit="contain" accessibilityLabel="Photo" /> : null;
+  return photo.url ? <Image source={{ uri: photo.url }} style={StyleSheet.absoluteFill} contentFit="contain" accessibilityLabel="Photo" /> : null;
 }
 export interface PagerAction { key: string; label: string; icon: React.ComponentProps<typeof Icon>['name']; destructive?: boolean; onPress: () => void }
 

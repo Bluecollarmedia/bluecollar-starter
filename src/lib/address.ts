@@ -28,7 +28,7 @@ const COUNTRY_END = /[\s,]+(?:usa|u\.s\.a\.|us|united states(?: of america)?)\.?
 
 /**
  * Splits a whole US address pasted or autofilled into the street field
- * ("205 Cathy Ln, Lakewood NJ 08701", "205 Cathy Ln\nLakewood, NJ 08701, United States",
+ * ("205 Oak Ln, Springfield IL 62701", "205 Oak Ln\nSpringfield, IL 62701, United States",
  * or the same with the line breaks turned into spaces by the keyboard)
  * into its parts. Returns null when the text is just a street.
  */
@@ -41,7 +41,7 @@ export function splitAddress(text: string): AddressParts | null {
     .filter((p) => !/^(usa|us|united states( of america)?)$/i.test(p));
   if (parts.length === 0) return null;
 
-  // No commas or line breaks at all ("205 Kathy Lane Lakewood NJ 08701"): needs a state and a ZIP.
+  // No commas or line breaks at all ("205 Oak Lane Springfield IL 62701"): needs a state and a ZIP.
   if (parts.length === 1) {
     const z = parts[0].match(/^(.*\S)\s+(\d{5})(?:-\d{4})?$/);
     if (!z) return null;

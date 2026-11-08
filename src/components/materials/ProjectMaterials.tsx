@@ -92,7 +92,7 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
             {newSuggestions === 1 ? '1 material' : `${newSuggestions} materials`} from approved work
           </Text>
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: 2 }]}>
-            Copied from lines grouped as Materials, or measured in tons, yards, bags, plants and similar. Quantities are what the quote says; each one is marked Needs review.
+            Copied from lines grouped as Materials, or measured in tons, yards, bags, pallets and similar. Quantities are what the quote says; each one is marked Needs review.
           </Text>
           <Button title="Add Suggestions" icon="plus" onPress={suggest} style={{ marginTop: spacing.sm, alignSelf: 'flex-start' }} />
         </View>

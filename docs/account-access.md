@@ -1,8 +1,8 @@
 # Accounts, admins, deactivation and company closure (update 66)
 
 One company, one owner, one account per person. Each worker's modes are separate permissions on that ONE account:
-Landscaping (an active `company_members` row) and Snow (an active `snow_staff` row with services). Snow-only people have no
-landscaping row, exactly as before (update 20). **Snow access is explicit per person**: switching Snow Mode on, or joining while it is on,
+Team access (an active `company_members` row) and Snow (an active `snow_staff` row with services). Snow-only people have no
+team row, exactly as before (update 20). **Snow access is explicit per person**: switching Snow Mode on, or joining while it is on,
 grants nobody anything (update 66 switches off the automatic grants of update 62; people who already have access keep it). If 62 is ever
 re-run, run 66 again after it.
 
@@ -14,7 +14,7 @@ re-run, run 66 again after it.
 * **Admins:** only the owner makes or removes an admin (`set_member_role`). Five powers can be switched off (team, invitations,
   snow access, time corrections, pay rates), all on by default, enforced in the database (`admin_can`). Admins can never delete the
   company, change the owner, or approve someone as admin.
-* **Four different actions:** remove landscaping access, remove snow access (`set_member_modes`), deactivate worker
+* **Four different actions:** remove team access, remove snow access (`set_member_modes`), deactivate worker
   (`deactivate_member`: both modes, pending requests, push tokens; refused while clocked in; warnings need a confirmation), delete company.
 * **Reactivate** (`reactivate_member`) is an explicit choice of modes. It never restores admin and never assigns work.
 * **Closing a company** (`delete_my_company`): owner only, name typed, refused while someone is clocked in or a storm is dispatched,

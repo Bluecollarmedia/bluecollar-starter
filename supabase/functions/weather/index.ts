@@ -1,9 +1,9 @@
 /**
- * weather — Brighton Weather's data source: the National Weather Service (NWS) API, read on the server and shaped into one small answer.
+ * weather — the Weather feature's data source: the National Weather Service (NWS) API, read on the server and shaped into one small answer.
  *
  * The app never talks to NWS itself. It asks this function for a town, and the function:
  *   1. refuses unless the owner's public Weather switch is ON (public_weather_config, update 103), so nothing is served while Weather is off;
- *   2. answers for the eight towns near Brighton (fixed list below, each point from the US Census and checked against NWS) and for any other US point
+ *   2. answers for the eight built-in nearby towns (fixed list below, each point from the US Census and checked against NWS) and for any other US point
  *      (its forecast grid is looked up from NWS /points, which also says the place's time zone);
  *   3. reads NWS (forecast, hourly, raw grid for snowfall, active alerts), converts it, and keeps the answer for 10 minutes;
  *   4. if NWS is unreachable, hands back the last good answer marked stale, or says it is unavailable.
@@ -281,7 +281,7 @@ const json = (status: number, body: unknown) => new Response(JSON.stringify(body
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
 const CONTACT = Deno.env.get('NWS_CONTACT');
-const USER_AGENT = `BrightonLawnWeather/1.0 (app.brightonlawn.com${CONTACT ? `, ${CONTACT}` : ''})`;
+const USER_AGENT = `StarterAppWeather/1.0 (app.yourcompany.com${CONTACT ? `, ${CONTACT}` : ''})`; // PLACEHOLDER: your app name and web address
 const TTL_MS = 10 * 60 * 1000;
 const NWS_TIMEOUT_MS = 8000;
 

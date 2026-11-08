@@ -1,5 +1,5 @@
 /**
- * Login Screen — Brighton Lawn + Landscape
+ * Login Screen
  *
  * Clean, professional login with the full company logo.
  */

@@ -11,6 +11,7 @@ import { todayKey } from '@/lib/ids';
 import { Card, Empty, LaborScreen, NotInstalled, StatePill, fmtClock, fmtDay, shiftDay } from '@/components/time/LaborBits';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -46,7 +47,7 @@ export default function LaborReviewScreen() {
       L.reload();
     };
     const msg = `Approve ${readyRows.length} day(s) that are ready? You can reopen any day later.`;
-    Alert.alert('Approve all ready days?', msg, [{ text: 'Cancel', style: 'cancel' }, { text: 'Approve', onPress: go }]);
+    confirmAction('Approve all ready days?', msg, 'Approve', () => { void go(); });
   }
 
   return (

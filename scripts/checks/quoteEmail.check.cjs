@@ -10,12 +10,12 @@ const sig = load('src/lib/signature.ts');
 let bad = 0;
 const check = (n, ok, d) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAIL') + '  ' + n + (ok ? '' : ' - ' + (d || ''))); };
 
-const m = email.buildDocumentEmailMessage({ customerName: 'David Cohen', kind: 'quote', totalText: '$0.00', dateText: 'October 19, 2026', contactEmail: 'info@brightonlawn.com', company: 'Brighton Lawn + Landscape' });
+const m = email.buildDocumentEmailMessage({ customerName: 'Pat Lee', kind: 'quote', totalText: '$0.00', dateText: 'October 19, 2026', contactEmail: 'office@example.com', company: 'Acme Paving' });
 check('1 the email says what the owner asked for, word for word',
-  m.hello === 'Hi David Cohen,'
+  m.hello === 'Hi Pat Lee,'
   && m.body === 'Thank you for asking us to quote your project. The quote total is $0.00 as of October 19, 2026.'
-  && m.closing === "If you have any questions or concerns regarding this quote, please don't hesitate to get in touch with info@brightonlawn.com."
-  && m.sign === 'Sincerely,\nBrighton Lawn + Landscape' && m.button === 'View quote');
+  && m.closing === "If you have any questions or concerns regarding this quote, please don't hesitate to get in touch with office@example.com."
+  && m.sign === 'Sincerely,\nAcme Paving' && m.button === 'View quote');
 
 const fn = read('supabase/functions/send-document-email/index.ts');
 check('2 the server function says exactly the same words and has the View button linking to the approval page',
@@ -34,7 +34,7 @@ check('6 the Send menu offers Email to Customer first, then Text Approval Link, 
   doc.indexOf("label: 'Email to Customer'") > 0 && doc.indexOf("label: 'Email to Customer'") < doc.indexOf("'Text Approval Link'") && /menu === 'email'/.test(doc) && /recipientFor\(doc\.customer\?\.email, typed\)/.test(doc));
 check('7 an email is only sent after the owner confirms, and the result is shown', /confirmAction\(\s*`Email \$\{label\.toLowerCase\(\)\} \$\{doc\.number\}\?`/.test(doc) && /Email sent/.test(doc));
 
-const inv = email.buildDocumentEmailMessage({ customerName: 'David Cohen', kind: 'invoice', totalText: '$250.00', dateText: 'October 21, 2026', contactEmail: 'info@brightonlawn.com', company: 'Brighton Lawn + Landscape', dueText: 'November 4, 2026' });
+const inv = email.buildDocumentEmailMessage({ customerName: 'Pat Lee', kind: 'invoice', totalText: '$250.00', dateText: 'October 21, 2026', contactEmail: 'office@example.com', company: 'Acme Paving', dueText: 'November 4, 2026' });
 check('9 an invoice email says invoice, the total and the due date, and the same words live in the server function',
   inv.body === 'Here is your invoice. The invoice total is $250.00 as of October 21, 2026. Payment is due by November 4, 2026.'
   && inv.button === 'View invoice'

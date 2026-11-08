@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Linking, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Linking } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
@@ -15,6 +15,7 @@ import { haptics } from '@/lib/haptics';
 import { semantic } from '@/theme/colors';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 const projectStatusBadge = (status: string): { label: string; status: 'success' | 'info' | 'warning' | 'neutral' } => {
   if (status === 'active') return { label: 'Active', status: 'success' };
@@ -32,6 +33,8 @@ export default function CustomerDetailScreen() {
   const { getCustomer } = useCustomers();
 
   const customer = getCustomer(id);
+  // Every hook runs before the early return below, so React always sees the same hooks in the same order.
+  const [savingAccess, setSavingAccess] = useState(false);
 
   if (!customer) {
     return (
@@ -62,26 +65,20 @@ export default function CustomerDetailScreen() {
 
   /** Deletes a customer with no login and no records. Anyone with projects, properties or a login is kept (turn their portal access off instead). */
   function handleDelete() {
-    Alert.alert(
+    confirmAction(
       `Delete ${p.firstName} ${p.lastName}?`,
       'This removes them completely and cannot be undone. It only works for a customer who never logged in and has no projects, properties, quotes or other records.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            const res = await deleteUnusedMember(p.id);
-            if (res.ok) { haptics.destructive(); router.back(); return; }
-            Alert.alert(res.hasHistory ? "Can't delete" : "Couldn't delete", res.hasHistory ? `${res.error}
+      'Delete',
+      async () => {
+        const res = await deleteUnusedMember(p.id);
+        if (res.ok) { haptics.destructive(); router.back(); return; }
+        showMessage(res.hasHistory ? "Can't delete" : "Couldn't delete", res.hasHistory ? `${res.error}
 
 You can turn their portal access off instead.` : res.error);
-          },
-        },
-      ],
+      },
+      true,
     );
   }
-  const [savingAccess, setSavingAccess] = useState(false);
 
   /** The owner decides: turn this customer's access on or off. Off asks first; it keeps all their records. */
   async function changeAccess(next: boolean) {
@@ -97,14 +94,14 @@ You can turn their portal access off instead.` : res.error);
         }
       } catch (e) {
         const msg = accessErrorText(e);
-        if (Platform.OS === 'web') alert(msg); else Alert.alert("Couldn't change access", msg);
+        showMessage("Couldn't change access", msg);
       } finally {
         setSavingAccess(false);
       }
     };
     if (next) { await apply(); return; }
     const t = turnOffText(p.firstName);
-    Alert.alert(t.title, t.message, [{ text: 'Cancel', style: 'cancel' }, { text: 'Turn Off', style: 'destructive', onPress: () => { void apply(); } }]);
+    confirmAction(t.title, t.message, 'Turn Off', () => { void apply(); }, true);
   }
 
   function handleCall() {
@@ -112,16 +109,9 @@ You can turn their portal access off instead.` : res.error);
     Linking.openURL(`tel:${p.phone.replace(/[^\d+]/g, '')}`);
   }
 
-  /** One Add button, two choices: a project, or a maintenance property. Either form opens already knowing this customer. */
+  /** Add a project for this customer; the form opens already knowing them. */
   function addForCustomer() {
-    const project = () => router.push(`/(owner)/project-new?customerId=${p.id}` as any);
-    const maintenance = () => router.push(`/(owner)/maintenance-property-edit?customerId=${p.id}` as any);
-    if (Platform.OS === 'web') { project(); return; }
-    Alert.alert(`Add for ${p.firstName}`, undefined, [
-      { text: 'Add project', onPress: project },
-      { text: 'Add maintenance property', onPress: maintenance },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    router.push(`/(owner)/project-new?customerId=${p.id}` as any);
   }
 
   function handleEmail() {
@@ -193,7 +183,7 @@ You can turn their portal access off instead.` : res.error);
                 style={[styles.addProjectBtn, { backgroundColor: colors.backgroundTertiary }]}
                 onPress={addForCustomer}
                 accessibilityRole="button"
-                accessibilityLabel="Add a project or a maintenance property for this customer"
+                accessibilityLabel="Add a project for this customer"
               >
                 <Icon name="plus" size={14} color={colors.textSecondary} />
                 <Text style={[typeScale.labelSmall, { color: colors.textSecondary, fontWeight: '600', marginLeft: 4 }]}>Add</Text>
@@ -233,38 +223,10 @@ You can turn their portal access off instead.` : res.error);
               })
             ) : (
               <Text style={[typeScale.bodySmall, { color: colors.textTertiary, marginTop: spacing.xs }]}>
-                {c.maintenanceProperties.length > 0 ? 'No projects (see maintenance properties below)' : 'No projects yet'}
+                No projects yet
               </Text>
             )}
           </View>
-
-          {/* Maintenance properties linked to this customer (the same customer link the Maintenance tab uses) */}
-          {c.maintenanceProperties.length > 0 ? (
-            <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
-              <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700', marginBottom: spacing.sm }]}>
-                Maintenance properties ({c.maintenanceProperties.length})
-              </Text>
-              {c.maintenanceProperties.map((mp, i) => (
-                <Pressable
-                  key={mp.id}
-                  style={[styles.projectRow, i > 0 && { marginTop: spacing.sm }]}
-                  onPress={() => router.push(`/(owner)/maintenance/properties/${mp.id}` as any)}
-                  accessibilityRole="button"
-                  accessibilityLabel={`Maintenance property ${mp.name}`}
-                >
-                  <View style={[styles.projectIcon, { backgroundColor: colors.backgroundTertiary }]}>
-                    <Icon name="home" size={18} color={colors.textTertiary} />
-                  </View>
-                  <View style={{ flex: 1, marginLeft: spacing.sm }}>
-                    <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]} numberOfLines={1}>{mp.name}</Text>
-                    {mp.address ? <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>{mp.address}</Text> : null}
-                  </View>
-                  {!mp.isActive ? <StatusBadge label="Inactive" status="neutral" /> : null}
-                  <Icon name="chevron-right" size={18} color={colors.textTertiary} />
-                </Pressable>
-              ))}
-            </View>
-          ) : null}
 
           {/* Account */}
           <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>

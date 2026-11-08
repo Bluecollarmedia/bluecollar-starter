@@ -10,7 +10,7 @@ const check = (n, ok, detail) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'F
 
 const sql = ['063_time_tracking_core', '064_time_corrections_approval_alerts', '065_time_tracking_followups', '090_stale_clock_sessions'].map((f) => read(`supabase/updates/${f}.sql`)).join('\n');
 const fnames = new Set([...sql.matchAll(/create or replace function public\.(time_[a-z_]+)\(/g)].map((m) => m[1]));
-const data = read('src/data/timeTracking.ts') + read('src/data/maintenance.ts') + read('src/data/timePhotos.ts');
+const data = read('src/data/timeTracking.ts') + read('src/data/timePhotos.ts');
 const calls = new Set([...data.matchAll(/(?:rpc\(|timeRpc\(|rpcDone\(|callDay\()\s*'(time_[a-z_]+)'/g)].map((m) => m[1]));
 const missing = [...calls].filter((c) => !fnames.has(c));
 check('1 every time_* function the app calls exists in the database updates (' + calls.size + ' calls)', calls.size > 20 && missing.length === 0, missing.join(', '));
@@ -26,7 +26,7 @@ check('4 the settings screen saves every switch', ['breaksEnabled', 'breaksPaid'
 const worker = read('src/data/timeTracking.ts');
 const dayParse = worker.slice(worker.indexOf('function parseDay'), worker.indexOf('export async function timeRpc') > 0 ? worker.indexOf('/** Calls one of the worker functions') : undefined);
 check('5 what a worker\'s phone receives has no pay rate, target, cost or average (the day JSON and the parser)', !/rate|target|cost|average|alert/i.test(dayParse) && !/'(rate|target|cost|average|alert)/i.test(sql.slice(sql.indexOf('function public._time_day_json'), sql.indexOf('function public.time_my_day'))), dayParse.match(/rate|target|cost|average|alert/gi)?.join());
-const workerFiles = ['src/components/time/WorkdayCard.tsx', 'src/components/time/SkipRequestSheet.tsx', 'src/hooks/useMyWorkday.ts', 'app/(worker)/maintenance/index.tsx', 'app/(worker)/maintenance-stop/[id].tsx', 'app/(worker)/(tabs)/index.tsx'];
+const workerFiles = ['src/components/time/WorkdayCard.tsx', 'src/components/time/SkipRequestSheet.tsx', 'src/hooks/useMyWorkday.ts', 'app/(worker)/(tabs)/index.tsx'];
 const leaks = workerFiles.filter((f) => /laborReports|loadLabor|visitHistoryStats|hourlyRate|loadTargets|loadAudit|loadAlerts/.test(read(f)));
 check('6 worker screens never import owner reports, labor loaders, audit, targets or pay rates', leaks.length === 0, leaks.join(', '));
 check('7 no offline queue for time actions: the worker hook shows a failure instead of saving locally', !/AsyncStorage|offlineQueue/.test(read('src/hooks/useMyWorkday.ts') + read('src/data/timeTracking.ts')) && /No connection\. This was not saved/.test(read('src/data/timeTracking.ts')));
@@ -41,7 +41,7 @@ check('9 tapping a time alert opens the day, the visit or the overview', /time_w
 const screens = ['labor', 'labor-day', 'labor-visit', 'labor-property', 'labor-properties', 'labor-week', 'labor-review', 'labor-settings'];
 const menu = read('app/(owner)/(tabs)/more/index.tsx');
 check('10 the Hours & Labor screens exist and the More menu links to them', screens.every((s) => fs.existsSync(path.join(root, `app/(owner)/(tabs)/more/${s}.tsx`))) && /HOURS & LABOR/.test(menu) && ['labor\'', 'labor-review', 'labor-week', 'labor-properties', 'labor-settings'].every((s) => menu.includes(`/more/${s.replace(/'$/, '')}`)));
-check('11 route order, skip approval and photos are enforced by the database (not only on screen)', /Stops are worked in order|Jobs are worked in order/.test(sql) && /time_decide_skip/.test(sql) && /Take the start photo/.test(sql) && /Take the completion photo/.test(sql) && /Complete the property you are working at/.test(sql));
+check('11 job order, skip approval and photos are enforced by the database (not only on screen)', /Stops are worked in order|Jobs are worked in order/.test(sql) && /time_decide_skip/.test(sql) && /Take the start photo/.test(sql) && /Take the completion photo/.test(sql) && /Complete the property you are working at/.test(sql));
 check('12 clock-out is refused with a property open (never closes it silently) and no property time is invented for a skipped stop', /You are still working at/.test(sql) && !/insert into public\.time_intervals[^;]*skipp/i.test(sql));
 check('13 approved days are locked from ordinary edits: workers have no write access, owner corrections reopen the day and are audited', /time_touch_approval/.test(sql) && /was_approved/.test(sql) && !/create policy [a-z_]+ on public\.time_(workdays|intervals|breaks) for (insert|update|delete)/i.test(sql));
 const exp = read('src/lib/exportCsv.ts') + read('src/lib/timeCalc.ts');

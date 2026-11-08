@@ -10,23 +10,23 @@ const l = m.exports;
 let bad = 0;
 const check = (n, ok, detail) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAIL') + '  ' + n + (ok ? '' : ' - ' + (detail || ''))); };
 
-const raw = { title: 'Wyndham mulch job', items: [
-  { category: 'Mulch', item: '  Brown   mulch ', quantity: 12, unit: 'yards', notes: 'double shredded' },
-  { category: 'Edging', item: 'Steel edging', quantity: '40', unit: 'ft', notes: '' },
-  { category: '', item: 'Landscape fabric', quantity: null, unit: '', notes: '' },
-  { category: 'Mulch', item: '', quantity: 3 },
+const raw = { title: 'Wyndham driveway job', items: [
+  { category: 'Stone & Gravel', item: '  Gray   gravel ', quantity: 12, unit: 'yards', notes: 'washed' },
+  { category: 'Concrete & Masonry', item: 'Steel rebar', quantity: '40', unit: 'ft', notes: '' },
+  { category: '', item: 'Drainage fabric', quantity: null, unit: '', notes: '' },
+  { category: 'Stone & Gravel', item: '', quantity: 3 },
   { item: 'Odd qty', quantity: 'lots' },
   'junk', null, 42,
 ], other_notes: ['Gate code is with the owner', '', 7] };
 const list = l.normalizeMaterialList(raw);
 check('1 the sorted list is cleaned: spaces tidied, empty items dropped, a missing category becomes Other, quantities are numbers or empty (never guessed)',
-  list.items.length === 4 && list.items[0].item === 'Brown mulch' && list.items[1].quantity === 40 && list.items[2].category === 'Other' && list.items[2].quantity === null && list.items[3].quantity === null, JSON.stringify(list.items));
+  list.items.length === 4 && list.items[0].item === 'Gray gravel' && list.items[1].quantity === 40 && list.items[2].category === 'Other' && list.items[2].quantity === null && list.items[3].quantity === null, JSON.stringify(list.items));
 check('2 other notes are kept (non-text entries dropped); strange answers become an empty list, not an error', list.otherNotes.length === 1 && l.normalizeMaterialList('garbage').items.length === 0 && l.normalizeMaterialList(null).title === 'Materials list');
 const g = l.groupByCategory(list.items);
-check('3 grouped by category in the order they first appear', g.map((x) => x.category).join() === 'Mulch,Edging,Other', g.map((x) => x.category).join());
+check('3 grouped by category in the order they first appear', g.map((x) => x.category).join() === 'Stone & Gravel,Concrete & Masonry,Other', g.map((x) => x.category).join());
 check('4 quantities read well', l.quantityText(list.items[0]) === '12 yards' && l.quantityText(list.items[2]) === '');
-const html = l.materialListHtml({ list: { ...list, items: [...list.items, { category: 'Mulch', item: '<script>alert(1)</script>', quantity: 1, unit: '', notes: '' }] }, projectName: 'Wyndham 2', address: '1 Edward Dr', company: 'Brighton Lawn + Landscape', dateText: 'October 19, 2026' });
-check('5 the vendor page has the project, address, groups, quantities and the company, and nothing from the notes can inject HTML', /Wyndham 2/.test(html) && /1 Edward Dr/.test(html) && /12 yards/.test(html) && /Prepared by Brighton Lawn \+ Landscape/.test(html) && !/<script>alert/.test(html) && /&lt;script&gt;/.test(html));
+const html = l.materialListHtml({ list: { ...list, items: [...list.items, { category: 'Stone & Gravel', item: '<script>alert(1)</script>', quantity: 1, unit: '', notes: '' }] }, projectName: 'Wyndham 2', address: '1 Edward Dr', company: 'Acme Paving', dateText: 'October 19, 2026' });
+check('5 the vendor page has the project, address, groups, quantities and the company, and nothing from the notes can inject HTML', /Wyndham 2/.test(html) && /1 Edward Dr/.test(html) && /12 yards/.test(html) && /Prepared by Acme Paving/.test(html) && !/<script>alert/.test(html) && /&lt;script&gt;/.test(html));
 check('6 no prices and no customer details on the vendor page', !/\$|customer|price/i.test(html.replace(/<style[\s\S]*?<\/style>/, '')));
 const stored = l.listToStored(list);
 const back = l.storedToList({ title: list.title, items: stored });
@@ -36,12 +36,12 @@ check('8 notes go to the sorter oldest first, each with its date', text.indexOf(
 
 const sn = { exports: {} };
 new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/sortNotes.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(sn, sn.exports, () => ({}));
-const sorted = sn.exports.sortNotesLocally(['Need 12 yards dark brown mulch', '40 ft steel edging (black)', '4 bags polymeric sand', '10 hydrangea shrubs', 'Back yard is 40 x 60', 'Call Dave about the gate', '3 rolls landscape fabric, 5 yards topsoil'].join(String.fromCharCode(10)), 'Test');
+const sorted = sn.exports.sortNotesLocally(['Need 2 buckets crack filler', 'Need 12 yards dark gray gravel', '40 ft steel rebar (black)', '4 bags polymeric sand', '10 sheets plywood', 'Lot is 40 x 60', 'Call Dave about the gate', '3 rolls drainage fabric, 5 yards topsoil'].join(String.fromCharCode(10)), 'Test');
 const by = (n) => sorted.items.find((i) => i.item.toLowerCase().includes(n));
 check('9 the on-device sorter (no AI, no key) reads quantities and units, groups by category, keeps reminders and measurements as other notes, never guesses',
-  by('mulch').quantity === 12 && by('mulch').unit === 'yards' && by('edging').quantity === 40 && by('edging').notes === 'black' && by('polymeric').category === 'Concrete & Masonry' && by('topsoil').quantity === 5 && by('fabric').quantity === 3
-  && sorted.otherNotes.length === 2 && sorted.otherNotes.some((x) => /gate/.test(x)) && sorted.otherNotes.some((x) => /40 x 60/.test(x)) && sorted.items[0].category === 'Mulch', JSON.stringify(sorted));
-check('9b nothing recognisable gives no items, and a note with no quantity keeps the quantity empty', sn.exports.sortNotesLocally('hello there', 'T').items.length === 0 && sn.exports.sortNotesLocally('some mulch', 'T').items[0].quantity === null);
+  by('gravel').quantity === 12 && by('gravel').unit === 'yards' && by('rebar').quantity === 40 && by('rebar').notes === 'black' && by('plywood').category === 'Lumber' && by('polymeric').category === 'Concrete & Masonry' && by('topsoil').quantity === 5 && by('fabric').quantity === 3
+  && sorted.otherNotes.length === 2 && sorted.otherNotes.some((x) => /gate/.test(x)) && sorted.otherNotes.some((x) => /40 x 60/.test(x)) && sorted.items[0].category === 'Asphalt & Sealcoat' && by('crack').quantity === 2, JSON.stringify(sorted));
+check('9b nothing recognisable gives no items, and a note with no quantity keeps the quantity empty', sn.exports.sortNotesLocally('hello there', 'T').items.length === 0 && sn.exports.sortNotesLocally('some gravel', 'T').items[0].quantity === null);
 const sql = read('supabase/updates/057_owner_project_notes.sql');
 check('10 the database keeps all three tables OWNER-ONLY and they belong to the project (tested)', /is_company_owner\(company_id\)/.test(sql) && /owner_project_notes/.test(sql) && /owner_project_photos/.test(sql) && /owner_material_lists/.test(sql) && fs.existsSync(path.join(__dirname, '../../supabase/tests/057_owner_project_notes.pglite.mjs')));
 const data = read('src/data/ownerProjectNotes.ts');

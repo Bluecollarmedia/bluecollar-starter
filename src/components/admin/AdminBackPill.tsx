@@ -10,7 +10,7 @@ import { useT } from '@/i18n';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 
-/** An admin working a job or a Snow route from the worker view gets a small way back to the admin view. Nothing for a real worker. */
+/** An admin working a job from the worker view gets a small way back to the admin view. Nothing for a real worker. */
 export function AdminBackPill({ to = '/(owner)', onBack }: { to?: string; onBack?: () => void } = {}) {
   const { colors } = useTheme();
   const router = useRouter();

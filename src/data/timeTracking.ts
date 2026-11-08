@@ -1,7 +1,7 @@
 /**
  * Workday and property-visit time tracking (supabase/updates/063 and 064).
  *
- * Workers use the time_* functions (the database checks who they are, route order, photos, one-open-property and so on).
+ * Workers use the time_* functions (the database checks who they are, photos, one-open-property and so on).
  * Owners read the time tables and make corrections through the time_staff_* functions. Nothing here saves a time locally:
  * an action is shown as done only after the database confirms it. There is no offline queue.
  */
@@ -15,7 +15,7 @@ const ok = <T,>(data: T): Result<T> => ({ ok: true, data });
 const NOT_INSTALLED = /could not find the function|schema cache|does not exist|relation .* does not exist/i;
 const OFFLINE = /network request failed|failed to fetch|fetch failed|networkerror|load failed|timeout|internet/i;
 
-/** Plain words for whatever went wrong; the database's own sentences (route order, photos, ...) pass straight through. */
+/** Plain words for whatever went wrong; the database's own sentences (photos, ...) pass straight through. */
 export type Failure = { ok: false; error: string; notInstalled?: boolean; offline?: boolean };
 export function explainError(e: { message?: string } | null | undefined, fallback: string): Failure {
   const m = e?.message?.trim() ?? '';
@@ -49,8 +49,7 @@ export interface MyCurrentVisit {
   visitId: string;
   workdayId: string;
   startedAt: string;
-  source: 'maintenance_stop' | 'project_day';
-  stopId?: string;
+  source: 'project_day';
   projectId?: string;
   label?: string;
 }
@@ -60,7 +59,7 @@ export interface MyDay {
   /** serverNow − this phone's clock, in ms. Add it to Date.now() to get server time. */
   clockOffsetMs: number;
   workDate: string;
-  /** False when the worker has no route or job today: the phone shows "No work scheduled today" instead of Clock In. (The database refuses it either way.) */
+  /** False when the worker has no job today: the phone shows "No work scheduled today" instead of Clock In. (The database refuses it either way.) */
   canClockIn: boolean;
   settings: { breaksEnabled: boolean; requireStartPhoto: boolean; requireCompletePhoto: boolean; /** Open this long = stale (the owner's "open workday hours"). */ staleAfterHours: number };
   /** Today's workdays (usually one), any still open, and any flagged "needs review". */
@@ -103,7 +102,7 @@ function parseDay(r: Raw): MyDay {
     })),
     current: r.current ? {
       intervalId: r.current.interval_id, visitId: r.current.visit_id, workdayId: r.current.workday_id, startedAt: r.current.started_at,
-      source: r.current.source, stopId: r.current.stop_id ?? undefined, projectId: r.current.project_id ?? undefined, label: r.current.label ?? undefined,
+      source: r.current.source, projectId: r.current.project_id ?? undefined, label: r.current.label ?? undefined,
     } : undefined,
     alreadyActive: !!r.already_active,
     alreadyClosed: !!r.already_closed,
@@ -142,7 +141,7 @@ export const startBreak = () => callDay('time_break_start', {}, "Couldn't start 
 export const endBreak = () => callDay('time_break_end', {}, "Couldn't end the break.");
 
 export interface Gps { lat?: number; lng?: number; accuracy?: number; state?: string; /** The phone's full reading, saved with the older check-in record. */ raw?: Record<string, unknown> | null }
-export const startVisit = (source: 'maintenance_stop' | 'assignment', refId: string, gps: Gps = {}) =>
+export const startVisit = (source: 'assignment', refId: string, gps: Gps = {}) =>
   callDay('time_start_visit', { p_source: source, p_ref: refId, p_lat: gps.lat ?? null, p_lng: gps.lng ?? null, p_accuracy: gps.accuracy ?? null, p_location_state: gps.state ?? 'ok', p_gps: gps.raw ?? (gps.lat != null ? { lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy } : null) }, "Couldn't start this property.");
 export const completeVisit = (visitId: string, note?: string, gps: Gps = {}) =>
   callDay('time_complete_visit', { p_visit_id: visitId, p_note: note ?? null, p_lat: gps.lat ?? null, p_lng: gps.lng ?? null, p_accuracy: gps.accuracy ?? null, p_location_state: gps.state ?? 'ok', p_gps: gps.raw ?? (gps.lat != null ? { lat: gps.lat, lng: gps.lng, accuracy: gps.accuracy } : null) }, "Couldn't complete this property.");
@@ -164,29 +163,13 @@ export async function loadMySkipRequests(): Promise<Result<MySkipRequest[]>> {
   if (error) return explainError(error, "Couldn't load your skip requests.");
   return ok(((data ?? []) as Raw[]).map((r) => ({ id: r.id, source: r.source, refId: r.ref_id, status: r.status, reason: r.reason, createdAt: r.created_at, decisionNote: r.decision_note ?? undefined })));
 }
-export async function requestSkip(source: 'maintenance_stop' | 'assignment', refId: string, reason: string): Promise<Result> {
+export async function requestSkip(source: 'assignment', refId: string, reason: string): Promise<Result> {
   const { error } = await supabase.rpc('time_request_skip', { p_source: source, p_ref: refId, p_reason: reason });
   return error ? explainError(error, "Couldn't send the skip request.") : ok(undefined);
 }
 export async function withdrawSkip(id: string): Promise<Result> {
   const { error } = await supabase.rpc('time_withdraw_skip', { p_request_id: id });
   return error ? explainError(error, "Couldn't withdraw the request.") : ok(undefined);
-}
-
-export interface CrewClockOut { closed: string[]; stillWorking: { name: string; why: string }[] }
-/** The crew leader (or the owner) clocks out everyone on the route after the last stop. Anyone on a property timer or a break is left alone and reported. */
-export async function clockOutCrew(routeId: string): Promise<Result<CrewClockOut>> {
-  const { data, error } = await supabase.rpc('maintenance_clock_out_crew', { p_route: routeId });
-  if (error) {
-    const failed = explainError(error, "Couldn't clock the crew out.");
-    return failed.notInstalled ? { ...failed, error: "Clocking the whole crew out isn't switched on yet." } : failed;
-  }
-  emitTimeChanged();
-  const d = (data ?? {}) as { closed?: Raw[]; still_working?: Raw[] };
-  return ok({
-    closed: (d.closed ?? []).map((x) => String(x.first_name)),
-    stillWorking: (d.still_working ?? []).map((x) => ({ name: String(x.first_name), why: String(x.why) })),
-  });
 }
 
 // ── Owner: reading ──────────────────────────────────────────────────────────
@@ -199,7 +182,7 @@ export interface LaborWorkday {
 }
 export interface LaborBreak { id: string; workdayId: string; personId: string; startedAt: string; endedAt?: string; paid: boolean }
 export interface LaborVisit {
-  id: string; source: 'maintenance_stop' | 'project_day'; maintenanceStopId?: string; maintenancePropertyId?: string; routeId?: string; projectId?: string;
+  id: string; source: 'project_day'; projectId?: string;
   visitDate: string; label?: string; status: 'in_progress' | 'completed' | 'void'; startedAt?: string; endedAt?: string; billable: boolean; targetMinutes?: number;
 }
 export interface LaborInterval {
@@ -213,7 +196,7 @@ export interface LaborAlert {
   id: string; kind: string; personId?: string; workdayId?: string; visitId?: string; skipRequestId?: string; title: string; detail: string; status: 'open' | 'resolved'; createdAt: string;
 }
 export interface LaborSkip {
-  id: string; source: string; maintenanceStopId?: string; assignmentId?: string; requestedBy: string; reason: string; status: string; decidedBy?: string; decidedAt?: string; decisionNote?: string; createdAt: string;
+  id: string; source: string; assignmentId?: string; requestedBy: string; reason: string; status: string; decidedBy?: string; decidedAt?: string; decisionNote?: string; createdAt: string;
 }
 export interface LaborSnapshot {
   workdays: LaborWorkday[]; breaks: LaborBreak[]; visits: LaborVisit[]; intervals: LaborInterval[]; skips: LaborSkip[];
@@ -288,7 +271,7 @@ export async function loadLabor(fromDate: string, toDate: string, personId?: str
         id: i.id, visitId: i.visit_id, workdayId: i.workday_id, personId: i.person_id, startedAt: i.started_at, endedAt: i.ended_at ?? undefined, status: i.status, billable: !!i.billable, hourlyRate: rateOf(i.time_interval_rates),
       })),
       skips: (skips.data ?? []).map((s: Raw): LaborSkip => ({
-        id: s.id, source: s.source, maintenanceStopId: s.maintenance_stop_id ?? undefined, assignmentId: s.assignment_id ?? undefined, requestedBy: s.requested_by, reason: s.reason,
+        id: s.id, source: s.source, assignmentId: s.assignment_id ?? undefined, requestedBy: s.requested_by, reason: s.reason,
         status: s.status, decidedBy: s.decided_by ?? undefined, decidedAt: s.decided_at ?? undefined, decisionNote: s.decision_note ?? undefined, createdAt: s.created_at,
       })),
       names,
@@ -313,16 +296,16 @@ function rateOf(v: unknown): number | null {
 }
 function toVisit(v: Raw): LaborVisit {
   return {
-    id: v.id, source: v.source, maintenanceStopId: v.maintenance_stop_id ?? undefined, maintenancePropertyId: v.maintenance_property_id ?? undefined, routeId: v.route_id ?? undefined,
+    id: v.id, source: v.source,
     projectId: v.project_id ?? undefined, visitDate: v.visit_date, label: v.label ?? undefined, status: v.status, startedAt: v.started_at ?? undefined, endedAt: v.ended_at ?? undefined,
     billable: !!v.billable, targetMinutes: v.target_minutes ?? undefined,
   };
 }
 
-/** Visits (with their intervals) for one maintenance property or project, across any dates: the history behind "Chase Bank, 20 visits". */
-export async function loadVisitHistory(kind: 'maintenance_property' | 'project', id: string, fromDate?: string, toDate?: string): Promise<Result<{ visits: LaborVisit[]; intervals: LaborInterval[]; names: Record<string, string> }>> {
+/** Visits (with their intervals) for one project, across any dates: the history behind "Chase Bank, 20 visits". */
+export async function loadVisitHistory(id: string, fromDate?: string, toDate?: string): Promise<Result<{ visits: LaborVisit[]; intervals: LaborInterval[]; names: Record<string, string> }>> {
   if (!isSupabaseConfigured) return { ok: false, error: 'Needs the live database.', notInstalled: true };
-  let q = supabase.from('time_visits').select('*').eq(kind === 'project' ? 'project_id' : 'maintenance_property_id', id).order('visit_date', { ascending: false }).limit(500);
+  let q = supabase.from('time_visits').select('*').eq('project_id', id).order('visit_date', { ascending: false }).limit(500);
   if (fromDate) q = q.gte('visit_date', fromDate);
   if (toDate) q = q.lte('visit_date', toDate);
   const v = await q;
@@ -399,15 +382,15 @@ export async function saveTimeSettings(companyId: string, s: TimeSettings, byPer
   return error ? explainError(error, "Couldn't save the time settings.") : ok(undefined);
 }
 
-export interface PropertyTarget { id: string; maintenancePropertyId?: string; projectId?: string; targetMinutes: number }
+export interface PropertyTarget { id: string; projectId?: string; targetMinutes: number }
 export async function loadTargets(): Promise<Result<PropertyTarget[]>> {
   const { data, error } = await supabase.from('time_property_targets').select('*');
   if (error) return explainError(error, "Couldn't load the targets.");
-  return ok((data ?? []).map((t: Raw) => ({ id: t.id, maintenancePropertyId: t.maintenance_property_id ?? undefined, projectId: t.project_id ?? undefined, targetMinutes: t.target_minutes })));
+  return ok((data ?? []).map((t: Raw) => ({ id: t.id, projectId: t.project_id ?? undefined, targetMinutes: t.target_minutes })));
 }
 /** minutes = null removes the target. */
-export async function saveTarget(companyId: string, kind: 'maintenance_property' | 'project', refId: string, minutes: number | null, byPersonId?: string): Promise<Result> {
-  const col = kind === 'project' ? 'project_id' : 'maintenance_property_id';
+export async function saveTarget(companyId: string, refId: string, minutes: number | null, byPersonId?: string): Promise<Result> {
+  const col = 'project_id';
   if (minutes == null) {
     const { error } = await supabase.from('time_property_targets').delete().eq(col, refId);
     return error ? explainError(error, "Couldn't remove the target.") : ok(undefined);

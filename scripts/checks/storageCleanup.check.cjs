@@ -83,7 +83,7 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
   const shared = fs.readFileSync(file, 'utf8');
   const rule = (t) => (t.match(/const UUID = '([^']+)'/) || [])[1] + '|' + (t.match(/const PREFIX_RE = new RegExp\(`([^`]+)`/) || [])[1];
   check('15 the pasteable function uses the same safety rules as the tested copy', rule(idx) === rule(shared) && rule(idx).length > 20);
-  check('16 the function deletes in both R2 buckets and the Snow stand-in bucket, and has no relative imports (pasteable)', /PUBLIC_BUCKET, PRIVATE_BUCKET/.test(idx) && /SNOW_BUCKET/.test(idx) && !/from '\.\.?\//.test(idx));
+  check('16 the function deletes in both R2 buckets, and has no relative imports (pasteable)', /PUBLIC_BUCKET, PRIVATE_BUCKET/.test(idx) && !/from '\.\.?\//.test(idx));
 
   console.log(bad ? `\n${bad} failed` : '\nall passed');
   process.exit(bad ? 1 : 0);

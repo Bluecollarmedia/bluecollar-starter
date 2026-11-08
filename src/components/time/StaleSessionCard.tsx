@@ -1,6 +1,6 @@
 /**
- * The ONE card shown, on every clock (the workday clock and the Snow clock), when a worker never clocked out of an earlier day.
- * It blocks nothing: today's Clock In, route and timer work normally underneath. The worker says when they really stopped (or that
+ * The ONE card shown, on the workday clock, when a worker never clocked out of an earlier day.
+ * It blocks nothing: today's Clock In and timer work normally underneath. The worker says when they really stopped (or that
  * they are not sure); that is only SAVED for the owner, who sets the real end time. The old time is kept, counts as zero hours
  * until then, and no end time is ever invented.
  */

@@ -10,8 +10,8 @@ export interface Announcement {
   createdBy: string;
   title: string;
   body: string;
-  /** Workers' announcements, or a message to customers (customers_all, customers_landscaping, customers_maintenance, customers_snow). */
-  audience: AnnouncementAudience | 'customers_all' | 'customers_landscaping' | 'customers_maintenance' | 'customers_snow';
+  /** Workers' announcements, or a message to customers (customers_all, customers_landscaping = with an active project). */
+  audience: AnnouncementAudience | 'customers_all' | 'customers_landscaping';
   priority: AnnouncementPriority;
   weatherAction?: WeatherActionType;
   /** Who it was sent to (active workers at send time). Empty = everyone. */

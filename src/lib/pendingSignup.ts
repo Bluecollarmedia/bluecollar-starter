@@ -1,4 +1,4 @@
-// Pure helpers for the extras someone fills in while creating an account (profile photo, birthday, hoodie size, ID photo).
+// Pure helpers for the extras someone fills in while creating an account (profile photo, birthday, shirt size, ID photo).
 // When the account needs email confirmation there is no sign-in yet, so these are kept on the phone and saved the first time the
 // person is signed in. No storage or network here.
 import type { HoodieSize } from '@/lib/workerDetails';

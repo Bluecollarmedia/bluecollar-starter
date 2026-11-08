@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, Platform, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Platform, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter } from 'expo-router';
@@ -16,6 +16,7 @@ import { verifyAddress } from '@/lib/maps';
 import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 type Feedback = { tone: 'success' | 'error'; text: string } | null;
 
@@ -69,13 +70,13 @@ export default function YardLocationScreen() {
         return;
       }
       if (r.status === 'not_found') {
-        Alert.alert(
+        confirmAction(
           'Address not found on the map',
           'Double-check the address. If it’s right, you can save it as typed.',
-          [
-            { text: 'Fix Address', style: 'cancel' },
-            { text: 'Save As Typed', onPress: () => { setCheck({ overridden: true }); save({ overridden: true }); } },
-          ],
+          'Save As Typed',
+          () => { setCheck({ overridden: true }); save({ overridden: true }); },
+          false,
+          'Fix Address',
         );
         return;
       }

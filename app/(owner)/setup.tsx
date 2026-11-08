@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Platform, Alert, Keyboard } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Keyboard } from 'react-native';
 import { Switch } from '@/components/ui/Switch';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
@@ -22,6 +22,7 @@ import { EVENT_LABELS, ALL_EVENTS } from '@/lib/notificationEvents';
 import { getCompanyImageUri, getWorkerHeaderImageUri } from '@/lib/projectImages';
 import { HeaderPhotoField } from '@/components/media/HeaderPhotoField';
 import type { SetupStepKey } from '@/types/company';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 /** Recommended first-time setup for the owner. Opens automatically until it's been walked through once. */
 export default function CompanySetupScreen() {
@@ -38,10 +39,7 @@ export default function CompanySetupScreen() {
   const isLast = index === SETUP_STEPS.length - 1;
 
   function confirm(title: string, message: string, ok: string, onOk: () => void) {
-    Alert.alert(title, message, [
-      { text: 'Go Back', style: 'cancel' },
-      { text: ok, style: 'destructive', onPress: onOk },
-    ]);
+    confirmAction(title, message, ok, onOk, true, 'Go Back');
   }
 
   function advance() {

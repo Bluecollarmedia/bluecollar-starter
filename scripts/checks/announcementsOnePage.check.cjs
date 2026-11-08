@@ -18,7 +18,7 @@ check('3 one toggle at the top picks Workers or Customers, and the customer form
 check('4 the announcements already sent are listed right below the form', /SENT ANNOUNCEMENTS/.test(page) && /sorted\.map\(\(ann\)/.test(page) && /BottomSheetModal/.test(page));
 check('5 sending clears the form and puts the keyboard away (nothing stays open or half-filled)', /Keyboard\.dismiss\(\)/.test(composer) && /setTitle\(''\)/.test(composer) && /setBody\(''\)/.test(composer));
 check('6 the worker form keeps title, message, priority, weather action, the push note and Send; there is no Cancel', /Weather Action/.test(composer) && /Priority/.test(composer) && /Push notifications will be sent/.test(composer) && /Send to All Workers/.test(composer) && !/Cancel/.test(composer));
-check('7 a message to customers still reads the same way it did (audience chips, counts, confirm) and Snow Mode keeps its own screen for it', /AUDIENCES\.map/.test(read('src/components/announcements/MessageCustomersScreen.tsx')) && /export function MessageCustomersScreen/.test(read('src/components/announcements/MessageCustomersScreen.tsx')) && exists('app/snow/owner/message-customers.tsx'));
+check('7 a message to customers still reads the same way it did (audience chips, counts, confirm)', /AUDIENCES\.map/.test(read('src/components/announcements/MessageCustomersScreen.tsx')) && /export function MessageCustomersPanel/.test(read('src/components/announcements/MessageCustomersScreen.tsx')));
 check('8 the dashboard quick action and More both open this one page', /\/\(owner\)\/more\/announcements'/.test(read('app/(owner)/(tabs)/index.tsx')) && /more\/announcements/.test(read('app/(owner)/(tabs)/more/index.tsx')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

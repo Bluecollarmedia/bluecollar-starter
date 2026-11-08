@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, TextInput, Platform, Alert, Keyboard } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, TextInput, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter } from 'expo-router';
@@ -15,6 +15,7 @@ import { usePayroll, type PayrollEstimate, type OvertimeTerms } from '@/hooks/us
 import { localDateKey } from '@/lib/ids';
 import { db } from '@/data/store';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 function formatHours(hours: number): string {
   const h = Math.floor(hours);
@@ -40,8 +41,7 @@ function overtimeSummary(ot: OvertimeTerms): string {
 }
 
 function showAlert(title: string, msg: string) {
-  if (Platform.OS === 'web') alert(msg);
-  else Alert.alert(title, msg);
+  showMessage(title, msg);
 }
 
 function formatDate(dateStr: string): string {
@@ -211,8 +211,7 @@ function PayrollCard({
     const rate = Number(rateDraft.replace(/[^0-9.]/g, ''));
     if (!rateDraft.trim() || !Number.isFinite(rate) || rate <= 0) {
       const msg = 'Enter an hourly rate, like 22 or 22.50.';
-      if (Platform.OS === 'web') alert(msg);
-      else Alert.alert('Check the rate', msg);
+      showMessage('Check the rate', msg);
       return;
     }
     onSetRate(Math.round(rate * 100) / 100);

@@ -24,7 +24,7 @@ interface FieldsProps {
   onError: (message: string) => void;
 }
 
-/** Hoodie size and ID photo: used when joining a team and again in Edit Profile, so they can be added or changed later. */
+/** Shirt size (saved in the hoodie_size column) and ID photo: used when joining a team and again in Edit Profile, so they can be added or changed later. */
 export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, savedIdKey, onRemoveSaved, onError }: FieldsProps) {
   const t = useT();
   const { colors } = useTheme();
@@ -40,7 +40,7 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
   return (
     <View style={{ gap: spacing.lg }}>
       <View>
-        <Text style={[typeScale.labelSmall, { color: colors.textPrimary, marginBottom: spacing.sm }]}>{t('Hoodie Size (optional)')}</Text>
+        <Text style={[typeScale.labelSmall, { color: colors.textPrimary, marginBottom: spacing.sm }]}>{t('Shirt Size (optional)')}</Text>
         <View style={styles.chips}>
           {HOODIE_SIZES.map((s) => {
             const on = hoodie === s;
@@ -155,7 +155,7 @@ export function ViewIdButton({ idKey }: { idKey: string | undefined }) {
   );
 }
 
-/** For the owner: a worker's hoodie size and (owner only) a private View ID link. Shows nothing until one of them exists. */
+/** For the owner: a worker's shirt size and (owner only) a private View ID link. Shows nothing until one of them exists. */
 export function OwnerWorkerExtras({ personId }: { personId: string }) {
   const t = useT();
   const { colors } = useTheme();
@@ -173,7 +173,7 @@ export function OwnerWorkerExtras({ personId }: { personId: string }) {
   if (!size && !idKey) return null;
   return (
     <View>
-      {size ? <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t('Hoodie size: {size}', { size })}</Text> : null}
+      {size ? <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t('Shirt size: {size}', { size })}</Text> : null}
       <ViewIdButton idKey={idKey} />
     </View>
   );

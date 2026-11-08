@@ -26,7 +26,6 @@ import { syncMaterialReminders } from '@/lib/materialReminders';
 import { syncTruckReminders } from '@/lib/truckReminders';
 import type { AuthState, UserProfile, UserRole } from '@/types';
 import type { OnboardingStep } from '@/types/onboarding';
-import { fetchMySnowAccess } from '@/hooks/useSnowTeam';
 
 // ── Extended auth state ─────────────────────────────────────────
 
@@ -36,25 +35,16 @@ export type AppState =
   | 'onboarding'
   | 'active';
 
-/** What the signed-in person may use. The company's active mode never grants
- * access by itself; this comes from their landscaping membership and their
- * approved snow access. */
-export interface ModeAccess {
-  landscaping: boolean;
-  snow: boolean;
-}
-
 interface ExtendedAuthState extends AuthState {
   appState: AppState;
   onboardingStep: OnboardingStep;
   /** The real membership role (admins use the owner screens, so user.role is 'owner' for them). */
   memberRole?: UserRole;
-  modeAccess?: ModeAccess;
 }
 
 // ── Actions ──────────────────────────────────────────────────────
 type AuthAction =
-  | { type: 'RESOLVED'; user: UserProfile; session: AuthState['session']; appState: AppState; onboardingStep: OnboardingStep; memberRole?: UserRole; modeAccess?: ModeAccess }
+  | { type: 'RESOLVED'; user: UserProfile; session: AuthState['session']; appState: AppState; onboardingStep: OnboardingStep; memberRole?: UserRole }
   | { type: 'SIGN_OUT' }
   | { type: 'SET_LOADING'; isLoading: boolean }
   | { type: 'UPDATE_PROFILE'; user: UserProfile }
@@ -73,7 +63,6 @@ function authReducer(state: ExtendedAuthState, action: AuthAction): ExtendedAuth
         appState: action.appState,
         onboardingStep: action.onboardingStep,
         memberRole: action.memberRole,
-        modeAccess: action.modeAccess,
       };
     case 'SIGN_OUT':
       return {
@@ -84,7 +73,6 @@ function authReducer(state: ExtendedAuthState, action: AuthAction): ExtendedAuth
         appState: 'unauthenticated',
         onboardingStep: 'welcome',
         memberRole: undefined,
-        modeAccess: undefined,
       };
     case 'SET_LOADING':
       return { ...state, isLoading: action.isLoading };
@@ -105,7 +93,6 @@ function authReducer(state: ExtendedAuthState, action: AuthAction): ExtendedAuth
         appState: action.appState,
         onboardingStep: action.onboardingStep,
         memberRole: action.user.role,
-        modeAccess: { landscaping: true, snow: false },
       };
     default:
       return state;
@@ -197,15 +184,10 @@ interface Resolution {
   onboardingStep: OnboardingStep;
   memberRole?: UserRole;
   companyId?: string;
-  modeAccess?: ModeAccess;
 }
 
 async function resolveContext(): Promise<Resolution | null> {
-  // Snow access is read separately so a database without the Snow update still works (the list is just empty then).
-  const [{ data, error }, snowAccess] = await Promise.all([
-    supabase.rpc('get_my_context'),
-    fetchMySnowAccess().catch(() => [] as Awaited<ReturnType<typeof fetchMySnowAccess>>),
-  ]);
+  const { data, error } = await supabase.rpc('get_my_context');
   if (error || !data) {
     console.warn('[auth] get_my_context failed:', error?.message);
     return null;
@@ -233,22 +215,8 @@ async function resolveContext(): Promise<Resolution | null> {
     updatedAt: p.updated_at,
   };
 
-  const snowOnly = snowAccess[0];
-
   if (membership) {
-    return {
-      user, appState: 'active', onboardingStep: 'ready', memberRole: membership.role, companyId: membership.company_id,
-      modeAccess: { landscaping: true, snow: snowAccess.some((e) => e.companyId === membership.company_id) || membership.role === 'owner' || membership.role === 'admin' },
-    };
-  }
-  // Approved for snow only: a worker with no landscaping access. They get no
-  // company membership, so landscaping data stays closed to them.
-  if (snowOnly) {
-    return {
-      user: { ...user, role: 'worker', activeCompanyId: snowOnly.companyId },
-      appState: 'active', onboardingStep: 'ready', memberRole: 'worker', companyId: snowOnly.companyId,
-      modeAccess: { landscaping: false, snow: true },
-    };
+    return { user, appState: 'active', onboardingStep: 'ready', memberRole: membership.role, companyId: membership.company_id };
   }
   return { user, appState: 'onboarding', onboardingStep: 'create_company' };
 }
@@ -256,19 +224,19 @@ async function resolveContext(): Promise<Resolution | null> {
 // ── Dev mock users (no Supabase) ────────────────────────────────
 const DEV_USERS: Record<'owner' | 'worker' | 'customer', UserProfile> = {
   owner: {
-    id: 'owner1', email: 'joey@brightonlawn.com', role: 'owner',
-    firstName: 'Joey', lastName: 'Angeloco', activeCompanyId: 'company1',
-    avatarUrl: 'https://ui-avatars.com/api/?name=Joey+Angeloco&background=7CB342&color=fff&size=128',
+    id: 'owner1', email: 'alex@example.com', role: 'owner',
+    firstName: 'Alex', lastName: 'Morgan', activeCompanyId: 'company1',
+    avatarUrl: 'https://ui-avatars.com/api/?name=Alex+Morgan&background=7CB342&color=fff&size=128',
     createdAt: '2024-01-15T10:00:00Z', updatedAt: '2024-01-15T10:00:00Z',
   },
   worker: {
-    id: 'worker1', email: 'marcus@brightonlawn.com', role: 'worker',
+    id: 'worker1', email: 'marcus@example.com', role: 'worker',
     firstName: 'Marcus', lastName: 'Rivera', activeCompanyId: 'company1',
     avatarUrl: 'https://ui-avatars.com/api/?name=Marcus+Rivera&background=42A5F5&color=fff&size=128',
     createdAt: '2025-03-01T08:00:00Z', updatedAt: '2025-03-01T08:00:00Z',
   },
   customer: {
-    id: 'customer1', email: 'sarah.mitchell@email.com', role: 'customer',
+    id: 'customer1', email: 'sarah.mitchell@example.com', role: 'customer',
     firstName: 'Sarah', lastName: 'Mitchell', activeCompanyId: 'company1',
     avatarUrl: 'https://ui-avatars.com/api/?name=Sarah+Mitchell&background=AB47BC&color=fff&size=128',
     createdAt: '2026-02-15T10:00:00Z', updatedAt: '2026-02-15T10:00:00Z',
@@ -305,7 +273,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       appState: res.appState,
       onboardingStep: res.onboardingStep,
       memberRole: res.memberRole,
-      modeAccess: res.modeAccess,
     });
   }, []);
 

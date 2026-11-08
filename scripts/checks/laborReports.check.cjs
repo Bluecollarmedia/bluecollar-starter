@@ -31,8 +31,8 @@ const snap = {
   ],
   breaks: [{ id: 'k1', workdayId: 'wa', startedAt: at(19, 12), endedAt: at(19, 12, 30), paid: false }],
   visits: [
-    { id: 'v1', label: 'Chase', status: 'completed', billable: true, visitDate: '2026-10-19', source: 'maintenance_stop', targetMinutes: 120 },
-    { id: 'v2', label: 'Focus', status: 'completed', billable: false, visitDate: '2026-10-19', source: 'maintenance_stop' },
+    { id: 'v1', label: 'Chase', status: 'completed', billable: true, visitDate: '2026-10-19', source: 'project_day', targetMinutes: 120 },
+    { id: 'v2', label: 'Focus', status: 'completed', billable: false, visitDate: '2026-10-19', source: 'project_day' },
   ],
   intervals: [
     { id: 'i1', visitId: 'v1', workdayId: 'wa', personId: 'a', startedAt: at(19, 8, 15), endedAt: at(19, 10, 15), status: 'completed', billable: true, hourlyRate: 20 },

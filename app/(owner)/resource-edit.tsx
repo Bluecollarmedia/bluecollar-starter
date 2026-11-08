@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
@@ -14,6 +14,7 @@ import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { RESOURCE_CATEGORIES, RESOURCE_CATEGORY_ORDER, type ResourceAuditEntry, type ResourceCategory } from '@/types/resource';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 type SecretMode = 'keep' | 'replace' | 'remove';
 
@@ -126,10 +127,7 @@ export default function ResourceEditScreen() {
       router.back();
     };
     const msg = `Delete “${existing.name}”? Workers will lose access right away and its code will be erased.`;
-    Alert.alert('Delete Resource', msg, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: go },
-    ]);
+    confirmAction('Delete Resource', msg, 'Delete', go, true);
   }
 
   return (

@@ -1,4 +1,4 @@
-/** One place, owned by one customer (supabase/updates/075). Landscaping projects, Maintenance and Snow all link to it by property_id. */
+/** One place, owned by one customer (supabase/updates/075). Projects link to it by property_id. */
 export interface Property {
   id: string;
   companyId: string;

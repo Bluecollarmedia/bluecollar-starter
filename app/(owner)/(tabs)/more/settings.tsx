@@ -10,7 +10,6 @@ import { Avatar, GlassIconButton } from '@/components/ui';
 import { useTheme } from '@/providers/ThemeProvider';
 import { DeleteAccountRow } from '@/components/account/DeleteAccountRow';
 import { DeleteCompanyRow } from '@/components/account/DeleteCompanyRow';
-import { ModeSwitchRow } from '@/components/snow/ModeSwitchRow';
 import { usePublicWeatherRow } from '@/hooks/usePublicWeatherRow';
 import { CustomerMessagePushRow } from '@/components/settings/CustomerMessagePushRow';
 import { SettingsGroup, SettingsRow, PressScale, UsageBar, tileColors } from '@/components/settings/SettingsList';
@@ -28,6 +27,7 @@ import { useStorageInfo, useStorageLimit } from '@/hooks/useStorage';
 import { formatAddress } from '@/lib/address';
 import { formatBytes, storageLimitLabel } from '@/types/storage';
 import type { UserRole } from '@/types';
+import { appVersionText } from '@/lib/appVersion';
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
@@ -164,18 +164,13 @@ export default function SettingsScreen() {
           )}
         </SettingsGroup>
 
-        <SettingsGroup title="Mode" footer="Snow Mode gives you and your snow crew the snow dashboard. Landscaping records stay as they are.">
-          <ModeSwitchRow />
-        </SettingsGroup>
-
         {weatherRow.canChange ? (
-          <SettingsGroup title="Brighton Weather" footer="When on, anyone who opens the app without signing in sees local weather first, with a Sign In button. Off keeps the usual welcome screen.">
+          <SettingsGroup title="Public Weather" footer="When on, anyone who opens the app without signing in sees local weather first, with a Sign In button. Off keeps the usual welcome screen.">
             <SettingsRow icon="cloud" tint={tileColors.blue} title={weatherRow.title} subtitle={weatherRow.subtitle} value={weatherRow.value} onPress={weatherRow.confirm} />
-            <SettingsRow icon="cloud-snow" tint={tileColors.blue} title="Storm outlook" subtitle="Write a storm update for everyone to read" onPress={() => router.push('/(owner)/storm-outlook' as any)} />
           </SettingsGroup>
         ) : null}
 
-        <SettingsGroup title="Crews" footer="Build a crew once, then add the whole crew to a job or route with one tap. A worker can be in more than one crew.">
+        <SettingsGroup title="Crews" footer="Build a crew once, then add the whole crew to a job with one tap. A worker can be in more than one crew.">
           <SettingsRow icon="users" tint={tileColors.green} title="Crews" subtitle="Make and edit your crews" onPress={() => router.push('/(owner)/crews' as any)} />
         </SettingsGroup>
 
@@ -221,7 +216,7 @@ export default function SettingsScreen() {
         </SettingsGroup>
 
         <SettingsGroup title="App">
-          <SettingsRow icon="info" tint={tileColors.gray} title="Version" value="1.0.0" />
+          <SettingsRow icon="info" tint={tileColors.gray} title="Version" value={appVersionText()} />
           <SettingsRow
             icon="database"
             tint={tileColors.gray}

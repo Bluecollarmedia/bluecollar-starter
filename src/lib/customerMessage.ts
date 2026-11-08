@@ -1,13 +1,12 @@
 // Messages from the owner to their customers. Pure helpers: who a message can go to, checks before sending, and the sentences
 // the owner sees. The database (supabase/updates/055) does the real work of finding the customers.
 
-export type CustomerAudience = 'customers_all' | 'customers_landscaping' | 'customers_maintenance' | 'customers_snow';
+/** 'customers_landscaping' is the database's name for "customers with an active project" (supabase/updates/055). */
+export type CustomerAudience = 'customers_all' | 'customers_landscaping';
 
 export const AUDIENCES: { key: CustomerAudience; label: string; help: string }[] = [
-  { key: 'customers_all', label: 'All customers', help: 'Everyone with an account: landscaping, maintenance and snow.' },
-  { key: 'customers_landscaping', label: 'Landscaping', help: 'Customers with an active landscaping project.' },
-  { key: 'customers_maintenance', label: 'Maintenance', help: 'Customers with a maintenance property.' },
-  { key: 'customers_snow', label: 'Snow', help: 'Snow property contacts who have an account.' },
+  { key: 'customers_all', label: 'All customers', help: 'Everyone with an account.' },
+  { key: 'customers_landscaping', label: 'Active project', help: 'Customers with an active project.' },
 ];
 
 export const TITLE_MAX = 120;

@@ -2,7 +2,7 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["93LDR9MQMF.com.brightonlawn.app"],
+        "appIDs": ["YOURTEAMID.com.yourcompany.starter"],
         "components": [
           { "/": "/invite/*", "comment": "Private invite links open the app when it is installed" }
         ]

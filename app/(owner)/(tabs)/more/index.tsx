@@ -66,7 +66,6 @@ export default function MoreScreen() {
           <MenuRow icon="user" label="Customers" subtitle="Customer directory and their projects" onPress={() => go('/(owner)/customers')} />
           <MenuRow icon="file-text" label="Quotes & Invoices" subtitle="Quotes, change orders and invoices" onPress={() => go('/(owner)/more/financials')} />
           <MenuRow icon="alert-triangle" label="Issues" subtitle="Problems your crew reported" count={openIssueCount} onPress={() => go('/(owner)/issues')} />
-          <MenuRow icon="image" label="Our Work" subtitle="Show off your projects: posts, reels, story, highlights" onPress={() => go('/(owner)/our-work')} />
           <MenuRow icon="inbox" label="Service requests" subtitle="People who asked for work from the app" count={newRequestCount} onPress={() => go('/(owner)/service-requests')} />
           <MenuRow icon="flag" label="Reported content" subtitle="Messages and photos people flagged" count={openReportCount} onPress={() => go('/(owner)/reports')} />
           <MenuRow icon="clipboard" label="Materials" subtitle="What to order or pick up for upcoming jobs" onPress={() => go('/(owner)/more/materials')} />
@@ -76,11 +75,10 @@ export default function MoreScreen() {
 
         <MenuGroup title="TEAM">
           <MenuRow icon="user-plus" label="Add Worker" subtitle="Name and phone, then send a private link" onPress={() => go('/(owner)/worker-new')} />
-          <MenuRow icon="shield" label="Team Access" subtitle="Landscaping and snow access, admins, deactivated workers" onPress={() => go('/(owner)/more/team-access')} />
+          <MenuRow icon="shield" label="Team Access" subtitle="Admins and deactivated workers" onPress={() => go('/(owner)/more/team-access')} />
           {memberRole !== 'admin' && (
             <MenuRow icon="users" label="Accounts" subtitle="Everyone who has signed up" onPress={() => go('/(owner)/more/accounts')} />
           )}
-          <MenuRow icon="cloud-snow" label="Snow Team" subtitle="Who works on snow and which services" onPress={() => go('/(owner)/more/snow-team')} />
         </MenuGroup>
 
         <MenuGroup title="OPERATIONS">

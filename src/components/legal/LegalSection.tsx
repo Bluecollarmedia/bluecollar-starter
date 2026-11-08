@@ -6,7 +6,7 @@ import { useT } from '@/i18n';
 
 /**
  * The single "Legal & Support" row for any Settings screen. It opens the Legal & Support page that belongs to the area the person is in
- * (owner, worker, customer or Snow), so Settings stays underneath and Back returns to it.
+ * (owner, worker or customer), so Settings stays underneath and Back returns to it.
  */
 export function LegalSection() {
   const t = useT();

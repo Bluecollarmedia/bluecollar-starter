@@ -1,5 +1,5 @@
 /**
- * Brighton-branded HTML for quotes, change orders and invoices.
+ * Company-branded HTML for quotes, change orders and invoices.
  *
  * One template serves both the in-app preview and the PDF, so they always
  * match. It's built only from the saved document (line items, totals and the
@@ -169,7 +169,7 @@ function approvalBlock(doc: FinancialDoc, s: DocumentSnapshot, opts: DocumentHtm
     const contact = s.company.phone ? ` or call us at ${escapeHtml(s.company.phone)}` : '';
     const where = opts.approvalUrl
       ? `visit <a href="${escapeHtml(opts.approvalUrl)}">${escapeHtml(opts.approvalUrl.replace(/^https?:\/\//, ''))}</a>`
-      : `open this ${doc.kind === 'quote' ? 'quote' : 'change order'} in the Brighton app`;
+      : `open this ${doc.kind === 'quote' ? 'quote' : 'change order'} in the app`;
     return `<div class="block approval"><div class="label">Approval</div><div class="prose">To approve, ${where}${contact}.</div></div>`;
   }
   return '';

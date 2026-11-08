@@ -2,19 +2,19 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "brighton-web",
+      "name": "starter-web",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "C:\\Users\\New User\\Downloads\\landscape-app\\dist", "-s", "-l", "8090"],
+      "runtimeArgs": ["serve", "dist", "-s", "-l", "8090"],
       "port": 8090
     },
     {
-      "name": "brighton-dev",
+      "name": "starter-dev",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["expo", "start", "--web", "--port", "8092"],
       "port": 8092
     },
     {
-      "name": "brighton-phone",
+      "name": "starter-phone",
       "runtimeExecutable": "npx",
       "runtimeArgs": ["expo", "start", "--port", "8094"],
       "port": 8094

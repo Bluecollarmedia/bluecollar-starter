@@ -1,16 +1,12 @@
 /**
  * Design System — Color Tokens
  *
- * Brand palette derived from the Brighton Lawn + Landscape logos:
- *  - Main logo: dark forest green (#1B3A2D) + medium green (#4A8B3F)
- *  - Leaf icon: fresh light green (#8BC34A) — the preferred brand tone
- *
- * The palette leans toward the lighter, approachable green from the
- * leaf mark per brand direction, with the darker greens reserved for
- * headings and strong emphasis.
+ * Brand palette: placeholder greens carried over from the original app.
+ * A new client swaps these for their own brand color (Step 4 makes a plain default).
+ * The darker greens are for headings and strong emphasis.
  */
 
-// ── Brand Palette (extracted from Brighton logos) ────────────────
+// ── Brand Palette (placeholder) ──────────────────────────────────
 export const brand = {
   /** Primary — deep forest green. Only for important actions and selected states. */
   primary: '#2D5A43',
@@ -145,76 +141,6 @@ export const darkTheme = {
 
   shadowColor: neutral.black,
 } as const;
-
-// ── Snow Mode Palette ───────────────────────────────────────────
-// Restrained winter blue for Snow Mode. Only applied when Snow Mode is
-// active (see ThemeProvider `appMode`); Landscaping keeps its green.
-export const snowBrand = {
-  /** Primary winter blue — white text on it passes WCAG AA */
-  primary: '#1F6FB8',
-  primaryLight: '#5B9BD5',
-  primaryDark: '#14508A',
-  primarySurface: '#EAF3FB',
-  /** Deep navy for headings & strong text */
-  accent: '#0F2A44',
-  accentMid: '#3A6E9E',
-} as const;
-
-// ── Snow Theme ───────────────────────────────────────────────────
-export const snowTheme = {
-  background: neutral.white,
-  backgroundSecondary: '#F7FAFD',
-  backgroundTertiary: '#EEF3F8',
-  surface: neutral.white,
-  surfaceElevated: neutral.white,
-  surfacePressed: '#EEF3F8',
-
-  textPrimary: '#0F1B2A',
-  textSecondary: '#52606D',
-  textTertiary: '#7B8794',
-  textInverse: neutral.white,
-  textOnPrimary: neutral.white,
-
-  border: '#E1E8EF',
-  borderLight: '#EEF3F8',
-  borderFocus: snowBrand.primary,
-  separator: 'rgba(15, 42, 68, 0.18)',
-  groupedBackground: '#F1F5F9',
-
-  primary: snowBrand.primary,
-  primaryLight: snowBrand.primaryLight,
-  primaryDark: snowBrand.primaryDark,
-  primarySurface: snowBrand.primarySurface,
-
-  // Semantic — kept distinct from the blue primary so status reads at a glance
-  success: '#2E7D32',
-  successLight: '#E8F5E9',
-  warning: '#B26A00',
-  warningLight: '#FFF4E0',
-  error: '#C62828',
-  errorLight: '#FDECEC',
-  info: '#0E7490',
-  infoLight: '#E0F4F7',
-
-  overlay: 'rgba(15, 27, 42, 0.5)',
-  scrim: 'rgba(15, 27, 42, 0.32)',
-
-  shadowColor: '#0F2A44',
-} as const;
-
-// ── Snow Operational Status Colors ───────────────────────────────
-// Storm / route / stop states. `fg` is for text & icons, `bg` for badges.
-export const snowStatus = {
-  scheduled: { fg: '#52606D', bg: '#EEF3F8' },
-  dispatched: { fg: '#14508A', bg: '#EAF3FB' },
-  enRoute: { fg: '#5B3FB5', bg: '#F0ECFB' },
-  inProgress: { fg: '#B26A00', bg: '#FFF4E0' },
-  completed: { fg: '#2E7D32', bg: '#E8F5E9' },
-  skipped: { fg: '#C62828', bg: '#FDECEC' },
-  needsReview: { fg: '#0E7490', bg: '#E0F4F7' },
-} as const;
-
-export type SnowStatus = keyof typeof snowStatus;
 
 // Use a widened type so both light and dark themes satisfy the same interface
 export type ThemeColors = { [K in keyof typeof lightTheme]: string };

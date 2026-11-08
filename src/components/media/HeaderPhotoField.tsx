@@ -1,11 +1,11 @@
 /**
  * Owner control for one header photo (the dashboard header or the workers'
  * home header): a live preview in the header's real shape, a crop step after
- * picking, and Remove to go back to the Brighton green backdrop.
+ * picking, and Remove to go back to the plain brand-color backdrop.
  */
 
 import React, { useState } from 'react';
-import { Alert, Dimensions, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { keepPicked } from '@/lib/keepPickedFile';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,6 +15,7 @@ import { PhotoCropper, type PickedImage } from '@/components/media/PhotoCropper'
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 /** Height of the photo header on the worker Today screen. */
 export const WORKER_HERO_HEIGHT = 400;
@@ -88,7 +89,7 @@ export function HeaderPhotoField({ kind, value, onChange }: HeaderPhotoFieldProp
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       const msg = 'Photo library access is needed to choose a header photo.';
-      if (Platform.OS === 'web') alert(msg); else Alert.alert('Permission Needed', msg);
+      showMessage('Permission Needed', msg);
       return;
     }
     // No system editor: iOS only offers a square crop. Our own cropper uses the header's real shape.
@@ -98,11 +99,7 @@ export function HeaderPhotoField({ kind, value, onChange }: HeaderPhotoFieldProp
   }
 
   function confirmRemove() {
-    const msg = 'Go back to the Brighton green header?';
-    Alert.alert('Remove photo', msg, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', style: 'destructive', onPress: () => onChange(undefined) },
-    ]);
+    confirmAction('Remove photo', 'Go back to the plain brand-color header?', 'Remove', () => onChange(undefined), true);
   }
 
   return (
@@ -117,7 +114,7 @@ export function HeaderPhotoField({ kind, value, onChange }: HeaderPhotoFieldProp
         <HeaderPhotoOverlay kind={kind} compact />
         {!value && (
           <View style={styles.defaultTag}>
-            <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Brighton green (default)</Text>
+            <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Brand color (default)</Text>
           </View>
         )}
       </Pressable>

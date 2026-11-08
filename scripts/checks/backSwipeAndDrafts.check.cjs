@@ -1,7 +1,7 @@
 // Run: node scripts/checks/backSwipeAndDrafts.check.cjs
 // (1) A form in a bottom sheet keeps what you typed if you swipe it down and open it again; it starts fresh only the first time, for a
 //     different item, after a save, or when you leave the page (the sheet goes with the page).
-// (2) The phone's back swipe steps back INSIDE a screen that shows a view within itself (a project's More sections, a history list)
+// (2) The phone's back swipe steps back INSIDE a screen that shows a view within itself (a project's More sections, a worker's settings)
 //     instead of leaving the whole screen for the dashboard.
 const ts = require('typescript');
 const fs = require('fs');
@@ -41,6 +41,6 @@ check('8 only a back gesture / back button is caught (signing out or switching a
 check('9 while an inner view is open the back swipe closes it, and the screen\'s own arrow still really leaves', /e\.preventDefault\(\);\s*stepRef\.current\(\)/.test(hook) && /leaving\.current = true; router\.back\(\)/.test(hook));
 const proj = read('app/(owner)/(tabs)/projects/[id].tsx');
 check('10 a project steps back out of its More sections and Updates & Requests before it leaves', /useBackStep\(\s*\(activeSection === 'more' && moreSubSection != null\) \|\| \(activeSection === 'customer' && customerDrilldown\)/.test(proj) && /onPress=\{backStep\.leave\}/.test(proj));
-check('11 the same for the Snow route history, one worker\'s notification settings, and the new-document steps', /useBackStep\(historyId != null/.test(read('src/components/snow/routes/MyRouteScreen.tsx')) && /useBackStep\(selectedWorker != null/.test(read('app/(owner)/(tabs)/more/notifications.tsx')) && /useBackStep\(quoteFor !== undefined/.test(read('app/(owner)/document-new.tsx')));
+check('11 the same for one worker\'s notification settings and the new-document steps', /useBackStep\(selectedWorker != null/.test(read('app/(owner)/(tabs)/more/notifications.tsx')) && /useBackStep\(quoteFor !== undefined/.test(read('app/(owner)/document-new.tsx')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

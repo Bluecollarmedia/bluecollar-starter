@@ -4,24 +4,25 @@
  * friendly answer before anything is sent.
  */
 
-/** The same eight choices as the "Request a Quote" form on brightonlawn.com. The words are saved with the request, and update 114 accepts only these. */
+/**
+ * The services people can pick. The words are saved with the request, and the database function submit_service_request accepts only
+ * these, so the list in setup.sql must match it exactly (the old updates 114 and 118 still hold the original app's list).
+ */
 export const SERVICE_CHOICES = [
-  'Backyard Design & Build',
-  'Pavers, Patios & Walkways',
-  'Turf & Sod Installation',
-  'Lighting & Planting',
-  'Commercial Maintenance',
-  'Seasonal Cleanup',
-  'Snow & Storm Response',
-  'Other / Multiple',
+  'New installation',
+  'Repair',
+  'Maintenance',
+  'Inspection',
+  'Estimate request',
+  'Other',
 ] as const;
 export type ServiceChoice = (typeof SERVICE_CHOICES)[number];
 export type PropertyType = 'residential' | 'commercial';
 
-/** Where people can reach Brighton directly (the same details as the website). */
-export const BRIGHTON_PHONE_DISPLAY = '(848) 226-0090';
-export const BRIGHTON_PHONE_LINK = 'tel:8482260090';
-export const BRIGHTON_EMAIL = 'info@BrightonLawn.com';
+/** Where people can reach the company directly. PLACEHOLDERS: a new client fills these in (Step 3 moves them to the brand settings). */
+export const COMPANY_PHONE_DISPLAY = '(555) 555-0100';
+export const COMPANY_PHONE_LINK = 'tel:5555550100';
+export const COMPANY_EMAIL = 'support@yourcompany.com';
 
 export interface ServiceRequestInput {
   propertyType: PropertyType;
@@ -49,7 +50,7 @@ export function requestProblem(r: ServiceRequestInput): string | null {
   return null;
 }
 
-/** Toggles one service in the picked list (keeps the website's order). */
+/** Toggles one service in the picked list (keeps the list order). */
 export function toggleService(picked: string[], service: string): string[] {
   const next = picked.includes(service) ? picked.filter((s) => s !== service) : [...picked, service];
   return SERVICE_CHOICES.filter((s) => next.includes(s));

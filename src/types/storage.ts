@@ -35,9 +35,6 @@ export interface StorageUsage {
   photoCount: number;
   avatarCount: number;
   documentCount: number;
-  /** Our Work (reels, posts, stories, music): files and the space they take. */
-  workCount?: number;
-  workBytes?: number;
   percentUsed: number;
 }
 

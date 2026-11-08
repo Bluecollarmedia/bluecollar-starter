@@ -52,7 +52,6 @@ export interface Project {
   teamCount?: number;
   taskCount?: number;
   openTaskCount?: number;
-  customerProjectCode?: string;
   customerClaimedBy?: string;
   customerClaimedAt?: string;
 }
@@ -60,7 +59,6 @@ export interface Project {
 export interface CustomerProjectAccess {
   projectId: string;
   projectName: string;
-  code: string;
   portalEnabled: boolean;
   claimedBy?: string;
   claimedByEmail?: string;

@@ -15,11 +15,9 @@ check('3 old copies are swept after 3 days, never one a pending upload still nee
 
 const sites = {
   'src/data/taskMedia.ts': /keepPickedFileAsync\(asset\.uri, mediaType\)/,
-  'src/components/snow/pickSnowMedia.ts': /keepPicked\(asset\.uri, mediaType\)/,
   'src/components/issues/ReportIssueScreen.tsx': /keepPicked\(a\.uri\)/,
   'src/components/media/HeaderPhotoField.tsx': /keepPicked\(asset\.uri\)/,
   'src/lib/profilePhoto.ts': /keepPicked\(result\.assets\[0\]\.uri\)/,
-  'src/lib/stopPhotoPicker.ts': /keepPicked\(a\.uri\)/,
   'src/lib/pickImage.ts': /keepPicked\(a\.uri\)/,
   'src/data/timePhotos.ts': /keepPicked\(shot\.assets\[0\]\.uri\)/,
   'app/(owner)/(tabs)/projects/[id].tsx': /keepPicked\(result\.assets\[0\]\.uri\)/,

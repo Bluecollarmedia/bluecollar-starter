@@ -83,7 +83,7 @@ export function PlacePicker({ visible, current, onClose, onPick }: { visible: bo
                 <>
                   {recents.length ? <Text style={styles.section}>{t('Recent')}</Text> : null}
                   {recents.map((p) => row(p, `r-${p.key}`))}
-                  <Text style={styles.section}>{t('Near Brighton')}</Text>
+                  <Text style={styles.section}>{t('Nearby towns')}</Text>
                   {WEATHER_TOWNS.map((x) => row({ ...x }, x.key))}
                 </>
               )}

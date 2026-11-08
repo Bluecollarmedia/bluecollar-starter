@@ -1,7 +1,6 @@
 /**
  * "Which property?" for a customer: their saved properties as chips, plus "New address". Pick one and nothing is typed twice;
- * pick "New address" and the form's own address fields appear. A property is saved once per customer, then reused everywhere
- * (landscaping, Maintenance, Snow).
+ * pick "New address" and the form's own address fields appear. A property is saved once per customer, then reused everywhere.
  */
 import React from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';

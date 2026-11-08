@@ -7,7 +7,7 @@ export interface YardLocation extends AddressParts {
   longitude?: number;
 }
 
-/** "Brighton Yard" for "Brighton Lawn + Landscape"; just "Yard" without a company name. */
+/** "Acme Yard" for "Acme Paving"; just "Yard" without a company name. */
 export function yardLabel(companyName?: string): string {
   const first = companyName?.trim().split(/\s+/)[0];
   return first ? `${first} Yard` : 'Yard';

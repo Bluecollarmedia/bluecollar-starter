@@ -1,5 +1,5 @@
 /**
- * One tap puts a whole crew on a job or route. The people stay editable: the list under these chips
+ * One tap puts a whole crew on a job. The people stay editable: the list under these chips
  * still adds or removes anyone, and tapping a crew again takes its people back off.
  */
 import React from 'react';

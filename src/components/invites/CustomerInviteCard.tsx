@@ -13,6 +13,7 @@ import { inviteLinkUrl, inviteMessage, textInvite, copyText } from '@/lib/invite
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 export function CustomerInviteCard({ personId, firstName, phone, autoMake }: { personId: string; firstName: string; phone?: string; /** Make the link as soon as this opens (right after the customer was added). */ autoMake?: boolean }) {
   const { colors } = useTheme();
@@ -41,7 +42,7 @@ export function CustomerInviteCard({ personId, firstName, phone, autoMake }: { p
 
   async function text() {
     await textInvite(inviteMessage(url, db.company?.name, firstName, 'customer'), phone);
-    if (Platform.OS === 'web') alert('Message copied. Paste it into a text to your customer.');
+    if (Platform.OS === 'web') showMessage('Message copied', 'Paste it into a text to your customer.');
   }
 
   async function copy() {

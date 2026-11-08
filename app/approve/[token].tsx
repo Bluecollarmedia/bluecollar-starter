@@ -98,7 +98,7 @@ export default function ApprovePage() {
 
   useEffect(() => {
     if (Platform.OS === 'web' && shared) {
-      document.title = `${t(DOC_LABEL[shared.doc.kind])} ${shared.doc.number} · ${shared.doc.snapshot?.company.name ?? 'Brighton Lawn + Landscape'}`;
+      document.title = `${t(DOC_LABEL[shared.doc.kind])} ${shared.doc.number} · ${shared.doc.snapshot?.company.name ?? 'Your Company'}`;
     }
   }, [shared, t]);
 
@@ -122,7 +122,7 @@ export default function ApprovePage() {
           <EmptyState
             icon="file-text"
             title={t('This link isn’t available')}
-            description={t('It may have been replaced by a newer version. Please contact Brighton Lawn + Landscape for an updated link.')}
+            description={t('It may have been replaced by a newer version. Please contact the company that sent it for an updated link.')}
           />
         )}
       </View>

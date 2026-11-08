@@ -62,7 +62,7 @@ export function PickupSheet({ visible, plan, onSave, onNewVendor, onClose }: {
         <NoteField label="Pickup instructions" placeholder={vendor?.pickupInstructions ?? 'e.g. Call ahead, bring the trailer'} value={d.pickupInstructions ?? ''} onChangeText={(t) => setD((x) => ({ ...x, pickupInstructions: t }))} />
       </ListSection>
       <ListSection title="HANDLING OR DELIVERY NOTES">
-        <NoteField label="Handling notes" placeholder="e.g. Keep sod shaded, lay within 24 hours" value={d.handlingNotes ?? ''} onChangeText={(t) => setD((x) => ({ ...x, handlingNotes: t }))} />
+        <NoteField label="Handling notes" placeholder="e.g. Keep bags dry, use within 24 hours" value={d.handlingNotes ?? ''} onChangeText={(t) => setD((x) => ({ ...x, handlingNotes: t }))} />
       </ListSection>
     </FormSheet>
   );

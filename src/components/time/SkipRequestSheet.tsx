@@ -9,7 +9,7 @@ import { useT } from '@/i18n';
 
 /**
  * "Can't service this property?": the worker says why and sends a request. It does NOT skip anything: the property stays open
- * (and the route stays locked behind it) until the owner approves.
+ * until the owner approves.
  */
 export function SkipRequestSheet({ visible, propertyName, onClose, onSend }: {
   visible: boolean;

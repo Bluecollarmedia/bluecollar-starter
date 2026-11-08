@@ -1,5 +1,5 @@
-// Where the Legal & Support pages live for each part of the app. A signed-in person opens them INSIDE their own area (owner, worker, customer
-// or Snow), so the Settings screen they came from stays underneath and Back returns to it. (The one public copy at /legal is for signed-out
+// Where the Legal & Support pages live for each part of the app. A signed-in person opens them INSIDE their own area (owner, worker or customer),
+// so the Settings screen they came from stays underneath and Back returns to it. (The one public copy at /legal is for signed-out
 // people and for the web address you give Apple; opening that from inside the app would throw the screen you were on away.)
 
 export type LegalSlug = 'privacy' | 'terms' | 'support';
@@ -13,7 +13,6 @@ export function legalHubPath(firstSegment?: string): string {
     case '(owner)': return '/(owner)/legal-support';
     case '(worker)': return '/(worker)/legal-support';
     case '(customer)': return '/(customer)/legal-support';
-    case 'snow': return '/snow/legal-support';
     default: return '/legal';
   }
 }

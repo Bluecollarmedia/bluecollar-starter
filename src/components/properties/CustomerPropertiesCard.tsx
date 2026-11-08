@@ -1,6 +1,6 @@
 /**
- * A customer's page: their properties, each with what is set up there (landscaping projects, Maintenance). Add a property once
- * here (or from any form); it is then available everywhere, including Snow. Nothing about the customer is typed again.
+ * A customer's page: their properties, each with what is set up there (projects). Add a property once
+ * here (or from any form); it is then available everywhere. Nothing about the customer is typed again.
  */
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
@@ -45,17 +45,13 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
 
       {properties.length === 0 && !adding ? (
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>
-          No saved properties yet. Add one here, or pick this customer in any project, Maintenance or Snow form and their address is saved automatically.
+          No saved properties yet. Add one here, or pick this customer in any project form and their address is saved automatically.
         </Text>
       ) : null}
 
       {properties.map((p, i) => {
         const projects = db.projects.filter((x) => x.propertyId === p.id).length;
-        const maintenance = db.maintenance.properties.filter((x) => x.propertyId === p.id).length;
-        const uses = [
-          projects ? `${projects} landscaping project${projects === 1 ? '' : 's'}` : null,
-          maintenance ? 'Maintenance' : null,
-        ].filter(Boolean).join(' · ');
+        const uses = projects ? `${projects} project${projects === 1 ? '' : 's'}` : '';
         return (
           <View key={p.id} style={[styles.row, i > 0 || true ? { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight } : null]}>
             <Icon name="map-pin" size={18} color={colors.primary} />

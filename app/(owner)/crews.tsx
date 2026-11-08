@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
-import { useRouter, usePathname } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
 import { Avatar, Button, EmptyState } from '@/components/ui';
@@ -11,7 +11,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 
 /**
- * Crews (owner/admin): groups of workers like "Maintenance Crew". Lives above
+ * Crews (owner/admin): groups of workers like "Paving Crew". Lives above
  * the tab navigator, like Company Resources, so it opens from Workers and
  * from a worker's profile without switching tabs.
  */
@@ -20,10 +20,7 @@ export default function CrewsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { crews } = useCrews();
-  // Snow Mode keeps its own screens (the root guard bounces (owner) screens while it is on).
-  const base = usePathname().startsWith('/snow') ? '/snow/owner' : '/(owner)';
-
-  const addCrew = () => router.push(`${base}/crew-edit` as any);
+  const addCrew = () => router.push('/(owner)/crew-edit' as any);
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
@@ -45,7 +42,7 @@ export default function CrewsScreen() {
           <EmptyState
             icon="users"
             title="No crews yet"
-            description="Make a crew like Maintenance Crew, add its workers, and each worker gets a crew label."
+            description="Make a crew like Paving Crew, add its workers, and each worker gets a crew label."
             actionTitle="New Crew"
             onAction={addCrew}
           />
@@ -54,7 +51,7 @@ export default function CrewsScreen() {
           return (
             <Pressable
               key={c.id}
-              onPress={() => router.push(`${base}/crew-edit?id=${c.id}` as any)}
+              onPress={() => router.push(`/(owner)/crew-edit?id=${c.id}` as any)}
               style={({ pressed }) => [styles.crewCard, { backgroundColor: colors.surface }, shadow.sm, pressed && { opacity: 0.9 }]}
               accessibilityRole="button"
               accessibilityLabel={`${c.name}, ${people.length} worker${people.length === 1 ? '' : 's'}`}
@@ -63,12 +60,6 @@ export default function CrewsScreen() {
               <View style={{ flex: 1, gap: spacing.xs }}>
                 <View style={styles.nameRow}>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700', flexShrink: 1 }]} numberOfLines={1}>{c.name}</Text>
-                  {c.isMaintenance && (
-                    <View style={[styles.maintTag, { backgroundColor: colors.primarySurface }]}>
-                      <Icon name="repeat" size={11} color={colors.primary} />
-                      <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '700' }]}>Maintenance</Text>
-                    </View>
-                  )}
                 </View>
                 {people.length > 0 ? (
                   <View style={styles.avatarRow}>
@@ -96,7 +87,6 @@ export default function CrewsScreen() {
 
 const styles = StyleSheet.create({
   nameRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  maintTag: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: spacing.sm, paddingVertical: 2, borderRadius: radius.full },
   screen: { flex: 1 },
   header: {
     flexDirection: 'row',

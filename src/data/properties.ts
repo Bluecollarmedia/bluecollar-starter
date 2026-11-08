@@ -1,6 +1,6 @@
 /**
- * One place for every property (supabase/updates/075 and 079). A property is entered once, for one customer; landscaping projects,
- * Maintenance properties and Snow properties are that same property (linked by property_id) with their own settings.
+ * One place for every property (supabase/updates/075 and 079). A property is entered once, for one customer; projects there
+ * link to that same property (by property_id).
  *
  * Every form that asks for an address goes through `propertyForSave`: it picks the customer's existing property, or makes it once.
  * Before update 79 is installed the function does not exist; then the form just saves as it always did, so nothing breaks.
@@ -91,14 +91,6 @@ export async function propertyForSave(input: {
   const res = await ensureProperty(customerId, fields);
   if (res.ok) return { propertyId: res.propertyId };
   return res.missing ? {} : { error: res.error };
-}
-
-/** Turns Snow on for a property: its Snow record is made (or found) and the customer is linked as its contact. */
-export async function enableSnowForProperty(propertyId: string): Promise<{ ok: true; snowPropertyId: string } | { ok: false; error: string }> {
-  if (isDemo()) return { ok: false, error: 'Snow needs the live database.' };
-  const { data, error } = await rpc<{ snow_property_id: string }>('snow_enable_for_property', { p_property: propertyId });
-  if (error || !data) return { ok: false, error: MISSING.test(error?.message ?? '') ? 'This needs the latest database update (79).' : error?.message ?? 'Could not turn Snow on.' };
-  return { ok: true, snowPropertyId: data.snow_property_id };
 }
 
 /** Customer name for a property, from the customer list. */

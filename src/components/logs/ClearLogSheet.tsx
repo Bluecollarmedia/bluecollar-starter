@@ -1,7 +1,7 @@
 /**
  * A bottom sheet for clearing an activity log: pick what to do (move to history / restore / delete for good), pick the period
- * (today, yesterday, older than 30 days, a whole year, all time), see the real count and confirm. Used by the Snow Activity
- * screen and by a project's Activity Log. Nothing changes until the final button.
+ * (today, yesterday, older than 30 days, a whole year, all time), see the real count and confirm. Used by a project's
+ * Activity Log. Nothing changes until the final button.
  */
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';

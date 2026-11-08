@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Alert, Platform, Modal } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Modal } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -23,6 +23,7 @@ import type { RepeatFrequency } from '@/types/schedule';
 import {
   addMonthsKey, describeHorizon, describeRepeat, occurrenceDates, HORIZON_OPTIONS, SERIES_HORIZON_DAYS,
 } from '@/lib/recurrence';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 const today = todayKey();
 
@@ -70,7 +71,7 @@ function dateToTimeStr(d: Date): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-/** Repeating work belongs to Maintenance contracts. A project or a one-off job (a patio, a construction job, a snow run) is scheduled day by day. */
+/** Repeat jobs are built but switched off: a project or a one-off job is scheduled day by day. */
 const ALLOW_REPEAT = false;
 
 export default function ScheduleCreateScreen() {
@@ -182,8 +183,7 @@ export default function ScheduleCreateScreen() {
   function showAlreadyScheduled(names: string[], d: string) {
     const who = names.length === 1 ? `${names[0]} is` : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} are`;
     const msg = `${who} already scheduled at ${selectedProject?.name ?? 'this project'} on ${formatDateFull(d)}. Edit the existing assignment instead.`;
-    if (Platform.OS === 'web') alert(msg);
-    else Alert.alert('Already Scheduled', msg);
+    showMessage('Already Scheduled', msg);
   }
 
   /** Whether a crew member can be added by a crew tap: active, not already on this job, and not out on another job that day. */
@@ -201,8 +201,7 @@ export default function ScheduleCreateScreen() {
     if (isMove) {
       if (!projectId) {
         const msg = 'Please select a project.';
-        if (Platform.OS === 'web') alert(msg);
-        else Alert.alert('Required', msg);
+        showMessage('Required', msg);
         return;
       }
       const original = schedule.assignments.find(a => a.id === params.moveFrom);
@@ -217,8 +216,7 @@ export default function ScheduleCreateScreen() {
 
     if (!projectId || workerIds.length === 0) {
       const msg = 'Please select a project and at least one worker.';
-      if (Platform.OS === 'web') alert(msg);
-      else Alert.alert('Required', msg);
+      showMessage('Required', msg);
       return;
     }
 
@@ -231,8 +229,7 @@ export default function ScheduleCreateScreen() {
     if (isRepeating) {
       if (hasEndDate && endDate < date) {
         const msg = 'The end date has to be on or after the first day.';
-        if (Platform.OS === 'web') alert(msg);
-        else Alert.alert('Check the End Date', msg);
+        showMessage('Check the End Date', msg);
         return;
       }
       for (const personId of workerIds) {
@@ -503,7 +500,7 @@ export default function ScheduleCreateScreen() {
               )}
             </Section>
 
-            {/* Repeat: only for recurring Maintenance contracts, which are scheduled from Maintenance. Projects and one-off jobs go day by day. */}
+            {/* Repeat: switched off (ALLOW_REPEAT). Projects and one-off jobs go day by day. */}
             {ALLOW_REPEAT ? (
             <Section icon="repeat" title="Repeat">
               <SegmentedControl

@@ -1,6 +1,6 @@
 /**
- * "Report a problem": a worker reports something at a property (maintenance
- * property or regular project) with photos and notes. Owner/admin see every
+ * "Report a problem": a worker reports something at a job (project) with
+ * photos and notes. Owner/admin see every
  * report, mark them Resolved and can delete them (supabase/updates/038).
  */
 
@@ -32,7 +32,6 @@ export interface PropertyIssue {
   issueType: IssueType;
   notes?: string;
   photos: IssuePhoto[];
-  maintenancePropertyId?: string;
   projectId?: string;
   placeName: string;
   status: 'open' | 'resolved';
@@ -43,7 +42,7 @@ export interface PropertyIssue {
   createdAt: string;
 }
 
-export type IssueWhere = { maintenancePropertyId: string } | { projectId: string };
+export type IssueWhere = { projectId: string };
 
 function shape(r: Record<string, any>): PropertyIssue {
   const nameOf = (id?: string) => {
@@ -58,21 +57,20 @@ function shape(r: Record<string, any>): PropertyIssue {
   };
 }
 
-/** Newest first. Pass `where` to see only one property's or project's reports. */
+/** Newest first. Pass `where` to see only one project's reports. */
 export function useIssues(where?: IssueWhere): PropertyIssue[] {
   return useMemoIssues(useDb(), where);
 }
 
 function useMemoIssues(version: number, where?: IssueWhere): PropertyIssue[] {
-  const mp = where && 'maintenancePropertyId' in where ? where.maintenancePropertyId : undefined;
-  const pr = where && 'projectId' in where ? where.projectId : undefined;
+  const pr = where?.projectId;
   return useMemo(
     () => rowsOf('property_issues')
-      .filter((r) => (mp ? r.maintenancePropertyId === mp : pr ? r.projectId === pr : true))
+      .filter((r) => (pr ? r.projectId === pr : true))
       .map(shape)
       .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [version, mp, pr],
+    [version, pr],
   );
 }
 
@@ -87,9 +85,6 @@ export function useOpenIssueCount(): number {
 
 /** The name shown for where a report was made. */
 export function placeNameFor(where: IssueWhere): string {
-  if ('maintenancePropertyId' in where) {
-    return rowsOf('maintenance_properties').find((p) => p.id === where.maintenancePropertyId)?.name ?? '';
-  }
   return db.projects.find((p) => p.id === where.projectId)?.name ?? '';
 }
 
@@ -103,7 +98,7 @@ export interface ReportInput {
 
 /** Uploads the photos, then saves the report. Resolves with an error message on failure. */
 export async function reportIssue(input: ReportInput): Promise<{ ok: true } | { ok: false; error: string }> {
-  const placeId = 'maintenancePropertyId' in input.where ? input.where.maintenancePropertyId : input.where.projectId;
+  const placeId = input.where.projectId;
   const photos: IssuePhoto[] = [];
   try {
     for (const uri of input.photoUris) {
@@ -118,8 +113,7 @@ export async function reportIssue(input: ReportInput): Promise<{ ok: true } | { 
     issueType: input.type,
     notes: input.notes?.trim() || undefined,
     photos,
-    maintenancePropertyId: 'maintenancePropertyId' in input.where ? input.where.maintenancePropertyId : undefined,
-    projectId: 'projectId' in input.where ? input.where.projectId : undefined,
+    projectId: input.where.projectId,
     placeName: placeNameFor(input.where),
     status: 'open',
   });

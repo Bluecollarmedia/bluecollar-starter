@@ -1,5 +1,5 @@
 /**
- * The real Brighton Lawn + Landscape wordmark (assets/images/logo-full.png,
+ * The company wordmark (assets/images/logo-full.png: still the original app's picture until Step 4,
  * 689×223) as a data URI, so quote/invoice PDFs can embed it directly — the
  * print renderer can't load bundled assets by path.
  *

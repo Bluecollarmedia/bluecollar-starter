@@ -387,7 +387,7 @@ export const mockNotifications: AppNotification[] = [
     id: 'n4', companyId: 'company1', recipientId: 'owner1',
     eventType: 'customer_request_submitted',
     title: 'New customer request',
-    body: 'Sarah Mitchell submitted: "Can we change the mulch color?"',
+    body: 'Sarah Mitchell submitted: "Can we change the stone color?"',
     status: 'unread',
     linkedEntityType: 'request', linkedEntityId: 'r2',
     createdAt: offsetDate(-1) + 'T14:00:00Z',

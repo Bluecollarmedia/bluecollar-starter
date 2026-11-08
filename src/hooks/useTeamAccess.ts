@@ -2,16 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { db, rpc, refresh, isDemo } from '@/data/store';
 
 /**
- * The owner's Team access screen: who is on the team, which modes each person works in, who is an admin, and who is deactivated.
+ * The owner's Team access screen: who is on the team, who is an admin, and who is deactivated.
  * Everything is decided by the database (update 66); this hook only shows it and asks for changes. A change is shown as done
  * only after the database says so.
  */
-export type SnowService = 'plowing' | 'shoveling' | 'salting';
-export const SNOW_SERVICES: { key: SnowService; label: string }[] = [
-  { key: 'plowing', label: 'Plowing' },
-  { key: 'shoveling', label: 'Shoveling' },
-  { key: 'salting', label: 'Salting' },
-];
 
 export type TeamState = 'active' | 'waiting' | 'deactivated';
 export interface TeamPerson {
@@ -21,12 +15,10 @@ export interface TeamPerson {
   email: string;
   avatarUrl?: string;
   role?: 'owner' | 'admin' | 'worker' | 'customer';
-  workerType?: 'landscaping' | 'maintenance';
+  /** Has team access (the database column is still called `landscaping`). */
   landscaping: boolean;
-  snowServices: SnowService[];
   isStaff: boolean;
   pendingTeam: boolean;
-  pendingSnow: boolean;
   deactivatedAt?: string;
   deactivatedByName?: string;
   isMe: boolean;
@@ -35,20 +27,19 @@ export interface TeamPerson {
 
 interface Row {
   person_id: string; first_name: string | null; last_name: string | null; email: string | null; avatar_url: string | null;
-  role: TeamPerson['role'] | null; member_status: string | null; worker_type: 'landscaping' | 'maintenance' | null;
-  landscaping: boolean | null; snow_services: SnowService[] | null; is_staff: boolean | null;
-  pending_team_request: boolean; pending_snow_request: boolean; deactivated_at: string | null; deactivated_by_name: string | null; is_me: boolean;
+  role: TeamPerson['role'] | null; member_status: string | null;
+  landscaping: boolean | null; is_staff: boolean | null;
+  pending_team_request: boolean; deactivated_at: string | null; deactivated_by_name: string | null; is_me: boolean;
 }
 
 function fromRow(r: Row): TeamPerson {
-  const snow = (r.snow_services ?? []) as SnowService[];
   const landscaping = !!r.landscaping;
   // 'waiting' = invited: added with a name and phone, link not opened yet.
-  const state: TeamState = landscaping || snow.length > 0 ? 'active' : r.member_status === 'invited' || r.pending_team_request || r.pending_snow_request ? 'waiting' : 'deactivated';
+  const state: TeamState = landscaping ? 'active' : r.member_status === 'invited' || r.pending_team_request ? 'waiting' : 'deactivated';
   return {
     personId: r.person_id, firstName: r.first_name ?? '', lastName: r.last_name ?? '', email: r.email ?? '', avatarUrl: r.avatar_url ?? undefined,
-    role: r.role ?? undefined, workerType: r.worker_type ?? undefined, landscaping, snowServices: snow, isStaff: !!r.is_staff,
-    pendingTeam: r.pending_team_request, pendingSnow: r.pending_snow_request, deactivatedAt: r.deactivated_at ?? undefined,
+    role: r.role ?? undefined, landscaping, isStaff: !!r.is_staff,
+    pendingTeam: r.pending_team_request, deactivatedAt: r.deactivated_at ?? undefined,
     deactivatedByName: r.deactivated_by_name ?? undefined, isMe: !!r.is_me, state,
   };
 }
@@ -92,18 +83,15 @@ export function useTeamAccess() {
   return {
     people, loading, error, myRole, reload: load, check,
     deactivate: (personId: string, acknowledge: boolean) => act('deactivate_member', { p_person_id: personId, p_acknowledge: acknowledge }),
-    reactivate: (personId: string, landscaping: boolean, workerType: 'landscaping' | 'maintenance', snow: SnowService[]) =>
-      act('reactivate_member', { p_person_id: personId, p_landscaping: landscaping, p_worker_type: workerType, p_snow_services: snow }),
+    reactivate: (personId: string) => act('reactivate_member', { p_person_id: personId, p_landscaping: true }),
     setRole: (personId: string, role: 'admin' | 'worker') => act('set_member_role', { p_person_id: personId, p_role: role }),
-    setModes: (personId: string, landscaping: boolean, snow: SnowService[]) => act('set_member_modes', { p_person_id: personId, p_landscaping: landscaping, p_snow_services: snow }),
   };
 }
 
-export interface AdminPermissions { team: boolean; invites: boolean; snow_access: boolean; time_corrections: boolean; pay_rates: boolean }
+export interface AdminPermissions { team: boolean; invites: boolean; time_corrections: boolean; pay_rates: boolean }
 export const ADMIN_POWERS: { key: keyof AdminPermissions; label: string; hint: string }[] = [
-  { key: 'team', label: 'Team members', hint: 'Deactivate, reactivate and change the modes people work in.' },
+  { key: 'team', label: 'Team members', hint: 'Deactivate and reactivate workers.' },
   { key: 'invites', label: 'Invites', hint: 'Adding workers and customers and sending their private links.' },
-  { key: 'snow_access', label: 'Snow access', hint: 'Give, change or remove snow services.' },
   { key: 'time_corrections', label: 'Time corrections', hint: 'Correct and approve workdays and property times.' },
   { key: 'pay_rates', label: 'Pay rates', hint: 'See and change hourly rates and overtime terms.' },
 ];
@@ -119,7 +107,9 @@ export function useAdminPermissions() {
   useEffect(() => { load(); }, [load]);
   const save = useCallback(async (next: AdminPermissions) => {
     const { error: e } = await rpc('set_admin_permissions', {
-      p_team: next.team, p_invites: next.invites, p_snow_access: next.snow_access, p_time_corrections: next.time_corrections, p_pay_rates: next.pay_rates,
+      p_team: next.team, p_invites: next.invites, p_time_corrections: next.time_corrections, p_pay_rates: next.pay_rates,
+      // The current database function (SQL 066) still has this argument; drop this line when setup.sql drops it.
+      p_snow_access: false,
     });
     if (e) return e.message;
     setPerms(next);

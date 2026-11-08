@@ -1,10 +1,10 @@
 /**
- * The owner writes a message to their customers (landscaping, maintenance and Snow). Each customer gets a push notification and
+ * The owner writes a message to their customers. Each customer gets a push notification and
  * a banner on their home screen, like an announcement to workers but for customers. Below the form, the messages already sent.
- * Used by both the landscaping owner (More > Announcements) and the Snow Mode owner (More).
+ * Used by the owner (More > Announcements).
  */
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
 import { Button, Input, ScreenHeader, InlineNotice } from '@/components/ui';
@@ -13,6 +13,7 @@ import { fetchCustomerReach, sendCustomerMessage, useCustomerMessageHistory } fr
 import { AUDIENCES, BODY_MAX, TITLE_MAX, audienceLabel, confirmText, messageProblem, sentText, type CustomerAudience } from '@/lib/customerMessage';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
@@ -47,7 +48,7 @@ export function MessageCustomersPanel() {
   function confirmSend() {
     if (problem) { setNote({ tone: 'error', text: problem }); return; }
     const { title: t, message } = confirmText(audience);
-    Alert.alert(t, message, [{ text: 'Cancel', style: 'cancel' }, { text: 'Send', onPress: send }]);
+    confirmAction(t, message, 'Send', () => { void send(); });
   }
 
   return (
@@ -74,7 +75,7 @@ export function MessageCustomersPanel() {
         </View>
         {help ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{help}</Text> : null}
 
-        <Input label="Title" value={title} onChangeText={setTitle} placeholder="For example: Plowing starts at 4 AM" maxLength={TITLE_MAX} />
+        <Input label="Title" value={title} onChangeText={setTitle} placeholder="For example: Crews start at 7 AM tomorrow" maxLength={TITLE_MAX} />
         <Input label="Message" value={body} onChangeText={setBody} placeholder="Write whatever you want your customers to know." multiline maxLength={BODY_MAX} containerStyle={{ minHeight: 140 }} />
 
         {note ? <InlineNotice icon={note.tone === 'success' ? 'check-circle' : 'alert-triangle'} tone={note.tone === 'success' ? 'success' : 'error'} text={note.text} /> : null}
@@ -107,7 +108,7 @@ export function MessageCustomersPanel() {
   );
 }
 
-/** Message Customers as its own screen (Snow Mode's More opens this one). */
+/** Message Customers as its own screen. */
 export function MessageCustomersScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();

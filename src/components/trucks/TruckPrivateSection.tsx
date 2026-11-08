@@ -4,7 +4,7 @@
  * and the database refuses to give the data to anyone else either (supabase/updates/056 and 077).
  */
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Linking, Alert, Platform } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Linking, Alert } from 'react-native';
 import { Icon } from '@/components/ui/Icon';
 import { Button, Card } from '@/components/ui';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -20,11 +20,12 @@ import { semantic } from '@/theme/colors';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { TruckDocument, TruckMaintenance } from '@/types/truck';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 function confirm(title: string, message: string, action: string, run: () => void) {
-  Alert.alert(title, message, [{ text: 'Cancel', style: 'cancel' }, { text: action, style: 'destructive', onPress: run }]);
+  confirmAction(title, message, action, run, true);
 }
 
 export function TruckPrivateSection({ truckId }: { truckId: string }) {

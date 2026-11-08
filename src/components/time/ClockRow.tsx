@@ -6,6 +6,7 @@ import { TruckPickSheet } from '@/components/time/TruckPickSheet';
 import type { TruckOptions } from '@/data/timeTracking';
 import { haptics } from '@/lib/haptics';
 import { useT, tr } from '@/i18n';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -36,10 +37,7 @@ export function ClockRow() {
       const r = await w.clockOut();
       if (r.ok) haptics.success(); else say(tr("Can't clock out yet"), r.error);
     };
-    Alert.alert(tr('Clock out for today?'), undefined, [
-      { text: tr('Not yet'), style: 'cancel' },
-      { text: tr('Clock Out'), style: 'destructive', onPress: go },
-    ]);
+    confirmAction(tr('Clock out for today?'), '', tr('Clock Out'), () => { void go(); }, true, tr('Not yet'));
   }
   async function doClockIn(truckId?: string) {
     setPickTruck(null);

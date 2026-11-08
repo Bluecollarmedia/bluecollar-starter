@@ -68,7 +68,7 @@ export default function CustomerDocumentScreen() {
   const canAnswer = doc.kind !== 'invoice' && status === 'sent';
   const answered = [...events].reverse().find((e) => e.eventType === 'approved' || e.eventType === 'declined');
 
-  const companyName = db.company?.name ?? 'Brighton Lawn + Landscape';
+  const companyName = db.company?.name ?? 'Your Company';
 
   const respond = (approve: boolean) => {
     if (doc.kind === 'invoice') return;

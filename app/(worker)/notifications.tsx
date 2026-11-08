@@ -32,7 +32,7 @@ export default function NotificationsScreen() {
           {t('Notifications')}
         </Text>
 
-        <ListSection footer={t("Lock-screen alerts aren't switched on in the app yet. Your choice is saved and will apply once they are.")}>
+        <ListSection footer={t("Alerts about your jobs arrive on this phone when notifications are allowed for this app in your phone's Settings. This switch only saves your choice for now; to stop the alerts, turn notifications off in your phone's Settings.")}>
           <ListRow
             icon="bell"
             title={t('Push Notifications')}

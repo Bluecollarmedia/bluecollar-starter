@@ -11,15 +11,8 @@ export default function CustomerLayout() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="project" />
       <Stack.Screen name="document" />
-      <Stack.Screen name="snow-updates" />
-      <Stack.Screen name="history" />
-      <Stack.Screen name="maintenance-updates" />
       <Stack.Screen name="edit-profile" />
       <Stack.Screen name="weather" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
-      <Stack.Screen name="work" />
-      <Stack.Screen name="work-post" />
-      <Stack.Screen name="work-video" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="work-story" options={{ presentation: 'transparentModal', animation: 'fade', animationDuration: 160, gestureEnabled: false }} />
       <Stack.Screen name="request" />
     </Stack>
   );

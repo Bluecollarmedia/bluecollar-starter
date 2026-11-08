@@ -38,14 +38,6 @@ function OwnerNativeTabs() {
         <NativeTabs.Trigger.Label>{t('Projects')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="maintenance">
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'leaf', selected: 'leaf.fill' }}
-          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="feather" />}
-        />
-        <NativeTabs.Trigger.Label>{t('Maintenance')}</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
-
       <NativeTabs.Trigger name="workers">
         <NativeTabs.Trigger.Icon
           sf={{ default: 'person.2', selected: 'person.2.fill' }}
@@ -84,8 +76,7 @@ function OwnerJSTabs() {
         },
         tabBarLabelStyle: {
           ...typeScale.caption,
-          // Tighter than caption so "Maintenance" fits on a 375pt-wide phone
-          // (about the size of the iOS tab bar's own labels).
+          // Tighter than caption (about the size of the iOS tab bar's own labels).
           fontSize: 10.5,
           letterSpacing: 0,
           marginTop: 2,
@@ -107,15 +98,6 @@ function OwnerJSTabs() {
           title: t('Projects'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="folder" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="maintenance"
-        options={{
-          title: t('Maintenance'),
-          tabBarIcon: ({ color, size }) => (
-            <Feather name="feather" size={size} color={color} />
           ),
         }}
       />
