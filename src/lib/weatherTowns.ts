@@ -1,7 +1,11 @@
 /**
- * The places Brighton Weather can show. Any town in the US can be picked (see placeSearch.ts); these eight are the ones near Brighton, listed
+ * The places Weather can show. Any town in the US can be picked (see placeSearch.ts); these eight are the built-in nearby towns, listed
  * first in the picker. Their keys, names and points are the same as supabase/functions/weather/index.ts (a check keeps the two lists identical),
  * and the function has each one's forecast grid already verified. Any other place is looked up by its coordinates.
+ *
+ * PLACEHOLDER: these eight New Jersey towns and the Lakewood default come from the original app. They are valid (weather works), but a new
+ * client should swap them for their own area (Step 3 makes them settings: weather.defaultPlace / weather.nearbyTowns; the weather function's
+ * list must change with it).
  */
 export interface Place { key: string; name: string; state: string; lat: number; lon: number }
 

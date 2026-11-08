@@ -20,7 +20,7 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
 
   const page = read('app/(owner)/customers/[id].tsx');
   check('6 the page has a real Switch for Portal access (not just a status label)', /<Switch value=\{portal\.on\}/.test(page) && /onValueChange=\{changeAccess\}/.test(page));
-  check('7 turning ON applies at once; turning OFF asks first', /if \(next\) \{ await apply\(\); return; \}/.test(page) && /Alert\.alert\(t\.title, t\.message/.test(page));
+  check('7 turning ON applies at once; turning OFF asks first', /if \(next\) \{ await apply\(\); return; \}/.test(page) && /confirmAction\(t\.title, t\.message, 'Turn Off'/.test(page));
   check('8 it calls the database function and refreshes the customer', /rpc\('set_customer_portal_access', \{ p_person_id: p\.id, p_enabled: next \}/.test(page) && /refresh\('people', 'company_members'\)/.test(page));
   const sql = read('supabase/updates/084_customer_portal_access.sql');
   check('9 the database function: owner/admin only, customers only, off cancels an unused link and keeps records, on restores', /_invite_staff_company\(\)/.test(sql) && /role = 'customer'/.test(sql) && /status = 'revoked'/.test(sql) && /'invited'/.test(sql) && !/delete from/.test(sql));

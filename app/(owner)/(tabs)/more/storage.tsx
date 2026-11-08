@@ -204,7 +204,7 @@ export default function StorageScreen() {
         <Card title="File Breakdown" style={styles.card}>
           <StatRow
             icon="image"
-            label="Project Photos"
+            label="Project Photos & Videos"
             value={String(usage?.photoCount ?? 0)}
             colors={colors}
           />

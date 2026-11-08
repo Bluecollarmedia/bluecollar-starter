@@ -33,7 +33,7 @@ Sharing: a maintenance photo is always saved internal; compression and uploading
 ## Private files (ID photos only)
 
 Only `ids/...` (worker ID photos) are private. They live in a second R2 bucket with no public address (secret `R2_PRIVATE_BUCKET_NAME`,
-the `brighton-private` bucket) and are opened through short-lived signed links from the `media` function (`id-sign`: the person themself, or
+the private bucket (e.g. `yourcompany-private`)) and are opened through short-lived signed links from the `media` function (`id-sign`: the person themself, or
 the owner of a company they belong to). Everything else — maintenance, Snow reference/completion, projects, avatars, trucks, issues — is a
 normal public file in the one public bucket, opened straight from its stored address. Without `R2_PRIVATE_BUCKET_NAME`, ID photos fall back to
 the public bucket too (so they would no longer be access-controlled); keep that secret set to a working bucket if you want ID photos private.

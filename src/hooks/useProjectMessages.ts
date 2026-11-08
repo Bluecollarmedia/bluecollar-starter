@@ -23,7 +23,7 @@ export function useProjectMessages(projectId: string | undefined) {
 
     if (iAmStaff) {
       if (project?.customerId) {
-        notifyPeople([project.customerId], 'customer_message', `New message from ${db.company?.name ?? 'your landscaper'}`, preview, link);
+        notifyPeople([project.customerId], 'customer_message', `New message from ${db.company?.name ?? 'your contractor'}`, preview, link);
       }
     } else {
       notifyStaff('customer_message', customerMessageTitle(myName), customerMessageBody(project?.name, body), link, { customerId: db.personId, projectId });

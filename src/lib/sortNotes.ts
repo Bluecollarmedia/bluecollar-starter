@@ -1,5 +1,5 @@
 // Sorts the owner's private notes into a materials list, right on the phone: no AI, no account, no cost.
-// It reads quantities ("12 yards", "40 ft", "3 rolls"), recognises common landscaping materials, and groups them. A line it does
+// It reads quantities ("12 yards", "40 ft", "3 rolls"), recognises common contractor materials, and groups them. A line it does
 // not recognise as a material (a measurement, a reminder, who to call) goes under "Other notes" word for word, so nothing is lost.
 // It never makes up a quantity: if the note didn't give one, the quantity is left empty.
 import type { MaterialItem, MaterialList } from './materialList';
@@ -12,17 +12,15 @@ const UNIT_RE = new RegExp(`(\\d+(?:\\.\\d+)?|\\d+\\s*/\\s*\\d+)\\s*(?:x\\s*)?($
 const LEADING_NUM_RE = /^\s*(\d+(?:\.\d+)?)\s+(?!x\b|by\b)/i;
 
 const CATEGORIES: [string, RegExp][] = [
-  ['Mulch', /\bmulch\b/i],
-  ['Concrete & Masonry', /\b(concrete|cement|mortar|polymeric|rebar|footing)\b/i],
-  ['Stone & Gravel', /\b(stone|gravel|rock|boulders?|flagstone|belgian|rip ?rap|crushed|pea gravel|screenings|rubble|stone dust)\b/i],
-  ['Pavers & Wall Block', /\b(pavers?|retaining wall|wall block|blocks?|cap stones?|capstone|coping|steps?)\b/i],
-  ['Soil & Sand', /\b(top ?soil|soil|compost|dirt|fill|sand|loam|peat)\b/i],
-  ['Plants & Trees', /\b(plants?|trees?|shrubs?|flowers?|perennials?|annuals?|bushes|hydrangeas?|boxwoods?|arborvitae|hostas?|ornamental|bulbs?)\b/i],
-  ['Lawn', /\b(sod|grass|seed|lawn|straw|turf)\b/i],
-  ['Edging', /\b(edging|edge)\b/i],
-  ['Fabric & Liner', /\b(fabric|weed barrier|liner|tarp|plastic)\b/i],
-  ['Irrigation & Drainage', /\b(pipe|drain|drainage|sprinklers?|irrigation|valve|corrugated|pvc|catch basin|downspout|tile)\b/i],
-  ['Fertilizer & Treatments', /\b(fertilizer|lime|pre-?emergent|weed killer|herbicide|pesticide|insecticide|gypsum)\b/i],
+  ['Asphalt & Sealcoat', /\b(asphalt|blacktop|hot ?mix|cold ?patch|sealcoat(?:ing)?|sealer|crack ?fill(?:er)?|tack ?coat|emulsion)\b/i],
+  ['Concrete & Masonry', /\b(concrete|cement|mortar|polymeric|rebar|footing|grout)\b/i],
+  ['Stone & Gravel', /\b(stone|gravel|rock|boulders?|flagstone|belgian|rip ?rap|crushed|pea gravel|screenings|rubble|stone dust|aggregate)\b/i],
+  ['Block & Brick', /\b(pavers?|retaining wall|wall block|blocks?|bricks?|cap stones?|capstone|coping|steps?)\b/i],
+  ['Soil & Sand', /\b(top ?soil|soil|dirt|fill|sand|loam)\b/i],
+  ['Lumber', /\b(lumber|plywood|osb|boards?|studs?|joists?|beams?|posts?|timbers?|2x4s?|2x6s?|2x8s?|2x10s?|2x12s?|4x4s?|6x6s?)\b/i],
+  ['Paint & Striping', /\b(paint|primer|stain|striping|line paint|stencils?|caulk)\b/i],
+  ['Fabric & Liner', /\b(fabric|geotextile|liner|tarp|plastic|vapor barrier)\b/i],
+  ['Drainage & Pipe', /\b(pipe|drain|drainage|valve|corrugated|pvc|catch basin|downspout|culvert)\b/i],
   ['Lighting & Electrical', /\b(lights?|lighting|wire|wiring|transformer|fixture)\b/i],
   ['Hardware', /\b(screws?|nails?|spikes?|stakes?|fasteners?|brackets?|anchors?|staples?|adhesive|glue)\b/i],
 ];

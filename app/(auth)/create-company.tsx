@@ -2,7 +2,7 @@ import { useT, tr } from '@/i18n';
 import { LanguageSwitch } from '@/components/ui/LanguageSwitch';
 import { TermsAgreement, TERMS_REQUIRED_MESSAGE } from '@/components/legal/TermsAgreement';
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Image, Dimensions, Alert, Keyboard } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Image, Dimensions, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter } from 'expo-router';
@@ -20,6 +20,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_WIDTH = Math.min(SCREEN_WIDTH * 0.4, 180);
@@ -180,8 +181,7 @@ export default function CreateCompanyScreen() {
         const saved = await saveSignupPhoto(photoUri);
         if (!saved.ok) {
           const note = `Your account is ready, but your profile photo wasn't saved. ${saved.error} You can add it by tapping your name in Settings.`;
-          if (Platform.OS === 'web') alert(note);
-          else Alert.alert('Photo not saved', note);
+          showMessage('Photo not saved', note);
         }
       }
       if (result.needsEmailConfirmation) {
@@ -246,7 +246,7 @@ export default function CreateCompanyScreen() {
 
         {step === 'company' && (
           <View style={styles.form}>
-            <Input label={t('Company Name *')} placeholder={t('e.g. Brighton Lawn + Landscape')} value={companyName} onChangeText={setCompanyName} icon="briefcase" />
+            <Input label={t('Company Name *')} placeholder={t('e.g. Your Company')} value={companyName} onChangeText={setCompanyName} icon="briefcase" />
             <Input label={t('Company Phone *')} placeholder="(555) 555-0100" value={companyPhone} onChangeText={setCompanyPhone} keyboardType="phone-pad" icon="phone" textContentType="telephoneNumber" />
             <AddressFields
               required
@@ -264,8 +264,8 @@ export default function CreateCompanyScreen() {
             </Text>
             {!signedIn && <SignupPhotoPicker uri={photoUri} onChange={setPhotoUri} onError={setError} firstName={firstName} lastName={lastName} />}
             <View style={styles.row}>
-              <Input label={t('First Name *')} placeholder="Joey" value={firstName} onChangeText={setFirstName} containerStyle={{ flex: 1 }} />
-              <Input label={t('Last Name *')} placeholder="Angeloco" value={lastName} onChangeText={setLastName} containerStyle={{ flex: 1 }} />
+              <Input label={t('First Name *')} placeholder="Alex" value={firstName} onChangeText={setFirstName} containerStyle={{ flex: 1 }} />
+              <Input label={t('Last Name *')} placeholder="Morgan" value={lastName} onChangeText={setLastName} containerStyle={{ flex: 1 }} />
             </View>
             <Input label={t('Email *')} placeholder="you@company.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" icon="mail" />
             <Input label={t('Phone *')} placeholder="(555) 555-0100" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />

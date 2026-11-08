@@ -6,15 +6,15 @@ const names = { exports: {} }; new Function('module', 'exports', ts.transpileMod
 const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/customerHome.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, () => names.exports);
 const h = m.exports;
 let bad = 0; const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}${ok ? '' : ' — ' + d}`); };
-const proj = (id, name, status, extra = {}) => ({ id, name, status, progress: 40, address: '1 Edward Dr', city: 'Lakewood', state: 'NJ', zip: '08701', ...extra });
+const proj = (id, name, status, extra = {}) => ({ id, name, status, progress: 40, address: '1 Elm Dr', city: 'Your Town', state: 'ST', zip: '00000', ...extra });
 const build = (o) => h.buildHomeItems({ projects: [], ...o });
 
 check('1 nothing linked = nothing listed (no fake rows)', build({}).length === 0);
-const same = build({ projects: [proj('a', 'Wyndham 2', 'active'), proj('b', 'Back Fence', 'active', { address: '1 edward drive' })] });
+const same = build({ projects: [proj('a', 'Wyndham 2', 'active'), proj('b', 'Back Fence', 'active', { address: '1 elm drive' })] });
 check('2 two projects at the SAME property (written differently) share one property key', same.length === 2 && new Set(same.map((i) => i.propertyKey)).size === 1 && h.propertyOptions(same).length === 0, JSON.stringify(same.map((i) => i.propertyKey)));
-const two = build({ projects: [proj('a', 'A', 'active'), proj('b', 'B', 'completed', { address: '111 Spruce St', completedAt: '2026-10-19' })] });
+const two = build({ projects: [proj('a', 'A', 'active'), proj('b', 'B', 'completed', { address: '123 Main St', completedAt: '2026-10-19' })] });
 const opts = h.propertyOptions(two);
-check('3 two properties: a filter with one entry each; one property: no filter', opts.length === 2 && opts[0].label === '1 Edward Dr' && h.propertyOptions(build({ projects: [proj('a', 'A', 'active'), proj('c', 'C', 'active')] })).length === 0);
+check('3 two properties: a filter with one entry each; one property: no filter', opts.length === 2 && opts[0].label === '1 Elm Dr' && h.propertyOptions(build({ projects: [proj('a', 'A', 'active'), proj('c', 'C', 'active')] })).length === 0);
 check('4 filtering keeps only that property; null shows everything', h.filterByProperty(two, opts[1].key).length === 1 && h.filterByProperty(two, null).length === 2);
 const { active, completed } = h.splitHome(build({ projects: [proj('a', 'A', 'active'), proj('h', 'H', 'on_hold'), proj('c', 'C', 'completed', { completedAt: '2026-01-01' }), proj('d', 'D', 'completed', { completedAt: '2026-05-01' }), proj('q', 'Q', 'prospect'), proj('x', 'X', 'archived')] }));
 check('5 active (incl. on hold) first; completed newest first; quotes and archived are not shown', active.map((i) => i.name).join() === 'A,H' && completed.map((i) => i.name).join() === 'D,C');

@@ -33,7 +33,7 @@ function ask(phase: Phase): Promise<boolean> {
 export async function takeTimedPhoto(target: TimedPhotoTarget, phase: Phase): Promise<{ ok: true } | { ok: false; error: string }> {
   if (Platform.OS !== 'web') {
     const perm = await ImagePicker.requestCameraPermissionsAsync();
-    if (!perm.granted) return { ok: false, error: 'Camera access is needed for this photo. Turn it on for Brighton Lawn in the Settings app.' };
+    if (!perm.granted) return { ok: false, error: 'Camera access is needed for this photo. Turn it on for this app in the Settings app.' };
   }
   const shot = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 });
   if (shot.canceled || !shot.assets?.[0]) return { ok: false, error: 'No photo was taken.' };

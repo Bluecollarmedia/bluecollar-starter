@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Platform, Image } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Platform, Image } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,7 +14,6 @@ import { PropertyChoice } from '@/components/properties/PropertyChoice';
 import { propertyForSave } from '@/data/properties';
 import type { Property } from '@/types/property';
 import { useCustomers } from '@/hooks/useCustomers';
-import { generateProjectCode } from '@/hooks/useCustomerAccess';
 import { useProject } from '@/hooks/useProject';
 import { insertRow } from '@/data/store';
 import { AddressFields, missingAddressPart, type AddressCheck } from '@/components/ui/AddressFields';
@@ -24,6 +23,7 @@ import { getProjectImageUri } from '@/lib/projectImages';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { ProjectStatus } from '@/types/project';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 const STATUS_OPTIONS: { key: ProjectStatus; label: string }[] = [
   { key: 'active', label: 'Active' },
@@ -35,8 +35,7 @@ const STATUS_OPTIONS: { key: ProjectStatus; label: string }[] = [
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function showAlert(title: string, msg: string) {
-  if (Platform.OS === 'web') alert(msg);
-  else Alert.alert(title, msg);
+  showMessage(title, msg);
 }
 
 /** New Project, or Edit Project when opened with `?editId=<projectId>`. */
@@ -113,13 +112,13 @@ export default function NewProjectScreen() {
         return;
       }
       if (r.status === 'not_found') {
-        Alert.alert(
+        confirmAction(
           'Address not found on the map',
           'Double-check the address. If it\u2019s right (a new build, for example), you can save it as typed.',
-          [
-            { text: 'Fix Address', style: 'cancel' },
-            { text: 'Save As Typed', onPress: () => { setAddressCheck({ overridden: true }); save({ overridden: true }); } },
-          ],
+          'Save As Typed',
+          () => { setAddressCheck({ overridden: true }); save({ overridden: true }); },
+          false,
+          'Fix Address',
         );
         return;
       }
@@ -173,7 +172,6 @@ export default function NewProjectScreen() {
       ...fields,
       status: 'active',
       progress: 0,
-      customerProjectCode: generateProjectCode(),
     });
     insertRow('project_settings', {
       projectId: project.id,
@@ -321,7 +319,7 @@ export default function NewProjectScreen() {
           <Card title="Project Info">
             <Input
               label="Project Name"
-              placeholder="e.g. Smith Backyard Renovation"
+              placeholder="e.g. Smith Driveway Replacement"
               value={name}
               onChangeText={setName}
               icon="folder"

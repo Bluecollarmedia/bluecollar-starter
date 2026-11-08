@@ -11,15 +11,15 @@ import { config } from '@/lib/config';
 
 /** The link people tap. On the web the page is /invite/<token>; without a web address the app's own link scheme is used. */
 export function inviteLinkUrl(token: string): string {
-  return config.webUrl ? `${config.webUrl}/invite/${token}` : `brighton-lawn://invite/${token}`;
+  return config.webUrl ? `${config.webUrl}/invite/${token}` : `starter://invite/${token}`;
 }
 
 export function inviteMessage(url: string, companyName?: string, personName?: string, kind: 'worker' | 'customer' = 'worker'): string {
   const hi = personName?.trim() ? `Hi ${personName.trim().split(' ')[0]}! ` : '';
   const company = companyName?.trim() || 'our company';
   return kind === 'customer'
-    ? `${hi}${company} invited you to see your project on the Brighton Lawn + Landscape app. This private link works once: ${url}`
-    : `${hi}You're invited to join ${company} on the Brighton Lawn + Landscape app. Tap this private link to set up your login (it works once): ${url}`;
+    ? `${hi}${company} invited you to see your project in Starter App. This private link works once: ${url}`
+    : `${hi}You're invited to join ${company} in Starter App. Tap this private link to set up your login (it works once): ${url}`;
 }
 
 /** Opens Messages with the invite filled in (to `phone` if given). Falls back to the share sheet. */

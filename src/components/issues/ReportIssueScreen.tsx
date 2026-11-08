@@ -46,7 +46,7 @@ export function ReportIssueScreen() {
         ? await ImagePicker.requestCameraPermissionsAsync()
         : await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permission.granted) {
-        Alert.alert(t('Permission needed'), t('Turn it on for Brighton Lawn in the Settings app to add photos.'));
+        Alert.alert(t('Permission needed'), t('Turn on photo access for this app in the Settings app to add photos.'));
         return;
       }
     }

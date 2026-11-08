@@ -1,6 +1,6 @@
 import { useTeamAccess } from '@/hooks/useTeamAccess';
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert, Linking } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Linking } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
@@ -21,6 +21,7 @@ import { OwnerWorkerExtras } from '@/components/account/WorkerExtras';
 import { OwnerClockCard } from '@/components/time/OwnerClockCard';
 import { formatBirthday, birthdaySoon } from '@/lib/birthday';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 const today = todayKey();
 
@@ -115,53 +116,45 @@ export default function WorkerDetailScreen() {
       updateWorker(p.id, { status: 'inactive' });
       router.back();
     };
-    Alert.alert(
+    confirmAction(
       'Deactivate Worker',
       `${p.firstName} ${p.lastName} will lose access. Historical records (hours, payroll, attendance) will be preserved.`,
-      [{ text: 'Cancel', style: 'cancel' }, { text: 'Deactivate', style: 'destructive', onPress: doDeactivate }],
+      'Deactivate',
+      doDeactivate,
+      true,
     );
   }
 
   /** Brings a deactivated worker back. Old admin rights are never restored. */
   function handleReactivate() {
-    Alert.alert(
+    confirmAction(
       `Reactivate ${p.firstName} ${p.lastName}?`,
       'They get access again. Nothing is assigned to them automatically, and their history stays as it is.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Reactivate',
-          onPress: async () => {
-            const why = await team.reactivate(p.id);
-            if (why) Alert.alert("Couldn't reactivate", why);
-            else haptics.success();
-          },
-        },
-      ],
+      'Reactivate',
+      async () => {
+        const why = await team.reactivate(p.id);
+        if (why) showMessage("Couldn't reactivate", why);
+        else haptics.success();
+      },
     );
   }
 
   /** Deletes a worker with no login and no records. Anyone else can only be deactivated, which keeps their history and payroll. */
   function handleDelete() {
-    Alert.alert(
+    confirmAction(
       `Delete ${p.firstName} ${p.lastName}?`,
       'This removes them completely and cannot be undone. It only works for a worker who never logged in and has no hours, jobs or other records.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            const res = await deleteUnusedMember(p.id);
-            if (res.ok) { haptics.destructive(); router.back(); return; }
-            if (res.hasHistory && isActive) {
-              Alert.alert("Can't delete", res.error, [{ text: 'Cancel', style: 'cancel' }, { text: 'Deactivate instead', onPress: handleDeactivate }]);
-            } else {
-              Alert.alert(res.hasHistory ? "Can't delete" : "Couldn't delete", res.error);
-            }
-          },
-        },
-      ],
+      'Delete',
+      async () => {
+        const res = await deleteUnusedMember(p.id);
+        if (res.ok) { haptics.destructive(); router.back(); return; }
+        if (res.hasHistory && isActive) {
+          confirmAction("Can't delete", res.error, 'Deactivate instead', handleDeactivate);
+        } else {
+          showMessage(res.hasHistory ? "Can't delete" : "Couldn't delete", res.error);
+        }
+      },
+      true,
     );
   }
 

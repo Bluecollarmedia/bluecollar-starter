@@ -1,14 +1,17 @@
 // The text of the Privacy Policy, Terms of Use and Support pages. One source: the app screens (app/legal/*) and the
 // public web pages (public/legal/*.html, made by scripts/build-legal-pages.cjs) both come from here.
 
+// PLACEHOLDERS: a new client fills these in before publishing the pages (Step 3 moves them to the brand settings).
+// Then run `node scripts/build-legal-pages.cjs` to remake public/legal/*.html.
 export const BUSINESS = {
-  name: 'Brighton Lawn and Landscape',
-  appName: 'Brighton Lawn + Landscape',
-  addressLines: ['111 Spruce Street', 'Lakewood, New Jersey 08701'],
+  name: 'Your Company LLC',
+  appName: 'Starter App',
+  addressLines: ['123 Main St', 'Your Town, ST 00000'],
   email: 'support@yourcompany.com',
-  phone: '848-226-0090',
-  website: 'https://app.brightonlawn.com',
-  effective: 'October 29, 2026',
+  phone: '(555) 555-0100',
+  website: 'https://app.yourcompany.com',
+  state: 'Your State',
+  effective: 'January 1, 2027',
 } as const;
 
 export type LegalSection = { heading: string; paragraphs?: string[]; bullets?: string[] };
@@ -24,7 +27,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: 'Who uses the app and who controls the data',
       paragraphs: [
-        'The app is a business tool for contracting and trade companies. A company owner sets up the company, and its workers and customers join with a code or invitation.',
+        'The app is a business tool for contracting and trade companies. A company owner sets up the company, and its workers and customers join with a private invitation link.',
         'Information about a company\'s projects, properties, customers, schedules and records belongs to that company, and the company decides who on its team can see it. If you are a customer or worker, your company can also answer questions about your records.',
       ],
     },
@@ -175,7 +178,7 @@ export const TERMS: LegalDoc = {
       heading: 'Changes and law',
       paragraphs: [
         'We may update these terms and will change the date at the top. Continuing to use the app after a change means you accept it.',
-        'These terms are governed by the laws of the State of New Jersey, and any dispute will be handled in the courts located in New Jersey.',
+        `These terms are governed by the laws of the State of ${BUSINESS.state}, and any dispute will be handled in the courts located in ${BUSINESS.state}.`,
       ],
     },
     { heading: 'Contact us', paragraphs: [contactLine] },

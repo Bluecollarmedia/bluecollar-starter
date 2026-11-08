@@ -13,7 +13,6 @@
 
 import { db, insertRow, updateRow, deleteRow, findRow, upsertRow, rowsOf, rpc, refresh, isDemo } from './store';
 import { notifyPeople, logProjectHistory, addCustomerTimeline } from './actions';
-import { generateProjectCode } from '@/hooks/useCustomerAccess';
 import { DEFAULT_CHECKIN_RADIUS_M } from '@/lib/maps';
 import { supabase } from '@/lib/supabase';
 import { config } from '@/lib/config';
@@ -190,7 +189,7 @@ export function currentSnapshot(projectId: string, customerId?: string): Documen
   const cust = customerId ? db.people[customerId] : p?.customer;
   return {
     company: {
-      name: c?.name ?? 'Brighton Lawn + Landscape',
+      name: c?.name ?? 'Your Company',
       phone: c?.phone,
       email: c?.email,
       address: c?.address,
@@ -266,7 +265,6 @@ export function createProspectProject(input: {
     zip: input.zip?.trim() || undefined,
     status: 'prospect',
     progress: 0,
-    customerProjectCode: generateProjectCode(),
   });
   insertRow('project_settings', {
     projectId: project.id,
@@ -621,7 +619,7 @@ export async function emailDocumentToCustomer(doc: FinancialDoc, typedEmail?: st
 /** Text for the message the owner sends with the link. */
 export function approvalMessage(doc: FinancialDoc, link: string): string {
   const first = doc.customer?.firstName?.trim();
-  const company = db.company?.name ?? 'Brighton Lawn + Landscape';
+  const company = db.company?.name ?? 'Your Company';
   const what = `${DOC_LABEL[doc.kind].toLowerCase()} ${doc.number}`;
   const act = doc.kind === 'invoice' ? 'You can view it here' : 'You can review and approve it here';
   return `${first ? `Hi ${first}, here` : 'Here'}'s your ${what} from ${company} (${formatMoney(doc.total)}). ${act}: ${link}`;

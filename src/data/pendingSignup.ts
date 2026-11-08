@@ -1,5 +1,5 @@
 /**
- * Keeps the optional sign-up extras (profile photo, birthday, hoodie size, ID photo) safe on the phone while an account waits for
+ * Keeps the optional sign-up extras (profile photo, birthday, shirt size, ID photo) safe on the phone while an account waits for
  * its email confirmation, then saves them the first time that person is signed in (confirmation link or normal sign-in).
  * Pictures are copied out of the temporary cache first, because the system can clear the cache before the person confirms.
  * A part that fails to save stays for the next try; nothing here ever throws or blocks signing in.

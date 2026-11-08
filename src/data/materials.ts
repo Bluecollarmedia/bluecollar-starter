@@ -202,8 +202,8 @@ export function deleteVendor(id: string) {
 
 /** Units that measure a material (normalised: lower case, no dots/plural s). */
 const MATERIAL_UNITS = new Set([
-  'ton', 'yd', 'cu yd', 'cuyd', 'cy', 'yard', 'cubic yard', 'bag', 'pallet', 'plant', 'flat', 'roll', 'gal', 'gallon',
-  'bundle', 'bale', 'piece', 'pc', 'stone', 'block', 'paver', 'tree', 'shrub', 'lb', 'sq yd',
+  'ton', 'yd', 'cu yd', 'cuyd', 'cy', 'yard', 'cubic yard', 'bag', 'pallet', 'roll', 'gal', 'gallon',
+  'bundle', 'piece', 'pc', 'stone', 'block', 'paver', 'lb', 'sq yd', 'load', 'sheet',
 ]);
 
 const normUnit = (u?: string) => (u ?? '').toLowerCase().replace(/\./g, '').trim().replace(/s$/, '');

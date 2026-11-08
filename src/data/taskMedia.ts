@@ -72,7 +72,7 @@ export async function pickTaskMedia(alreadyPicked: number): Promise<TaskMediaDra
   if (!perm.granted) {
     notify(
       source === 'camera' ? 'Camera access is off' : 'Photo access is off',
-      'Turn it on for Brighton Lawn in the Settings app to add task photos and videos.',
+      'Turn on photo access for this app in the Settings app to add task photos and videos.',
     );
     return [];
   }

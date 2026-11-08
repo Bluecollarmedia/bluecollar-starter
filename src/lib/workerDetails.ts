@@ -1,4 +1,4 @@
-// A worker's hoodie size and ID photo (supabase/updates/058). Pure helpers: the sizes, the private folder, and the wording.
+// A worker's shirt size (saved in people.hoodie_size) and ID photo (supabase/updates/058). Pure helpers: the sizes, the private folder, and the wording.
 export const HOODIE_SIZES = ['XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'] as const;
 export type HoodieSize = (typeof HOODIE_SIZES)[number];
 

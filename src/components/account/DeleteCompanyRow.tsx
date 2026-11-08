@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Platform, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ListRow, Button } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
@@ -11,6 +11,7 @@ import { db } from '@/data/store';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 /**
  * Owner only: "Delete Company" row plus its confirmation sheet (type the
@@ -75,7 +76,7 @@ export function DeleteCompanyRow() {
     if (!ready) return;
     if (!isSupabaseConfigured) {
       const msg = 'The company can’t be deleted in demo mode.';
-      if (Platform.OS === 'web') alert(msg); else Alert.alert('Demo mode', msg);
+      showMessage('Demo mode', msg);
       return;
     }
     setBusy(true);

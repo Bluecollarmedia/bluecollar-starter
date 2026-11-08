@@ -15,14 +15,14 @@ const all = [PRIVACY, TERMS, SUPPORT].map(text).join('\n');
 let bad = 0;
 const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  — ' + detail}`); };
 
-check('1 business facts are right', BUSINESS.name === 'Brighton Lawn and Landscape' && BUSINESS.addressLines.join(' ') === '111 Spruce Street Lakewood, New Jersey 08701' && BUSINESS.phone === '848-226-0090' && BUSINESS.website === 'https://app.brightonlawn.com');
+check('1 business facts are right', !!BUSINESS.name && BUSINESS.addressLines.length >= 2 && !!BUSINESS.phone && /^https:\/\//.test(BUSINESS.website) && !!BUSINESS.state && !/brighton|lakewood|spruce/i.test(JSON.stringify(BUSINESS)));
 check('2 contact details appear in privacy, terms and support', [PRIVACY, TERMS, SUPPORT].every((d) => text(d).includes(BUSINESS.email) || d.slug === 'support' ? text(d).includes(BUSINESS.email) || d.slug !== 'support' : false) && text(PRIVACY).includes(BUSINESS.phone) && text(TERMS).includes(BUSINESS.phone) && text(SUPPORT).includes(BUSINESS.phone));
 check('3 privacy: says how to delete the account and the company, and how to revoke permission', /Delete Account/.test(text(PRIVACY)) && /Delete Company/.test(text(PRIVACY)) && /turn them off in your phone/.test(text(PRIVACY)));
 check('4 privacy: names every data type the app really collects', ['name, email', 'phone', 'birthday', 'photo', 'Messages', 'precise location', 'push notification token', 'pay rates', 'IP address'].every((k) => text(PRIVACY).toLowerCase().includes(k.toLowerCase())), 'missing a data type');
 check('5 privacy: says no selling, no ads, no tracking', /do not sell/i.test(text(PRIVACY)) && /advertis/i.test(text(PRIVACY)) && /do not track/i.test(text(PRIVACY)));
 check('6 privacy: lists the service providers the app really uses', ['Supabase', 'Cloudflare', 'Expo', 'Resend', 'Netlify'].every((k) => text(PRIVACY).includes(k)));
 check('7 terms: objectionable content ban, reporting, removal, zero tolerance (Apple 1.2)', /objectionable/i.test(text(TERMS)) && /Report/.test(text(TERMS)) && /remove/i.test(text(TERMS)) && /zero tolerance/i.test(text(TERMS)));
-check('8 terms: Apple clause and governing law', /third-party beneficiaries/.test(text(TERMS)) && /New Jersey/.test(text(TERMS)));
+check('8 terms: Apple clause and governing law', /third-party beneficiaries/.test(text(TERMS)) && text(TERMS).includes(`laws of the State of ${BUSINESS.state}`));
 check('9 support: email, phone, report, delete account', /Report/.test(text(SUPPORT)) && /Delete Account/.test(text(SUPPORT)));
 check('10 no unfinished placeholders', !/TODO|TBD|lorem|\[[A-Za-z ]+\]|XXX|example\.com/i.test(all));
 check('11 the three in-app screens exist', ['privacy', 'terms', 'support'].every((s) => fs.existsSync(path.join(root, `app/legal/${s}.tsx`))));

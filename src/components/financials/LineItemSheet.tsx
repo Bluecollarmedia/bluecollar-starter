@@ -16,7 +16,7 @@ import { formatMoney, lineAmount, parseAmount } from '@/lib/money';
 import { CATEGORY_ORDER, CATEGORY_LABEL } from '@/data/financials';
 import type { LineItem, LineItemCategory } from '@/types/financial';
 
-const UNITS = ['ea', 'sq ft', 'ln ft', 'yd', 'ton', 'bag', 'plant', 'hr', 'visit', 'lot'];
+const UNITS = ['ea', 'hr', 'day', 'sq ft', 'sq yd', 'ln ft', 'ton', 'cu yd', 'gal', 'load', 'lot'];
 
 interface Props {
   visible: boolean;
@@ -101,7 +101,7 @@ export function LineItemSheet({ visible, item, isNew, suggestions, onSave, onDel
             <TextInput
               value={description}
               onChangeText={setDescription}
-              placeholder="Description (e.g. Mulch installation)"
+              placeholder="Description (e.g. Driveway repair)"
               placeholderTextColor={colors.textTertiary}
               style={field(!!errors.description)}
               autoFocus={isNew}

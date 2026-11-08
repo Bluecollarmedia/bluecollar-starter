@@ -16,7 +16,7 @@ Rules (enforced by the database):
   route's crew and an approved maintenance worker). Owner > Maintenance lists the routes still without a leader; nothing is assigned for
   you. A direct edit cannot remove a leader. Other crew members see the status instead of a button.
 * The leader must be clocked in to check a crew in. The stop order is the owner's (owner may work out of order; it is written to the history).
-* Workers do not start per-person property timers any more for maintenance (the older functions refuse). Landscaping jobs are unchanged.
+* Workers do not start per-person property timers any more for maintenance (the older functions refuse). Project jobs are unchanged.
 * A crew visit is never recomputed from intervals and never gets per-person intervals; the owner can correct its arrival/completion time
   (old value, new value and reason are kept).
 * A skip request is withdrawn when the crew arrives, and cannot be approved while the crew is at the property.

@@ -9,7 +9,7 @@ const ev = (id, eventType, title, ts2) => ({ id, eventType, title, timestamp: ts
 const events = [
   ev('1', 'project_started', 'Project started', '2026-10-01'), ev('2', 'update_shared', 'Lights installed', '2026-10-18T12:42'),
   ev('3', 'photo_shared', 'Exterior straw installation completed', '2026-10-17T10:15'), ev('4', 'progress_updated', 'Progress 80%', '2026-10-16'),
-  ev('5', 'update_shared', 'Project updated', '2026-10-15'), ev('6', 'update_shared', 'Mulch done', '2026-10-14'), ev('7', 'update_shared', 'Edging done', '2026-10-13'),
+  ev('5', 'update_shared', 'Project updated', '2026-10-15'), ev('6', 'update_shared', 'Base compacted', '2026-10-14'), ev('7', 'update_shared', 'Forms set', '2026-10-13'),
   ev('8', 'request_responded', 'We replied', '2026-10-19'), ev('9', 'project_completed', 'Project completed', '2026-10-19'),
 ];
 const r = f.meaningfulUpdates(events);

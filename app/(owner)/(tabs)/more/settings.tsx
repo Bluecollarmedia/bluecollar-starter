@@ -27,6 +27,7 @@ import { useStorageInfo, useStorageLimit } from '@/hooks/useStorage';
 import { formatAddress } from '@/lib/address';
 import { formatBytes, storageLimitLabel } from '@/types/storage';
 import type { UserRole } from '@/types';
+import { appVersionText } from '@/lib/appVersion';
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
@@ -164,7 +165,7 @@ export default function SettingsScreen() {
         </SettingsGroup>
 
         {weatherRow.canChange ? (
-          <SettingsGroup title="Brighton Weather" footer="When on, anyone who opens the app without signing in sees local weather first, with a Sign In button. Off keeps the usual welcome screen.">
+          <SettingsGroup title="Public Weather" footer="When on, anyone who opens the app without signing in sees local weather first, with a Sign In button. Off keeps the usual welcome screen.">
             <SettingsRow icon="cloud" tint={tileColors.blue} title={weatherRow.title} subtitle={weatherRow.subtitle} value={weatherRow.value} onPress={weatherRow.confirm} />
           </SettingsGroup>
         ) : null}
@@ -215,7 +216,7 @@ export default function SettingsScreen() {
         </SettingsGroup>
 
         <SettingsGroup title="App">
-          <SettingsRow icon="info" tint={tileColors.gray} title="Version" value="1.0.0" />
+          <SettingsRow icon="info" tint={tileColors.gray} title="Version" value={appVersionText()} />
           <SettingsRow
             icon="database"
             tint={tileColors.gray}

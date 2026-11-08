@@ -227,7 +227,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
       return {
         ok: false,
         title: tr('Turn on location'),
-        message: tr('Brighton Lawn needs your location to check you in at the job site. Turn it on in Settings, then try again.'),
+        message: tr('The app needs your location to check you in at the job site. Turn it on in Settings, then try again.'),
         openSettings: true,
       };
     }

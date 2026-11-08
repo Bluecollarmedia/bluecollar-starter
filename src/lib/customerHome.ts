@@ -30,14 +30,14 @@ export interface ProjectLike {
 }
 const TYPE_LABEL: Record<HomeKind, string> = { project: 'Project' };
 
-/** "111 Spruce St, Lakewood NJ" for display. */
+/** "123 Main St, Your Town ST" for display. */
 export function addressLine(p: { address?: string; city?: string; state?: string }): string {
   const street = (p.address ?? '').trim();
   const town = [p.city?.trim(), p.state?.trim()].filter(Boolean).join(' ');
   return [street, town].filter(Boolean).join(', ');
 }
 
-/** The same property written differently ("111 Spruce St." / "111 spruce street") gets the same key; no address, no key. */
+/** The same property written differently ("123 Main St." / "123 main street") gets the same key; no address, no key. */
 export function propertyKeyOf(address?: string): string {
   // Street only (before any comma), so the same street written with or without the town matches.
   const street = (address ?? '').split(',')[0].toLowerCase().replace(/[.,#]/g, ' ').replace(/\b(street)\b/g, 'st').replace(/\b(avenue)\b/g, 'ave').replace(/\b(road)\b/g, 'rd').replace(/\b(drive)\b/g, 'dr').replace(/\b(lane)\b/g, 'ln').replace(/\s+/g, ' ').trim();

@@ -60,7 +60,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
     return () => { live = false; };
   }, [user?.id]);
 
-  // Hoodie size and ID photo (workers only). The ID is private: only this worker and the owner can see it.
+  // Shirt size (hoodie_size column) and ID photo (workers only). The ID is private: only this worker and the owner can see it.
   const [hoodie, setHoodie] = useState<HoodieSize | null>(null);
   const [savedHoodie, setSavedHoodie] = useState<HoodieSize | null>(null);
   const [savedIdKey, setSavedIdKey] = useState<string | null>(null);

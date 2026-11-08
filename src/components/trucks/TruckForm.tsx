@@ -4,7 +4,7 @@
  * uploaded as soon as the truck is saved. On an existing truck, documents and private notes live on the truck's own page.
  */
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter } from 'expo-router';
@@ -25,6 +25,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { TruckStatus } from '@/types/truck';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 const STATUS_OPTIONS: { key: TruckStatus; label: string; dot: string }[] = [
   { key: 'available', label: 'Available', dot: semantic.success },
@@ -33,7 +34,7 @@ const STATUS_OPTIONS: { key: TruckStatus; label: string; dot: string }[] = [
   { key: 'out_of_service', label: 'Out of Service', dot: semantic.error },
 ];
 
-const alertBox = (title: string, msg: string) => (Platform.OS === 'web' ? alert(`${title}\n\n${msg}`) : Alert.alert(title, msg));
+const alertBox = (title: string, msg: string) => showMessage(title, msg);
 
 export function TruckForm({ truckId }: { truckId?: string }) {
   const { colors } = useTheme();
@@ -156,7 +157,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
         </View>
         <View style={styles.row}>
           <Input label="Year" value={year} onChangeText={(v) => setYear(v.replace(/[^0-9]/g, '').slice(0, 4))} placeholder="e.g. 2022" keyboardType="number-pad" containerStyle={{ flex: 1 }} />
-          <Input label="License Plate" value={plate} onChangeText={setPlate} placeholder="e.g. OH-BLL-101" autoCapitalize="characters" containerStyle={{ flex: 1 }} />
+          <Input label="License Plate" value={plate} onChangeText={setPlate} placeholder="e.g. OH-YCO-101" autoCapitalize="characters" containerStyle={{ flex: 1 }} />
         </View>
         <View style={styles.row}>
           <Input label="VIN" value={vin} onChangeText={(v) => setVin(v.toUpperCase().slice(0, 17))} placeholder="17 characters" autoCapitalize="characters" autoCorrect={false} containerStyle={{ flex: 1 }} />

@@ -12,7 +12,7 @@ const check = (name, ok, d) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAI
 
 check('1 lowercase names get capitals: zisha -> Zisha, eli semah -> Eli Semah', n.properName('zisha') === 'Zisha' && n.properName('eli semah') === 'Eli Semah' && n.properName('wyndham 2') === 'Wyndham 2');
 check('2 after hyphens and apostrophes too: mary-jane -> Mary-Jane, o\'brien -> O\'Brien', n.properName('mary-jane') === 'Mary-Jane' && n.properName("o'brien") === "O'Brien");
-check('2b a possessive keeps its small s (David s Home) while a name like D-apostrophe-Angelo is still capitalised', n.properName("david's home") === "David's Home" && n.properName("mary's") === "Mary's" && n.properName("d'angelo") === "D'Angelo" && n.properName("205 cathy ln") === '205 Cathy Ln');
+check('2b a possessive keeps its small s (David s Home) while a name like D-apostrophe-Angelo is still capitalised', n.properName("david's home") === "David's Home" && n.properName("mary's") === "Mary's" && n.properName("d'angelo") === "D'Angelo" && n.properName("205 oak ln") === '205 Oak Ln');
 check('3 nothing else is changed: McDonald, DeAngelo, HOA and digits stay as typed', n.properName('McDonald') === 'McDonald' && n.properName('DeAngelo') === 'DeAngelo' && n.properName('Oak Ridge HOA Entrance') === 'Oak Ridge HOA Entrance' && n.properName('111 spruce st') === '111 Spruce St');
 check('4 empty and missing names are safe', n.properName('') === '' && n.properName(undefined) === '' && n.properName(null) === '' && n.fullName('zisha', '') === 'Zisha' && n.fullName('eli', 'semah') === 'Eli Semah');
 

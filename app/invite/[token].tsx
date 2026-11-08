@@ -36,6 +36,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import type { HoodieSize } from '@/lib/workerDetails';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 interface Lookup {
   valid: boolean;
@@ -57,7 +58,7 @@ async function lookupInvite(token: string): Promise<Lookup> {
   if (!isSupabaseConfigured) {
     // Demo mode (no database): any "demo…" link shows a sample worker invite so the page can be tried.
     return token.startsWith('demo')
-      ? { valid: true, kind: 'worker', companyName: 'Brighton Lawn + Landscape', firstName: 'Gabriel', lastName: 'Rivera', phone: '(555) 555-0142' }
+      ? { valid: true, kind: 'worker', companyName: 'Your Company', firstName: 'Gabriel', lastName: 'Rivera', phone: '(555) 555-0142' }
       : { valid: false, reason: 'invalid' };
   }
   const { data, error } = await supabase.rpc('invite_lookup', { p_token: token });
@@ -66,7 +67,7 @@ async function lookupInvite(token: string): Promise<Lookup> {
   return { valid: !!r.valid, reason: r.reason, kind: r.kind, companyName: r.company_name, firstName: r.first_name, lastName: r.last_name, phone: r.phone };
 }
 
-const say = (title: string, msg: string) => (Platform.OS === 'web' ? alert(`${title}\n\n${msg}`) : Alert.alert(title, msg));
+const say = (title: string, msg: string) => showMessage(title, msg);
 
 export default function InviteScreen() {
   const t = useT();

@@ -19,7 +19,7 @@ const { translate, getLanguage } = i18n;
 check('1 English is the default', getLanguage() === 'en' && translate('en', 'Sign In') === 'Sign In');
 check('2 Spanish gives the Spanish text', translate('es', 'Sign In') === 'Iniciar sesión' && translate('es', 'Welcome') === 'Bienvenido');
 check('3 text with no Spanish yet stays in English (never blank, never a key)', translate('es', 'A screen nobody translated') === 'A screen nobody translated');
-check('4 values are filled in, in either language', translate('es', 'Step {n} of 3', { n: 2 }) === 'Paso 2 de 3' && translate('en', 'Step {n} of 3', { n: 2 }) === 'Step 2 of 3' && translate('es', 'Join {company}', { company: 'Brighton' }) === 'Únete a Brighton');
+check('4 values are filled in, in either language', translate('es', 'Step {n} of 3', { n: 2 }) === 'Paso 2 de 3' && translate('en', 'Step {n} of 3', { n: 2 }) === 'Step 2 of 3' && translate('es', 'Join {company}', { company: 'Acme' }) === 'Únete a Acme');
 
 // every phrase used in the code has a Spanish version
 const used = new Set();
@@ -43,7 +43,7 @@ const has = (f, re) => re.test(read(f));
 check('7 the switch is on the welcome, sign-in, forgot-password, invite and company-setup screens', ['app/(auth)/welcome.tsx', 'app/(auth)/login.tsx', 'app/(auth)/forgot-password.tsx', 'app/invite/[token].tsx', 'app/(auth)/create-company.tsx'].every((f) => has(f, /<LanguageSwitch \/>/)));
 check('8 and one Settings row for every role (worker, owner, customer)', ['app/(worker)/(tabs)/settings.tsx', 'app/(owner)/(tabs)/more/settings.tsx', 'app/(customer)/(tabs)/account.tsx'].every((f) => has(f, /<LanguageRow \/>/)));
 check('9 the tab bars are translated (worker, owner, customer)', ['app/(worker)/(tabs)/_layout.tsx', 'app/(owner)/(tabs)/_layout.tsx', 'app/(customer)/(tabs)/_layout.tsx'].every((f) => /Trigger\.Label>\{t\('/.test(read(f)) && /title: t\('/.test(read(f))));
-check('10 the choice is kept on the phone and read at startup', /brighton\.language/.test(read('src/i18n/index.ts')) && /loadLanguage\(\);/.test(read('src/i18n/index.ts')) && /AsyncStorage\.setItem\(STORAGE_KEY, next\)/.test(read('src/i18n/index.ts')));
+check('10 the choice is kept on the phone and read at startup', /'app\.language'/.test(read('src/i18n/index.ts')) && /loadLanguage\(\);/.test(read('src/i18n/index.ts')) && /AsyncStorage\.setItem\(STORAGE_KEY, next\)/.test(read('src/i18n/index.ts')));
 check('11 the website\'s dialogs are translated too', /t\(current\.title\)/.test(read('src/components/ui/WebDialogHost.tsx')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

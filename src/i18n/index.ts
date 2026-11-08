@@ -16,7 +16,7 @@ export const LANGUAGES: { key: Language; label: string; short: string }[] = [
   { key: 'es', label: 'Español', short: 'ES' },
 ];
 
-const STORAGE_KEY = 'brighton.language';
+const STORAGE_KEY = 'app.language';
 let current: Language = 'en';
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());

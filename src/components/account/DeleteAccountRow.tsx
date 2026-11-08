@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Modal, Pressable, StyleSheet, Platform, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, TextInput, Modal, Pressable, StyleSheet, Platform, KeyboardAvoidingView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ListRow, Button } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
@@ -12,6 +12,7 @@ import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useT } from '@/i18n';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 const CONFIRM_WORD = 'DELETE';
 
@@ -43,7 +44,7 @@ export function DeleteAccountRow() {
     if (!ready) return;
     if (!isSupabaseConfigured) {
       const msg = t('Accounts can’t be deleted in demo mode.');
-      if (Platform.OS === 'web') alert(msg); else Alert.alert(t('Demo mode'), msg);
+      showMessage(t('Demo mode'), msg);
       return;
     }
     setBusy(true);

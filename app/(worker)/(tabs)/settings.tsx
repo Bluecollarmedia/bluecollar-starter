@@ -20,6 +20,7 @@ import { ScreenContainer } from '@/components/layout';
 import type { NavAppPreference } from '@/types/worker';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useT } from '@/i18n';
+import { appVersionText } from '@/lib/appVersion';
 
 const NAV_OPTIONS: { value: NavAppPreference; label: string; icon: keyof typeof Feather.glyphMap }[] = [
   { value: 'google_maps', label: 'Google Maps', icon: 'map' },
@@ -106,7 +107,7 @@ export default function WorkerSettingsScreen() {
       </ListSection>
 
       <ListSection title={t('App')}>
-        <ListRow title={t('Version')} value="1.0.0" />
+        <ListRow title={t('Version')} value={appVersionText()} />
       </ListSection>
 
       {!isSupabaseConfigured && (

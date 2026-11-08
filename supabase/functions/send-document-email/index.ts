@@ -12,9 +12,9 @@
  *          (or Supabase dashboard → Edge Functions → Deploy a new function → Via Editor; keep "Enforce JWT verification" ON)
  * Secrets (Supabase → Edge Functions → Secrets):
  *   RESEND_API_KEY     — the Resend key (the same one the SMTP settings use is fine)
- *   NOTIFY_EMAIL_FROM  — e.g. "Brighton Lawn + Landscape <noreply@brightonlawn.com>" (a domain verified in Resend)
- *   APP_WEB_URL        — the web app's address, e.g. https://app.brightonlawn.com
- * Replies go to the company's own email address (Company settings), else info@brightonlawn.com.
+ *   NOTIFY_EMAIL_FROM  — e.g. "Your Company <noreply@yourcompany.com>" (a domain verified in Resend)
+ *   APP_WEB_URL        — the web app's address, e.g. https://app.yourcompany.com
+ * Replies go to the company's own email address (Company settings), else support@yourcompany.com (placeholder).
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -99,10 +99,10 @@ serve(async (req: Request) => {
     const to = typed || customer?.email || '';
     if (!to) return reply({ error: 'no_email' }, 422);
 
-    const webUrl = (Deno.env.get('APP_WEB_URL') ?? 'https://app.brightonlawn.com').replace(/\/+$/, '');
+    const webUrl = (Deno.env.get('APP_WEB_URL') ?? 'https://app.yourcompany.com').replace(/\/+$/, '');
     const link = `${webUrl}/approve/${doc.share_token}`;
-    const companyName = company?.name ?? 'Brighton Lawn + Landscape';
-    const contact = company?.email || 'info@brightonlawn.com';
+    const companyName = company?.name ?? 'Your Company';
+    const contact = company?.email || 'support@yourcompany.com';
     const total = Number(doc.total).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
     const date = new Date(doc.sent_at ?? doc.issued_at ?? Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' });
     const dueText = kind === 'invoice' && doc.due_date
@@ -125,7 +125,7 @@ serve(async (req: Request) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Brighton Lawn + Landscape <noreply@brightonlawn.com>',
+        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <noreply@yourcompany.com>',
         to: [to],
         reply_to: contact,
         subject: `Your ${m.what} ${doc.number} from ${companyName}`,

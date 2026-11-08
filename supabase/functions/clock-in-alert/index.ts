@@ -95,7 +95,7 @@ async function lookupAddress(lat: number, lng: number): Promise<string> {
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 4000);
     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat=${lat}&lon=${lng}`, {
-      headers: { 'User-Agent': 'BrightonLawnLandscape/1.0 (clock-in alerts)', 'Accept-Language': 'en' },
+      headers: { 'User-Agent': 'StarterApp/1.0 (clock-in alerts)', 'Accept-Language': 'en' },
       signal: ctl.signal,
     });
     clearTimeout(timer);
@@ -178,7 +178,7 @@ serve(async (req: Request) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Brighton Lawn + Landscape <noreply@brightonlawn.com>',
+        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <noreply@yourcompany.com>',
         to,
         subject: msg.subject,
         html: msg.html,

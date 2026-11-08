@@ -1,5 +1,5 @@
 /**
- * Splash Screen — Brighton Lawn + Landscape
+ * Splash Screen
  *
  * Professional app-opening experience:
  *  1. Clean white background

@@ -3,7 +3,7 @@ import { SkipRequestSheet } from '@/components/time/SkipRequestSheet';
 import { withTimedPhoto } from '@/data/timePhotos';
 import { loadMySkipRequests, requestSkip, type MySkipRequest } from '@/data/timeTracking';
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView, Modal, Alert, Linking, Platform } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, Modal, Linking, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
@@ -34,6 +34,7 @@ import { BrandCover } from '@/components/branding/BrandCover';
 import { WORKER_HERO_HEIGHT as HERO_HEIGHT } from '@/components/media/HeaderPhotoField';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useT } from '@/i18n';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 
 const HERO_HEIGHT_COMPACT = 190;
@@ -161,7 +162,7 @@ export default function WorkerTodayScreen() {
   async function sendSkip(reason: string) {
     if (!primaryAssignment) return;
     const r = await requestSkip('assignment', primaryAssignment.id, reason);
-    if (!r.ok) { if (Platform.OS === 'web') alert(r.error); else Alert.alert(t("Couldn't send the request"), r.error); return; }
+    if (!r.ok) { showMessage(t("Couldn't send the request"), r.error); return; }
     haptics.success();
     setSkipOpen(false);
     const again = await loadMySkipRequests();
@@ -177,12 +178,10 @@ export default function WorkerTodayScreen() {
     setLocating(false);
     if (!result.ok) {
       haptics.warning();
-      if (Platform.OS === 'web') {
-        alert(`${result.title}\n\n${result.message}`);
+      if (Platform.OS !== 'web' && result.openSettings) {
+        confirmAction(result.title, result.message, t('Open Settings'), () => { void Linking.openSettings(); });
       } else {
-        Alert.alert(result.title, result.message, result.openSettings
-          ? [{ text: t('Cancel'), style: 'cancel' }, { text: t('Open Settings'), onPress: () => Linking.openSettings() }]
-          : [{ text: t('OK') }]);
+        showMessage(result.title, result.message);
       }
       return;
     }
@@ -193,7 +192,7 @@ export default function WorkerTodayScreen() {
         : await checkInTimed(result.gps, undefined);
       if (!started.ok) {
         haptics.warning();
-        if (Platform.OS === 'web') alert(started.error); else Alert.alert(t("Can't start this property"), started.error);
+        showMessage(t("Can't start this property"), started.error);
         return;
       }
       haptics.success();
@@ -222,7 +221,7 @@ export default function WorkerTodayScreen() {
         : await checkOutTimed(where);
       if (!done.ok) {
         haptics.warning();
-        if (Platform.OS === 'web') alert(done.error); else Alert.alert(t("Can't finish this property"), done.error);
+        showMessage(t("Can't finish this property"), done.error);
       }
       return;
     }

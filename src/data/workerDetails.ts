@@ -1,5 +1,5 @@
 /**
- * A worker's hoodie size and ID photo (supabase/updates/058). The hoodie size sits on the person; the ID photo is kept in its own
+ * A worker's shirt size (people.hoodie_size) and ID photo (supabase/updates/058). The size sits on the person; the ID photo is kept in its own
  * table that only the worker and the company OWNER can read, and its file is never shown from a public link: the owner (or the
  * worker) gets a short-lived private link from the media function.
  */
@@ -78,7 +78,7 @@ export async function saveDetailsForCurrentUser(d: { hoodieSize: HoodieSize | nu
   }
 }
 
-/** Hoodie sizes for a set of people (owner/admin view). Empty when the update is not installed. */
+/** Shirt sizes for a set of people (owner/admin view). Empty when the update is not installed. */
 export async function loadHoodieSizes(personIds: string[]): Promise<Record<string, HoodieSize>> {
   if (!isSupabaseConfigured || personIds.length === 0) return {};
   const { data, error } = await supabase.from('people').select('id, hoodie_size').in('id', personIds);

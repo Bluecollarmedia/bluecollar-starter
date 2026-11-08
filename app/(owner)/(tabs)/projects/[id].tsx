@@ -2,7 +2,7 @@ import { useBackStep } from '@/hooks/useBackStep';
 import { CustomerInviteCard } from '@/components/invites/CustomerInviteCard';
 import { IssuesSection } from '@/components/issues/IssuesSection';
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Modal, TextInput, Platform, Alert, Linking, Keyboard } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, Modal, TextInput, Platform, Linking, Keyboard } from 'react-native';
 import { Switch } from '@/components/ui/Switch';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
@@ -47,6 +47,7 @@ import { TaskMediaStrip, TaskMediaViewer, type TaskMediaItem } from '@/component
 import { pickTaskMedia, saveTaskMedia, removeTaskMedia, type TaskMediaDraft } from '@/data/taskMedia';
 import { keepPicked } from '@/lib/keepPickedFile';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { showMessage, confirmAction as sharedConfirm } from '@/components/financials/ActionSheet';
 
 const today = todayKey();
 
@@ -329,8 +330,7 @@ export default function ProjectDetailScreen() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       const msg = 'Photo library access is needed to choose a project photo.';
-      if (Platform.OS === 'web') alert(msg);
-      else Alert.alert('Permission Needed', msg);
+      showMessage('Permission Needed', msg);
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [16, 9], quality: 0.7 });
@@ -347,10 +347,7 @@ export default function ProjectDetailScreen() {
   const canComplete = p.status === 'active' || p.status === 'on_hold';
 
   function askToConfirm(title: string, message: string, ok: string, onOk: () => void) {
-    Alert.alert(title, message, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: ok, onPress: onOk },
-    ]);
+    sharedConfirm(title, message, ok, onOk);
   }
 
   function handleCompleteProject() {
@@ -615,10 +612,7 @@ export default function ProjectDetailScreen() {
         haptics.destructive();
         schedule.cancelAssignment(a.id, reason || undefined);
       } else {
-        Alert.alert('Cancel Assignment', msg, [
-          { text: 'Keep', style: 'cancel' },
-          { text: 'Cancel Assignment', style: 'destructive', onPress: () => { haptics.destructive(); schedule.cancelAssignment(a.id); } },
-        ]);
+        sharedConfirm('Cancel Assignment', msg, 'Cancel Assignment', () => { haptics.destructive(); schedule.cancelAssignment(a.id); }, true, 'Keep');
       }
       setExpandedAssignmentId(null);
     }
@@ -745,10 +739,7 @@ export default function ProjectDetailScreen() {
 
   function handleRemoveTeamMember(personId: string, name: string) {
     const msg = `Remove ${name} from this project's team? They will no longer be assignable to this project's tasks or schedule.`;
-    Alert.alert('Remove team member?', msg, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Remove', style: 'destructive', onPress: () => removeTeamMember(personId) },
-    ]);
+    sharedConfirm('Remove team member?', msg, 'Remove', () => removeTeamMember(personId), true);
   }
 
   function renderPeople() {
@@ -1560,8 +1551,7 @@ export default function ProjectDetailScreen() {
     if (!reviewPhoto) return;
     if (!customerDesc.trim()) {
       const msg = 'Add a customer description before sharing this photo. The worker note is internal-only and is never shown to the customer automatically.';
-      if (Platform.OS === 'web') alert(msg);
-      else Alert.alert('Description needed', msg);
+      showMessage('Description needed', msg);
       setEditingCustomerDesc(true);
       return;
     }
@@ -1594,11 +1584,7 @@ export default function ProjectDetailScreen() {
   function handleDeletePhoto() {
     if (!reviewPhoto) return;
     const photoId = reviewPhoto.id;
-    const msg = 'Delete Photo? This permanently removes the photo and cannot be undone.';
-    Alert.alert('Delete Photo?', 'This permanently removes the photo and cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => { deletePhoto(photoId); setReviewPhoto(null); } },
-    ]);
+    sharedConfirm('Delete Photo?', 'This permanently removes the photo and cannot be undone.', 'Delete', () => { deletePhoto(photoId); setReviewPhoto(null); }, true);
   }
 
   function formatPhotoDetailDateTime(iso: string): string {
@@ -1621,8 +1607,7 @@ export default function ProjectDetailScreen() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       const msg = 'Photo library access is needed to add a photo.';
-      if (Platform.OS === 'web') alert(msg);
-      else Alert.alert('Permission Needed', msg);
+      showMessage('Permission Needed', msg);
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 1 });
@@ -1864,10 +1849,7 @@ export default function ProjectDetailScreen() {
   }
 
   function confirmAction(title: string, message: string, ok: string, onOk: () => void) {
-    Alert.alert(title, message, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: ok, style: 'destructive', onPress: onOk },
-    ]);
+    sharedConfirm(title, message, ok, onOk, true);
   }
 
   function handleDeleteRequest(reqId: string) {
@@ -2214,18 +2196,15 @@ export default function ProjectDetailScreen() {
     );
   }
 
-  /** Asks first on every platform (these actions cut a customer off or invalidate a shared code). */
+  /** Asks first on every platform (these actions cut a customer off). */
   function confirmThen(title: string, message: string, action: string, run: () => void) {
-    Alert.alert(title, message, [
-      { text: 'Cancel', style: 'cancel' },
-      { text: action, style: 'destructive', onPress: run },
-    ]);
+    sharedConfirm(title, message, action, run, true);
   }
 
   function handleRevokeAccess() {
     confirmThen(
       'Remove customer access?',
-      'The customer will no longer be able to view this project. A new code will be made.',
+      'The customer will no longer be able to view this project. To give them access again, send a new invite link from their customer page.',
       'Remove Access',
       async () => {
         await customerAccess.revokeAccess(p.id);
@@ -2695,7 +2674,7 @@ export default function ProjectDetailScreen() {
                 style={[styles.composerInput, { backgroundColor: colors.surface, borderColor: colors.borderLight, color: colors.textPrimary, marginTop: spacing.xs }]}
                 value={newTaskTitle}
                 onChangeText={setNewTaskTitle}
-                placeholder="e.g. Trim hedges along fence line"
+                placeholder="e.g. Saw-cut the old slab along the fence line"
                 placeholderTextColor={colors.textTertiary}
               />
 

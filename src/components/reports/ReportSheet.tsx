@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, TextInput, Linking, Alert, Platform } from 'react-native';
+import { View, Text, Pressable, StyleSheet, TextInput, Linking } from 'react-native';
 import { Icon } from '@/components/ui/Icon';
 import { Button } from '@/components/ui';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
@@ -11,6 +11,7 @@ import { spacing, radius } from '@/theme/spacing';
 import { db } from '@/data/store';
 import { submitReport } from '@/data/contentReports';
 import { REPORT_REASONS, MAX_REPORT_DETAILS, type ReportContentType, type ReportReason } from '@/lib/contentReports';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 export interface ReportTarget {
   projectId: string;
@@ -50,7 +51,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
   function emailInstead() {
     if (mailto) Linking.openURL(mailto).catch(() => {
       const msg = t('No email app is set up on this phone. You can email us from the Support page.');
-      if (Platform.OS === 'web') alert(msg); else Alert.alert(t('Email not available'), msg);
+      showMessage(t('Email not available'), msg);
     });
   }
 

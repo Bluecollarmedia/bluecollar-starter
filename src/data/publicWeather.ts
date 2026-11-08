@@ -49,7 +49,7 @@ export async function setPublicWeatherEnabled(enabled: boolean): Promise<{ ok: t
   const { error } = await supabase.rpc('set_public_weather_enabled', { p_enabled: enabled });
   if (error) {
     const missing = /could not find the function|schema cache|does not exist/i.test(error.message);
-    return { ok: false, error: missing ? 'Brighton Weather is not installed on the database yet.' : error.message };
+    return { ok: false, error: missing ? 'Public Weather is not installed on the database yet.' : error.message };
   }
   void weatherSwitch.refresh();
   return { ok: true };

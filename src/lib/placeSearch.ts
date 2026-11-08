@@ -1,8 +1,8 @@
 /**
  * Search for a US town or city by name. Pure: no React, no network. The list is the US Census Gazetteer (assets/data/us-places.json, public
  * domain), carried inside the app, so what a person types never leaves the phone. Typing a state after the name narrows it ("Lakewood NJ",
- * "Lakewood, New Jersey"). Places are ranked by how well the name matches, then by how close they are to `near` (Brighton's area), so
- * "Lakewood" gives Lakewood, NJ first. Places far from Brighton are ranked by size (land area), so "Anchorage" gives Anchorage, AK before the small one in Kentucky.
+ * "Lakewood, New Jersey"). Places are ranked by how well the name matches, then by how close they are to `near` (the default place), so
+ * "Lakewood" gives Lakewood, NJ first. Places far from it are ranked by size (land area), so "Anchorage" gives Anchorage, AK before the small one in Kentucky.
  */
 export interface FoundPlace { name: string; state: string; lat: number; lon: number; area?: number }
 interface Row extends FoundPlace { n: string }

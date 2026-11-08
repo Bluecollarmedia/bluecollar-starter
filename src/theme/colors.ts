@@ -1,16 +1,12 @@
 /**
  * Design System — Color Tokens
  *
- * Brand palette derived from the Brighton Lawn + Landscape logos:
- *  - Main logo: dark forest green (#1B3A2D) + medium green (#4A8B3F)
- *  - Leaf icon: fresh light green (#8BC34A) — the preferred brand tone
- *
- * The palette leans toward the lighter, approachable green from the
- * leaf mark per brand direction, with the darker greens reserved for
- * headings and strong emphasis.
+ * Brand palette: placeholder greens carried over from the original app.
+ * A new client swaps these for their own brand color (Step 4 makes a plain default).
+ * The darker greens are for headings and strong emphasis.
  */
 
-// ── Brand Palette (extracted from Brighton logos) ────────────────
+// ── Brand Palette (placeholder) ──────────────────────────────────
 export const brand = {
   /** Primary — deep forest green. Only for important actions and selected states. */
   primary: '#2D5A43',

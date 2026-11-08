@@ -1,5 +1,5 @@
 /**
- * Hands the Brighton Forecast widgets their forecast (iPhone only).
+ * Hands the Forecast widgets their forecast (iPhone only).
  *
  * Called whenever a fresh forecast is on hand (the weather screen, and the background sync in useWidgetSync). It gives the phone a timeline (one entry per coming hour) so the widget keeps
  * showing the right temperature between app opens. Everything here is best effort and never throws: on a phone whose app build does not have the
@@ -20,7 +20,7 @@ function leafFile(dir: string | null): Promise<string | null> {
     leafPromise = (async () => {
       try {
         const legacy = require('expo-file-system/legacy') as typeof import('expo-file-system/legacy');
-        const dest = `${dir}${dir.endsWith('/') ? '' : '/'}brighton-leaf.png`;
+        const dest = `${dir}${dir.endsWith('/') ? '' : '/'}brand-mark.png`;
         const info = await legacy.getInfoAsync(dest);
         if (!info.exists) {
           const from = Image.resolveAssetSource(require('../../assets/images/logo-leaf.png')).uri;
@@ -43,7 +43,7 @@ export async function syncWidgets(data: WeatherPayload | null): Promise<void> {
   if (key === lastKey) return;
   try {
     const widgets = require('expo-widgets') as typeof import('expo-widgets');
-    const widget = (require('@/widgets/BrightonWeather') as typeof import('@/widgets/BrightonWeather')).default;
+    const widget = (require('@/widgets/WeatherWidget') as typeof import('@/widgets/WeatherWidget')).default;
     const leaf = await leafFile(widgets.widgetsDirectory ?? null);
     setViewTz(data.tz);   // hour labels in the forecast place's own time zone, even when the Weather screen is not open
     const entries = buildWidgetEntries(data, Date.now(), leaf);

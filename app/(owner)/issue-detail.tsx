@@ -5,7 +5,7 @@
 
 import { PhotoPager } from '@/components/media/PhotoPager';
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TextInput, StyleSheet, Platform, Alert, Modal } from 'react-native';
+import { View, Text, ScrollView, TextInput, StyleSheet, Modal } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Image } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { deleteIssue, issueTypeLabel, removeIssuePhoto, reopenIssue, resolveIssue, useIssues } from '@/data/issues';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 export default function IssueDetailScreen() {
   const { colors } = useTheme();
@@ -38,10 +39,7 @@ export default function IssueDetailScreen() {
 
   function confirmDelete() {
     const run = () => { deleteIssue(issue!.id); router.back(); };
-    Alert.alert('Delete this report?', 'This removes it for everyone.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: run },
-    ]);
+    confirmAction('Delete this report?', 'This removes it for everyone.', 'Delete', run, true);
   }
 
   function openPlace() {
@@ -121,7 +119,7 @@ export default function IssueDetailScreen() {
         onClose={() => setViewer(null)}
         actionsFor={(ph) => [{
           key: 'delete', label: 'Delete', icon: 'trash-2', destructive: true,
-          onPress: () => Alert.alert('Delete this photo?', 'It is removed from the report for good.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Delete', style: 'destructive', onPress: () => removeIssuePhoto(issue.id, ph.id) }]),
+          onPress: () => confirmAction('Delete this photo?', 'It is removed from the report for good.', 'Delete', () => removeIssuePhoto(issue.id, ph.id), true),
         }]}
       />
     </View>

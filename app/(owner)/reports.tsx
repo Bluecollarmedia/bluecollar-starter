@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { View, Text, ScrollView, StyleSheet, Alert, Platform, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, EmptyState, GlassIconButton, InlineNotice, LoadingSpinner, OptimizedImage } from '@/components/ui';
@@ -14,6 +14,7 @@ import { handleReport, useReports, type ReportItem } from '@/data/contentReports
 import { reasonLabel, contentLabel } from '@/lib/contentReports';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 export default function ReportsScreen() {
   const { colors } = useTheme();
@@ -44,10 +45,7 @@ export default function ReportsScreen() {
 
   function confirmRemove(r: ReportItem) {
     const what = r.content_type === 'photo' ? 'Stop sharing this photo with the customer' : 'Delete this message for everyone';
-    Alert.alert(`${what}?`, 'The report will be marked handled.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: r.content_type === 'photo' ? 'Stop sharing' : 'Delete', style: 'destructive', onPress: () => act(r, true) },
-    ]);
+    confirmAction(`${what}?`, 'The report will be marked handled.', r.content_type === 'photo' ? 'Stop sharing' : 'Delete', () => act(r, true), true);
   }
 
   function ReportCard({ r }: { r: ReportItem }) {

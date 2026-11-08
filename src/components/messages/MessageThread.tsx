@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { Icon } from '@/components/ui/Icon';
 import { useT } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
@@ -10,6 +10,7 @@ import { useProjectMessages } from '@/hooks/useProjectMessages';
 import { ReportSheet, type ReportTarget } from '@/components/reports/ReportSheet';
 import { isoToLocalDateKey, todayKey } from '@/lib/ids';
 import type { ProjectMessage } from '@/types/project';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 function timeLabel(iso: string): string {
   const d = new Date(iso);
@@ -44,10 +45,7 @@ export function MessageList({ projectId, emptyTitle, emptyText }: MessageThreadP
   function handleLongPress(m: ProjectMessage) {
     if (m.senderId !== db.personId) return;
     const doDelete = () => remove(m.id);
-    Alert.alert(t('Delete this message?'), t('It will be removed for everyone.'), [
-      { text: t('Cancel'), style: 'cancel' },
-      { text: t('Delete'), style: 'destructive', onPress: doDelete },
-    ]);
+    confirmAction(t('Delete this message?'), t('It will be removed for everyone.'), t('Delete'), doDelete, true);
   }
 
   if (messages.length === 0) {

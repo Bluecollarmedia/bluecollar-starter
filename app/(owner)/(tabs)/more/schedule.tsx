@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Alert, Platform, Modal } from 'react-native';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Modal } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
@@ -15,13 +15,13 @@ import { semantic } from '@/theme/colors';
 import type { Assignment, ScheduleSeries } from '@/types/schedule';
 import { repeatShortLabel } from '@/lib/recurrence';
 import { haptics } from '@/lib/haptics';
-import { todayKey, localDateKey } from '@/lib/ids';
+import { localDateKey } from '@/lib/ids';
+import { useTodayKey } from '@/hooks/useTodayKey';
 import { BottomSheetModal } from '@/components/ui/BottomSheetModal';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
-const today = todayKey();
-
-function formatDateTop(dateStr: string): string {
+function formatDateTop(dateStr: string, today: string): string {
   const d = new Date(dateStr + 'T12:00:00');
   const t = new Date(today + 'T12:00:00');
   const diff = Math.round((d.getTime() - t.getTime()) / 86400000);
@@ -75,7 +75,16 @@ export default function ScheduleScreen() {
   const insets = useSafeAreaInsets();
   const tabBarClearance = useTabBarClearance();
   const params = useLocalSearchParams<{ date?: string }>();
+  // Worked out inside the screen (and again after midnight, on app resume and on focus), never once when the file loads.
+  const today = useTodayKey();
   const [selectedDate, setSelectedDate] = useState(params.date ?? today);
+  // If the day changes while the owner is looking at "today", follow it to the new day.
+  const shownToday = useRef(today);
+  useEffect(() => {
+    const before = shownToday.current;
+    shownToday.current = today;
+    if (before !== today) setSelectedDate((cur) => (cur === before ? today : cur));
+  }, [today]);
   const [viewMode, setViewMode] = useState<'day' | 'week'>('day');
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
   const [showAndroidPicker, setShowAndroidPicker] = useState(false);
@@ -98,18 +107,11 @@ export default function ScheduleScreen() {
       schedule.cancelAssignment(assignment.id, reason || undefined);
       setSelectedAssignment(null);
     } else {
-      Alert.alert('Cancel Assignment', msg, [
-        { text: 'Keep', style: 'cancel' },
-        {
-          text: 'Cancel Assignment',
-          style: 'destructive',
-          onPress: () => {
-            haptics.destructive();
-            schedule.cancelAssignment(assignment.id);
-            setSelectedAssignment(null);
-          },
-        },
-      ]);
+      confirmAction('Cancel Assignment', msg, 'Cancel Assignment', () => {
+        haptics.destructive();
+        schedule.cancelAssignment(assignment.id);
+        setSelectedAssignment(null);
+      }, true, 'Keep');
     }
   }
 
@@ -122,10 +124,7 @@ export default function ScheduleScreen() {
       schedule.endSeriesAfter(assignment.seriesId!, assignment.scheduledDate);
       setSelectedAssignment(null);
     };
-    Alert.alert('End Repeat', msg, [
-      { text: 'Keep Repeating', style: 'cancel' },
-      { text: 'End Repeat', style: 'destructive', onPress: end },
-    ]);
+    confirmAction('End Repeat', msg, 'End Repeat', end, true, 'Keep Repeating');
   }
 
   function handleMove(assignment: Assignment) {
@@ -336,7 +335,7 @@ export default function ScheduleScreen() {
             <View style={styles.dateCenterTopRow}>
               <Icon name="calendar" size={13} color={colors.textSecondary} />
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700' }]}>
-                {formatDateTop(selectedDate)}
+                {formatDateTop(selectedDate, today)}
               </Text>
             </View>
             <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{formatDateFull(selectedDate)}</Text>

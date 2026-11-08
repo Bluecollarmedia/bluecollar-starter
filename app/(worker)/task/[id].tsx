@@ -88,7 +88,7 @@ export default function TaskDetailScreen() {
       if (!permission.granted) {
         Alert.alert(
           source === 'camera' ? t('Camera access needed') : t('Photo access needed'),
-          t('Turn it on for Brighton Lawn in the Settings app to add task photos.'),
+          t('Turn on photo access for this app in the Settings app to add task photos.'),
         );
         return;
       }

@@ -10,7 +10,7 @@ import { WX } from '@/components/weather/WeatherUI';
 const TABS: { path: string; label: string; icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'] }[] = [
   { path: '/weather', label: 'Weather', icon: 'weather-partly-cloudy' },
   { path: '/weather/request', label: 'Request', icon: 'clipboard-check-outline' },
-  { path: '/weather/account', label: 'Brighton', icon: 'leaf' },
+  { path: '/weather/account', label: 'Contact', icon: 'phone-outline' },
 ];
 
 /** The Weather area's own tab bar: a solid white pill floating above the page. (The app's other tab bars are untouched.) */

@@ -89,7 +89,7 @@ serve(async (req: Request) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Brighton Lawn + Landscape <noreply@brightonlawn.com>',
+        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <noreply@yourcompany.com>',
         to,
         reply_to: looksLikeEmail(r.email) ? r.email : undefined,
         subject: m.subject,

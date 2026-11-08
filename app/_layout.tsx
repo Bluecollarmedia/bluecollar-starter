@@ -57,7 +57,7 @@ function RootNavigator() {
   // The home and lock screen widgets get their forecast for everyone, signed in or not.
   useWidgetSync();
 
-  // Photo, birthday, hoodie and ID set aside while the account waited for email confirmation are saved on first sign-in.
+  // Photo, birthday, shirt size and ID set aside while the account waited for email confirmation are saved on first sign-in.
   useEffect(() => {
     if (appState === 'active' && isAuthenticated && user?.email) applyPendingSignup(user.email);
   }, [appState, isAuthenticated, user?.email]);

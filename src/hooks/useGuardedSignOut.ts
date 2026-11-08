@@ -4,11 +4,11 @@
  * leaves it running. This asks first. It is a prompt, never a block: "Sign out anyway" always works, and a failure to check never stops a sign-out.
  */
 import { useCallback } from 'react';
-import { Alert, Platform } from 'react-native';
 import { useAuth } from '@/providers/AuthProvider';
 import { loadMyDay } from '@/data/timeTracking';
 import { isCurrent, WORKDAY_STALE_HOURS } from '@/lib/clockSession';
 import { todayKey } from '@/lib/ids';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 const clockText = (iso: string) => new Date(iso).toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' });
 
@@ -34,9 +34,6 @@ export function useGuardedSignOut() {
     const running = await listOpenClocks(user?.role);
     if (!running.length) { await signOut(); return; }
     const message = `${running.join('\n')}\n\nSigning out does not clock you out. Clock out first, or sign out anyway and the clock keeps running.`;
-    Alert.alert("You're still clocked in", message, [
-      { text: 'Stay signed in', style: 'cancel' },
-      { text: 'Sign out anyway', style: 'destructive', onPress: () => { void signOut(); } },
-    ]);
+    confirmAction("You're still clocked in", message, 'Sign out anyway', () => { void signOut(); }, true, 'Stay signed in');
   }, [user?.role, signOut]);
 }

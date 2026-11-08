@@ -4,7 +4,7 @@
  * shows in the list below it.
  */
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, TextInput, Alert, Platform, Keyboard } from 'react-native';
+import { View, Text, StyleSheet, Pressable, TextInput, Keyboard } from 'react-native';
 import { Icon } from '@/components/ui/Icon';
 import { useTheme } from '@/providers/ThemeProvider';
 import { useAnnouncements } from '@/hooks/useAnnouncements';
@@ -12,6 +12,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import type { WeatherActionType } from '@/types/operations';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 const WEATHER_OPTIONS: { key: WeatherActionType | 'none'; label: string; icon: string }[] = [
   { key: 'none', label: 'None', icon: 'slash' },
@@ -35,8 +36,7 @@ export function WorkerAnnouncementComposer({ onSent }: { onSent?: () => void }) 
   function handleSend() {
     if (!title.trim() || !body.trim()) {
       const msg = 'Please enter a title and message.';
-      if (Platform.OS === 'web') alert(msg);
-      else Alert.alert('Required', msg);
+      showMessage('Required', msg);
       return;
     }
     addAnnouncement({

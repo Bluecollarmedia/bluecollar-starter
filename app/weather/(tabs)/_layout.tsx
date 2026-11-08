@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { FloatingTabBar } from '@/components/weather/FloatingTabBar';
 
 /**
- * The public Brighton Weather tabs (Weather, Request, Brighton) with their own floating tab bar.
+ * The public Weather tabs (Weather, Request, Contact) with their own floating tab bar.
  * The screens stay alive once opened, so switching is instant and each keeps its place (scroll position, the hourly strip).
  */
 export default function WeatherTabsLayout() {

@@ -72,7 +72,7 @@ export const ES_CUSTOMER: Record<string, string> = {
   'Pending': 'Pendiente',
   'Acknowledged': 'Recibida',
   'Declined': 'Rechazada',
-  'Response from Brighton Lawn': 'Respuesta de Brighton Lawn',
+  'Response from the company': 'Respuesta de la empresa',
   'Submitted {date}': 'Enviada el {date}',
   'Go back': 'Volver',
 
@@ -113,7 +113,7 @@ export const ES_CUSTOMER: Record<string, string> = {
 
   // ── Approval page (public link) ──
   'This link isn’t available': 'Este enlace no está disponible',
-  'It may have been replaced by a newer version. Please contact Brighton Lawn + Landscape for an updated link.': 'Es posible que lo haya reemplazado una versión más reciente. Comunícate con Brighton Lawn + Landscape para obtener un enlace actualizado.',
+  'It may have been replaced by a newer version. Please contact the company that sent it for an updated link.': 'Es posible que lo haya reemplazado una versión más reciente. Comunícate con la empresa que te lo envió para obtener un enlace actualizado.',
   'This link isn’t valid any more.': 'Este enlace ya no es válido.',
   'This was already answered.': 'Esto ya fue respondido.',
   'Please type your full name to approve.': 'Escribe tu nombre completo para aprobar.',
@@ -152,9 +152,9 @@ export const ES_CUSTOMER: Record<string, string> = {
 
   // ── Messages ──
   'Chat with {company}': 'Chatea con {company}',
-  'Questions about your project? Send a message and your landscaper will reply here.': '¿Tienes dudas sobre tu proyecto? Envía un mensaje y tu equipo de jardinería te responderá aquí.',
+  'Questions about your project? Send a message and the team will reply here.': '¿Tienes dudas sobre tu proyecto? Envía un mensaje y el equipo te responderá aquí.',
   'No messages': 'No hay mensajes',
-  "Once you're added to a project, you can message your landscaper here.": 'Cuando te agreguen a un proyecto, podrás escribirle aquí a tu equipo de jardinería.',
+  "Once you're added to a project, you can message the team here.": 'Cuando te agreguen a un proyecto, podrás escribirle aquí al equipo.',
   'Delete this message?': '¿Eliminar este mensaje?',
   'It will be removed for everyone.': 'Se eliminará para todos.',
   'No messages yet': 'Aún no hay mensajes',

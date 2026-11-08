@@ -1,5 +1,5 @@
 /**
- * Brighton Weather data, as the app reads it: one call to the `weather` function (supabase/functions/weather) for the chosen place, and the
+ * Weather data, as the app reads it: one call to the `weather` function (supabase/functions/weather) for the chosen place, and the
  * last good answer kept on the phone so a dropped connection still shows something (with its age). The chosen place and the last few picked
  * are kept on the phone too.
  *
@@ -33,7 +33,7 @@ export function loadWeather(place: Place): Promise<WeatherResult> {
 async function loadWeatherNow(place: Place): Promise<WeatherResult> {
   if (!isSupabaseConfigured) return { ok: false, reason: 'unavailable' };
   try {
-    // The eight towns near Brighton are asked for by name (their forecast grid is already known); any other place by its point.
+    // The built-in nearby towns are asked for by name (their forecast grid is already known); any other place by its point.
     const body = isBuiltInKey(place.key) ? { town: place.key } : { lat: place.lat, lon: place.lon, name: place.name, state: place.state };
     const call = supabase.functions.invoke('weather', { body });
     const stop = new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Timed out.')), REQUEST_LIMIT_MS));

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert, Platform } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -14,10 +14,10 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
+import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 
 function notify(title: string, msg: string) {
-  if (Platform.OS === 'web') alert(msg);
-  else Alert.alert(title, msg);
+  showMessage(title, msg);
 }
 
 /** New or edit crew: name, label color and who's in it. */
@@ -61,10 +61,7 @@ export default function CrewEditScreen() {
     if (!existing) return;
     const msg = `Delete ${existing.name}? Its workers stay on your team, just without a crew.`;
     const run = () => { haptics.destructive(); deleteCrew(existing.id); router.back(); };
-    Alert.alert('Delete Crew', msg, [
-      { text: 'Keep', style: 'cancel' },
-      { text: 'Delete Crew', style: 'destructive', onPress: run },
-    ]);
+    confirmAction('Delete Crew', msg, 'Delete Crew', run, true, 'Keep');
   }
 
   return (

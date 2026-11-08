@@ -9,7 +9,7 @@ Photos are split into two groups that take two different routes:
   PRIVATE (a second, locked bucket)       -> BROKEN
 
 Everything you said works is public. Everything you said is broken is private.
-The private bucket (named "brighton-private" in Cloudflare) is almost certainly
+The private bucket (named "yourcompany-private" in Cloudflare) is almost certainly
 deleted, renamed, or the access key lost its permission to it. Your hunch was right.
 
 WHICH PHOTOS ARE PUBLIC vs PRIVATE
@@ -31,7 +31,7 @@ WHY THIS CAUSES "ONLY SOME WORK"
 --------------------------------
 When a photo is uploaded, the server (the "media" Edge Function) picks the bucket:
   - public key  -> writes to the public bucket  -> succeeds
-  - private key -> writes to "brighton-private" -> FAILS if that bucket is gone
+  - private key -> writes to "yourcompany-private" -> FAILS if that bucket is gone
 A failed write to a missing bucket comes back as an error like 404 / NoSuchBucket
 or 403 / AccessDenied. So the private photos never land, and you see "didn't work,"
 while the public ones keep working perfectly.
@@ -48,7 +48,7 @@ bug — tell me and I'll look. Don't lump it in with the private ones.
 
 WHAT TO CHECK (only you can see these)
 --------------------------------------
-1. Cloudflare -> R2: is there still a bucket named "brighton-private"?
+1. Cloudflare -> R2: is there still a bucket named "yourcompany-private"?
    - If it's gone or renamed -> that's the cause.
    - Check the R2 API token too: does it still have access to that bucket?
 2. Supabase -> Edge Functions -> Secrets: is R2_PRIVATE_BUCKET_NAME set, and does
@@ -69,7 +69,7 @@ OPTION A — ONE BUCKET FOR EVERYTHING (what you asked for)
     is a real (if small) downgrade — your call.
 
 OPTION B — KEEP TWO BUCKETS, JUST FIX THE PRIVATE ONE
-  Recreate (or re-point to) the "brighton-private" bucket in Cloudflare and make
+  Recreate (or re-point to) the "yourcompany-private" bucket in Cloudflare and make
   sure the API token can write to it, then confirm R2_PRIVATE_BUCKET_NAME matches.
   - Pro: keeps ID / snow / maintenance photos truly private.
   - Con: it's the fragile setup that just bit you; more moving parts to maintain.

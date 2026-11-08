@@ -8,7 +8,7 @@ screen and button checks that the database answers and falls back to the older c
 * **Workday** (`time_workdays`): one row per employee workday, clock-in at the yard to clock-out. The server stamps the times
   (`now()`); the phone only sends its local calendar date. One open workday per person, enforced by a unique index, even from two phones.
   Breaks (`time_breaks`) exist only when the owner turns break tracking on.
-* **Property visit** (`time_visits`): one row per real visit: a maintenance stop, or a landscaping project on one date.
+* **Property visit** (`time_visits`): one row per real visit: a maintenance stop, or a project on one date.
   A recurring property has many visits; a multi-day project has one visit per day worked.
 * **Each employee's own time** (`time_intervals`): start and end at a visit. Crew labor = the sum of these. The visit's elapsed time
   (first start to last finish) is a different number and is always labelled differently.
@@ -50,13 +50,13 @@ Both stay. They measure different things, so their totals are expected to differ
 
 | Question | Older Hours / Payroll Estimate | Hours & Labor (this system) |
 |---|---|---|
-| What is counted | Each landscaping job check-in to check-out (`work_sessions`) | The whole workday, clock-in to clock-out, minus unpaid breaks |
+| What is counted | Each project job check-in to check-out (`work_sessions`) | The whole workday, clock-in to clock-out, minus unpaid breaks |
 | Yard, loading and driving time | Not counted | Counted (it is inside the workday) |
 | Maintenance routes | Not part of `work_sessions` | Workday and each stop's time are recorded |
 | Overtime | Weekly threshold on job hours, each day priced at the rate for that date | Weekly threshold on net workday hours, each day priced at the rate **saved with that day** |
 | Pay rate | Looked up live from `worker_hourly_rates` | Saved when the work was recorded; a later raise never rewrites it |
 
-How they are kept from double counting: a landscaping job started through the new Start button writes ONE `work_sessions` row
+How they are kept from double counting: a project job started through the new Start button writes ONE `work_sessions` row
 (linked from its `time_intervals` row), so the older screens still show it once. Nothing in the new reports reads `work_sessions`, so the
 two are never added together.
 

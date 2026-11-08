@@ -9,7 +9,7 @@ export const ES: Record<string, string> = {
   // ── Welcome / sign in ──
   'Welcome': 'Bienvenido',
   'Welcome Back': 'Bienvenido de nuevo',
-  'Manage your landscaping business\nfrom anywhere': 'Administra tu negocio de jardinería\ndesde cualquier lugar',
+  'Manage your business\nfrom anywhere': 'Administra tu negocio\ndesde cualquier lugar',
   'Sign In': 'Iniciar sesión',
   'Sign in to your account': 'Inicia sesión en tu cuenta',
   'Create a Company': 'Crear una empresa',
@@ -98,7 +98,7 @@ export const ES: Record<string, string> = {
   'Review & Create': 'Revisar y crear',
   'Step {n} of 3': 'Paso {n} de 3',
   'Company Name *': 'Nombre de la empresa *',
-  'e.g. Brighton Lawn + Landscape': 'p. ej. Brighton Lawn + Landscape',
+  'e.g. Your Company': 'p. ej. Tu Empresa',
   'Company Phone *': 'Teléfono de la empresa *',
   'Next': 'Siguiente',
   "You'll be the company owner with full administrative access.": 'Serás el dueño de la empresa, con acceso administrativo completo.',

@@ -18,9 +18,9 @@
  *          off "Enforce JWT verification" in its settings)
  * Secrets (supabase secrets set …):
  *   RESEND_API_KEY      — from resend.com; without it no email is sent
- *   NOTIFY_EMAIL_FROM   — e.g. "Brighton Lawn + Landscape <quotes@brightonlawn.com>"
+ *   NOTIFY_EMAIL_FROM   — e.g. "Your Company <noreply@yourcompany.com>"
  *                         (a domain verified in Resend; defaults to Resend's test sender)
- *   APP_WEB_URL         — where the web app is hosted, e.g. https://app.brightonlawn.com
+ *   APP_WEB_URL         — where the web app is hosted, e.g. https://app.yourcompany.com
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -172,14 +172,14 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
     ${rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#6B7570">${esc(k)}</td><td style="padding:4px 0">${esc(String(v))}</td></tr>`).join('')}
   </table>
   ${link ? `<p style="margin:20px 0"><a href="${esc(link)}" style="background:#7CB342;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:600">View ${approved ? 'approved ' : ''}document &amp; PDF</a></p>` : ''}
-  <p style="font-size:12px;color:#8A948F">Sent by the Brighton app. It's also in your notifications.</p>
+  <p style="font-size:12px;color:#8A948F">Sent by the app. It's also in your notifications.</p>
 </div>`;
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Brighton Lawn + Landscape <onboarding@resend.dev>',
+      from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <onboarding@resend.dev>',
       to: [person.email],
       subject: n.title,
       html,

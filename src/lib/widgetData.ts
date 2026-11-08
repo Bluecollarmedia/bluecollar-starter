@@ -1,5 +1,5 @@
 /**
- * What the Brighton Forecast widgets show, worked out from the forecast the app already has (pure: no React, no network).
+ * What the Forecast widgets show, worked out from the forecast the app already has (pure: no React, no network).
  *
  * The widgets cannot ask for weather themselves, so the app hands them a timeline: one entry for each of the next 24 hours, each carrying the
  * words and figures for that hour. The phone switches entries on its own as the day goes on, so the temperature stays right between app opens.

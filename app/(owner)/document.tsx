@@ -293,7 +293,7 @@ export default function DocumentScreen() {
       <ActionSheet
         visible={menu === 'respond'}
         title="Record the customer's answer"
-        message={`Use this when the customer answers by phone, email or in person. Customers can also approve in their Brighton app${approvalLinksEnabled ? ' or with the approval link' : ''}.`}
+        message={`Use this when the customer answers by phone, email or in person. Customers can also approve in the app${approvalLinksEnabled ? ' or with the approval link' : ''}.`}
         onClose={() => setMenu(null)}
         actions={doc.kind === 'invoice' ? [] : [
           { key: 'yes', label: 'Customer Approved', icon: 'check-circle', onPress: () => confirmAction(`Record ${doc.number} as approved?`, `${formatMoney(doc.total)} will count toward the project's approved amount.`, 'Approved', () => recordResponse(doc.kind as 'quote' | 'change_order', doc.id, true)) },

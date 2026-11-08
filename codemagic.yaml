@@ -10,7 +10,7 @@ workflows:
       groups:
         - app_store_credentials
       vars:
-        BUNDLE_ID: "com.brightonlawn.app"
+        BUNDLE_ID: "com.yourcompany.starter"
     scripts:
       - name: Install dependencies
         script: npm install
@@ -24,8 +24,8 @@ workflows:
       - name: Build iOS app
         script: |
           xcode-project build-ipa \
-            --workspace "ios/brightonlawnlandscape.xcworkspace" \
-            --scheme "brightonlawnlandscape"
+            --workspace "ios/StarterApp.xcworkspace" \
+            --scheme "StarterApp"
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:

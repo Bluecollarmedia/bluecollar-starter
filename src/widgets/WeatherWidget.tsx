@@ -5,13 +5,13 @@ import { createWidget, type WidgetEnvironment } from 'expo-widgets';
 import type { WidgetProps } from '@/lib/widgetData';
 
 /**
- * Brighton Forecast on the home screen and the lock screen: small, medium (the next hours), and the
- * three lock screen sizes. The look follows the approved mockup (light, minimal, the leaf and "BRIGHTON" on every size).
+ * The Forecast widget on the home screen and the lock screen: small, medium (the next hours), and the
+ * three lock screen sizes. The look follows the approved mockup (light, minimal, the logo mark and the company name on every size).
  *
  * A widget runs in its own small runtime, so everything it needs is inside this function (no outside constants, no hooks). The words and
  * figures arrive as props from src/lib/widgetData.ts, already formatted; the widget only lays them out.
  */
-const BrightonWeather = (p: WidgetProps, env: WidgetEnvironment) => {
+const WeatherWidget = (p: WidgetProps, env: WidgetEnvironment) => {
   'widget';
   const family = env.widgetFamily;
   // The approved rendering is the light design on the home screen whatever the phone's mode, so these colours never switch to dark.
@@ -21,7 +21,7 @@ const BrightonWeather = (p: WidgetProps, env: WidgetEnvironment) => {
   const page = dark ? '#18241C' : '#FBFDF8';
   const green = dark ? '#8CCB63' : '#2E5E34';
   const rule = dark ? '#2B3B30' : '#DCE6D5';
-  const open = widgetURL('brighton-lawn://weather');
+  const open = widgetURL('starter://weather') /* must match "scheme" in app.json */;
   // The leaf is a picture file at its full size: it must be made resizable and fitted, or the frame alone does not shrink it and it covers the widget.
   const leafMods = (n: number) => [resizable(), aspectRatio({ contentMode: 'fit' }), frame({ width: n, height: n }), clipped()];
 
@@ -89,7 +89,7 @@ const BrightonWeather = (p: WidgetProps, env: WidgetEnvironment) => {
   if (family === 'systemSmall') {
     return (
       <VStack alignment="leading" spacing={0} modifiers={[containerBackground(page, 'widget'), open]}>
-        {brand('BRIGHTON', 15)}
+        {brand('YOUR COMPANY', 15)}
         <Spacer />
         <HStack alignment="top">
           <VStack alignment="leading" spacing={1}>
@@ -120,7 +120,7 @@ const BrightonWeather = (p: WidgetProps, env: WidgetEnvironment) => {
         <Spacer />
         <VStack alignment="trailing" spacing={3}>
           <VStack alignment="trailing" spacing={2}>
-            <VStack modifiers={[padding({ bottom: 4 })]}>{brand('BRIGHTON FORECAST', 15)}</VStack>
+            <VStack modifiers={[padding({ bottom: 4 })]}>{brand('YOUR COMPANY FORECAST', 15)}</VStack>
             {p.uv ? <Text modifiers={[font({ size: 12, weight: 'bold' }), foregroundStyle(soft)]}>{p.uv}</Text> : null}
             {p.rain ? <Text modifiers={[font({ size: 12 }), foregroundStyle(soft), lineLimit(1)]}>{p.rain}</Text> : null}
           </VStack>
@@ -147,4 +147,4 @@ const BrightonWeather = (p: WidgetProps, env: WidgetEnvironment) => {
   );
 };
 
-export default createWidget('BrightonWeather', BrightonWeather);
+export default createWidget('ForecastWidget', WeatherWidget);

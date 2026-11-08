@@ -58,7 +58,7 @@ export async function stampPages(pdf: string | Uint8Array, footer: string, title
   doc.setTitle(winAnsiSafe(title));
   doc.setAuthor(winAnsiSafe(author));
   doc.setCreator(winAnsiSafe(author));
-  doc.setProducer('Brighton app');
+  doc.setProducer('Starter App');
   return doc.save();
 }
 

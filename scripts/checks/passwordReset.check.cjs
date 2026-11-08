@@ -25,7 +25,7 @@ const fakeSupabase = {
     updateUser: async (a) => { calls.push(['update', a]); if (thrown) throw thrown; return updateResult; },
   },
 };
-let webUrl = 'https://brighton-app.netlify.app';
+let webUrl = 'https://app.yourcompany.com';
 let configured = true;
 let os = 'web';
 const authLink = compile(read('src/lib/authLink.ts'), () => ({}));
@@ -42,7 +42,7 @@ let bad = 0;
 const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  — ' + detail}`); };
 
 (async () => {
-  check('1 redirect address is the web reset page, with no double slash', lib.resetRedirectUrl('https://brighton-app.netlify.app/') === 'https://brighton-app.netlify.app/reset-password' && lib.RESET_PAGE_PATH === '/reset-password');
+  check('1 redirect address is the web reset page, with no double slash', lib.resetRedirectUrl('https://app.yourcompany.com/') === 'https://app.yourcompany.com/reset-password' && lib.RESET_PAGE_PATH === '/reset-password');
   check('2 email check', lib.looksLikeEmail('a@gmail.com') && lib.looksLikeEmail(' a.b+c@x.co ') && !lib.looksLikeEmail('nope') && !lib.looksLikeEmail('a@b') && !lib.looksLikeEmail(''));
   check('3 new password rules: 8+ characters, must match', lib.newPasswordProblem('short', 'short') !== '' && lib.newPasswordProblem('longenough', 'different1') !== '' && lib.newPasswordProblem('longenough', 'longenough') === '');
   check('4 send errors: rate limit, email not set up, no connection', /wait a few minutes/.test(lib.resetRequestError({ message: 'email rate limit exceeded' })) && /couldn't send the email right now/.test(lib.resetRequestError(new Error('Error sending recovery email'))) && /connection/.test(lib.resetRequestError(new TypeError('Network request failed'))));
@@ -52,11 +52,11 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
   // request
   calls = []; resetResult = { error: null };
   let r = await data.requestPasswordReset(' a@gmail.com ');
-  check('7 sends the link to the trimmed email with the web reset page as the destination', r.ok && calls[0][1] === 'a@gmail.com' && calls[0][2].redirectTo === 'https://brighton-app.netlify.app/reset-password', JSON.stringify(calls));
+  check('7 sends the link to the trimmed email with the web reset page as the destination', r.ok && calls[0][1] === 'a@gmail.com' && calls[0][2].redirectTo === 'https://app.yourcompany.com/reset-password', JSON.stringify(calls));
   // in the app (not the web) the link comes back into the app
   os = 'ios'; calls = [];
   const rApp = await data.requestPasswordReset('a@gmail.com');
-  check('7b in the app the reset link comes back into the app (brighton-lawn://auth-callback)', rApp.ok && calls[0][2].redirectTo === 'brighton-lawn://auth-callback', JSON.stringify(calls));
+  check('7b in the app the reset link comes back into the app (starter://auth-callback)', rApp.ok && calls[0][2].redirectTo === 'starter://auth-callback', JSON.stringify(calls));
   os = 'web'; calls = []; resetResult = { error: null };
   calls = [];
   r = await data.requestPasswordReset('not-an-email');
@@ -70,7 +70,7 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
   thrown = null; webUrl = ''; calls = [];
   r = await data.requestPasswordReset('a@gmail.com');
   check('11 if the build has no web address, still sends (Supabase uses its own default page)', r.ok && calls[0][2] === undefined);
-  webUrl = 'https://brighton-app.netlify.app';
+  webUrl = 'https://app.yourcompany.com';
 
   // set password
   calls = []; updateResult = { error: null };

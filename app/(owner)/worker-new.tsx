@@ -13,6 +13,7 @@ import { semantic } from '@/theme/colors';
 import { inviteLinkUrl, inviteMessage, textInvite, copyText } from '@/lib/invite';
 import { addWorker, sendInviteAgain, cancelInvite, usePendingInvites, type IssuedInvite } from '@/hooks/useInvites';
 import { db, useDb } from '@/data/store';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 interface Sent { who: string; phone: string; invite: IssuedInvite }
 
@@ -60,7 +61,7 @@ export default function AddWorkerScreen() {
 
   async function handleText(s: Sent) {
     await textInvite(inviteMessage(linkFor(s), db.company?.name, s.who, 'worker'), s.phone);
-    if (Platform.OS === 'web') alert('Message copied. Paste it into a text to your worker.');
+    if (Platform.OS === 'web') showMessage('Message copied', 'Paste it into a text to your worker.');
   }
 
   async function handleAgain(i: { personId: string; firstName: string; lastName: string; phone: string }) {

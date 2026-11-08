@@ -1,5 +1,5 @@
 // Run: node scripts/checks/weatherData.check.cjs [path to typescript package]
-// Brighton Weather, Phase 2: the weather data converter (supabase/functions/weather/index.ts, the pure part above its marker line).
+// Weather, Phase 2: the weather data converter (supabase/functions/weather/index.ts, the pure part above its marker line).
 //   Real samples: scripts/fixtures/nws/* are real NWS responses for Lakewood captured on 2026-10-26 (trimmed). They contain NO snow (it is
 //   October), so snowfall maths is ALSO tested with clearly labelled SYNTHETIC blocks (invented numbers, used only inside this test, never shown
 //   to anyone). These tests run the converter in Node; the Deno wrapper that fetches NWS is not run here.
@@ -133,7 +133,7 @@ check('35 snow is only mentioned on a day when snow is expected (a trace or more
 check('36 the Sign In buttons open the app\'s existing welcome screen (nothing is redrawn)', (read('app/weather/(tabs)/index.tsx').match(/router\.push\('\/\(auth\)\/welcome' as any\)/g) ?? []).length === 1 && /router\.push\('\/\(auth\)\/welcome' as any\)/.test(read('app/weather/(tabs)/account.tsx')));
 check('37 the Weather area re-asks the owner\'s switch every 60 seconds while it is open', /setInterval\(\(\) => \{ void weatherSwitch\.refresh\(\); \}, 60_000\)/.test(read('app/weather/_layout.tsx')));
 check('38 a refusal from the data function ("disabled") makes the app re-ask the switch at once', /reason === 'disabled'/.test(read('src/hooks/useWeather.ts')) && /weatherSwitch\.refresh\(\)/.test(read('src/hooks/useWeather.ts')));
-check('39 the owner\'s on/off row asks before turning Weather on or off', /confirmAction\('Turn on Brighton Weather\?'/.test(read('src/hooks/usePublicWeatherRow.ts')) && /confirmAction\('Turn off Brighton Weather\?'/.test(read('src/hooks/usePublicWeatherRow.ts')));
+check('39 the owner\'s on/off row asks before turning Weather on or off', /confirmAction\('Turn on Public Weather\?'/.test(read('src/hooks/usePublicWeatherRow.ts')) && /confirmAction\('Turn off Public Weather\?'/.test(read('src/hooks/usePublicWeatherRow.ts')));
 
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

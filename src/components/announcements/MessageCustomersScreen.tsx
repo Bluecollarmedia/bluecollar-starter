@@ -4,7 +4,7 @@
  * Used by the owner (More > Announcements).
  */
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
 import { Button, Input, ScreenHeader, InlineNotice } from '@/components/ui';
@@ -13,6 +13,7 @@ import { fetchCustomerReach, sendCustomerMessage, useCustomerMessageHistory } fr
 import { AUDIENCES, BODY_MAX, TITLE_MAX, audienceLabel, confirmText, messageProblem, sentText, type CustomerAudience } from '@/lib/customerMessage';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { confirmAction } from '@/components/financials/ActionSheet';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
@@ -47,7 +48,7 @@ export function MessageCustomersPanel() {
   function confirmSend() {
     if (problem) { setNote({ tone: 'error', text: problem }); return; }
     const { title: t, message } = confirmText(audience);
-    Alert.alert(t, message, [{ text: 'Cancel', style: 'cancel' }, { text: 'Send', onPress: send }]);
+    confirmAction(t, message, 'Send', () => { void send(); });
   }
 
   return (

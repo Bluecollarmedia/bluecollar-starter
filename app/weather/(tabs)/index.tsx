@@ -286,7 +286,7 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
           <View style={styles.brand}>
             <Image source={require('../../../assets/images/logo-leaf.png')} style={styles.leaf} />
             <View>
-              <Text style={styles.brandName}>BRIGHTON</Text>
+              <Text style={styles.brandName}>YOUR COMPANY</Text>
               <Text style={styles.brandSub}>FORECAST</Text>
             </View>
           </View>

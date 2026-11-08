@@ -18,7 +18,7 @@ const pure = src.slice(0, marker).replace(/import \{[^}]*\} from '[^']*';/g, '')
 const m = { exports: {} };
 new Function('module', 'exports', ts.transpileModule(pure, { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports);
 const { buildAlert, distanceText } = m.exports;
-const base = { worker: 'Maria R.', clockInAtIso: '2026-12-09T13:05:00Z', company: 'Brighton', lat: 40.1058, lng: -74.2170, accuracyM: 12, distanceM: 1100, yardLabel: 'the yard (111 Spruce St, Lakewood, NJ)', radiusM: 152, address: '45 Oak Ave, Howell, NJ 07731, United States' };
+const base = { worker: 'Maria R.', clockInAtIso: '2026-12-09T13:05:00Z', company: 'Acme Paving', lat: 40.1058, lng: -74.2170, accuracyM: 12, distanceM: 1100, yardLabel: 'the yard (123 Main St, Your Town, ST)', radiusM: 152, address: '45 Oak Ave, Howell, NJ 07731, United States' };
 const a = buildAlert(base);
 check('the email names the worker, the time, and says they were not at the yard', /Maria R\./.test(a.text) && /not at the yard/.test(a.text) && /Dec 9/.test(a.text) && /8:05 AM/.test(a.text), a.text.slice(0, 200));
 check('it says exactly where: the street address AND the coordinates AND a map link', a.text.includes('45 Oak Ave, Howell') && a.text.includes('40.105800, -74.217000') && a.text.includes('https://www.google.com/maps?q=40.105800,-74.217000') && a.html.includes('45 Oak Ave'));

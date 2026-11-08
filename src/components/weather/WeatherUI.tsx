@@ -1,5 +1,5 @@
 /**
- * The building blocks of the Brighton Weather screens: the light palette (white air and tints of the logo's leaf green, text in the logo's deep
+ * The building blocks of the Weather screens: the light palette (white air and tints of the logo's leaf green, text in the logo's deep
  * green), the flat white cards, the weather pictures and a small helper for the page behind everything. Flat and solid on purpose: no blur, no
  * see-through panels. Used only by the Weather screens.
  */

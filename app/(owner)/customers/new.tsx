@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Platform } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useRouter } from 'expo-router';
@@ -11,6 +11,7 @@ import { Button, Input, Card } from '@/components/ui';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { useCustomers } from '@/hooks/useCustomers';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 export default function NewCustomerScreen() {
   const { colors } = useTheme();
@@ -27,17 +28,12 @@ export default function NewCustomerScreen() {
   async function handleCreate() {
     if (saving) return;
     if (!firstName.trim() || !lastName.trim()) {
-      if (Platform.OS === 'web') {
-        alert('Please enter a first and last name.');
-      } else {
-        Alert.alert('Required', 'Please enter a first and last name.');
-      }
+      showMessage('Required', 'Please enter a first and last name.');
       return;
     }
     const trimmedEmail = email.trim();
     if (trimmedEmail && !/^\S+@\S+\.\S+$/.test(trimmedEmail)) {
-      if (Platform.OS === 'web') alert('Please enter a valid email address.');
-      else Alert.alert('Check the email', 'Please enter a valid email address.');
+      showMessage('Check the email', 'Please enter a valid email address.');
       return;
     }
     setSaving(true);
@@ -47,7 +43,7 @@ export default function NewCustomerScreen() {
       router.replace(`/(owner)/customers/${id}?justAdded=1` as any);
     } catch (e) {
       const msg = e instanceof Error ? e.message : "The customer couldn't be added.";
-      if (Platform.OS === 'web') alert(msg); else Alert.alert("Couldn't add the customer", msg);
+      showMessage("Couldn't add the customer", msg);
     } finally {
       setSaving(false);
     }

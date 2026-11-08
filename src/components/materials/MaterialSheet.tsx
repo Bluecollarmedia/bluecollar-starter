@@ -19,7 +19,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { MaterialStatus, ProjectMaterial } from '@/types/materials';
 
-const UNITS = ['ea', 'ton', 'yd', 'bag', 'pallet', 'plant', 'sq ft', 'ln ft', 'gal', 'roll'];
+const UNITS = ['ea', 'ton', 'yd', 'bag', 'pallet', 'sq ft', 'ln ft', 'gal', 'roll', 'load'];
 
 export interface MaterialDraft {
   name: string;
@@ -58,7 +58,7 @@ export function MaterialSheet({ visible, item, onSave, onDelete, onClose }: {
 
   const save = () => {
     if (!name.trim()) {
-      showMessage('Name needed', 'Enter what the material is, e.g. Topsoil.');
+      showMessage('Name needed', 'Enter what the material is, e.g. Crushed stone.');
       return;
     }
     let quantity: number | undefined;
@@ -78,7 +78,7 @@ export function MaterialSheet({ visible, item, onSave, onDelete, onClose }: {
   return (
     <FormSheet visible={visible} title={item ? 'Edit Material' : 'Add Material'} saveLabel={item ? 'Done' : 'Add'} onSave={save} onClose={onClose}>
       <ListSection>
-        <InputRow label="Material" value={name} onChangeText={setName} placeholder="e.g. Topsoil" autoCapitalize="sentences" />
+        <InputRow label="Material" value={name} onChangeText={setName} placeholder="e.g. Crushed stone" autoCapitalize="sentences" />
         <InputRow label="Quantity" value={qty} onChangeText={setQty} placeholder="Unknown" keyboardType="decimal-pad" selectTextOnFocus />
         <InputRow label="Unit" value={unit} onChangeText={setUnit} placeholder="ea" autoCapitalize="none" />
       </ListSection>
@@ -102,7 +102,7 @@ export function MaterialSheet({ visible, item, onSave, onDelete, onClose }: {
 
       <SheetLabel>INTERNAL NOTES</SheetLabel>
       <ListSection footer="Only you see these. They aren’t on quotes, invoices or the shared list.">
-        <NoteField label="Internal notes" placeholder="e.g. Ask for the screened topsoil" value={notes} onChangeText={setNotes} />
+        <NoteField label="Internal notes" placeholder="e.g. Ask for the washed stone" value={notes} onChangeText={setNotes} />
       </ListSection>
 
       {item && <Button title="Remove Material" variant="ghost" onPress={onDelete} fullWidth />}

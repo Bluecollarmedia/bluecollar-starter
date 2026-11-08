@@ -113,12 +113,12 @@ export function ReminderSheet({ visible, initial, initialNote, jobDate, hasRemin
         </View>
       </ListSection>
       <ListSection title="NOTE (OPTIONAL)">
-        <NoteField label="Reminder note" placeholder="e.g. Order sod for Thursday" value={note} onChangeText={setNote} />
+        <NoteField label="Reminder note" placeholder="e.g. Order gravel for Thursday" value={note} onChangeText={setNote} />
       </ListSection>
       <Text style={[typeScale.caption, { color: colors.textTertiary, marginHorizontal: spacing.xs, marginBottom: spacing.md }]}>
         {materialRemindersSupported
           ? 'You’ll get a notification on your phone at this time (your other phones pick it up next time the app opens). It also shows in Materials.'
-          : 'On the website the reminder shows in Materials. Phone notifications come from the Brighton iPhone app.'}
+          : 'On the website the reminder shows in Materials. Phone notifications come from the iPhone app.'}
       </Text>
       {hasReminder && <Button title="Remove Reminder" variant="ghost" onPress={() => { markSaved(); onClear(); }} fullWidth />}
       {Platform.OS === 'android' && androidPicker && (

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, ScrollView, Pressable, TextInput, StyleSheet, Alert, Platform, Keyboard } from 'react-native';
+import { View, Text, ScrollView, Pressable, TextInput, StyleSheet, Keyboard } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -21,6 +21,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic, brand } from '@/theme/colors';
 import type { ProjectStatus, CustomerTimelineType, RequestCategory } from '@/types/project';
+import { showMessage } from '@/components/financials/ActionSheet';
 
 const SECTIONS = [
   { key: 'overview', label: 'Overview' },
@@ -108,10 +109,9 @@ export default function CustomerProjectScreen() {
     if (!reqTitle.trim()) return;
     Keyboard.dismiss();
     submitRequest({ title: reqTitle.trim(), description: reqDescription.trim() || undefined, category: reqCategory });
-    const companyName = db.company?.name ?? 'Brighton Lawn + Landscape';
+    const companyName = db.company?.name ?? 'Your Company';
     const sentMsg = t("Your {category} has been sent to {company}. They'll review it shortly.", { category: t(categoryOptions.find(c => c.key === reqCategory)?.label ?? reqCategory), company: companyName });
-    if (Platform.OS === 'web') alert(sentMsg);
-    else Alert.alert(t('Request Submitted'), sentMsg);
+    showMessage(t('Request Submitted'), sentMsg);
     setReqTitle('');
     setReqDescription('');
     setReqCategory('question');
@@ -463,7 +463,7 @@ export default function CustomerProjectScreen() {
                 )}
                 {req.responseNote && (
                   <View style={[styles.responseBox, { backgroundColor: colors.primarySurface }]}>
-                    <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '600' }]}>{t('Response from Brighton Lawn')}</Text>
+                    <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '600' }]}>{t('Response from the company')}</Text>
                     <Text style={[typeScale.bodySmall, { color: colors.textPrimary, marginTop: spacing.xs }]}>
                       {req.responseNote}
                     </Text>

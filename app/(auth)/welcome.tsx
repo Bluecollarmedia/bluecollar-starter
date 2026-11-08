@@ -46,7 +46,7 @@ export default function WelcomeScreen() {
             {t('Welcome')}
           </Text>
           <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.sm }]}>
-            {t('Manage your landscaping business\nfrom anywhere')}
+            {t('Manage your business\nfrom anywhere')}
           </Text>
         </View>
 
@@ -76,7 +76,7 @@ export default function WelcomeScreen() {
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
         <Text style={[typeScale.caption, { color: colors.textTertiary, textAlign: 'center' }]}>
-          Brighton Lawn + Landscape
+          Starter App
         </Text>
         <View style={styles.legalRow}>
           <Text style={[typeScale.caption, { color: colors.primary }]} onPress={() => setReading('privacy')}>{t('Privacy Policy')}</Text>

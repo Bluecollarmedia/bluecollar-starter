@@ -15,7 +15,7 @@ function li(id: string, description: string, quantity: number, unit: string, uni
 
 const TAX = 8;
 const TERMS = '50% deposit due to schedule the work. Balance due on completion.\nPrices include materials, labor and cleanup.';
-const EXCLUSIONS = 'Irrigation repairs, utility relocation and permit fees are not included unless listed above.';
+const EXCLUSIONS = 'Utility relocation and permit fees are not included unless listed above.';
 
 export function buildMockFinancials(projects: Project[]) {
   const [p1, p2, p3] = projects;
@@ -34,10 +34,10 @@ export function buildMockFinancials(projects: Project[]) {
 
   // Approved quote on the first project
   const q1Items = [
-    li('q1-1', 'Lawn installation', 5000, 'sq ft', 3.5, 'Strip existing turf, grade, amend soil and lay premium sod.', 'labor'),
-    li('q1-2', 'Mulch (premium hardwood)', 10, 'yd', 65, undefined, 'materials'),
-    li('q1-3', 'Plantings', 15, 'plant', 125, 'Boxwood, hydrangea and ornamental grasses per plan.', 'materials'),
-    li('q1-4', 'Landscape fabric', 5000, 'sq ft', 0.75, undefined, 'materials'),
+    li('q1-1', 'Concrete patio installation', 500, 'sq ft', 14, 'Excavate, grade, compact the base, form and pour 4 in. reinforced concrete.', 'labor'),
+    li('q1-2', 'Crushed stone base', 10, 'ton', 65, undefined, 'materials'),
+    li('q1-3', 'Retaining wall block', 15, 'pallet', 125, 'Natural stone face, color per plan.', 'materials'),
+    li('q1-4', 'Drainage fabric', 500, 'sq ft', 0.75, undefined, 'materials'),
   ];
   quotes.push({
     id: 'quote1', shareToken: 'demoquote1'.padEnd(64, '0'), ...company, projectId: p1.id, customerId: p1.customerId, number: 'Q-1001', title: p1.name,
@@ -51,10 +51,10 @@ export function buildMockFinancials(projects: Project[]) {
   ev('quote', 'quote1', p1.id, 'sent', '2026-07-08T15:10:00Z');
   ev('quote', 'quote1', p1.id, 'approved', '2026-07-09T18:45:00Z', p1.customerId);
 
-  const co1Items = [li('co1-1', 'Additional planting bed', 8, 'plant', 125, undefined, 'materials'), li('co1-2', 'Mulch (premium hardwood)', 4, 'yd', 65, undefined, 'materials')];
+  const co1Items = [li('co1-1', 'Extra wall block', 8, 'pallet', 125, undefined, 'materials'), li('co1-2', 'Crushed stone base', 4, 'ton', 65, undefined, 'materials')];
   changeOrders.push({
     id: 'co1', shareToken: 'democo1'.padEnd(64, '0'), ...company, projectId: p1.id, quoteId: 'quote1', customerId: p1.customerId, number: 'CO-1001',
-    description: 'Additional planting bed and extended mulch area around the back patio.',
+    description: 'Longer retaining wall and extra base around the back patio.',
     status: 'approved', lineItems: co1Items, taxRate: TAX, ...calcTotals(co1Items, TAX), terms: TERMS,
     issueDate: '2026-08-05', sentAt: '2026-08-05T14:12:00Z', approvedAt: '2026-08-05T18:45:00Z', approvedBy: p1.customerId,
     createdBy: 'owner1', createdAt: '2026-08-05T14:00:00Z', updatedAt: '2026-08-05T18:45:00Z',
@@ -82,7 +82,7 @@ export function buildMockFinancials(projects: Project[]) {
   invoices.push({
     id: 'inv1', ...company, projectId: p1.id, quoteId: 'quote1', changeOrderIds: ['co1'], customerId: p1.customerId,
     number: 'INV-1001', title: p1.name, status: 'draft', lineItems: invItems, taxRate: TAX, ...calcTotals(invItems, TAX),
-    paymentInstructions: 'Please make checks payable to Brighton Lawn + Landscape. Payment is due within 30 days.',
+    paymentInstructions: 'Please make checks payable to Your Company. Payment is due within 30 days.',
     invoiceDate: '2026-09-20', dueDate: '2026-10-20',
     createdBy: 'owner1', createdAt: '2026-09-20T13:00:00Z', updatedAt: '2026-09-20T13:00:00Z',
   });
@@ -105,7 +105,7 @@ export function buildMockFinancials(projects: Project[]) {
   }
 
   if (p3) {
-    const q3Items = [li('q3-1', 'Fall cleanup', 1, 'visit', 450), li('q3-2', 'Aeration and overseeding', 8000, 'sq ft', 0.12)];
+    const q3Items = [li('q3-1', 'Site inspection', 1, 'ea', 450), li('q3-2', 'Crack sealing', 800, 'ln ft', 1.2)];
     quotes.push({
       id: 'quote3', shareToken: 'demoquote3'.padEnd(64, '0'), ...company, projectId: p3.id, customerId: p3.customerId, number: 'Q-1003', title: p3.name,
       status: 'draft', lineItems: q3Items, taxRate: TAX, ...calcTotals(q3Items, TAX), terms: TERMS,
@@ -118,17 +118,17 @@ export function buildMockFinancials(projects: Project[]) {
   // Materials checklist on the first project: two suggestions from the
   // approved quote and an internal item that isn't on the quote.
   vendors.push({
-    id: 'vendor1', ...company, name: 'Greenway Supply Co.', contactName: 'Mike', phone: '(216) 555-0188',
+    id: 'vendor1', ...company, name: 'Main Street Supply Co.', contactName: 'Mike', phone: '(216) 555-0188',
     address: '123 Industrial Way, Cleveland, OH', pickupInstructions: 'Pickup at the main entrance. Bring the truck with the trailer.',
     createdAt: '2026-08-01T12:00:00Z', updatedAt: '2026-08-01T12:00:00Z',
   });
   const mat = (id: string, name: string, quantity: number | undefined, unit: string | undefined, status: string, sortOrder: number, extra: Row = {}) =>
     materials.push({ id, ...company, projectId: p1.id, name, quantity, unit, status, sortOrder, createdBy: 'owner1', createdAt: '2026-09-01T12:00:00Z', updatedAt: '2026-09-01T12:00:00Z', ...extra });
-  mat('mat1', 'Mulch (premium hardwood)', 10, 'yd', 'ordered', 0, { vendorId: 'vendor1', source: { type: 'quote', id: 'quote1', number: 'Q-1001', lineItemId: 'q1-2', quantity: 10, unit: 'yd' } });
-  mat('mat2', 'Plantings', 15, 'plant', 'needs_review', 1, { source: { type: 'quote', id: 'quote1', number: 'Q-1001', lineItemId: 'q1-3', quantity: 15, unit: 'plant' } });
-  mat('mat3', 'Topsoil', 25, 'ton', 'to_order', 2, { notes: 'For regrading the side yard. Not on the quote.' });
+  mat('mat1', 'Crushed stone base', 10, 'ton', 'ordered', 0, { vendorId: 'vendor1', source: { type: 'quote', id: 'quote1', number: 'Q-1001', lineItemId: 'q1-2', quantity: 10, unit: 'ton' } });
+  mat('mat2', 'Retaining wall block', 15, 'pallet', 'needs_review', 1, { source: { type: 'quote', id: 'quote1', number: 'Q-1001', lineItemId: 'q1-3', quantity: 15, unit: 'pallet' } });
+  mat('mat3', 'Fill sand', 25, 'ton', 'to_order', 2, { notes: 'For regrading the side of the house. Not on the quote.' });
   materialPlans.push({
-    projectId: p1.id, ...company, vendorId: 'vendor1', pickupLocation: 'Greenway Supply Co. yard',
+    projectId: p1.id, ...company, vendorId: 'vendor1', pickupLocation: 'Main Street Supply Co. yard',
     pickupInstructions: 'Pickup at the main entrance. Bring the truck with the trailer.', dismissedSources: [],
   });
 

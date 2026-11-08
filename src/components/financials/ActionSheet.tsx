@@ -63,15 +63,16 @@ export function ActionSheet({ visible, title, message, actions, onClose, childre
   );
 }
 
-/** Native confirm dialog (window.confirm on the web). */
-export function confirmAction(title: string, message: string, confirmLabel: string, onConfirm: () => void, destructive = false) {
+/** Native confirm dialog (the app's own dialog on the web). `cancelLabel` replaces "Cancel" (e.g. "Keep", "Not yet"). */
+export function confirmAction(title: string, message: string, confirmLabel: string, onConfirm: () => void, destructive = false, cancelLabel?: string) {
+  const cancel = cancelLabel ?? tr('Cancel');
   if (Platform.OS === 'web') {
     // The app's own dialog (the browser's confirm() can be blocked or suppressed, which made buttons seem dead).
-    showWebDialog(title, message, [{ text: tr('Cancel'), style: 'cancel' }, { text: confirmLabel, style: destructive ? 'destructive' : 'default', onPress: onConfirm }]);
+    showWebDialog(title, message, [{ text: cancel, style: 'cancel' }, { text: confirmLabel, style: destructive ? 'destructive' : 'default', onPress: onConfirm }]);
     return;
   }
   Alert.alert(title, message, [
-    { text: tr('Cancel'), style: 'cancel' },
+    { text: cancel, style: 'cancel' },
     { text: confirmLabel, style: destructive ? 'destructive' : 'default', onPress: onConfirm },
   ]);
 }

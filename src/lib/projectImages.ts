@@ -3,7 +3,7 @@ import { db } from '@/data/store';
 
 /**
  * A project's picture: the owner's own cover photo, or undefined when none
- * was added (screens then show the Brighton green backdrop via BrandCover).
+ * was added (screens then show the brand-color backdrop via BrandCover).
  */
 export function getProjectImageUri(project: Pick<Project, 'id' | 'coverPhotoUrl'>): string | undefined {
   return project.coverPhotoUrl || undefined;
@@ -15,12 +15,12 @@ export function getProjectImageUriById(projectId: string | undefined): string | 
   return project ? getProjectImageUri(project) : undefined;
 }
 
-/** The dashboard header photo: the company's own, or undefined for the Brighton green backdrop. */
+/** The dashboard header photo: the company's own, or undefined for the brand-color backdrop. */
 export function getCompanyImageUri(): string | undefined {
   return db.company?.coverPhotoUrl || undefined;
 }
 
-/** The workers' home header photo the owner picked, or undefined for the Brighton green backdrop. */
+/** The workers' home header photo the owner picked, or undefined for the brand-color backdrop. */
 export function getWorkerHeaderImageUri(): string | undefined {
   return db.company?.workerCoverPhotoUrl || undefined;
 }
