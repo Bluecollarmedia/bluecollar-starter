@@ -18,6 +18,7 @@ import { formatQuantity, parseAmount } from '@/lib/money';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { MaterialStatus, ProjectMaterial } from '@/types/materials';
+import { w } from '@/config/brand';
 
 const UNITS = ['ea', 'ton', 'yd', 'bag', 'pallet', 'sq ft', 'ln ft', 'gal', 'roll', 'load'];
 
@@ -96,7 +97,7 @@ export function MaterialSheet({ visible, item, onSave, onDelete, onClose }: {
         <>
           <SheetLabel>FROM (OPTIONAL)</SheetLabel>
           <ChipRow options={db.vendors.map((v) => ({ key: v.id, label: v.name }))} value={vendorId} onChange={setVendorId} wrap={false} />
-          <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 4, marginLeft: spacing.xs }]}>Leave empty to use the project’s vendor.</Text>
+          <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 4, marginLeft: spacing.xs }]}>{w('Leave empty to use the job’s vendor.')}</Text>
         </>
       )}
 

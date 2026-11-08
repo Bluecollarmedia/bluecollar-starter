@@ -61,7 +61,7 @@ function JobCard({ assignment, onPress }: { assignment: Assignment; onPress: () 
       <BrandCover uri={getProjectImageUriById(assignment.projectId)} style={styles.thumb} variant="tile" />
       <View style={styles.jobInfo}>
         <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]} numberOfLines={1}>
-          {assignment.project?.name ?? t('Unknown Project')}
+          {assignment.project?.name ?? t('Unknown Job')}
         </Text>
         <View style={styles.metaRow}>
           <Feather name="clock" size={12} color={colors.textTertiary} />

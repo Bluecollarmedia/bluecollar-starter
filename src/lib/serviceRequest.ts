@@ -36,7 +36,7 @@ export const DETAILS_MAX = 2000;
 export function requestProblem(r: ServiceRequestInput): string | null {
   if (r.services.length < 1) return 'Choose at least one service.';
   if (r.services.some((s) => !SERVICE_CHOICES.includes(s))) return 'Choose from the services listed.';
-  if (r.town.trim().length < 2) return 'Enter the town or ZIP code of the property.';
+  if (r.town.trim().length < 2) return 'Enter the town or ZIP code of the job site.';
   if (r.name.trim().length < 2) return 'Enter your name.';
   const digits = r.phone.replace(/\D/g, '');
   if (digits.length < 10 || digits.length > 15) return 'Enter a phone number we can reach you at.';

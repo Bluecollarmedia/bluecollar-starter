@@ -9,6 +9,7 @@ import { useSearch } from '@/hooks/useSearch';
 import { SearchBar, EmptyState } from '@/components/ui';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 export default function SearchScreen() {
   const { colors } = useTheme();
@@ -32,7 +33,7 @@ export default function SearchScreen() {
   }
 
   const typeLabels: Record<string, string> = {
-    project: 'Project',
+    project: w('Job'),
     worker: 'Worker',
     customer: 'Customer',
   };
@@ -47,7 +48,7 @@ export default function SearchScreen() {
           <SearchBar
             value={query}
             onChangeText={setQuery}
-            placeholder="Search projects, workers, customers..."
+            placeholder={w('Search jobs, workers, customers...')}
             autoFocus
             style={[styles.pillSearch, { backgroundColor: colors.backgroundSecondary }]}
           />
@@ -59,7 +60,7 @@ export default function SearchScreen() {
           <EmptyState
             icon="search"
             title="Search everything"
-            description="Type at least 2 characters to search across projects, workers, and customers."
+            description={w('Type at least 2 characters to search across jobs, workers, and customers.')}
           />
         </View>
       ) : results.length === 0 ? (

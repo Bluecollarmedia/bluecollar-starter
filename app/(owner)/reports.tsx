@@ -15,6 +15,7 @@ import { reasonLabel, contentLabel } from '@/lib/contentReports';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 export default function ReportsScreen() {
   const { colors } = useTheme();
@@ -32,7 +33,7 @@ export default function ReportsScreen() {
     const p = db.people[id];
     return p ? `${p.firstName} ${p.lastName}`.trim() || 'Someone' : 'Someone';
   };
-  const projectName = (id: string) => db.projects.find((p) => p.id === id)?.name ?? 'a project';
+  const projectName = (id: string) => db.projects.find((p) => p.id === id)?.name ?? w('a job');
 
   async function act(r: ReportItem, removeContent: boolean) {
     setBusyId(r.id);

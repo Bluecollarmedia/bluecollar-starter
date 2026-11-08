@@ -4,6 +4,7 @@ import { db } from '@/data/store';
 import type { Assignment } from '@/types/schedule';
 import type { WorkerActivity, WorkerActivityType, CheckIn, CheckOut } from '@/types/worker';
 import type { ProjectPhoto } from '@/types/project';
+import { w } from '@/config/brand';
 
 // Event types worth surfacing to the worker. Internal/audit-only events
 // (schedule_confirmed, schedule_acknowledged, overtime_flagged) are kept in
@@ -116,7 +117,7 @@ function buildSession(
     assignmentId: checkIn.assignmentId,
     projectId: checkIn.projectId,
     // A job still in progress isn't in completedAssignments yet, so fall back to the project itself.
-    projectName: (assignment?.project ?? db.projects.find(p => p.id === checkIn.projectId))?.name ?? 'Unknown Project',
+    projectName: (assignment?.project ?? db.projects.find(p => p.id === checkIn.projectId))?.name ?? w('Unknown Job'),
     address: (assignment?.project ?? db.projects.find(p => p.id === checkIn.projectId))?.address,
     checkInAt: checkIn.timestamp,
     checkOutAt: checkOut?.timestamp,

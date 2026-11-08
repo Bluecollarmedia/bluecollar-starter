@@ -25,6 +25,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { FinancialDocType } from '@/types/financial';
 import type { ProjectStatus } from '@/types/project';
+import { w } from '@/config/brand';
 
 const PROJECT_STATUS: Record<ProjectStatus, { label: string; tone: 'success' | 'warning' | 'info' | 'neutral' }> = {
   prospect: { label: 'Prospect', tone: 'neutral' },
@@ -116,7 +117,7 @@ export default function NewDocumentScreen() {
     title = 'Create';
     body = (
       <ListSection title="WHAT WOULD YOU LIKE TO CREATE?">
-        <ListRow icon="file-text" title="Quote" subtitle="Price new work for a project" showChevron onPress={() => setKind('quote')} />
+        <ListRow icon="file-text" title="Quote" subtitle={w('Price new work for a job')} showChevron onPress={() => setKind('quote')} />
         <ListRow icon="layers" title="Change Order" subtitle="Add or change work on an approved quote" showChevron onPress={() => setKind('change_order')} />
         <ListRow icon="dollar-sign" title="Invoice" subtitle="Bill an approved quote and approved changes" showChevron onPress={() => setKind('invoice')} />
       </ListSection>
@@ -130,33 +131,33 @@ export default function NewDocumentScreen() {
         </Text>
         <ChoiceCard
           icon="folder"
-          title="Existing Project"
-          text="Pick a project. Its customer and address fill in automatically."
+          title={w('Existing Job')}
+          text={w('Pick a job. Its customer and address fill in automatically.')}
           onPress={() => setQuoteFor('existing')}
         />
         <ChoiceCard
           icon="plus-circle"
-          title="New Project"
-          text="A new customer or property. It becomes a project once the quote is approved."
+          title={w('New Job')}
+          text={w('A new customer or job site. It becomes a job once the quote is approved.')}
           onPress={() => setQuoteFor('new')}
         />
       </>
     );
   } else if (kind === 'quote' && !projectId && quoteFor === 'new') {
-    title = 'New Project Quote';
+    title = w('New Job Quote');
     body = <NewProjectForm onReady={(id, created) => { setNewProject(created); setProjectId(id); }} />;
   } else if (!projectId) {
     body = (
       <>
-        <SearchBar value={search} onChangeText={setSearch} placeholder="Search projects or customers" style={{ marginBottom: spacing.md }} />
+        <SearchBar value={search} onChangeText={setSearch} placeholder={w('Search jobs or customers')} style={{ marginBottom: spacing.md }} />
         {projects.length === 0 ? (
           <InlineNotice
             icon="info"
             tone="neutral"
-            text={kind === 'quote' ? 'No projects found. Go back and choose New Project instead.' : 'No projects with an approved quote yet.'}
+            text={w(kind === 'quote' ? 'No jobs found. Go back and choose New Job instead.' : 'No jobs with an approved quote yet.')}
           />
         ) : (
-          <ListSection title="CHOOSE A PROJECT">
+          <ListSection title={w('CHOOSE A JOB')}>
             {projects.map((p) => (
               <ListRow
                 key={p.id}
@@ -173,7 +174,7 @@ export default function NewDocumentScreen() {
     );
   } else if (approvedQuotes.length === 0 && kind !== 'quote') {
     body = (
-      <InlineNotice icon="info" tone="neutral" text={`${project?.name ?? 'This project'} has no approved quote yet. Approve a quote first.`} />
+      <InlineNotice icon="info" tone="neutral" text={w('{name} has no approved quote yet. Approve a quote first.', { name: project?.name ?? w('This job') })} />
     );
   } else if (kind === 'change_order' || (kind === 'invoice' && !quoteId)) {
     body = (

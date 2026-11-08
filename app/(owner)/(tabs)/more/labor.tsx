@@ -15,6 +15,7 @@ import { todayKey } from '@/lib/ids';
 import { Card, DayBar, Empty, LaborScreen, NotInstalled, Stat, StatePill, fmtClock, fmtDayLong } from '@/components/time/LaborBits';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -71,8 +72,8 @@ export default function LaborOverviewScreen() {
         <>
           <Card>
             <View style={styles.statRow}>
-              <Stat label="Clocked in now" value={String(clockedIn.length)} sub={`${onProperty.length} at a property`} />
-              <Stat label="Workdays" value={String(rows.length)} sub={`${visitsToday.length} property visits`} />
+              <Stat label="Clocked in now" value={String(clockedIn.length)} sub={w('{n} at a job site', { n: onProperty.length })} />
+              <Stat label="Workdays" value={String(rows.length)} sub={w('{n} job site visits', { n: visitsToday.length })} />
             </View>
             <View style={[styles.statRow, { marginTop: spacing.md }]}>
               <Stat label="Ready for review" value={String(ready.length)} tone={ready.length ? 'warn' : undefined} />
@@ -133,7 +134,7 @@ export default function LaborOverviewScreen() {
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
                       {fmtClock(r.workday.clockInAt)} – {r.workday.clockOutAt ? fmtClock(r.workday.clockOutAt) : 'now'} · Net payable {durationText(r.summary.netMs)}
                     </Text>
-                    {r.currentLabel ? <Text style={[typeScale.caption, { color: colors.primary }]}>At {r.currentLabel}</Text> : !r.workday.clockOutAt ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Clocked in, not at a property</Text> : null}
+                    {r.currentLabel ? <Text style={[typeScale.caption, { color: colors.primary }]}>At {r.currentLabel}</Text> : !r.workday.clockOutAt ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{w('Clocked in, not at a job site')}</Text> : null}
                     {r.problems[0] ? <Text style={[typeScale.caption, { color: colors.warning }]}>{r.problems[0].message}</Text> : null}
                   </View>
                   <View style={{ alignItems: 'flex-end', gap: 4 }}>
@@ -149,7 +150,7 @@ export default function LaborOverviewScreen() {
             {[
               { icon: 'check-square' as const, label: 'Payroll review', sub: 'Approve each day', to: '/(owner)/more/labor-review' },
               { icon: 'calendar' as const, label: 'Weekly summary', sub: 'Hours, overtime and cost by employee', to: '/(owner)/more/labor-week' },
-              { icon: 'map-pin' as const, label: 'Property & project history', sub: 'Every visit, averages and labor cost', to: '/(owner)/more/labor-properties' },
+              { icon: 'map-pin' as const, label: w('Job site & job history'), sub: 'Every visit, averages and labor cost', to: '/(owner)/more/labor-properties' },
             ].map((x, i) => (
               <Pressable key={x.label} onPress={() => router.push(x.to as never)} accessibilityRole="button"
                 style={[styles.empRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight }]}>

@@ -137,7 +137,7 @@ export function NotInstalled() {
     <Card>
       <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>{t("Hours & Labor isn't switched on yet")}</Text>
       <Text style={[typeScale.bodyMedium, { color: colors.textSecondary, marginTop: spacing.xs }]}>
-        {t('The database updates 63, 64 and 65 have not been run. Once they are, workdays and property times show up here.')}
+        {t('The database updates 63, 64 and 65 have not been run. Once they are, workdays and job site times show up here.')}
       </Text>
     </Card>
   );

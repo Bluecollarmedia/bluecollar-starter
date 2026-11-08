@@ -18,7 +18,7 @@
 
 import { db, insertRow, updateRow, deleteRow, upsertRow } from './store';
 import { todayKey } from '@/lib/ids';
-import { brand } from '@/config/brand';
+import { brand, w } from '@/config/brand';
 import { formatQuantity } from '@/lib/money';
 import { formatDocDate } from '@/lib/documentHtml';
 import type { MaterialPlan, MaterialSource, MaterialStatus, MaterialVendor, ProjectMaterial } from '@/types/materials';
@@ -297,7 +297,7 @@ export function checklistText(projectId: string, opts: { includeDone?: boolean }
   const qty = (m: ProjectMaterial) => (m.quantity != null ? `${formatQuantity(m.quantity)}${m.unit ? ` ${m.unit}` : ''}` : 'qty TBD');
 
   const lines: string[] = [];
-  lines.push(`Materials: ${project?.name ?? 'Project'}`);
+  lines.push(`Materials: ${project?.name ?? w('Job')}`);
   const addr = [project?.address, project?.city].filter(Boolean).join(', ');
   if (addr) lines.push(addr);
   if (job) lines.push(`Job date: ${formatDocDate(job)}`);

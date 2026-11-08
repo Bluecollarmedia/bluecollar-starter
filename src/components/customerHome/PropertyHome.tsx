@@ -130,7 +130,7 @@ function ProjectCard({ item }: { item: HomeItem }) {
           ))}
         </View>
       ) : null}
-      <SeeAll label={project ? t('Open project') : t('Open')} onPress={open} />
+      <SeeAll label={project ? t('Open job') : t('Open')} onPress={open} />
       <PhotoPager photos={viewing?.photos ?? []} startId={viewing?.startId ?? null} onClose={() => setViewing(null)} />
     </View>
   );
@@ -156,7 +156,7 @@ function PastRow({ item, first }: { item: HomeItem; first: boolean }) {
     <Pressable
       onPress={() => router.push(`/(customer)/project?id=${item.key.slice('project:'.length)}` as never)}
       accessibilityRole="button"
-      accessibilityLabel={t('Completed project: {name}. {address}. Open', { name: item.name, address: item.address })}
+      accessibilityLabel={t('Completed job: {name}. {address}. Open', { name: item.name, address: item.address })}
       style={[styles.pastItem, !first && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border }]}
     >
       <Icon name="check-circle" size={18} color={semantic.success} />

@@ -1,3 +1,4 @@
+import { w } from '@/config/brand';
 // Pure words for a customer's "Portal access" on their page. The owner decides whether a customer can use the app; this says in plain
 // language where they stand. member status: 'active' (has a login and access), 'invited' (added, has not made a login yet, a link is out),
 // 'inactive' (the owner turned access off).
@@ -13,9 +14,9 @@ export interface PortalAccessView {
 }
 
 export function portalAccessView(status: string): PortalAccessView {
-  if (status === 'active') return { on: true, label: 'On', tone: 'success', note: 'They can sign in and see their projects and properties.' };
+  if (status === 'active') return { on: true, label: 'On', tone: 'success', note: w('They can sign in and see their jobs and job sites.') };
   if (status === 'invited') return { on: true, label: 'Invite pending', tone: 'info', note: "They haven't made their login yet. Send them the link above and they're in." };
-  return { on: false, label: 'Off', tone: 'neutral', note: "Turned off. They can't sign in or see anything. Their projects and history are kept." };
+  return { on: false, label: 'Off', tone: 'neutral', note: w("Turned off. They can't sign in or see anything. Their jobs and history are kept.") };
 }
 
 /** What to ask before turning access off. */
@@ -23,7 +24,7 @@ export function turnOffText(firstName: string): { title: string; message: string
   const who = firstName.trim() || 'this customer';
   return {
     title: `Turn off ${who}'s access?`,
-    message: "They won't be able to sign in or see their projects, and any link you sent that they haven't used stops working. Their records are kept, and you can turn it back on any time.",
+    message: w("They won't be able to sign in or see their jobs, and any link you sent that they haven't used stops working. Their records are kept, and you can turn it back on any time."),
   };
 }
 

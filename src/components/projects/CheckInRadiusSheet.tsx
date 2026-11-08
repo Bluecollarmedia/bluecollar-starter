@@ -10,6 +10,7 @@ import { validCoords, type LatLng } from '@/lib/checkInRadius';
 import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 interface CheckInRadiusSheetProps {
   visible: boolean;
@@ -128,9 +129,9 @@ export function CheckInRadiusSheet({ visible, place, radiusMeters, onClose, onSa
 
           {coords === null ? (
             <View style={[styles.map, styles.mapError, { backgroundColor: colors.backgroundTertiary }]}>
-              <Text style={[typeScale.bodySmall, { color: colors.error, textAlign: 'center', fontWeight: '700' }]}>This project's location can't be found</Text>
+              <Text style={[typeScale.bodySmall, { color: colors.error, textAlign: 'center', fontWeight: '700' }]}>{w("This job's location can't be found")}</Text>
               <Text style={[typeScale.caption, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xs }]}>
-                Fix the project's address, then set the check-in distance. A distance can't be saved without a location.
+                {w("Fix the job's address, then set the check-in distance. A distance can't be saved without a location.")}
               </Text>
             </View>
           ) : (
@@ -141,7 +142,7 @@ export function CheckInRadiusSheet({ visible, place, radiusMeters, onClose, onSa
             <Text style={[styles.value, { color: colors.textPrimary }]}>{anywhere ? 'Anywhere' : value}</Text>
             {anywhere ? null : <Text style={[typeScale.bodyLarge, { color: colors.textSecondary, fontWeight: '700', marginLeft: spacing.xs }]}>{unit}</Text>}
           </View>
-          <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{anywhere ? 'No limit: workers do not have to be at the property.' : describeRadius(feet)}</Text>
+          <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{anywhere ? w('No limit: workers do not have to be at the job site.') : w(describeRadius(feet))}</Text>
 
           {/* Slider. The outer view is the touch area; positions are measured on the inner track. */}
           <View ref={sliderRef} style={[styles.sliderTouch, anywhere && { opacity: 0.35 }]} pointerEvents={anywhere ? 'none' : 'auto'} {...pan.panHandlers}>

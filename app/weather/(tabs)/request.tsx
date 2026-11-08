@@ -67,7 +67,7 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
         <Text style={[styles.title, { marginTop: 22, textAlign: 'center' }]}>{t('Request sent')}</Text>
         <Text style={[styles.sub, { textAlign: 'center', marginTop: 8 }]}>{t("Thanks. We'll reach out to you by phone or email.")}</Text>
         <Panel style={{ alignSelf: 'stretch', marginTop: 26, padding: 16, gap: 12 }}>
-          <SummaryRow label={t('Property')} value={t(sent.type === 'commercial' ? 'Commercial' : 'Residential')} />
+          <SummaryRow label={t('Job site')} value={t(sent.type === 'commercial' ? 'Commercial' : 'Residential')} />
           <View style={styles.rule} />
           <SummaryRow label={t('You asked for')} value={sent.services.map((s) => t(s)).join(', ')} />
           <View style={styles.rule} />
@@ -90,7 +90,7 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
       <Text style={styles.title}>{t('Request a service')}</Text>
       <Text style={styles.sub}>{signedIn ? t("Tell us what you need and we'll reach out.") : t("Tell us what you need and we'll reach out. No account needed.")}</Text>
 
-      <Text style={styles.label}>{t('Property type')}</Text>
+      <Text style={styles.label}>{t('Job site type')}</Text>
       <View style={styles.segment}>
         {(['residential', 'commercial'] as PropertyType[]).map((p) => {
           const on = propertyType === p;
@@ -122,7 +122,7 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
       <TextInput
         value={details}
         onChangeText={setDetails}
-        placeholder={t("Describe your property, what you'd like done, and your timeline.")}
+        placeholder={t("Describe your job site, what you'd like done, and your timeline.")}
         placeholderTextColor={WX.faint}
         multiline
         maxLength={DETAILS_MAX}
@@ -130,8 +130,8 @@ export function RequestForm({ prefill, signedIn = false, scrollPath = '/weather/
         style={[styles.input, { height: 104, paddingTop: 12, textAlignVertical: 'top' }]}
       />
 
-      <Text style={styles.label}>{t('Where is the property?')}</Text>
-      <TextInput value={town} onChangeText={setTown} placeholder={t('Town or ZIP code')} placeholderTextColor={WX.faint} maxLength={80} accessibilityLabel={t('Where is the property?')} style={styles.input} />
+      <Text style={styles.label}>{t('Where is the job site?')}</Text>
+      <TextInput value={town} onChangeText={setTown} placeholder={t('Town or ZIP code')} placeholderTextColor={WX.faint} maxLength={80} accessibilityLabel={t('Where is the job site?')} style={styles.input} />
 
       <Text style={styles.label}>{t('How should we reach you?')}</Text>
       <View style={{ gap: 10 }}>

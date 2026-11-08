@@ -13,6 +13,7 @@ import { useNotifications } from '@/hooks/useOperations';
 import { ownerNotificationTarget } from '@/lib/notificationTarget';
 import type { NotificationEventType } from '@/types/operations';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 const EVENT_ICONS: Record<NotificationEventType, { icon: string; color: string }> = {
   issue_reported: { icon: 'alert-triangle', color: semantic.warning },
@@ -63,7 +64,7 @@ export default function NotificationCenterScreen() {
 
   function confirmClearAll() {
     const title = 'Clear all notifications?';
-    const message = 'This will remove all notifications from your notification center. Your messages and project data will not be deleted.';
+    const message = w('This will remove all notifications from your notification center. Your messages and job data will not be deleted.');
     confirmAction(title, message, 'Clear All', clearAll, true);
   }
 

@@ -310,7 +310,7 @@ export default function CreateCompanyScreen() {
             <View style={[styles.infoBox, { backgroundColor: colors.primarySurface, borderColor: colors.primary }]}>
               <Icon name="info" size={16} color={colors.primary} />
               <Text style={[typeScale.caption, { color: colors.textSecondary, flex: 1, marginLeft: spacing.sm }]}>
-                {t("As the company owner, you'll have full control over your team, projects, and settings. You can invite workers and customers after setup.")}
+                {t("As the company owner, you'll have full control over your team, jobs, and settings. You can invite workers and customers after setup.")}
               </Text>
             </View>
 

@@ -12,6 +12,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { useCustomers } from '@/hooks/useCustomers';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { w } from '@/config/brand';
 
 export default function NewCustomerScreen() {
   const { colors } = useTheme();
@@ -87,7 +88,7 @@ export default function NewCustomerScreen() {
               value={email}
               onChangeText={setEmail}
               icon="mail"
-              hint="If they create an account with this email, they'll see the projects you assign to them."
+              hint={w("If they create an account with this email, they'll see the jobs you assign to them.")}
               keyboardType="email-address"
               autoCapitalize="none"
               containerStyle={styles.fieldGap}

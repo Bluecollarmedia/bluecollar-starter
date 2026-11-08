@@ -38,6 +38,9 @@ App code imports from `@/config/brand`; never type a client value anywhere else 
 
 ## Branding
 - **Company / app name**: `src/config/brand.js` (placeholders "Your Company", "Starter App" until a client fills them in).
+- **Wording**: write screen text with the default nouns Job / Jobs / Job site / Job sites / Crew / Crews (never "Project" or
+  "Property"). `t()` / `tr()` swap in `brand.js` `wording` (and `wording.es` in Spanish) by themselves; an English-only screen wraps
+  its text in `w('New Job')` from `@/config/brand` (values go in as `{name}`). Checks: `wordingNoProjectProperty`, `wordingFromSettings`.
 - **Feature switches**: `brand.js` `features`. Hide a feature's entry points with `isFeatureOn('x')`; list its screens in
   `src/config/featureRoutes.ts` (the root layout covers them with a "Not available" page when off).
 - **Colors**: the primary/accent tokens in `src/theme/colors.ts` are worked out from `look.brandColor`; the rest is still the original

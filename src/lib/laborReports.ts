@@ -5,6 +5,7 @@ import {
   DEFAULT_TERMS, HOUR_MS,
   type CsvColumn, type DaySummary, type OvertimeTerms, type Problem, type ReviewState, type WeekSummary, type VisitRecord,
 } from './timeCalc';
+import { w } from '@/config/brand';
 
 export interface RWorkday { id: string; personId: string; workDate: string; clockInAt: string; clockOutAt?: string; status: string; hourlyRate?: number | null; truckId?: string; approvedAt?: string; /** Update 90: the employee never clocked out; their answer, if any. */ flaggedAt?: string; claimedOutAt?: string; claimNote?: string; claimedAt?: string }
 export interface RBreak { id: string; workdayId: string; startedAt: string; endedAt?: string; paid: boolean }
@@ -167,7 +168,7 @@ export const dailyCsv = (rows: DayRow[]) => toCsv<DayRow>(rows, [
   { header: 'Recorded break hours', value: (r) => hoursText(r.summary.recordedBreakMs) },
   { header: 'Break hours deducted', value: (r) => hoursText(r.summary.deductedBreakMs) },
   { header: 'Net payable hours', value: (r) => hoursText(r.summary.netMs) },
-  { header: 'Property labor hours', value: (r) => hoursText(r.propertyLaborMs) },
+  { header: w('Job site labor hours'), value: (r) => hoursText(r.propertyLaborMs) },
   { header: 'Hourly rate', value: (r) => money(r.workday.hourlyRate) },
   { header: 'Payable cost (straight time)', value: (r) => money(r.payableCost) },
   { header: 'Status', value: (r) => r.state },
@@ -188,12 +189,12 @@ export const weeklyCsv = (rows: WeekRow[]) => toCsv<WeekRow>(rows, [
   { header: 'Hourly rate (latest day)', value: (r) => money(r.rate) },
   { header: 'Rate changed during the week', value: (r) => r.rateChanged },
   { header: 'Payable cost (each day at its own saved rate)', value: (r) => money(r.payCost) },
-  { header: 'Property labor hours', value: (r) => hoursText(r.propertyLaborMs) },
+  { header: w('Job site labor hours'), value: (r) => hoursText(r.propertyLaborMs) },
   { header: 'All days approved', value: (r) => r.week.approved },
 ]);
 
 export const visitsCsv = (rows: VisitRow[]) => toCsv<VisitRow>(rows, [
-  { header: 'Property or project', value: (r) => r.visit.label },
+  { header: w('Job site or job'), value: (r) => r.visit.label },
   { header: 'Visit date', value: (r) => r.visit.visitDate },
   { header: 'Status', value: (r) => r.status },
   { header: 'Billable', value: (r) => r.billable },

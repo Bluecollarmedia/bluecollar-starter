@@ -16,7 +16,7 @@ import { semantic } from '@/theme/colors';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
-import { isFeatureOn, words } from '@/config/brand';
+import { isFeatureOn, words, w } from '@/config/brand';
 
 /** Customers get their own login only while the settings file has the customer portal on (features.customerPortal). */
 const PORTAL_ON = isFeatureOn('customerPortal');
@@ -71,7 +71,7 @@ export default function CustomerDetailScreen() {
   function handleDelete() {
     confirmAction(
       `Delete ${p.firstName} ${p.lastName}?`,
-      'This removes them completely and cannot be undone. It only works for a customer who never logged in and has no projects, properties, quotes or other records.',
+      w('This removes them completely and cannot be undone. It only works for a customer who never logged in and has no jobs, job sites, quotes or other records.'),
       'Delete',
       async () => {
         const res = await deleteUnusedMember(p.id);
@@ -189,7 +189,7 @@ You can turn their portal access off instead.` : res.error);
                 style={[styles.addProjectBtn, { backgroundColor: colors.backgroundTertiary }]}
                 onPress={addForCustomer}
                 accessibilityRole="button"
-                accessibilityLabel="Add a project for this customer"
+                accessibilityLabel={w('Add a job for this customer')}
               >
                 <Icon name="plus" size={14} color={colors.textSecondary} />
                 <Text style={[typeScale.labelSmall, { color: colors.textSecondary, fontWeight: '600', marginLeft: 4 }]}>Add</Text>

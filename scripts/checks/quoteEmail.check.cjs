@@ -13,13 +13,13 @@ const check = (n, ok, d) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAIL')
 const m = email.buildDocumentEmailMessage({ customerName: 'Pat Lee', kind: 'quote', totalText: '$0.00', dateText: 'October 19, 2026', contactEmail: 'office@example.com', company: 'Acme Paving' });
 check('1 the email says what the owner asked for, word for word',
   m.hello === 'Hi Pat Lee,'
-  && m.body === 'Thank you for asking us to quote your project. The quote total is $0.00 as of October 19, 2026.'
+  && m.body === 'Thank you for asking us to quote your job. The quote total is $0.00 as of October 19, 2026.'
   && m.closing === "If you have any questions or concerns regarding this quote, please don't hesitate to get in touch with office@example.com."
   && m.sign === 'Sincerely,\nAcme Paving' && m.button === 'View quote');
 
 const fn = read('supabase/functions/send-document-email/index.ts');
 check('2 the server function says exactly the same words and has the View button linking to the approval page',
-  fn.includes("Thank you for asking us to quote your project. The quote total is ${o.totalText} as of ${o.dateText}.")
+  fn.includes("Thank you for asking us to quote your job. The quote total is ${o.totalText} as of ${o.dateText}.")
   && fn.includes("If you have any questions or concerns regarding this ${what}, please don't hesitate to get in touch with ${o.contactEmail}.")
   && fn.includes("Sincerely,\\n${o.company}") && fn.includes('View ${esc(m.what)}') && fn.includes('/approve/${doc.share_token}'));
 check('3 it is only for the owner or an admin, never for drafts, and replies go to the company address',

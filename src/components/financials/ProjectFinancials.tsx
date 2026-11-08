@@ -16,9 +16,10 @@ import { ProspectBanner } from './ProspectBanner';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import type { FinancialDocType } from '@/types/financial';
+import { w } from '@/config/brand';
 
 const TABS: { kind: FinancialDocType; label: string; create: string; empty: string }[] = [
-  { kind: 'quote', label: 'Quotes', create: 'New Quote', empty: 'No quotes yet. Create one to price the work for this project.' },
+  { kind: 'quote', label: 'Quotes', create: 'New Quote', empty: w('No quotes yet. Create one to price the work for this job.') },
   { kind: 'change_order', label: 'Change Orders', create: 'New Change Order', empty: 'No change orders. Add one when the scope changes after the quote is approved.' },
   { kind: 'invoice', label: 'Invoices', create: 'New Invoice', empty: 'No invoices yet. Create one from the approved quote and approved changes.' },
 ];

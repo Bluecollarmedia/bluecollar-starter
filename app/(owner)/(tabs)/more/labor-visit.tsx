@@ -13,6 +13,7 @@ import { TimeEditSheet } from '@/components/time/TimeEditSheet';
 import { FormSheet } from '@/components/materials/FormSheet';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 type Sheet = null | { kind: 'interval'; id: string; start: string; end?: string } | { kind: 'void'; id: string } | { kind: 'billable' } | { kind: 'pickEmployee' } | { kind: 'add'; personId: string };
 
@@ -76,13 +77,13 @@ export default function LaborVisitScreen() {
     );
   } else if (sheet?.kind === 'add' && detail) {
     const s = sheet;
-    sheetNode = <TimeEditSheet visible title="Add time at this property" fields={[{ key: 's', label: 'Started', defaultDate: detail.visit.visitDate }, { key: 'e', label: 'Ended (leave empty to start a timer)', optional: true, defaultDate: detail.visit.visitDate }]}
+    sheetNode = <TimeEditSheet visible title={w('Add time at this job site')} fields={[{ key: 's', label: 'Started', defaultDate: detail.visit.visitDate }, { key: 'e', label: 'Ended (leave empty to start a timer)', optional: true, defaultDate: detail.visit.visitDate }]}
       onSave={async (v, reason) => (v.s ? done(await addInterval(detail.visit.id, s.personId, v.s, v.e ?? null, reason)) : ({ ok: false, error: 'Set the start time.' } as Result))}
       onClose={() => setSheet(null)} />;
   }
 
   return (
-    <LaborScreen title={detail?.visit.label ?? 'Property visit'} subtitle={detail ? fmtDay(detail.visit.visitDate) : undefined} loading={!detail && !error} onRefresh={load}
+    <LaborScreen title={detail?.visit.label ?? w('Job site visit')} subtitle={detail ? fmtDay(detail.visit.visitDate) : undefined} loading={!detail && !error} onRefresh={load}
       right={row ? <Pressable onPress={async () => { try { await shareCsv(`visit-${detail?.visit.label ?? 'visit'}-${detail?.visit.visitDate}`, visitsCsv([row])); } catch (e) { say("Couldn't export", e instanceof Error ? e.message : 'Try again.'); } }} hitSlop={10} accessibilityRole="button" accessibilityLabel="Export CSV"><Icon name="download" size={22} color={colors.textPrimary} /></Pressable> : undefined}>
       {error ? <Card><Text style={[typeScale.bodyMedium, { color: colors.error }]}>{error}</Text></Card> : null}
       {detail && row ? (

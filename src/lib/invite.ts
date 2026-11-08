@@ -8,7 +8,7 @@
 import { Linking, Platform, Share } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import { config } from '@/lib/config';
-import { brand } from '@/config/brand';
+import { brand, w } from '@/config/brand';
 
 /** The link people tap. On the web the page is /invite/<token>; without a web address the app's own link scheme is used. */
 export function inviteLinkUrl(token: string): string {
@@ -19,7 +19,7 @@ export function inviteMessage(url: string, companyName?: string, personName?: st
   const hi = personName?.trim() ? `Hi ${personName.trim().split(' ')[0]}! ` : '';
   const company = companyName?.trim() || 'our company';
   return kind === 'customer'
-    ? `${hi}${company} invited you to see your project in ${brand.app.name}. This private link works once: ${url}`
+    ? `${hi}${company} invited you to see your ${w('job')} in ${brand.app.name}. This private link works once: ${url}`
     : `${hi}You're invited to join ${company} in ${brand.app.name}. Tap this private link to set up your login (it works once): ${url}`;
 }
 

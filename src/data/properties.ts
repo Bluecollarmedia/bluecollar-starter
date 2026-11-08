@@ -8,6 +8,7 @@
 import { useMemo } from 'react';
 import { db, insertRow, rowsOf, rpc, refresh, updateRow, useDb, isDemo } from '@/data/store';
 import type { Property } from '@/types/property';
+import { w } from '@/config/brand';
 
 export interface PropertyFields {
   name?: string;
@@ -61,7 +62,7 @@ export async function ensureProperty(customerId: string, f: PropertyFields): Pro
     p_customer: customerId, p_name: f.name ?? null, p_address: f.address, p_city: f.city ?? null, p_state: f.state ?? null,
     p_zip: f.zip ?? null, p_lat: f.latitude ?? null, p_lng: f.longitude ?? null,
   });
-  if (error || !data) return { ok: false, error: error?.message ?? 'Could not save the property.', missing: MISSING.test(error?.message ?? '') };
+  if (error || !data) return { ok: false, error: error?.message ?? w('Could not save the job site.'), missing: MISSING.test(error?.message ?? '') };
   await refresh('properties');
   return { ok: true, propertyId: data.property_id, created: data.created };
 }

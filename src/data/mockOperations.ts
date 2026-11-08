@@ -35,7 +35,7 @@ export const mockWorkSessions: WorkSession[] = [
     worker: mockPeople.worker1,
     project: { id: 'proj1', name: 'Beachwood Residence', address: '142 Beachwood Dr' },
   },
-  // worker1 — 2 days ago: Beachwood 7:12–12:05, Chen Property 12:50–16:18
+  // worker1 — 2 days ago: Beachwood 7:12–12:05, Chen Residence 12:50–16:18
   {
     id: 'ws2', companyId: 'company1', personId: 'worker1', projectId: 'proj1', assignmentId: 'a12',
     checkInTime: offsetDate(-2) + 'T07:12:00Z', checkOutTime: offsetDate(-2) + 'T12:05:00Z',
@@ -56,7 +56,7 @@ export const mockWorkSessions: WorkSession[] = [
     status: 'completed',
     createdAt: offsetDate(-2) + 'T12:50:00Z', updatedAt: offsetDate(-2) + 'T16:18:00Z',
     worker: mockPeople.worker1,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
   // worker1 — 3 days ago: Beachwood 8:03–16:12
   {
@@ -80,7 +80,7 @@ export const mockWorkSessions: WorkSession[] = [
     status: 'completed',
     createdAt: offsetDate(-4) + 'T07:30:00Z', updatedAt: offsetDate(-4) + 'T15:45:00Z',
     worker: mockPeople.worker1,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
   // worker1 — 5 days ago: Beachwood 7:55–15:30
   {
@@ -143,7 +143,7 @@ export const mockWorkSessions: WorkSession[] = [
     project: { id: 'proj1', name: 'Beachwood Residence', address: '142 Beachwood Dr' },
   },
 
-  // worker3 — Yesterday: Chen Property 7:35–16:05
+  // worker3 — Yesterday: Chen Residence 7:35–16:05
   {
     id: 'ws11', companyId: 'company1', personId: 'worker3', projectId: 'proj2', assignmentId: 'a31',
     checkInTime: offsetDate(-1) + 'T07:35:00Z', checkOutTime: offsetDate(-1) + 'T16:05:00Z',
@@ -153,7 +153,7 @@ export const mockWorkSessions: WorkSession[] = [
     status: 'completed',
     createdAt: offsetDate(-1) + 'T07:35:00Z', updatedAt: offsetDate(-1) + 'T16:05:00Z',
     worker: mockPeople.worker3,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
   // worker3 — 2 days ago: Chen 7:42–15:50
   {
@@ -165,7 +165,7 @@ export const mockWorkSessions: WorkSession[] = [
     status: 'completed',
     createdAt: offsetDate(-2) + 'T07:42:00Z', updatedAt: offsetDate(-2) + 'T15:50:00Z',
     worker: mockPeople.worker3,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
   // worker3 — 3 days ago: Chen 8:17–16:30 (LATE: scheduled at 8:00, arrived 8:17 = 17min late)
   {
@@ -177,7 +177,7 @@ export const mockWorkSessions: WorkSession[] = [
     status: 'completed',
     createdAt: offsetDate(-3) + 'T08:17:00Z', updatedAt: offsetDate(-3) + 'T16:30:00Z',
     worker: mockPeople.worker3,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
 
   // worker4 — Yesterday: Greenwood 8:10–16:45 (past scheduled end of 16:00)
@@ -224,7 +224,7 @@ export const mockWorkSessions: WorkSession[] = [
     status: 'completed',
     createdAt: offsetDate(-7) + 'T09:10:00Z', updatedAt: offsetDate(-7) + 'T16:15:00Z',
     worker: mockPeople.worker1,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
 ];
 
@@ -358,7 +358,7 @@ export const mockNotifications: AppNotification[] = [
     id: 'n1', companyId: 'company1', recipientId: 'owner1',
     eventType: 'worker_checked_in_late',
     title: 'Marcus Rivera checked in late',
-    body: 'Scheduled for 8:00 AM at Chen Property, checked in at 8:17 AM (17 minutes late)',
+    body: 'Scheduled for 8:00 AM at Chen Residence, checked in at 8:17 AM (17 minutes late)',
     status: 'unread',
     linkedEntityType: 'checkin', linkedEntityId: 'ci11',
     createdAt: today + 'T07:47:00Z',
@@ -453,7 +453,7 @@ export const mockWorkerReminders: WorkerReminder[] = [
     reminderType: 'assignment_ending_soon',
     title: 'Beachwood Residence',
     body: 'You have 30 minutes remaining.',
-    nextAssignment: { id: 'a6', projectName: 'Chen Property', startTime: '16:00' },
+    nextAssignment: { id: 'a6', projectName: 'Chen Residence', startTime: '16:00' },
     createdAt: today + 'T14:30:00Z',
   },
   {

@@ -51,7 +51,7 @@ export default function CustomerAccountScreen() {
         </Pressable>
       </ListSection>
 
-      <ListSection title={t('Your Project Team')}>
+      <ListSection title={t('Your Job Team')}>
         <ListRow
           icon="briefcase"
           title={db.company?.name ?? '—'}

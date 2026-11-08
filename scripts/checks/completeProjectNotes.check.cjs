@@ -10,7 +10,7 @@ const check = (name, ok) => { n += 1; if (!ok) bad += 1; console.log(`${ok ? 'PA
 const wp = read('src/providers/WorkerProvider.tsx');
 check('after "I\'m here" and after finishing, the jobs are reloaded (an empty refresh reloaded nothing)', !/refreshStore\(\);/.test(wp) && (wp.match(/refreshStore\(\.\.\.JOB_TABLES\)/g) || []).length === 2 && /JOB_TABLES: TableName\[\] = \['assignments', 'check_ins', 'check_outs', 'work_sessions'\]/.test(wp));
 const today = read('app/(worker)/(tabs)/index.tsx');
-check('the button on a finished-looking project says Complete project, not "I\'m leaving"', /COMPLETE PROJECT/.test(today) && !/I'M LEAVING/.test(today) && /Complete this project\?/.test(today));
+check('the button on a finished-looking project says Complete project, not "I\'m leaving"', /COMPLETE JOB/.test(today) && !/I'M LEAVING/.test(today) && /Complete this job\?/.test(today));
 check('it says clocking out for the day happens on the Clock tab, and finishing does not clock out', /clock out for the day on the Clock tab/.test(today) && /You stay clocked in until you clock out/.test(today));
 const hook = read('src/hooks/useMyWorkday.ts');
 check('after clocking out the jobs are reloaded', /refreshStore\('assignments', 'check_ins', 'check_outs', 'work_sessions'\)/.test(hook));
@@ -22,5 +22,5 @@ check('a route stop is never marked finished by clocking out (its required tasks
 const proj = read('app/(owner)/(tabs)/projects/[id].tsx');
 check('the project Overview shows the owner\'s My Notes next to the Internal Notes, with a way into all of them', /useOwnerNotes\(id\)/.test(proj) && /MY NOTES ·/.test(proj) && /setMoreSubSection\('notes'\)/.test(proj));
 const pn = read('src/components/projects/ProjectPrivateNotes.tsx');
-check('My Notes shows the Overview\'s project notes too, and lets the owner edit them', /internalNotes\?: string/.test(pn) && /Project Notes \(Overview\)/.test(pn) && /onEditInternalNotes/.test(proj));
+check('My Notes shows the Overview\'s project notes too, and lets the owner edit them', /internalNotes\?: string/.test(pn) && /Job Notes \(Overview\)/.test(pn) && /onEditInternalNotes/.test(proj));
 process.exit(bad ? 1 : 0);

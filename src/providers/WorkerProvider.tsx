@@ -1,5 +1,5 @@
 import { openDirections, findCoords, distanceMeters, formatDistance, DEFAULT_CHECKIN_RADIUS_M, type Place } from '@/lib/maps';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w } from '@/config/brand';
 import { evaluateCheckIn, checkInRefusal } from '@/lib/checkInRadius';
 import { tr } from '@/i18n';
 import { getCurrentGps } from '@/lib/location';
@@ -255,7 +255,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
       if (verdict.reason === 'too_far') {
         return {
           ok: false,
-          title: tr('You are too far from this project to check in'),
+          title: tr('You are too far from this job to check in'),
           message: tr('You are about {distance} from {job}. You need to be within {radius} to check in.', { distance: formatDistance(verdict.distance ?? 0), job: jobName, radius: formatDistance(verdict.radius) }),
         };
       }
@@ -272,8 +272,8 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
       if (verdict.reason === 'no_site') {
         return {
           ok: false,
-          title: tr("This project's location isn't set"),
-          message: tr("We can't find {job}'s address on the map, so your location can't be checked. Ask the office to fix the project address, then try again.", { job: jobName }),
+          title: tr("This job's location isn't set"),
+          message: tr("We can't find {job}'s address on the map, so your location can't be checked. Ask the office to fix the job address, then try again.", { job: jobName }),
         };
       }
       return { ok: false, title: say.title, message: say.message };
@@ -430,7 +430,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
     });
     if (task?.projectId) {
       logProjectHistory(task.projectId, 'task_completed', `Task completed: ${task.title}`, { taskId });
-      const projectName = db.projects.find(p => p.id === task.projectId)?.name ?? 'a project';
+      const projectName = db.projects.find(p => p.id === task.projectId)?.name ?? w('a job');
       notifyStaff('worker_completed_task', 'Task completed', `${workerName} completed "${task.title}" at ${projectName}.`, { type: 'project', id: task.projectId }, undefined, workerId);
     }
     return true;

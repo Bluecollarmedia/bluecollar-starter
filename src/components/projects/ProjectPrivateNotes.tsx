@@ -22,7 +22,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { OwnerProjectPhoto } from '@/types/project';
 import { confirmAction } from '@/components/financials/ActionSheet';
-import { brand } from '@/config/brand';
+import { brand, w } from '@/config/brand';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -113,12 +113,12 @@ export function ProjectPrivateNotes({ projectId, projectName, address, internalN
       <View style={styles.privateTag}>
         <Icon name="lock" size={13} color={colors.textTertiary} />
         <Text style={[typeScale.caption, { color: colors.textTertiary, flex: 1 }]}>
-          Only you can see My Notes. Not your workers, admins or the customer. They stay with this project after the quote is approved.
+          {w('Only you can see My Notes. Not your workers, admins or the customer. They stay with this job after the quote is approved.')}
         </Text>
       </View>
 
       {internalNotes?.trim() ? (
-        <Card title="Project Notes (Overview)" style={{ marginTop: 0 }}>
+        <Card title={w('Job Notes (Overview)')} style={{ marginTop: 0 }}>
           <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{internalNotes}</Text>
           {onEditInternalNotes ? (
             <Pressable onPress={onEditInternalNotes} style={{ minHeight: 44, justifyContent: 'center' }} accessibilityRole="button">

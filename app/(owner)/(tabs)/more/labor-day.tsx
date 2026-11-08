@@ -17,6 +17,7 @@ import { TimeEditSheet, type TimeField } from '@/components/time/TimeEditSheet';
 import { FormSheet } from '@/components/materials/FormSheet';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 type Sheet =
   | null
@@ -120,7 +121,7 @@ export default function LaborDayScreen() {
   } else if (sheet?.kind === 'interval') {
     const s = sheet;
     sheetNode = (
-      <TimeEditSheet visible title="Correct the property time" fields={[{ key: 's', label: 'Started', value: s.start }, { key: 'e', label: 'Ended', value: s.end, optional: !s.end, defaultDate: dateKey }]}
+      <TimeEditSheet visible title={w('Correct the job site time')} fields={[{ key: 's', label: 'Started', value: s.start }, { key: 'e', label: 'Ended', value: s.end, optional: !s.end, defaultDate: dateKey }]}
         description={s.end ? undefined : 'This timer is still running. Set the time it ended to stop it.'}
         onSave={async (v, reason) => {
           const ns = sameInstant(v.s, s.start) ? null : v.s;
@@ -132,7 +133,7 @@ export default function LaborDayScreen() {
     );
   } else if (sheet?.kind === 'void') {
     const s = sheet;
-    sheetNode = <TimeEditSheet visible title="Remove this property time" fields={[]} saveLabel="Remove" description="It stays in the history, but no longer counts toward labor or pay." onSave={async (_v, reason) => done(await voidInterval(s.id, reason))} onClose={() => setSheet(null)} />;
+    sheetNode = <TimeEditSheet visible title={w('Remove this job site time')} fields={[]} saveLabel="Remove" description="It stays in the history, but no longer counts toward labor or pay." onSave={async (_v, reason) => done(await voidInterval(s.id, reason))} onClose={() => setSheet(null)} />;
   } else if (sheet?.kind === 'reopen' && wd) {
     sheetNode = <TimeEditSheet visible title="Reopen this day" fields={[]} saveLabel="Reopen" description="The day goes back to needing approval. The earlier approval stays in the history." onSave={async (_v, reason) => done(await reopenWorkday(wd.id, reason))} onClose={() => setSheet(null)} />;
   } else if (sheet?.kind === 'addBreak' && wd) {
@@ -156,10 +157,10 @@ export default function LaborDayScreen() {
     );
   } else if (sheet?.kind === 'pickVisit') {
     sheetNode = (
-      <FormSheet visible title="Which property?" onClose={() => setSheet(null)}>
-        {dayVisits.length === 0 ? <Empty icon="map-pin" text="No property visits are recorded for this date yet." /> : dayVisits.map((v) => (
+      <FormSheet visible title={w('Which job site?')} onClose={() => setSheet(null)}>
+        {dayVisits.length === 0 ? <Empty icon="map-pin" text={w('No job site visits are recorded for this date yet.')} /> : dayVisits.map((v) => (
           <Pressable key={v.id} onPress={() => setSheet({ kind: 'addInterval', visit: v })} style={[styles.pickRow, { borderColor: colors.borderLight }]} accessibilityRole="button">
-            <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1 }]}>{v.label ?? 'Property'}</Text>
+            <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1 }]}>{v.label ?? w('Job site')}</Text>
             <Icon name="chevron-right" size={18} color={colors.textTertiary} />
           </Pressable>
         ))}
@@ -168,7 +169,7 @@ export default function LaborDayScreen() {
   } else if (sheet?.kind === 'addInterval' && wd) {
     const v = sheet.visit;
     sheetNode = (
-      <TimeEditSheet visible title={`Add time at ${v.label ?? 'property'}`} fields={[{ key: 's', label: 'Started', value: undefined, defaultDate: dateKey }, { key: 'e', label: 'Ended (leave empty to start a timer)', value: undefined, optional: true, defaultDate: dateKey }]}
+      <TimeEditSheet visible title={`Add time at ${v.label ?? w('job site')}`} fields={[{ key: 's', label: 'Started', value: undefined, defaultDate: dateKey }, { key: 'e', label: 'Ended (leave empty to start a timer)', value: undefined, optional: true, defaultDate: dateKey }]}
         onSave={async (val, reason) => (val.s ? done(await addInterval(v.id, wd.personId, val.s, val.e ?? null, reason)) : ({ ok: false, error: 'Set the start time.' } as Result))}
         onClose={() => setSheet(null)} />
     );
@@ -232,7 +233,7 @@ export default function LaborDayScreen() {
             <KV label="Recorded breaks" value={durationText(row.summary.recordedBreakMs)} />
             <KV label="Break time deducted" value={durationText(row.summary.deductedBreakMs)} hint="Only unpaid breaks are deducted" />
             <KV label="Net payable time" value={`${durationText(row.summary.netMs)}  (${hoursText(row.summary.netMs)} h)`} bold />
-            <KV label="Time at properties" value={durationText(sumPropertyMs)} hint="This employee's own time at visits" />
+            <KV label={w('Time at job sites')} value={durationText(sumPropertyMs)} hint="This employee's own time at visits" />
             <KV label="Time between visits and at the yard" value={durationText(betweenMs)} hint="Not confirmed as driving; the app can't tell" />
             <KV label="Hourly rate that applied" value={money(wd.hourlyRate)} />
             <KV label="Payable cost (straight time)" value={row.payableCost == null ? 'No rate set' : `$${row.payableCost.toFixed(2)}`} hint="The weekly view adds any overtime premium" />
@@ -240,7 +241,7 @@ export default function LaborDayScreen() {
           </Card>
 
           <Card title="TIMELINE" right={<View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <Pressable onPress={() => setSheet({ kind: 'pickVisit' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Add property time</Text></Pressable>
+            <Pressable onPress={() => setSheet({ kind: 'pickVisit' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>{w('Add job site time')}</Text></Pressable>
             <Pressable onPress={() => setSheet({ kind: 'addBreak' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Add break</Text></Pressable>
           </View>}>
             {timeline.map((e, i) => {

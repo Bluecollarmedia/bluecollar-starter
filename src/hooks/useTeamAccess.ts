@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { db, rpc, refresh, isDemo } from '@/data/store';
+import { w } from '@/config/brand';
 
 /**
  * The owner's Team access screen: who is on the team, who is an admin, and who is deactivated.
@@ -92,7 +93,7 @@ export interface AdminPermissions { team: boolean; invites: boolean; time_correc
 export const ADMIN_POWERS: { key: keyof AdminPermissions; label: string; hint: string }[] = [
   { key: 'team', label: 'Team members', hint: 'Deactivate and reactivate workers.' },
   { key: 'invites', label: 'Invites', hint: 'Adding workers and customers and sending their private links.' },
-  { key: 'time_corrections', label: 'Time corrections', hint: 'Correct and approve workdays and property times.' },
+  { key: 'time_corrections', label: 'Time corrections', hint: w('Correct and approve workdays and job site times.') },
   { key: 'pay_rates', label: 'Pay rates', hint: 'See and change hourly rates and overtime terms.' },
 ];
 

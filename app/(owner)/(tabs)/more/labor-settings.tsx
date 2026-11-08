@@ -12,6 +12,7 @@ import { todayKey } from '@/lib/ids';
 import { Card, Chip, LaborScreen, money } from '@/components/time/LaborBits';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -89,13 +90,13 @@ export default function LaborSettingsScreen() {
       </Card>
 
       <Card title="PHOTOS">
-        <Toggle label="Photo when starting a property" hint="A worker can't start a property until the start photo is saved." value={s.requireStartPhoto} onChange={(v) => update({ requireStartPhoto: v })} />
-        <Toggle label="Photo when completing a property" hint="A worker can't complete a property until the completion photo is saved." value={s.requireCompletePhoto} onChange={(v) => update({ requireCompletePhoto: v })} />
+        <Toggle label={w('Photo when starting at a job site')} hint={w("A worker can't start at a job site until the start photo is saved.")} value={s.requireStartPhoto} onChange={(v) => update({ requireStartPhoto: v })} />
+        <Toggle label={w('Photo when finishing at a job site')} hint={w("A worker can't finish at a job site until the completion photo is saved.")} value={s.requireCompletePhoto} onChange={(v) => update({ requireCompletePhoto: v })} />
         <Text style={[typeScale.caption, { color: colors.textTertiary }]}>These photos are internal. They are never shown to customers.</Text>
       </Card>
 
       <Card title="ALERTS">
-        <Toggle label="Over-target alerts" hint="Tell you when a property visit runs past its target (set per property in Property & Project History)." value={s.targetAlertsEnabled} onChange={(v) => update({ targetAlertsEnabled: v })} />
+        <Toggle label="Over-target alerts" hint={w('Tell you when a job site visit runs past its target (set per job in Job site & Job History).')} value={s.targetAlertsEnabled} onChange={(v) => update({ targetAlertsEnabled: v })} />
         <Toggle label="Prompt the crew too" hint="Sends the crew a neutral 'check your progress' message. It never shows the target." value={s.targetNotifyCrew} onChange={(v) => update({ targetNotifyCrew: v })} disabled={!s.targetAlertsEnabled} />
         <Toggle label="Daily overtime alerts" hint="Alerts for approaching and reaching each employee's daily alert hours (set below)." value={s.overtimeAlertsEnabled} onChange={(v) => update({ overtimeAlertsEnabled: v })} />
         <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>Approaching means this share of the daily alert hours:</Text>

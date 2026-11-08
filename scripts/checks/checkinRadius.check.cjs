@@ -2,7 +2,7 @@
 // Check-in distance: the real distance rule, the worker refusal wording, and the sheet/map wiring.
 const ts = require(process.argv[2] || 'typescript'); const fs = require('fs'); const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
-const m = { exports: {} }; new Function('module', 'exports', ts.transpileModule(read('src/lib/checkInRadius.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports);
+const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/checkInRadius.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(require, ts));
 const r = m.exports;
 let bad = 0; const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}${ok ? '' : ' — ' + d}`); };
 const site = { latitude: 40, longitude: -74 };
@@ -17,14 +17,14 @@ check('6 a job with no usable location is refused (no_site), not waved through',
 check('7 an unreadable GPS fix is refused (bad_gps)', (() => { const v = r.evaluateCheckIn({ gps: { latitude: NaN, longitude: 1 }, site, radiusM: 152 }); return !v.ok && v.reason === 'bad_gps'; })());
 const fmt = (m) => `${m} m`;
 const far = r.checkInRefusal({ ok: false, reason: 'too_far', distance: 334, radius: 152 }, 'Wyndham 2', fmt);
-check('8 the too-far message says so, with the worker\'s distance and the allowed distance', far.title === 'You are too far from this project to check in' && /334 m from Wyndham 2/.test(far.message) && /within 152 m/.test(far.message) && far.retry === false);
+check('8 the too-far message says so, with the worker\'s distance and the allowed distance', far.title === 'You are too far from this job to check in' && /334 m from Wyndham 2/.test(far.message) && /within 152 m/.test(far.message) && far.retry === false);
 check('9 inaccurate and missing-location messages are clear, and only the GPS ones invite a retry', r.checkInRefusal({ ok: false, reason: 'inaccurate', accuracy: 250, radius: 1 }, 'X', fmt).retry === true && /address/.test(r.checkInRefusal({ ok: false, reason: 'no_site', radius: 1 }, 'X', fmt).message));
 
 const wp = read('src/providers/WorkerProvider.tsx');
 check('10 the worker check-in uses the saved radius for THIS project, the project coordinates and the shared rule', /db\.settings\[job\.projectId\]\?\.checkinRadiusMeters \?\? DEFAULT_CHECKIN_RADIUS_M/.test(wp) && /findCoords\(job\.project\)/.test(wp) && /evaluateCheckIn\(\{ gps, site, radiusM: radius \}\)/.test(wp) && !/there's nothing to compare against, so allow it/.test(wp));
 check('11 permission denied still offers Open Settings; GPS unavailable is refused', /openSettings: true/.test(wp) && /here\.status === 'unavailable'/.test(wp));
 const sheet = read('src/components/projects/CheckInRadiusSheet.tsx'), ios = read('src/components/maps/RadiusMap.ios.tsx'), screen = read('app/(owner)/(tabs)/projects/[id].tsx');
-check('12 the sheet resolves the PROJECT location (never the phone\'s), shows an error and blocks Save when it can\'t', /findCoords\(place\)/.test(sheet) && !/getCurrentGps|getCurrentPosition/.test(sheet) && /This project's location can't be found/.test(sheet) && /disabled=\{!canSave\}/.test(sheet));
+check('12 the sheet resolves the PROJECT location (never the phone\'s), shows an error and blocks Save when it can\'t', /findCoords\(place\)/.test(sheet) && !/getCurrentGps|getCurrentPosition/.test(sheet) && /This job's location can't be found/.test(sheet) && /disabled=\{!canSave\}/.test(sheet));
 check('13 save is single-shot and only runs with coordinates (or when Anywhere is chosen)', /savingRef\.current/.test(sheet) && /canSave = anywhere \|\| !!coords/.test(sheet) && /if \(!canSave \|\| savingRef\.current\) return;/.test(sheet));
 check('14 the native map is created after the sheet opens, only for valid coordinates, inside an error guard; the circle is a real-radius Circle', /setMapReady\(true\)/.test(sheet) && /!ready \|\| !validCoords\(coords\)/.test(ios) && /class MapGuard/.test(ios) && /radius=\{radiusMeters\}/.test(ios));
 check('15 the screen opens the sheet once and saves this project\'s distance (plus its map spot if it had none)', /openRadiusPicker/.test(screen) && /updateSettings\(\{ checkinRadiusMeters: meters \}\)/.test(screen) && /updateProject\(\{ latitude: coords\.latitude, longitude: coords\.longitude \}\)/.test(screen));

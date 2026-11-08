@@ -57,7 +57,7 @@ check('12 for a project the wording says "activity" and does not promise a note'
 
   // wiring
   const proj = read('app/(owner)/(tabs)/projects/[id].tsx');
-  check('22 the project Activity Log has a Clear button that can only delete', /accessibilityLabel="Clear this project's activity"/.test(proj) && /modes=\{\['delete'\]\}/.test(proj));
+  check('22 the project Activity Log has a Clear button that can only delete', /accessibilityLabel=\{w\("Clear this job's activity"\)\}/.test(proj) && /modes=\{\['delete'\]\}/.test(proj));
   check('23 the project screen says it worked and reloads', /refreshStore\('project_history'\)/.test(proj));
   console.log(bad ? `\n${bad} failed` : '\nall passed');
   process.exit(bad ? 1 : 0);

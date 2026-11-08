@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 const m = { exports: {} };
-new Function('module', 'exports', ts.transpileModule(read('src/lib/timeCalc.ts'), { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports);
+new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/timeCalc.ts'), { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(require, ts));
 const t = m.exports;
 let bad = 0;
 const check = (n, ok, detail) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAIL') + '  ' + n + (ok ? '' : ' - ' + (detail || ''))); };

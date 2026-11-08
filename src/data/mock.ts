@@ -194,7 +194,7 @@ export const mockAssignments: Assignment[] = [
     truckId: 'truck2',
     createdAt: '2026-09-06T18:00:00Z', updatedAt: '2026-09-06T18:00:00Z',
     person: mockPeople.worker3,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
     truck: { id: 'truck2', name: 'Truck #2' },
   },
   {
@@ -215,7 +215,7 @@ export const mockAssignments: Assignment[] = [
     truckId: 'truck1',
     createdAt: '2026-09-06T20:00:00Z', updatedAt: '2026-09-06T20:00:00Z',
     person: mockPeople.worker1,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
     truck: { id: 'truck1', name: 'Truck #1' },
   },
   {
@@ -254,7 +254,7 @@ export const mockAssignments: Assignment[] = [
     status: 'scheduled', confirmationState: 'not_sent',
     createdAt: '2026-09-06T20:00:00Z', updatedAt: '2026-09-06T20:00:00Z',
     person: mockPeople.worker4,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
   },
 
   // ── Yesterday (completed) ──
@@ -285,7 +285,7 @@ export const mockAssignments: Assignment[] = [
     truckId: 'truck1',
     createdAt: '2026-09-04T18:00:00Z', updatedAt: '2026-09-16T14:25:00Z',
     person: mockPeople.worker1,
-    project: { id: 'proj2', name: 'Chen Property', address: '890 Overlook Rd' },
+    project: { id: 'proj2', name: 'Chen Residence', address: '890 Overlook Rd' },
     truck: { id: 'truck1', name: 'Truck #1' },
   },
   {
@@ -344,7 +344,7 @@ export const mockAnnouncements: Announcement[] = [
   {
     id: 'ann1', companyId: 'company1', createdBy: 'owner1',
     title: 'Early start tomorrow — 6:30 AM',
-    body: 'Big delivery coming for the Beachwood project. Everyone on the Beachwood crew needs to be on site by 6:30 AM sharp.',
+    body: 'Big delivery coming for the Beachwood job. Everyone on the Beachwood crew needs to be on site by 6:30 AM sharp.',
     audience: 'all_workers', priority: 'urgent',
     createdAt: '2026-09-06T20:00:00Z', updatedAt: '2026-09-06T20:00:00Z',
     author: mockPeople.owner1, readCount: 3, totalRecipients: 4,
@@ -413,7 +413,7 @@ export const mockProjects: Project[] = [
     id: 'proj2',
     companyId: 'company1',
     customerId: 'customer2',
-    name: 'Chen Property',
+    name: 'Chen Residence',
     address: '890 Overlook Rd',
     city: 'Lakewood',
     state: 'OH',
@@ -445,7 +445,7 @@ export const mockProjects: Project[] = [
     progress: 81,
     startDate: '2026-06-01',
     estimatedEndDate: '2026-09-15',
-    notes: 'Large property. Outdoor living space + fire pit area.',
+    notes: 'Large backyard. Outdoor living space + fire pit area.',
     createdAt: '2026-05-20T13:00:00Z',
     updatedAt: '2026-09-06T16:45:00Z',
     customer: mockPeople.customer3,
@@ -595,13 +595,13 @@ export const mockTeam: Record<string, ProjectTeamMember[]> = {
 
 export const mockHistory: Record<string, ProjectHistoryEntry[]> = {
   proj1: [
-    { id: 'h1', projectId: 'proj1', actorId: 'owner1', eventType: 'project_created', description: 'Project created', createdAt: '2026-07-10T10:00:00Z', actor: mockPeople.owner1 },
-    { id: 'h2', projectId: 'proj1', actorId: 'owner1', eventType: 'team_member_added', description: 'Added Marcus Rivera to project team', createdAt: '2026-07-10T10:05:00Z', actor: mockPeople.owner1 },
-    { id: 'h3', projectId: 'proj1', actorId: 'owner1', eventType: 'team_member_added', description: 'Added Tyler Brooks to project team', createdAt: '2026-07-10T10:05:00Z', actor: mockPeople.owner1 },
+    { id: 'h1', projectId: 'proj1', actorId: 'owner1', eventType: 'project_created', description: 'Job created', createdAt: '2026-07-10T10:00:00Z', actor: mockPeople.owner1 },
+    { id: 'h2', projectId: 'proj1', actorId: 'owner1', eventType: 'team_member_added', description: 'Added Marcus Rivera to job team', createdAt: '2026-07-10T10:05:00Z', actor: mockPeople.owner1 },
+    { id: 'h3', projectId: 'proj1', actorId: 'owner1', eventType: 'team_member_added', description: 'Added Tyler Brooks to job team', createdAt: '2026-07-10T10:05:00Z', actor: mockPeople.owner1 },
     { id: 'h4', projectId: 'proj1', actorId: 'owner1', eventType: 'progress_updated', description: 'Progress updated to 15%', metadata: { from: 0, to: 15 }, createdAt: '2026-07-22T09:00:00Z', actor: mockPeople.owner1 },
     { id: 'h5', projectId: 'proj1', actorId: 'owner1', eventType: 'task_completed', description: 'Completed: Demo existing patio', createdAt: '2026-07-20T16:00:00Z', actor: mockPeople.owner1 },
     { id: 'h6', projectId: 'proj1', actorId: 'owner1', eventType: 'progress_updated', description: 'Progress updated to 35%', metadata: { from: 15, to: 35 }, createdAt: '2026-08-05T09:00:00Z', actor: mockPeople.owner1 },
-    { id: 'h7', projectId: 'proj1', actorId: 'owner1', eventType: 'team_member_added', description: 'Added Deshawn Williams to project team', createdAt: '2026-08-01T08:00:00Z', actor: mockPeople.owner1 },
+    { id: 'h7', projectId: 'proj1', actorId: 'owner1', eventType: 'team_member_added', description: 'Added Deshawn Williams to job team', createdAt: '2026-08-01T08:00:00Z', actor: mockPeople.owner1 },
     { id: 'h8', projectId: 'proj1', actorId: 'owner1', eventType: 'update_posted', description: 'Posted update: "Retaining wall complete"', createdAt: '2026-08-16T10:00:00Z', actor: mockPeople.owner1 },
     { id: 'h9', projectId: 'proj1', actorId: 'owner1', eventType: 'progress_updated', description: 'Progress updated to 65%', metadata: { from: 35, to: 65 }, createdAt: '2026-09-05T14:30:00Z', actor: mockPeople.owner1 },
   ],
@@ -753,93 +753,93 @@ export const mockWorkerActivities: WorkerActivity[] = [
   {
     id: 'wa9', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
-    activityType: 'checked_in', description: 'Checked in at Chen Property',
+    activityType: 'checked_in', description: 'Checked in at Chen Residence',
     timestamp: offsetDate(-2) + 'T08:05:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa10', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_started', description: 'Started: Remove old driveway',
     timestamp: offsetDate(-2) + 'T08:15:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa11', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_completed', description: 'Completed: Remove old driveway',
     timestamp: offsetDate(-2) + 'T09:30:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa12', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'photo_taken', description: 'Photo: Old driveway removed',
     timestamp: offsetDate(-2) + 'T09:32:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa13', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_started', description: 'Started: Trench for drainage pipe',
     timestamp: offsetDate(-2) + 'T10:00:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa14', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_completed', description: 'Completed: Trench for drainage pipe',
     timestamp: offsetDate(-2) + 'T12:00:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa15', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'photo_taken', description: 'Photo: Drainage trenches dug',
     timestamp: offsetDate(-2) + 'T12:05:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa16', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_started', description: 'Started: Install drainage system',
     timestamp: offsetDate(-2) + 'T12:30:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa17', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_completed', description: 'Completed: Install drainage system',
     timestamp: offsetDate(-2) + 'T13:45:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa18', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'photo_taken', description: 'Photo: Drainage system installed',
     timestamp: offsetDate(-2) + 'T13:50:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa19', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_started', description: 'Started: Grade and compact base',
     timestamp: offsetDate(-2) + 'T14:00:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa20', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
     activityType: 'task_completed', description: 'Completed: Grade and compact base',
     timestamp: offsetDate(-2) + 'T14:20:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
   {
     id: 'wa21', personId: 'worker1', companyId: 'company1',
     assignmentId: 'a13', projectId: 'proj2',
-    activityType: 'checked_out', description: 'Checked out from Chen Property',
+    activityType: 'checked_out', description: 'Checked out from Chen Residence',
     timestamp: offsetDate(-2) + 'T14:25:00Z',
-    project: { id: 'proj2', name: 'Chen Property' },
+    project: { id: 'proj2', name: 'Chen Residence' },
   },
 
   // ── Monday morning: Greenwood Estate (a14) ──
@@ -1220,7 +1220,7 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
   proj1: [
     {
       id: 'ct1', projectId: 'proj1', eventType: 'project_started',
-      title: 'Project started', description: 'Work has begun on your new patio.',
+      title: 'Job started', description: 'Work has begun on your new patio.',
       timestamp: '2026-07-15T10:00:00Z',
     },
     {
@@ -1266,7 +1266,7 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
   proj2: [
     {
       id: 'ct20', projectId: 'proj2', eventType: 'project_started',
-      title: 'Project started', description: 'Work has begun on your driveway replacement.',
+      title: 'Job started', description: 'Work has begun on your driveway replacement.',
       timestamp: '2026-08-01T10:00:00Z',
     },
     {
@@ -1284,12 +1284,12 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
   proj6: [
     {
       id: 'ct60', projectId: 'proj6', eventType: 'project_started',
-      title: 'Project started', description: 'Work has begun on the front walkway.',
+      title: 'Job started', description: 'Work has begun on the front walkway.',
       timestamp: '2026-03-01T10:00:00Z',
     },
     {
       id: 'ct61', projectId: 'proj6', eventType: 'project_completed',
-      title: 'Project completed', description: `Your flagstone walkway is finished! Thanks for choosing ${brand.company.name}.`,
+      title: 'Job completed', description: `Your flagstone walkway is finished! Thanks for choosing ${brand.company.name}.`,
       timestamp: '2026-04-28T15:00:00Z',
     },
   ],

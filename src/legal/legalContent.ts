@@ -3,7 +3,7 @@
 
 // Every business fact here comes from the settings file (src/config/brand.js: legal, company, app). Change it there, then run
 // `node scripts/build-legal-pages.cjs` to remake public/legal/*.html.
-import { brand, appWebUrl, legalUrls } from '@/config/brand';
+import { brand, appWebUrl, legalUrls, w } from '@/config/brand';
 
 export const BUSINESS = {
   name: brand.legal.businessName,
@@ -33,7 +33,7 @@ export const PRIVACY: LegalDoc = {
       heading: 'Who uses the app and who controls the data',
       paragraphs: [
         'The app is a business tool for contracting and trade companies. A company owner sets up the company, and its workers and customers join with a private invitation link.',
-        'Information about a company\'s projects, properties, customers, schedules and records belongs to that company, and the company decides who on its team can see it. If you are a customer or worker, your company can also answer questions about your records.',
+        w('Information about a company\'s jobs, job sites, customers, schedules and records belongs to that company, and the company decides who on its team can see it. If you are a customer or worker, your company can also answer questions about your records.'),
       ],
     },
     {
@@ -41,12 +41,12 @@ export const PRIVACY: LegalDoc = {
       bullets: [
         'Account details: your name, email address and password (the password is stored in scrambled form and is never visible to us). Optional: phone number, birthday and profile photo.',
         'Company details entered by the owner: company name, address, phone, email, logo and header photos.',
-        'Customer and property details entered by the company: names, phone numbers, email addresses, service addresses, contact and gate or access instructions, and notes.',
-        'Work records: projects, tasks, schedules, hours worked, pay rates and payroll estimates, visit history, and clock-in/clock-out times.',
+        w('Customer and job site details entered by the company: names, phone numbers, email addresses, service addresses, contact and gate or access instructions, and notes.'),
+        w('Work records: jobs, tasks, schedules, hours worked, pay rates and payroll estimates, visit history, and clock-in/clock-out times.'),
         'Photos and videos you take or choose (job photos, problem reports, profile photos). The app asks for camera and photo-library permission before it can use them.',
-        'Service requests: if you use the Request page (you do not need an account), the name, phone number, optional email address, town or ZIP code, kind of property, services you choose and any details you write. They are saved for the company, shown to its owner and administrators in the app, and emailed to them.',
+        w('Service requests: if you use the Request page (you do not need an account), the name, phone number, optional email address, town or ZIP code, kind of job site, services you choose and any details you write. They are saved for the company, shown to its owner and administrators in the app, and emailed to them.'),
         'Weather: the Weather page shows a forecast for a town you choose from a list or type. It does not track you and does not read your location.',
-        'Messages sent inside a project, and reports of problems at a property.',
+        w('Messages sent inside a job, and reports of problems at a job site.'),
         'Quotes, change orders and invoices, including the name, time, IP address and browser a customer records when approving or declining one through a link.',
         'Location: only when you tap to check in at a job site, the app reads your phone\'s precise location once to check that you are near the job. It does not track you in the background. If you deny location access, you can still use the app, and check-in then records that location was unavailable.',
         'Device information needed to send notifications: a push notification token for your phone.',
@@ -71,7 +71,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: 'Who sees it and who helps us run the app',
       paragraphs: [
-        'Information is shown only to people your company allows (for example workers see their own assignments; customers see their own projects and the photos the company chooses to share).',
+        w('Information is shown only to people your company allows (for example workers see their own assignments; customers see their own jobs and the photos the company chooses to share).'),
         'We use these service providers to run the app. They handle data only to provide their service to us:',
       ],
       bullets: [

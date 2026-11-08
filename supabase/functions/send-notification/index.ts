@@ -174,7 +174,7 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
   const when = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: COMPANY_TIMEZONE });
 
   const rows: [string, string | null | undefined][] = [
-    ['Project', project ? [project.name, project.address, project.city].filter(Boolean).join(', ') : null],
+    ['Job', project ? [project.name, project.address, project.city].filter(Boolean).join(', ') : null],
     ['Total', total],
     [approved ? 'Approved by' : 'Declined by', doc?.approved_name || n.body?.match(/^By (.+?)(?: · |$)/)?.[1]],
     ['When', when],

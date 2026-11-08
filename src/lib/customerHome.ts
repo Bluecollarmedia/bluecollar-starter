@@ -28,7 +28,7 @@ export interface ProjectLike {
   id: string; name: string; address?: string; city?: string; state?: string; zip?: string;
   status: string; progress: number; completedAt?: string;
 }
-const TYPE_LABEL: Record<HomeKind, string> = { project: 'Project' };
+const TYPE_LABEL: Record<HomeKind, string> = { project: 'Job' };
 
 /** "123 Main St, Your Town ST" for display. */
 export function addressLine(p: { address?: string; city?: string; state?: string }): string {

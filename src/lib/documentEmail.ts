@@ -7,10 +7,10 @@ export function buildDocumentEmailMessage(o: EmailWords) {
   const what = o.kind === 'quote' ? 'quote' : o.kind === 'invoice' ? 'invoice' : 'change order';
   const hello = o.customerName ? `Hi ${o.customerName},` : 'Hello,';
   const body = o.kind === 'quote'
-    ? `Thank you for asking us to quote your project. The quote total is ${o.totalText} as of ${o.dateText}.`
+    ? `Thank you for asking us to quote your job. The quote total is ${o.totalText} as of ${o.dateText}.`
     : o.kind === 'invoice'
       ? `Here is your invoice. The invoice total is ${o.totalText} as of ${o.dateText}.${o.dueText ? ` Payment is due by ${o.dueText}.` : ''}`
-      : `Here is the change order for your project. The change order total is ${o.totalText} as of ${o.dateText}.`;
+      : `Here is the change order for your job. The change order total is ${o.totalText} as of ${o.dateText}.`;
   const closing = `If you have any questions or concerns regarding this ${what}, please don't hesitate to get in touch with ${o.contactEmail}.`;
   return { what, hello, body, closing, sign: `Sincerely,\n${o.company}`, button: `View ${what}` };
 }

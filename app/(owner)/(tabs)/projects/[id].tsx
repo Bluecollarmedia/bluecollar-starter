@@ -21,7 +21,7 @@ import { ClearLogSheet } from '@/components/logs/ClearLogSheet';
 import { previewProjectClear, runProjectClear } from '@/data/activityClear';
 import { refresh as refreshStore } from '@/data/store';
 import { openDirections, formatDistance, DEFAULT_CHECKIN_RADIUS_M } from '@/lib/maps';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w } from '@/config/brand';
 import { CheckInRadiusSheet } from '@/components/projects/CheckInRadiusSheet';
 import { ProjectPrivateNotes } from '@/components/projects/ProjectPrivateNotes';
 import { useIsProjectOwner, useOwnerNotes } from '@/data/ownerProjectNotes';
@@ -100,7 +100,7 @@ const MAPS_ON = isFeatureOn('maps');
 const MORE_ITEMS = ([
   {
     key: 'financials', label: 'Financials', icon: 'file-text' as const,
-    description: 'Quotes, change orders and invoices for this project',
+    description: w('Quotes, change orders and invoices for this job'),
     iconBg: '#E3F1E4', iconColor: '#2E7D32',
   },
   {
@@ -115,17 +115,17 @@ const MORE_ITEMS = ([
   },
   {
     key: 'people', label: 'People', icon: 'users' as const,
-    description: 'View and manage the customer and project team members',
+    description: w('View and manage the customer and job team members'),
     iconBg: '#DCE9FB', iconColor: '#2E6BD6',
   },
   {
     key: 'activity', label: 'Activity Log', icon: 'activity' as const,
-    description: 'See the full history of activity on this project',
+    description: w('See the full history of activity on this job'),
     iconBg: '#DDF0DF', iconColor: '#2E9E45',
   },
   {
-    key: 'settings', label: 'Project Settings', icon: 'settings' as const,
-    description: 'Configure project-level settings and requirements',
+    key: 'settings', label: w('Job Settings'), icon: 'settings' as const,
+    description: w('Configure job-level settings and requirements'),
     iconBg: '#E9E9EC', iconColor: '#5B5B63',
   },
 ]).filter((item) => (item.key !== 'financials' || isFeatureOn('financials')) && (item.key !== 'materials' || isFeatureOn('materials')));
@@ -316,7 +316,7 @@ export default function ProjectDetailScreen() {
   if (!project) {
     return (
       <View style={[styles.screen, { backgroundColor: colors.background }]}>
-        <EmptyState icon="alert-circle" title="Project not found" />
+        <EmptyState icon="alert-circle" title={w('Job not found')} />
       </View>
     );
   }
@@ -335,7 +335,7 @@ export default function ProjectDetailScreen() {
   async function handleChangeCoverPhoto() {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      const msg = 'Photo library access is needed to choose a project photo.';
+      const msg = w('Photo library access is needed to choose a job photo.');
       showMessage('Permission Needed', msg);
       return;
     }
@@ -358,15 +358,15 @@ export default function ProjectDetailScreen() {
 
   function handleCompleteProject() {
     askToConfirm(
-      'Complete this project?',
-      'It moves to Completed on the Projects list. You can reopen it any time.',
+      w('Complete this job?'),
+      w('It moves to Completed on the Jobs list. You can reopen it any time.'),
       'Complete',
       () => { haptics.success(); updateProject({ status: 'completed', progress: 100 }); },
     );
   }
 
   function handleReopenProject() {
-    askToConfirm('Reopen this project?', 'It moves back to Active.', 'Reopen', () => updateProject({ status: 'active' }));
+    askToConfirm(w('Reopen this job?'), 'It moves back to Active.', 'Reopen', () => updateProject({ status: 'active' }));
   }
 
   function renderOverview() {
@@ -387,7 +387,7 @@ export default function ProjectDetailScreen() {
             onPress={handleChangeCoverPhoto}
             style={[styles.coverChangeButton, { backgroundColor: 'rgba(20,20,20,0.55)' }]}
             accessibilityRole="button"
-            accessibilityLabel="Change project photo"
+            accessibilityLabel={w('Change job photo')}
           >
             <Icon name="camera" size={14} color="#FFFFFF" />
             <Text style={[typeScale.labelSmall, { color: '#FFFFFF' }]}>Change photo</Text>
@@ -398,7 +398,7 @@ export default function ProjectDetailScreen() {
           <ProspectBanner projectId={p.id} />
           {/* Progress */}
           <View>
-            <Text style={[typeScale.overline, { color: colors.textTertiary }]}>PROJECT PROGRESS</Text>
+            <Text style={[typeScale.overline, { color: colors.textTertiary }]}>{w('JOB PROGRESS')}</Text>
             <View style={styles.progressHeaderRow}>
               <Text style={[typeScale.displayLarge, { color: colors.primary }]}>{p.progress}%</Text>
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>
@@ -549,7 +549,7 @@ export default function ProjectDetailScreen() {
                   style={[styles.composerInput, styles.composerBody, { backgroundColor: colors.surface, borderColor: colors.borderLight, color: colors.textPrimary }]}
                   value={notesDraft}
                   onChangeText={setNotesDraft}
-                  placeholder="Internal notes about this project (not visible to customer)"
+                  placeholder={w('Internal notes about this job (not visible to customer)')}
                   placeholderTextColor={colors.textTertiary}
                   multiline
                 />
@@ -581,7 +581,7 @@ export default function ProjectDetailScreen() {
           </View>
 
           {canComplete && (
-            <Button title="Complete Project" icon="check-circle" onPress={handleCompleteProject} fullWidth style={{ marginTop: spacing.xl }} />
+            <Button title={w('Complete Job')} icon="check-circle" onPress={handleCompleteProject} fullWidth style={{ marginTop: spacing.xl }} />
           )}
           {p.status === 'completed' && (
             <View style={{ marginTop: spacing.xl }}>
@@ -590,7 +590,7 @@ export default function ProjectDetailScreen() {
                   Completed {formatDate(p.completedAt)}
                 </Text>
               )}
-              <Button title="Reopen Project" icon="rotate-ccw" variant="secondary" onPress={handleReopenProject} fullWidth />
+              <Button title={w('Reopen Job')} icon="rotate-ccw" variant="secondary" onPress={handleReopenProject} fullWidth />
             </View>
           )}
           {isFeatureOn('issues') ? <IssuesSection where={{ projectId: p.id }} /> : null}
@@ -744,7 +744,7 @@ export default function ProjectDetailScreen() {
   }
 
   function handleRemoveTeamMember(personId: string, name: string) {
-    const msg = `Remove ${name} from this project's team? They will no longer be assignable to this project's tasks or schedule.`;
+    const msg = w("Remove {name} from this job's team? They will no longer be assignable to this job's tasks or schedule.", { name });
     sharedConfirm('Remove team member?', msg, 'Remove', () => removeTeamMember(personId), true);
   }
 
@@ -773,10 +773,10 @@ export default function ProjectDetailScreen() {
         <View style={styles.teamHeaderRow}>
           <View style={{ flex: 1, marginRight: spacing.sm }}>
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700' }]}>
-              Project Team ({team.length})
+              {w('Job Team')} ({team.length})
             </Text>
             <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>
-              Team members assigned to this project
+              {w('Team members assigned to this job')}
             </Text>
           </View>
           <Pressable
@@ -791,7 +791,7 @@ export default function ProjectDetailScreen() {
         </View>
 
         {team.length === 0 ? (
-          <EmptyState icon="users" title="No team members yet" description="Add workers to this project's team so they can be scheduled and assigned tasks." />
+          <EmptyState icon="users" title="No team members yet" description={w("Add workers to this job's team so they can be scheduled and assigned tasks.")} />
         ) : (
           <View style={[styles.teamListCard, { backgroundColor: colors.surface }, shadow.sm]}>
             {team.map((member, i) => (
@@ -830,7 +830,7 @@ export default function ProjectDetailScreen() {
         <View style={[styles.aboutTeamCard, { backgroundColor: colors.backgroundTertiary }]}>
           <Icon name="info" size={16} color={colors.primary} />
           <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.sm, flex: 1 }]}>
-            Project team members have access to this project and can be assigned to tasks and schedules. This does not automatically mean they are scheduled to work here today.
+            {w('Job team members have access to this job and can be assigned to tasks and schedules. This does not automatically mean they are scheduled to work here today.')}
           </Text>
         </View>
 
@@ -846,7 +846,7 @@ export default function ProjectDetailScreen() {
               <ScrollView bounces={false} style={styles.modalBody} showsVerticalScrollIndicator={false}>
                 {availableWorkers.length === 0 ? (
                   <Text style={[typeScale.bodySmall, { color: colors.textTertiary, marginTop: spacing.lg }]}>
-                    Every active worker is already on this project's team.
+                    {w("Every active worker is already on this job's team.")}
                   </Text>
                 ) : (
                   availableWorkers.map((w, i) => (
@@ -912,7 +912,7 @@ export default function ProjectDetailScreen() {
           <View style={styles.sectionContent}>
             <MessageThread
               projectId={p.id}
-              emptyText={p.customerId ? 'Send your customer a message. They\u2019ll see it in their app under Messages.' : 'Add a customer to this project to message them.'}
+              emptyText={p.customerId ? 'Send your customer a message. They\u2019ll see it in their app under Messages.' : w('Add a customer to this job to message them.')}
             />
           </View>
         )}
@@ -958,7 +958,7 @@ export default function ProjectDetailScreen() {
           <EmptyState
             icon="user-plus"
             title="No customer assigned"
-            description="Assign a customer to this project to manage their access and portal content."
+            description={w('Assign a customer to this job to manage their access and portal content.')}
           />
         ) : (
           <>
@@ -1026,10 +1026,10 @@ export default function ProjectDetailScreen() {
             <View style={[styles.accessCard, { backgroundColor: colors.surface }, shadow.sm]}>
               <View style={styles.accessCardTop}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Project Access</Text>
+                  <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>{w('Job Access')}</Text>
                   <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>
                     {access?.claimedBy || hasApp
-                      ? `${p.customer.firstName} sees this project in the app automatically.`
+                      ? w('{name} sees this job in the app automatically.', { name: p.customer.firstName })
                       : `${p.customer.firstName} hasn't joined the app yet. They join once with one link; after that every job they are on shows up by itself.`}
                   </Text>
                 </View>
@@ -1088,7 +1088,7 @@ export default function ProjectDetailScreen() {
                   <View style={{ flex: 1, marginRight: spacing.sm }}>
                     <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Allow Requests</Text>
                     <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>
-                      Customer can send requests related to this project
+                      {w('Customer can send requests related to this job')}
                     </Text>
                   </View>
                   <Switch
@@ -1131,7 +1131,7 @@ export default function ProjectDetailScreen() {
                   <Icon name="file-text" size={16} color={colors.textSecondary} />
                 </View>
                 <View style={{ flex: 1, marginLeft: spacing.sm }}>
-                  <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Project Updates</Text>
+                  <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>{w('Job Updates')}</Text>
                   <Text style={[typeScale.caption, { color: colors.textTertiary }]}>
                     {updates.length === 0 ? 'No updates yet' : `${updates.length} update${updates.length === 1 ? '' : 's'} visible to customer`}
                   </Text>
@@ -1489,8 +1489,8 @@ export default function ProjectDetailScreen() {
                 ? 'Only the Task Lead can start and complete tasks. The rest of the crew can see them.'
                 : 'Pick one worker to run the task list. Until then, workers cannot change tasks.')
               : (p.taskLeadId
-                ? 'Anyone on this job can check off tasks. (More → Settings → Project Tasks can limit this to the Task Lead.)'
-                : 'Anyone on this job can check off tasks. Picking a Task Lead is optional. (More → Settings → Project Tasks can limit checking off to the Task Lead.)')}
+                ? w('Anyone on this job can check off tasks. (More → Settings → Job Tasks can limit this to the Task Lead.)')
+                : w('Anyone on this job can check off tasks. Picking a Task Lead is optional. (More → Settings → Job Tasks can limit checking off to the Task Lead.)'))}
           </Text>
           {team.length ? (
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
@@ -1514,7 +1514,7 @@ export default function ProjectDetailScreen() {
               })}
             </View>
           ) : (
-            <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Add workers to the project team first.</Text>
+            <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{w('Add workers to the job team first.')}</Text>
           )}
         </View>
 
@@ -1533,7 +1533,7 @@ export default function ProjectDetailScreen() {
         </View>
 
         {tasks.length === 0 ? (
-          <EmptyState icon="check-square" title="No tasks yet" description="Tasks will appear here as they're added to this project." />
+          <EmptyState icon="check-square" title="No tasks yet" description={w("Tasks will appear here as they're added to this job.")} />
         ) : (
           <View style={{ gap: spacing.md }}>
             {sectionsToShow.map(key => renderTaskSection(key, sectionTaskMap[key]))}
@@ -1673,7 +1673,7 @@ export default function ProjectDetailScreen() {
         </View>
         <View style={styles.photoGridInfo}>
           <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '700' }]} numberOfLines={2}>
-            {taskName ?? photo.caption ?? 'Project photo'}
+            {taskName ?? photo.caption ?? w('Job photo')}
           </Text>
           <View style={styles.photoUploaderRow}>
             {photo.uploader && (
@@ -1707,7 +1707,7 @@ export default function ProjectDetailScreen() {
     const emptyText =
       photoFilter === 'internal' ? { title: 'No internal photos', description: 'Every photo has been shared with the customer.' }
       : photoFilter === 'shared' ? { title: 'No shared photos', description: 'No photos have been shared with the customer yet.' }
-      : { title: 'No photos yet', description: 'No project photos yet.' };
+      : { title: 'No photos yet', description: w('No job photos yet.') };
 
     return (
       <View style={styles.sectionContent}>
@@ -1784,7 +1784,7 @@ export default function ProjectDetailScreen() {
               style={[styles.composerInput, styles.composerBody, { backgroundColor: colors.surface, borderColor: colors.borderLight, color: colors.textPrimary }]}
               value={updateBody}
               onChangeText={setUpdateBody}
-              placeholder="What's the latest on this project?"
+              placeholder={w("What's the latest on this job?")}
               placeholderTextColor={colors.textTertiary}
               multiline
               numberOfLines={4}
@@ -2100,7 +2100,7 @@ export default function ProjectDetailScreen() {
         <ClearLogSheet
           visible={clearingActivity}
           onClose={() => setClearingActivity(false)}
-          title="Clear this project's activity"
+          title={w("Clear this job's activity")}
           what="activity"
           modes={['delete']}
           years={[]}
@@ -2109,7 +2109,7 @@ export default function ProjectDetailScreen() {
           onDone={(msg) => { setActivityClearedNote(msg); refreshStore('project_history'); }}
         />
         {history.length === 0 ? (
-          <EmptyState icon="activity" title="No activity" description="Project history will appear here as things happen." />
+          <EmptyState icon="activity" title="No activity" description={w('Job history will appear here as things happen.')} />
         ) : (
           <>
             <View style={styles.activityToolbarRow}>
@@ -2126,7 +2126,7 @@ export default function ProjectDetailScreen() {
                 style={[styles.expandAllBtn, { backgroundColor: colors.backgroundTertiary, marginLeft: spacing.sm }]}
                 onPress={() => { setActivityClearedNote(null); setClearingActivity(true); }}
                 accessibilityRole="button"
-                accessibilityLabel="Clear this project's activity"
+                accessibilityLabel={w("Clear this job's activity")}
               >
                 <Icon name="trash-2" size={13} color={colors.textSecondary} />
                 <Text style={[typeScale.labelSmall, { color: colors.textSecondary, marginLeft: spacing.xs, fontWeight: '600' }]}>Clear</Text>
@@ -2199,7 +2199,7 @@ export default function ProjectDetailScreen() {
         <View style={[styles.aboutTeamCard, { backgroundColor: colors.backgroundTertiary }]}>
           <Icon name="info" size={16} color={colors.primary} />
           <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.sm, flex: 1 }]}>
-            This shows the complete history of activity on this project, including updates, task completions, team changes, and more.
+            {w('This shows the complete history of activity on this job, including updates, task completions, team changes, and more.')}
           </Text>
         </View>
       </View>
@@ -2214,7 +2214,7 @@ export default function ProjectDetailScreen() {
   function handleRevokeAccess() {
     confirmThen(
       'Remove customer access?',
-      'The customer will no longer be able to view this project. To give them access again, send a new invite link from their customer page.',
+      w('The customer will no longer be able to view this job. To give them access again, send a new invite link from their customer page.'),
       'Remove Access',
       async () => {
         await customerAccess.revokeAccess(p.id);
@@ -2240,7 +2240,7 @@ export default function ProjectDetailScreen() {
     if (!settings) {
       return (
         <View style={styles.sectionContent}>
-          <EmptyState icon="settings" title="No settings" description="Default settings are in use for this project." />
+          <EmptyState icon="settings" title="No settings" description={w('Default settings are in use for this job.')} />
         </View>
       );
     }
@@ -2258,7 +2258,7 @@ export default function ProjectDetailScreen() {
               </View>
               <View style={{ marginLeft: spacing.sm, flex: 1 }}>
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Customer Login</Text>
-                <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Send {p.customer.firstName} a private link to see this project.</Text>
+                <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>{w('Send {name} a private link to see this job.', { name: p.customer.firstName })}</Text>
               </View>
             </View>
             <Divider style={{ marginBottom: spacing.sm }} />
@@ -2285,7 +2285,7 @@ export default function ProjectDetailScreen() {
             </View>
             <View style={{ marginLeft: spacing.sm, flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Customer Interaction</Text>
-              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Control what your customer can do in the project portal.</Text>
+              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>{w('Control what your customer can do in the job portal.')}</Text>
             </View>
           </View>
           <Divider style={{ marginBottom: spacing.xs }} />
@@ -2293,7 +2293,7 @@ export default function ProjectDetailScreen() {
           <View style={styles.settingsDetailRow}>
             <View style={{ flex: 1, marginRight: spacing.sm }}>
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Customer interaction enabled</Text>
-              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Allow customer to view the project portal.</Text>
+              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>{w('Allow customer to view the job portal.')}</Text>
             </View>
             <Switch
               value={settings.customerInteractionEnabled}
@@ -2317,7 +2317,7 @@ export default function ProjectDetailScreen() {
           <View style={styles.settingsDetailRow}>
             <View style={{ flex: 1, marginRight: spacing.sm }}>
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Customer can view photos</Text>
-              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Allow customer to view project photos.</Text>
+              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>{w('Allow customer to view job photos.')}</Text>
             </View>
             <Switch
               value={settings.customerCanViewPhotos}
@@ -2334,7 +2334,7 @@ export default function ProjectDetailScreen() {
             </View>
             <View style={{ marginLeft: spacing.sm, flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Work Requirements</Text>
-              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Set requirements for workers on this project.</Text>
+              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>{w('Set requirements for workers on this job.')}</Text>
             </View>
           </View>
           <Divider style={{ marginBottom: spacing.xs }} />
@@ -2354,7 +2354,7 @@ export default function ProjectDetailScreen() {
           <View style={styles.settingsDetailRow}>
             <View style={{ flex: 1, marginRight: spacing.sm }}>
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>Only the Task Lead checks off tasks</Text>
-              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Off: anyone on the job can. On: only the Task Lead you pick below. Applies to every project.</Text>
+              <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>{w('Off: anyone on the job can. On: only the Task Lead you pick below. Applies to every job.')}</Text>
             </View>
             <Switch
               value={db.company?.taskLeadOnly === true}
@@ -2413,7 +2413,7 @@ export default function ProjectDetailScreen() {
           <Pressable
             onPress={backStep.leave}
             style={styles.backButton}
-            accessibilityLabel="Back to projects"
+            accessibilityLabel={w('Back to jobs')}
           >
             <Icon name="arrow-left" size={24} color={colors.textPrimary} />
           </Pressable>
@@ -2482,7 +2482,7 @@ export default function ProjectDetailScreen() {
             >
               <Icon name="edit-2" size={18} color={colors.textSecondary} />
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, marginLeft: spacing.md }]}>
-                Edit Project
+                {w('Edit Job')}
               </Text>
             </Pressable>
             {(canComplete || p.status === 'completed') && (
@@ -2492,7 +2492,7 @@ export default function ProjectDetailScreen() {
               >
                 <Icon name={canComplete ? 'check-circle' : 'rotate-ccw'} size={18} color={colors.textSecondary} />
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, marginLeft: spacing.md }]}>
-                  {canComplete ? 'Complete Project' : 'Reopen Project'}
+                  {w(canComplete ? 'Complete Job' : 'Reopen Job')}
                 </Text>
               </Pressable>
             )}
@@ -2633,7 +2633,7 @@ export default function ProjectDetailScreen() {
                   <View style={[styles.taskPhotoNote, { backgroundColor: colors.backgroundTertiary }]}>
                     <Icon name="camera" size={14} color={colors.textSecondary} />
                     <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.xs, flex: 1 }]}>
-                      This project requires a completion photo before a task can be marked done.
+                      {w('This job requires a completion photo before a task can be marked done.')}
                     </Text>
                   </View>
                 )}
@@ -3058,7 +3058,7 @@ export default function ProjectDetailScreen() {
                     </Text>
                   </View>
                   <View style={styles.manageAccessRow}>
-                    <Text style={[typeScale.labelSmall, { color: colors.textTertiary }]}>Project</Text>
+                    <Text style={[typeScale.labelSmall, { color: colors.textTertiary }]}>{w('Job')}</Text>
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, marginTop: 2 }]}>{p.name}</Text>
                   </View>
                   <View style={styles.manageAccessRow}>
@@ -3081,7 +3081,7 @@ export default function ProjectDetailScreen() {
                     >
                       <Icon name="user-x" size={14} color={semantic.error} />
                       <Text style={[typeScale.labelSmall, { color: semantic.error, marginLeft: spacing.xs }]}>
-                        Remove Project Access
+                        {w('Remove Job Access')}
                       </Text>
                     </Pressable>
                   ) : (
@@ -3141,7 +3141,7 @@ export default function ProjectDetailScreen() {
               )}
 
               <Text style={[typeScale.labelLarge, { color: colors.textPrimary, marginTop: spacing.xl, marginBottom: spacing.sm }]}>
-                Project Updates ({updates.filter(u => u.isCustomerVisible).length})
+                {w('Job Updates')} ({updates.filter(u => u.isCustomerVisible).length})
               </Text>
               {updates.filter(u => u.isCustomerVisible).length === 0 ? (
                 <Text style={[typeScale.bodySmall, { color: colors.textTertiary }]}>No updates shared yet.</Text>

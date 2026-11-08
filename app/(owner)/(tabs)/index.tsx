@@ -26,7 +26,7 @@ import { AdminJobCard } from '@/components/admin/AdminJobCard';
 import { NeedsOkCard } from '@/components/time/NeedsOkCard';
 import { showMessage } from '@/components/financials/ActionSheet';
 import { WeatherButton } from '@/components/weather/WeatherButton';
-import { isFeatureOn, words } from '@/config/brand';
+import { isFeatureOn, words, w } from '@/config/brand';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
 
 const HAS_LIQUID_GLASS = isLiquidGlassAvailable();
@@ -457,7 +457,7 @@ export default function OwnerDashboard() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>
-                Active Projects <Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {activeProjectsTotal} total</Text>
+                {w('Active Jobs')} <Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {activeProjectsTotal} total</Text>
               </Text>
               <Pressable onPress={() => router.push('/(owner)/projects' as any)}>
                 <Text style={[typeScale.labelSmall, { color: colors.primary }]}>View All</Text>

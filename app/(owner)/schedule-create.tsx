@@ -24,7 +24,7 @@ import {
   addMonthsKey, describeHorizon, describeRepeat, occurrenceDates, HORIZON_OPTIONS, SERIES_HORIZON_DAYS,
 } from '@/lib/recurrence';
 import { showMessage } from '@/components/financials/ActionSheet';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w } from '@/config/brand';
 
 const today = todayKey();
 
@@ -184,7 +184,7 @@ export default function ScheduleCreateScreen() {
 
   function showAlreadyScheduled(names: string[], d: string) {
     const who = names.length === 1 ? `${names[0]} is` : `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]} are`;
-    const msg = `${who} already scheduled at ${selectedProject?.name ?? 'this project'} on ${formatDateFull(d)}. Edit the existing assignment instead.`;
+    const msg = `${who} already scheduled at ${selectedProject?.name ?? w('this job')} on ${formatDateFull(d)}. Edit the existing assignment instead.`;
     showMessage('Already Scheduled', msg);
   }
 
@@ -202,7 +202,7 @@ export default function ScheduleCreateScreen() {
   function handleCreate() {
     if (isMove) {
       if (!projectId) {
-        const msg = 'Please select a project.';
+        const msg = w('Please select a job.');
         showMessage('Required', msg);
         return;
       }
@@ -217,7 +217,7 @@ export default function ScheduleCreateScreen() {
     }
 
     if (!projectId || workerIds.length === 0) {
-      const msg = 'Please select a project and at least one worker.';
+      const msg = w('Please select a job and at least one worker.');
       showMessage('Required', msg);
       return;
     }
@@ -287,7 +287,7 @@ export default function ScheduleCreateScreen() {
           {isMove ? 'Move Worker' : 'Schedule Work'}
         </Text>
         <Text style={[typeScale.bodyLarge, { color: colors.textTertiary, marginTop: 2 }]}>
-          {isMove ? 'Reassign this worker to a different project' : projectKnown && selectedProject ? `For ${selectedProject.name}` : 'Assign your crew to a project'}
+          {isMove ? w('Reassign this worker to a different job') : projectKnown && selectedProject ? `For ${selectedProject.name}` : w('Assign your crew to a job')}
         </Text>
 
         {/* Workers: first, and the whole list is right here (no second screen to open) */}
@@ -387,9 +387,9 @@ export default function ScheduleCreateScreen() {
         {projectKnown ? null : (
         <Section
           icon="home"
-          title="Project"
+          title={w('Job')}
           required
-          accessoryLabel={selectedProject ? undefined : 'Select Project'}
+          accessoryLabel={selectedProject ? undefined : w('Select Job')}
           onPressAccessory={() => setShowProjectSheet(true)}
         >
           {selectedProject ? (
@@ -749,7 +749,7 @@ export default function ScheduleCreateScreen() {
         </BottomSheetModal>
       )}
 
-      <SheetModal visible={showProjectSheet} onClose={() => setShowProjectSheet(false)} title="Select Project">
+      <SheetModal visible={showProjectSheet} onClose={() => setShowProjectSheet(false)} title={w('Select Job')}>
         {activeProjects.map(p => (
           <Pressable
             key={p.id}

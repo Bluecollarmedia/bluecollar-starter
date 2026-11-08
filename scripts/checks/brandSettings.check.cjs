@@ -17,7 +17,7 @@ const REQUIRED = {
   company: { name: 's', legalName: 's', phone: 'o', supportEmail: 's', addressLines: 'a', website: 's', state: 's', timezone: 's' },
   app: { name: 's', slug: 's', bundleId: 's', androidPackage: 's', scheme: 's', expoProjectId: 's', expoOwner: 's', webUrl: 's', appleTeamId: 's' },
   look: { brandColor: 's', logo: 's', icon: 's', androidIconForeground: 's', androidIconBackground: 's', splashImage: 's', splashBackground: 's' },
-  wording: { job: 's', jobs: 's', place: 's', places: 's', crew: 's', crews: 's', leaderRoleLabel: 's', uniformSizeLabel: 's', units: 'a', materialUnits: 'a', serviceTypes: 'a', materialCategories: 'a' },
+  wording: { job: 's', jobs: 's', place: 's', places: 's', crew: 's', crews: 's', es: 'o', leaderRoleLabel: 's', uniformSizeLabel: 's', units: 'a', materialUnits: 'a', serviceTypes: 'a', materialCategories: 'a' },
   features: Object.fromEntries(['weather', 'publicVisitorArea', 'widgets', 'uniformSize', 'workerIdPhoto', 'repeatJobs', 'timeClock', 'clockInAlerts', 'financials', 'materials', 'trucks', 'requests', 'issues', 'reports', 'announcements', 'messages', 'customerPortal', 'addressSuggestions', 'maps', 'spanish', 'otaUpdates'].map((k) => [k, 'b'])),
   legal: { businessName: 's', state: 's', contactEmail: 's', privacyUrl: 's', termsUrl: 's', supportUrl: 's', effectiveDate: 's' },
   weather: { defaultPlace: 'o', nearbyTowns: 'a' },

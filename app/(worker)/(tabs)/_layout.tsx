@@ -47,7 +47,7 @@ function WorkerNativeTabs() {
           sf={{ default: 'clipboard', selected: 'clipboard.fill' }}
           src={<NativeTabs.Trigger.VectorIcon family={Feather} name="clipboard" />}
         />
-        <NativeTabs.Trigger.Label>{t(words.jobs)}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t('Jobs')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="activity">
@@ -114,7 +114,7 @@ function WorkerJSTabs() {
       <Tabs.Screen
         name="jobs"
         options={{
-          title: t(words.jobs),
+          title: t('Jobs'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="clipboard" size={size} color={color} />
           ),

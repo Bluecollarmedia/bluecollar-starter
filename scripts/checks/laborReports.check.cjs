@@ -10,7 +10,7 @@ function load(rel) {
   if (cache[rel]) return cache[rel];
   const m = { exports: {} };
   cache[rel] = m.exports;
-  const req = (n) => (n === './timeCalc' ? load('src/lib/timeCalc.ts') : {});
+  const req = (n) => (n === './timeCalc' ? load('src/lib/timeCalc.ts') : n === '@/config/brand' ? require('./_brand.cjs').brandModule(ts) : {});
   new Function('module', 'exports', 'require', ts.transpileModule(read(rel), { compilerOptions: { module: 'commonjs', target: 'es2020' } }).outputText)(m, m.exports, req);
   return (cache[rel] = m.exports);
 }
@@ -85,7 +85,7 @@ const est = r.estimateComparison(pt.laborMs, 12);
 check('12 estimate vs actual in the same unit: 12 h estimated, 14.5 h actual = 2.5 h over; no estimate = no comparison', est.over && est.diffHours === 2.5 && r.estimateComparison(pt.laborMs, null) === null);
 
 const dayCsv = r.dailyCsv(rows);
-check('13 the daily CSV has the right columns, ISO times and numeric hours', dayCsv.startsWith('﻿Employee,Work date,Clock in (UTC),Clock out (UTC),Gross workday hours,Recorded break hours,Break hours deducted,Net payable hours,Property labor hours,Hourly rate,Payable cost (straight time),Status,Approved at (UTC),Needs review\r\n')
+check('13 the daily CSV has the right columns, ISO times and numeric hours', dayCsv.startsWith('﻿Employee,Work date,Clock in (UTC),Clock out (UTC),Gross workday hours,Recorded break hours,Break hours deducted,Net payable hours,Job site labor hours,Hourly rate,Payable cost (straight time),Status,Approved at (UTC),Needs review\r\n')
   && dayCsv.includes('Ann Adams,2026-10-19,2026-10-19T07:30:00.000Z,2026-10-19T16:00:00.000Z,8.50,0.50,0.50,8.00,3.00,20.00,160.00,ready'), dayCsv.split('\r\n')[1]);
 const wkCsv = r.weeklyCsv(week);
 check('14 the weekly CSV carries regular, overtime, basis and cost', wkCsv.includes('Regular hours') && wkCsv.includes('5.00,3.00,Overtime = net payable hours over 5 in the week at 1.5x'.replace(' in the week at', ' in the week, at')) || /5\.00,3\.00,"?Overtime = net payable hours over 5/.test(wkCsv), wkCsv.split('\r\n')[1]);

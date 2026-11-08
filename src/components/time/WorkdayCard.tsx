@@ -80,7 +80,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
     haptics.select();
     const total = durationText(todayNetMs);
     const message = current
-      ? tr('Clocking out also ends your time at {place}. Your total for today is {total}.', { place: current.label ?? tr('the property you are at'), total })
+      ? tr('Clocking out also ends your time at {place}. Your total for today is {total}.', { place: current.label ?? tr('the job site you are at'), total })
       : tr('Your total for today is {total}.', { total });
     const go = async () => { const r = await w.clockOut(); if (r.ok) haptics.success(); else say(tr("Can't clock out yet"), r.error); };
     confirmAction(tr('Clock out?'), message, tr('Clock Out'), () => { void go(); }, true, tr('Not yet'));
@@ -175,7 +175,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             <View style={[styles.row, { marginTop: spacing.xs }]}>
               <Feather name="map-pin" size={14} color={colors.primary} />
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1 }]} numberOfLines={1}>
-                At {current.label ?? 'a property'} · {durationText(intervalMs({ startedAt: current.startedAt, status: 'active' }, nowMs))}
+                At {current.label ?? t('a job site')} · {durationText(intervalMs({ startedAt: current.startedAt, status: 'active' }, nowMs))}
               </Text>
             </View>
           ) : null}
@@ -193,7 +193,7 @@ export function WorkdayCard({ compact = false, gate = false, portal = false, pre
             </Pressable>
           </View>
           {current && !w.onBreak ? (
-            <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: spacing.xs }]}>{t('Clocking out for the day also ends your time at the property you are at.')}</Text>
+            <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: spacing.xs }]}>{t('Clocking out for the day also ends your time at the job site you are at.')}</Text>
           ) : null}
         </>
       ) : null}

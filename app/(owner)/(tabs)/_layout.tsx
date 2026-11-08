@@ -36,7 +36,7 @@ function OwnerNativeTabs() {
           sf={{ default: 'folder', selected: 'folder.fill' }}
           src={<NativeTabs.Trigger.VectorIcon family={Feather} name="folder" />}
         />
-        <NativeTabs.Trigger.Label>{t(words.jobs)}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t('Jobs')}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="workers">
@@ -96,7 +96,7 @@ function OwnerJSTabs() {
       <Tabs.Screen
         name="projects"
         options={{
-          title: t(words.jobs),
+          title: t('Jobs'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="folder" size={size} color={color} />
           ),

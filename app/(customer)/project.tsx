@@ -122,7 +122,7 @@ export default function CustomerProjectScreen() {
   if (!project) {
     return (
       <View style={[styles.screen, { backgroundColor: colors.background }]}>
-        <EmptyState icon="alert-circle" title={t('Project not found')} />
+        <EmptyState icon="alert-circle" title={t('Job not found')} />
       </View>
     );
   }
@@ -143,7 +143,7 @@ export default function CustomerProjectScreen() {
     const recent = meaningfulUpdates(customerTimeline, 3);
     const statusTitle = isCompleted ? t('Complete') : t(config.label);
     const statusLine = isCompleted && p.completedAt
-      ? t('Project finished on {date}', { date: formatDate(p.completedAt) })
+      ? t('Job finished on {date}', { date: formatDate(p.completedAt) })
       : p.estimatedEndDate ? t('Estimated completion {date}', { date: formatDate(p.estimatedEndDate) }) : undefined;
     const ringColor = isCompleted ? semantic.success : colors.primary;
     const cardStyle = [styles.ovCard, { backgroundColor: colors.surface, borderColor: colors.borderLight }];
@@ -162,9 +162,9 @@ export default function CustomerProjectScreen() {
         {/* 2. Project Activity: a few meaningful updates only */}
         <View style={cardStyle}>
           <View style={styles.ovHead}>
-            <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1 }]}>{t('Project Activity')}</Text>
+            <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1 }]}>{t('Job Activity')}</Text>
             {customerTimeline.length > 0 && (
-              <Pressable onPress={() => setActiveSection('timeline')} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('View all project activity')} style={styles.viewAll}>
+              <Pressable onPress={() => setActiveSection('timeline')} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('View all job activity')} style={styles.viewAll}>
                 <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('View all')}</Text>
                 <Icon name="chevron-right" size={16} color={colors.primary} />
               </Pressable>
@@ -228,7 +228,7 @@ export default function CustomerProjectScreen() {
 
         {/* 3. Project Details */}
         <View style={cardStyle}>
-          <Text style={[typeScale.headingSmall, { color: colors.textPrimary, marginBottom: spacing.xs }]}>{t('Project Details')}</Text>
+          <Text style={[typeScale.headingSmall, { color: colors.textPrimary, marginBottom: spacing.xs }]}>{t('Job Details')}</Text>
           {p.address && (
             <View style={styles.detailRow}>
               <Icon name="map-pin" size={16} color={colors.textTertiary} />
@@ -267,7 +267,7 @@ export default function CustomerProjectScreen() {
     return (
       <View style={styles.sectionContent}>
         {customerTimeline.length === 0 ? (
-          <EmptyState icon="activity" title={t('No updates yet')} description={t('Project updates and milestones will appear here.')} />
+          <EmptyState icon="activity" title={t('No updates yet')} description={t('Job updates and milestones will appear here.')} />
         ) : (
           <View style={styles.timeline}>
             {customerTimeline.map((event, i) => (
@@ -315,7 +315,7 @@ export default function CustomerProjectScreen() {
     return (
       <View style={styles.sectionContent}>
         {sharedPhotos.length === 0 ? (
-          <EmptyState icon="camera" title={t('No photos shared yet')} description={t('Photos of your project will appear here as work progresses.')} />
+          <EmptyState icon="camera" title={t('No photos shared yet')} description={t('Photos of your job will appear here as work progresses.')} />
         ) : (
           <View style={styles.photoGrid}>
             {sharedPhotos.map(photo => (
@@ -328,7 +328,7 @@ export default function CustomerProjectScreen() {
                 </Pressable>
                 <View style={{ padding: spacing.md }}>
                   <Text style={[typeScale.bodySmall, { color: colors.textPrimary }]}>
-                    {photo.customerDescription ?? photo.caption ?? t('Project photo')}
+                    {photo.customerDescription ?? photo.caption ?? t('Job photo')}
                   </Text>
                   {photo.taskTitle && (
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: spacing.xs }}>
