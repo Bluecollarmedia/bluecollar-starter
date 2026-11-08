@@ -12,11 +12,6 @@
  * Who may write where:
  *   avatars/{myPersonId}/...   any signed-in person (their own picture)
  *   {companyId}/...            active members of that company
- * Snow media is private. Its permission rules already live in the database
- * (storage policies on the "snow-media" bucket), so each file keeps a 1-byte
- * stand-in in that bucket and we ask Supabase, as the signed-in person, whether
- * they may see/write it. R2 holds the real file. Actions: snow-put, snow-sign,
- * snow-delete.
  * Delete: the same prefixes; for company files, staff or the member who
  * uploaded it is not tracked, so owner/admin/manager/lead/worker may delete
  * inside their own company (customers may not).
@@ -103,19 +98,12 @@ const TYPES: Record<string, string> = {
 const MAX_BYTES = 200 * 1024 * 1024;
 const CAN_DELETE = new Set(['owner', 'admin', 'manager', 'lead', 'worker']);
 
-const SNOW_BUCKET = 'snow-media';
-
 /** A private, short-lived read link for an R2 file. */
 async function presignGet(key: string, seconds: number): Promise<string> {
   const url = new URL(`${await locate(key)}/${key}`);
   url.searchParams.set('X-Amz-Expires', String(seconds));
   const signed = await r2.sign(new Request(url.toString(), { method: 'GET' }), { aws: { signQuery: true } });
   return signed.url;
-}
-
-async function inR2(key: string): Promise<boolean> {
-  const res = await r2.fetch(`${await locate(key)}/${key}`, { method: 'HEAD' });
-  return res.ok;
 }
 
 /** Deletes a file wherever it is (both buckets, so a half-moved file leaves nothing behind). */
@@ -126,15 +114,6 @@ async function deleteEverywhere(key: string): Promise<boolean> {
     if (!res.ok && res.status !== 404) ok = false;
   }
   return ok;
-}
-
-/** Whether the 1-byte stand-in for this Snow key is in the Supabase bucket. */
-async function standInExists(key: string): Promise<boolean> {
-  const slash = key.lastIndexOf('/');
-  const { data } = await createClient(SUPABASE_URL, SERVICE_KEY).storage
-    .from(SNOW_BUCKET)
-    .list(key.slice(0, slash), { search: key.slice(slash + 1), limit: 5 });
-  return (data ?? []).some((o) => o.name === key.slice(slash + 1));
 }
 
 function reply(body: unknown, status = 200) {
@@ -252,45 +231,6 @@ serve(async (req: Request) => {
       const urls: Record<string, string> = {};
       await Promise.all(((data ?? []) as string[]).map(async (k) => { urls[k] = await presignGet(k, 3600); }));
       return reply({ urls });
-    }
-
-    if (body.action === 'snow-put') {
-      const key = body.key;
-      const ext = TYPES[String(body.contentType ?? '').toLowerCase()];
-      if (!ext || !safePath(key) || !key.endsWith(`.${ext}`)) return reply({ error: 'Bad file' }, 400);
-      if (!(key.split('/')[0] in me.roles)) return reply({ error: 'You cannot upload there' }, 403);
-      // The database already let this person write the stand-in, so they may write here.
-      if (!(await standInExists(key))) return reply({ error: 'Upload not allowed' }, 403);
-      const url = new URL(`${writeBase(key)}/${key}`);
-      url.searchParams.set('X-Amz-Expires', '600');
-      const signed = await r2.sign(
-        new Request(url.toString(), { method: 'PUT', headers: { 'Content-Type': body.contentType } }),
-        { aws: { signQuery: true } },
-      );
-      return reply({ uploadUrl: signed.url });
-    }
-
-    if (body.action === 'snow-sign') {
-      const keys: string[] = Array.isArray(body.keys) ? body.keys.filter(safePath).slice(0, 200) : [];
-      // Asking Supabase as this person applies the bucket's own permission rules.
-      const userClient = createClient(SUPABASE_URL, ANON_KEY, {
-        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
-      });
-      const { data } = await userClient.storage.from(SNOW_BUCKET).createSignedUrls(keys, 3600);
-      const urls: Record<string, string> = {};
-      await Promise.all((data ?? []).map(async (item) => {
-        if (!item.path || !item.signedUrl || item.error) return; // not allowed to see it
-        urls[item.path] = (await inR2(item.path)) ? await presignGet(item.path, 3600) : item.signedUrl;
-      }));
-      return reply({ urls });
-    }
-
-    if (body.action === 'snow-delete') {
-      const key = body.key;
-      if (!safePath(key)) return reply({ error: 'Bad key' }, 400);
-      // Only once the database let the stand-in go (saved media is kept).
-      if (await standInExists(key)) return reply({ ok: false, kept: true });
-      return reply({ ok: await deleteEverywhere(key) });
     }
 
     if (body.action === 'usage') {

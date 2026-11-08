@@ -10,7 +10,6 @@ import { usePortfolioEnabled } from '@/hooks/usePortfolio';
 
 const TABS: { path: string; label: string; icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'] }[] = [
   { path: '/weather', label: 'Weather', icon: 'weather-partly-cloudy' },
-  { path: '/weather/history', label: 'Storm History', icon: 'history' },
   { path: '/weather/work', label: 'Our Work', icon: 'image-multiple-outline' },
   { path: '/weather/request', label: 'Request', icon: 'clipboard-check-outline' },
   { path: '/weather/account', label: 'Brighton', icon: 'leaf' },
@@ -31,7 +30,7 @@ export function FloatingTabBar() {
     <View style={[styles.wrap, { bottom: Math.max(insets.bottom, 10) + 4 }]} pointerEvents="box-none">
       <View style={styles.bar}>
         {tabs.map((tab) => {
-          const on = tab.path === '/weather' ? pathname === '/weather' || pathname === '/weather/' || pathname.startsWith('/weather/outlook') : pathname.startsWith(tab.path);
+          const on = tab.path === '/weather' ? pathname === '/weather' || pathname === '/weather/' : pathname.startsWith(tab.path);
           return (
             <Pressable
               key={tab.path}

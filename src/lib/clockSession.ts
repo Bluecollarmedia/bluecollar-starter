@@ -1,5 +1,5 @@
-// One definition of what state a clock session is in, for EVERY clock in the app (the workday clock for landscaping and maintenance, and the
-// Snow clock), so no screen can disagree with another about "am I clocked in?". Pure functions; no database, no screens.
+// One definition of what state a clock session is in, for EVERY clock in the app (the workday clock for landscaping and maintenance),
+// so no screen can disagree with another about "am I clocked in?". Pure functions; no database, no screens.
 //
 //   current  = open, and recent enough that it can be today's work.
 //   closed   = has an end time.
@@ -11,14 +11,13 @@ import { getLanguage, tr } from '@/i18n';
 
 export type SessionState = 'current' | 'closed' | 'stale' | 'review';
 
-/** The workday clock's default (the owner's "open workday hours" setting can say otherwise). Storm shifts run through the night, so Snow waits longer. */
+/** The workday clock's default (the owner's "open workday hours" setting can say otherwise). */
 export const WORKDAY_STALE_HOURS = 14;
-export const SNOW_STALE_HOURS = 20;
 
 export interface SessionLike {
   clockInAt: string;
   clockOutAt?: string;
-  /** Set by the database when it flagged this session (workday status "needs_review", or a Snow shift's flagged_at). */
+  /** Set by the database when it flagged this session (workday status "needs_review"). */
   flagged?: boolean;
 }
 

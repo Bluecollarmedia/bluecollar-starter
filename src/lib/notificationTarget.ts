@@ -36,8 +36,6 @@ export function ownerNotificationTarget(n: NotificationLike): OwnerTarget | null
   if (type === 'materials') return `/(owner)/projects/${id}?section=materials`;
   // A truck's maintenance reminder opens that truck.
   if (type === 'truck') return `/(owner)/more/trucks/${id}`;
-  // A snow stop alert (update 31) opens the snow dashboard, where the storm's progress lives.
-  if (type === 'snow_visit' || type === 'snow_route') return '/snow/owner';
   return null;
 }
 

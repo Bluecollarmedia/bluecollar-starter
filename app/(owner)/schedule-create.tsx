@@ -70,7 +70,7 @@ function dateToTimeStr(d: Date): string {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
-/** Repeating work belongs to Maintenance contracts. A project or a one-off job (a patio, a construction job, a snow run) is scheduled day by day. */
+/** Repeating work belongs to Maintenance contracts. A project or a one-off job (a patio, a construction job) is scheduled day by day. */
 const ALLOW_REPEAT = false;
 
 export default function ScheduleCreateScreen() {

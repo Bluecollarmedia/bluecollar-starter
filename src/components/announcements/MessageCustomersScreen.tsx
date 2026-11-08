@@ -1,7 +1,7 @@
 /**
- * The owner writes a message to their customers (landscaping, maintenance and Snow). Each customer gets a push notification and
+ * The owner writes a message to their customers (landscaping and maintenance). Each customer gets a push notification and
  * a banner on their home screen, like an announcement to workers but for customers. Below the form, the messages already sent.
- * Used by both the landscaping owner (More > Announcements) and the Snow Mode owner (More).
+ * Used by the owner (More > Announcements).
  */
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Pressable, StyleSheet, Alert, Platform } from 'react-native';
@@ -74,7 +74,7 @@ export function MessageCustomersPanel() {
         </View>
         {help ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{help}</Text> : null}
 
-        <Input label="Title" value={title} onChangeText={setTitle} placeholder="For example: Plowing starts at 4 AM" maxLength={TITLE_MAX} />
+        <Input label="Title" value={title} onChangeText={setTitle} placeholder="For example: Crews start at 7 AM tomorrow" maxLength={TITLE_MAX} />
         <Input label="Message" value={body} onChangeText={setBody} placeholder="Write whatever you want your customers to know." multiline maxLength={BODY_MAX} containerStyle={{ minHeight: 140 }} />
 
         {note ? <InlineNotice icon={note.tone === 'success' ? 'check-circle' : 'alert-triangle'} tone={note.tone === 'success' ? 'success' : 'error'} text={note.text} /> : null}
@@ -107,7 +107,7 @@ export function MessageCustomersPanel() {
   );
 }
 
-/** Message Customers as its own screen (Snow Mode's More opens this one). */
+/** Message Customers as its own screen. */
 export function MessageCustomersScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();

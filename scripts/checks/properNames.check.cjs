@@ -22,6 +22,6 @@ check('5 every person everywhere (lists, schedules, messages, quotes) and every 
 check('6 the signed-in person\'s own name (greetings, profile) is capitalised', /firstName: properName\(p\.first_name \?\? ''\)/.test(read('src/providers/AuthProvider.tsx')));
 check('7 "Welcome Back" has a capital B on the customer home, sign-in and the welcome animation, with the name capitalised',
   /\{t\('Welcome Back'\)\}<\/Text>/.test(read('app/(customer)/(tabs)/index.tsx')) && /Welcome Back/.test(read('app/(auth)/login.tsx')) && /\{t\('Welcome Back'\)\}\{greetName/.test(read('src/components/branding/WelcomeOverlay.tsx')) && /properName\(greetName\)/.test(read('src/components/branding/WelcomeOverlay.tsx')));
-check('8 the customer home capitalises property names too', (read('src/lib/customerHome.ts').match(/properName\(/g) || []).length >= 3);
+check('8 the customer home capitalises property names too', (read('src/lib/customerHome.ts').match(/properName\(/g) || []).length >= 2);
 console.log(bad ? '\n' + bad + ' failed' : '\nall passed');
 process.exit(bad ? 1 : 0);

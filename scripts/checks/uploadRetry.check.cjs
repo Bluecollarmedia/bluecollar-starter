@@ -42,8 +42,8 @@ function load(script) {
 
   const media = read('src/lib/media.ts');
   const walk = (d) => fs.readdirSync(path.join(__dirname, '../..', d), { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(`${d}/${e.name}`) : /\.(ts|tsx)$/.test(e.name) ? [`${d}/${e.name}`] : []);
-  const bypass = [...walk('src'), ...walk('app')].filter((f) => !/lib\/(media|snowMedia|uploadFile|storage)\.ts$|hooks\/useStorage\.ts$/.test(f) && /\.storage\.from\(|createUploadTask|uploadToPresignedUrl/.test(read(f)));
-  check('7 no screen has its own upload: everything goes through the shared uploader (profile, license and ID photos, worker photos, projects, tasks, trucks, notes, issues, Snow)', bypass.length === 0, bypass.join(', '));
+  const bypass = [...walk('src'), ...walk('app')].filter((f) => !/lib\/(media|uploadFile|storage)\.ts$|hooks\/useStorage\.ts$/.test(f) && /\.storage\.from\(|createUploadTask|uploadToPresignedUrl/.test(read(f)));
+  check('7 no screen has its own upload: everything goes through the shared uploader (profile, license and ID photos, worker photos, projects, tasks, trucks, notes, issues)', bypass.length === 0, bypass.join(', '));
   check('8 the shared uploader sends through the phone\'s own upload, with the retry', /putFile\(localUri, data\.uploadUrl, contentType/.test(media) && /RETRY_DELAYS_MS/.test(read('src/lib/uploadFile.ts')));
   console.log(bad ? `\n${bad} failed` : '\nall passed');
   process.exit(bad ? 1 : 0);

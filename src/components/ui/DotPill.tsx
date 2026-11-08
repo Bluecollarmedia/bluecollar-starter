@@ -3,8 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
 import { typeScale } from '@/theme/typography';
 import { radius, spacing } from '@/theme/spacing';
 
-/** A small status badge with a dot, in the Snow palette colours it is given (see snowStatus in src/theme/colors.ts). */
-export function SnowPill({ label, fg, bg }: { label: string; fg: string; bg: string }) {
+/** A small status badge with a dot, in the colours it is given. */
+export function DotPill({ label, fg, bg }: { label: string; fg: string; bg: string }) {
   return (
     <View style={[styles.pill, { backgroundColor: bg }]} accessible accessibilityLabel={label}>
       <View style={[styles.dot, { backgroundColor: fg }]} />

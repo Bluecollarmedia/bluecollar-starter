@@ -1,6 +1,6 @@
 /**
  * A customer's page: their properties, each with what is set up there (landscaping projects, Maintenance). Add a property once
- * here (or from any form); it is then available everywhere, including Snow. Nothing about the customer is typed again.
+ * here (or from any form); it is then available everywhere. Nothing about the customer is typed again.
  */
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Keyboard } from 'react-native';
@@ -45,7 +45,7 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
 
       {properties.length === 0 && !adding ? (
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>
-          No saved properties yet. Add one here, or pick this customer in any project, Maintenance or Snow form and their address is saved automatically.
+          No saved properties yet. Add one here, or pick this customer in any project or Maintenance form and their address is saved automatically.
         </Text>
       ) : null}
 

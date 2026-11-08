@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
-import { useRouter, usePathname } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
 import { Avatar, Button, EmptyState } from '@/components/ui';
@@ -20,10 +20,7 @@ export default function CrewsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { crews } = useCrews();
-  // Snow Mode keeps its own screens (the root guard bounces (owner) screens while it is on).
-  const base = usePathname().startsWith('/snow') ? '/snow/owner' : '/(owner)';
-
-  const addCrew = () => router.push(`${base}/crew-edit` as any);
+  const addCrew = () => router.push('/(owner)/crew-edit' as any);
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
@@ -54,7 +51,7 @@ export default function CrewsScreen() {
           return (
             <Pressable
               key={c.id}
-              onPress={() => router.push(`${base}/crew-edit?id=${c.id}` as any)}
+              onPress={() => router.push(`/(owner)/crew-edit?id=${c.id}` as any)}
               style={({ pressed }) => [styles.crewCard, { backgroundColor: colors.surface }, shadow.sm, pressed && { opacity: 0.9 }]}
               accessibilityRole="button"
               accessibilityLabel={`${c.name}, ${people.length} worker${people.length === 1 ? '' : 's'}`}

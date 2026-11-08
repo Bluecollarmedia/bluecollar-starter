@@ -15,7 +15,7 @@ check('2 the ID folder is private and per person', w.idFolder('abc') === 'ids/ab
 check('3 a saved ID key must be inside that person\'s own folder', w.isIdKeyFor('abc', 'ids/abc/x.jpg') && !w.isIdKeyFor('abc', 'ids/other/x.jpg') && !w.isIdKeyFor('abc', 'ids/abc/../other/x.jpg') && !w.isIdKeyFor('abc', 'https://x.test/ids/abc/x.jpg'));
 
 const join = read('app/invite/[token].tsx');
-check('4 sign-up (workers, not the Snow request) offers hoodie size and ID and saves them right after joining',
+check('4 sign-up (workers) offers hoodie size and ID and saves them right after joining',
   /<WorkerExtrasFields/.test(join) && /isWorker \? \(/.test(join) && /saveDetailsForCurrentUser\(\{ hoodieSize: hoodie, idUri \}\)/.test(join));
 const edit = read('src/components/account/EditProfileScreen.tsx');
 check('5 Edit Profile (workers) lets them add, replace or remove the ID and change the size later',

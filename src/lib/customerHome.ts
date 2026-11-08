@@ -1,15 +1,15 @@
 import { properName } from './names';
 
 // What the customer's home (Projects) screen lists, built only from what the customer is actually linked to: their landscaping
-// projects, maintenance properties and snow properties. Pure, no network. Nothing is invented: no placeholder rows, no made-up
+// projects and maintenance properties. Pure, no network. Nothing is invented: no placeholder rows, no made-up
 // percentages, and a property is only "a property" when an address says so.
 
-export type HomeKind = 'project' | 'maintenance' | 'snow';
+export type HomeKind = 'project' | 'maintenance';
 
 export interface HomeItem {
   key: string;
   kind: HomeKind;
-  /** The label on the card: "Project", "Maintenance" or "Snow". */
+  /** The label on the card: "Project" or "Maintenance". */
   typeLabel: string;
   name: string;
   /** Street and town as saved, for telling properties apart. May be empty. */
@@ -32,7 +32,7 @@ export interface ProjectLike {
 }
 export interface PropertyLike { id: string; name: string; address?: string }
 
-const TYPE_LABEL: Record<HomeKind, string> = { project: 'Project', maintenance: 'Maintenance', snow: 'Snow' };
+const TYPE_LABEL: Record<HomeKind, string> = { project: 'Project', maintenance: 'Maintenance' };
 
 /** "111 Spruce St, Lakewood NJ" for display. */
 export function addressLine(p: { address?: string; city?: string; state?: string }): string {
@@ -43,7 +43,7 @@ export function addressLine(p: { address?: string; city?: string; state?: string
 
 /** The same property written differently ("111 Spruce St." / "111 spruce street") gets the same key; no address, no key. */
 export function propertyKeyOf(address?: string): string {
-  // Street only (before any comma): maintenance and snow addresses carry no separate zip, so a project at the same street matches.
+  // Street only (before any comma): maintenance addresses carry no separate zip, so a project at the same street matches.
   const street = (address ?? '').split(',')[0].toLowerCase().replace(/[.,#]/g, ' ').replace(/\b(street)\b/g, 'st').replace(/\b(avenue)\b/g, 'ave').replace(/\b(road)\b/g, 'rd').replace(/\b(drive)\b/g, 'dr').replace(/\b(lane)\b/g, 'ln').replace(/\s+/g, ' ').trim();
   return street;
 }
@@ -51,10 +51,8 @@ export function propertyKeyOf(address?: string): string {
 export function buildHomeItems(input: {
   projects: ProjectLike[];
   maintenance: PropertyLike[];
-  snow: PropertyLike[];
   latestUpdateFor?: (projectId: string) => { title: string; at: string } | undefined;
   maintenanceNote?: string;
-  snowNote?: (address?: string) => string;
 }): HomeItem[] {
   const out: HomeItem[] = [];
   for (const p of input.projects) {
@@ -72,12 +70,6 @@ export function buildHomeItems(input: {
     out.push({
       key: `maintenance:${m.id}`, kind: 'maintenance', typeLabel: TYPE_LABEL.maintenance, name: properName(m.name),
       address: (m.address ?? '').trim(), propertyKey: propertyKeyOf(m.address), status: 'active', note: input.maintenanceNote ?? 'Visits and photos',
-    });
-  }
-  for (const s of input.snow) {
-    out.push({
-      key: `snow:${s.id}`, kind: 'snow', typeLabel: TYPE_LABEL.snow, name: properName(s.name),
-      address: (s.address ?? '').trim(), propertyKey: propertyKeyOf(s.address), status: 'active', note: input.snowNote?.(s.address) ?? 'Plowing, shoveling and salting updates',
     });
   }
   return out;

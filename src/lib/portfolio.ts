@@ -61,7 +61,7 @@ export interface PublicPortfolio {
 }
 
 /** The tags an owner can put on a post (the same words as the circles at the top). */
-export const TAG_CHOICES = ['Pavers', 'Turf', 'Lighting', 'Planting', 'Commercial', 'Snow'] as const;
+export const TAG_CHOICES = ['Pavers', 'Turf', 'Lighting', 'Planting', 'Commercial'] as const;
 
 export const MAX_VIDEO_S = 180;
 /** A post holds up to 10 photos and videos (like Instagram). */
@@ -241,7 +241,7 @@ export function moveItem<T>(list: T[], from: number, to: number): T[] {
 export function requestNoteFor(post: Pick<PortfolioPost, 'town' | 'caption' | 'tags'>): { services: string[]; note: string } {
   const map: Record<string, string> = {
     Pavers: 'Pavers, Patios & Walkways', Turf: 'Turf & Sod Installation', Lighting: 'Lighting & Planting', Planting: 'Lighting & Planting',
-    Commercial: 'Commercial Maintenance', Snow: 'Snow & Storm Response',
+    Commercial: 'Commercial Maintenance',
   };
   const services = [...new Set(post.tags.map((t) => map[t]).filter(Boolean))];
   const where = post.town ? ` in ${post.town}` : '';

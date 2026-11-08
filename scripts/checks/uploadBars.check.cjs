@@ -37,7 +37,7 @@ check('14 a shrunk video is copied with the legacy file API and checked to be a 
 const coverEd = read('src/components/work/CoverEditor.tsx');
 check('15 the cover editor closes its crop sheet before handing the result on (no blank white sheet), for a cropped picture and for "automatic" alike', /function finish\(croppedUri: string \| null\)/.test(coverEd) && /setStep\('choose'\);\s*setTimeout\(\(\) => onDone\(croppedUri\), 450\)/.test(coverEd) && /onPress=\{\(\) => finish\(null\)\}/.test(coverEd) && /onDone=\{finish\}/.test(coverEd) && !/onDone=\{\(uri\) => onDone\(uri\)\}/.test(coverEd));
 check('16 a reel whose video has no still frame gets a cover made from the video when it is saved', /if \(!cover && reel\)/.test(read('src/components/work/PostEditorScreen.tsx')) && /videoFrameToFile\(first\.url, 0\.5\)/.test(read('src/components/work/PostEditorScreen.tsx')));
-check('11 task, maintenance and Snow photos already had their own bar on each tile (unchanged)', /width: `\$\{pct\}%`/.test(read('src/components/media/MediaJobOverlay.tsx')));
+check('11 task and maintenance photos already had their own bar on each tile (unchanged)', /width: `\$\{pct\}%`/.test(read('src/components/media/MediaJobOverlay.tsx')));
 
 console.log(bad ? `\n${bad} of ${n} FAILED` : `\nAll ${n} passed`);
 process.exit(bad ? 1 : 0);

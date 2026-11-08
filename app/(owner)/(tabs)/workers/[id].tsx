@@ -125,7 +125,7 @@ export default function WorkerDetailScreen() {
     );
   }
 
-  /** Brings a deactivated worker back (Landscaping access; Snow and Maintenance can be set on Team Access). Old admin rights are never restored. */
+  /** Brings a deactivated worker back (Landscaping access; Maintenance can be set under Works On). Old admin rights are never restored. */
   function handleReactivate() {
     Alert.alert(
       `Reactivate ${p.firstName} ${p.lastName}?`,
@@ -135,7 +135,7 @@ export default function WorkerDetailScreen() {
         {
           text: 'Reactivate',
           onPress: async () => {
-            const why = await team.reactivate(p.id, true, worksOnMaintenance(w.member) ? 'maintenance' : 'landscaping', []);
+            const why = await team.reactivate(p.id, worksOnMaintenance(w.member) ? 'maintenance' : 'landscaping');
             if (why) Alert.alert("Couldn't reactivate", why);
             else haptics.success();
           },

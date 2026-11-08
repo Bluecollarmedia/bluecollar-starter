@@ -8,7 +8,7 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
   const server = await import(pathToFileURL(path.join(root, 'supabase', 'functions', '_shared', 'privateKeys.ts')).href);
   const client = await import(pathToFileURL(path.join(root, 'src', 'lib', 'privateMedia.ts')).href).catch(() => null);
   const sample = {
-    // ID photos are the only private files now. Maintenance and Snow photos are public (pictures of properties and work).
+    // ID photos are the only private files now. Maintenance and other work photos are public (pictures of properties and work).
     'ids/person1/a.jpg': true,
     'co1/maintenance/prop1/a.jpg': false, 'co1/reference/svc1/a.mp4': false, 'co1/completion/visit1/a.jpg': false,
     'co1/projects/p1/a.jpg': false, 'avatars/person1/a.jpg': false, 'co1/trucks/t1/a.pdf': false, 'co1/issues/x/a.jpg': false,
@@ -29,7 +29,7 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
   }
   const fs = require('node:fs');
   const fn = fs.readFileSync(path.join(root, 'supabase/functions/media/index.ts'), 'utf8');
-  check('new private files are written to the private bucket, not the public one', /writeBase\(key\)/.test(fn) && (fn.match(/writeBase\(key\)/g) || []).length >= 2);
+  check('new private files are written to the private bucket, not the public one', /writeBase\(key\)/.test(fn) && (fn.match(/writeBase\(key\)/g) || []).length >= 1);
   check('with no private bucket configured everything behaves as before (one bucket)', /PRIVATE_BUCKET_URL && isPrivateKey\(key\) \? PRIVATE_BUCKET_URL : BUCKET_URL/.test(fn));
   check('reading/signing finds a file in the private bucket first, then the old one (so moving files across breaks nothing)', /async function locate/.test(fn) && /return BUCKET_URL;/.test(fn));
   check('deleting removes a file from both buckets', /deleteEverywhere/.test(fn));

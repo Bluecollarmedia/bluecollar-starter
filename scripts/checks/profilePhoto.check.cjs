@@ -11,5 +11,5 @@ check('4 nothing throws out of the helper (try/catch returns an error result)', 
 check('5 the picked picture is still cut to a square', /squareAvatarUri\(a\.uri, a\.width, a\.height\)/.test(lib));
 check('6 Edit Profile shows errors from picking; sign-up shows them too', /useProfilePhoto\(setAvatarUrl, setPermissionError\)/.test(edit) && /useProfilePhoto\(setPhotoUri, setError\)/.test(join));
 check('7 no screen calls the picker directly any more (they all go through the crop flow)', !/launch(Camera|ImageLibrary)Async/.test(edit + join) && !/chooseProfilePhoto\(/.test(edit + join));
-check('8 all five Edit Profile entry points use the shared screen', ['app/(customer)/edit-profile.tsx', 'app/(owner)/edit-profile.tsx', 'app/(worker)/edit-profile.tsx', 'app/snow/owner/edit-profile.tsx', 'app/snow/worker/edit-profile.tsx'].every((f) => /EditProfileScreen/.test(read(f))));
+check('8 all three Edit Profile entry points use the shared screen', ['app/(customer)/edit-profile.tsx', 'app/(owner)/edit-profile.tsx', 'app/(worker)/edit-profile.tsx'].every((f) => /EditProfileScreen/.test(read(f))));
 console.log(bad ? `\n${bad} failed` : '\nall passed'); process.exit(bad ? 1 : 0);

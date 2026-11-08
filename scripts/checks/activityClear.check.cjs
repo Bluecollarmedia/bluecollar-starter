@@ -43,33 +43,22 @@ check('12 for a project the wording says "activity" and does not promise a note'
 
 (async () => {
   const range = { from: L(2026, 9, 19), to: L(2026, 9, 20) };
-  let r = await data.previewSnowClear(range, 'archive');
-  check('13 the preview asks the database for a dry run and returns the count', r.ok && r.data === 3 && calls[0].fn === 'snow_clear_activity' && calls[0].args.p_dry_run === true && calls[0].args.p_mode === 'archive' && calls[0].args.p_from === range.from, JSON.stringify(calls));
-  calls = [];
-  r = await data.runSnowClear(range, 'delete');
-  check('14 the real run sends the mode and period and no dry-run flag', r.ok && calls[0].args.p_mode === 'delete' && !('p_dry_run' in calls[0].args), JSON.stringify(calls));
-  rpcResult = { data: null, error: { message: 'Could not find the function public.snow_clear_activity in the schema cache' } };
-  r = await data.runSnowClear(range, 'archive');
+  let r = await data.previewProjectClear('p1', range);
+  check('13 the preview asks the database for a dry run and returns the count', r.ok && r.data === 3 && calls[0].fn === 'clear_project_activity' && calls[0].args.p_dry_run === true && calls[0].args.p_project_id === 'p1' && calls[0].args.p_from === range.from, JSON.stringify(calls));
+  rpcResult = { data: null, error: { message: 'Could not find the function public.clear_project_activity in the schema cache' } };
+  r = await data.runProjectClear('p1', range);
   check('15 before update 51 a clear message says what is missing', !r.ok && /update 51/.test(r.error), JSON.stringify(r));
   rpcResult = { data: null, error: { message: 'Only the owner or an admin can clear the activity log.' } };
-  r = await data.runSnowClear(range, 'archive');
+  r = await data.runProjectClear('p1', range);
   check('16 a refusal from the database is shown as it is', !r.ok && /owner or an admin/.test(r.error));
-  rpcResult = { data: [{ year: 2026 }, { year: 2025 }], error: null };
-  check('17 the years list', JSON.stringify(await data.loadSnowLogYears()) === '[2026,2025]');
-  rpcResult = { data: null, error: { message: 'nope' } };
-  check('18 if the years list fails it is just empty', (await data.loadSnowLogYears()).length === 0);
   calls = []; rpcResult = { data: { count: 2 }, error: null };
   r = await data.runProjectClear('p1', range);
-  check('19 clearing a project\'s activity sends the project and period', r.ok && r.data === 2 && calls[0].fn === 'clear_project_activity' && calls[0].args.p_project_id === 'p1', JSON.stringify(calls));
+  check('19 clearing a project\'s activity sends the project and period, and no dry-run flag', r.ok && r.data === 2 && calls[0].fn === 'clear_project_activity' && calls[0].args.p_project_id === 'p1' && !('p_dry_run' in calls[0].args), JSON.stringify(calls));
 
   // wiring
-  const hook = read('src/hooks/useSnowActivity.ts');
-  const screen = read('app/(owner)/snow-activity.tsx');
   const proj = read('app/(owner)/(tabs)/projects/[id].tsx');
-  check('20 the feed only sends p_archived when the Archived view is on (the normal view keeps working before update 51)', /\.\.\.\(f\.archived \? \{ p_archived: true \} : \{\}\)/.test(hook));
-  check('21 Snow Activity: a Clear button, an Archived switch, and the sheet (archive/delete, or restore/delete when viewing archived)', /accessibilityLabel="Clear or archive the log"/.test(screen) && /accessibilityLabel="Show archived entries"/.test(screen) && /<ClearLogSheet/.test(screen) && /\['restore', 'delete'\] : \['archive', 'delete'\]/.test(screen));
   check('22 the project Activity Log has a Clear button that can only delete', /accessibilityLabel="Clear this project's activity"/.test(proj) && /modes=\{\['delete'\]\}/.test(proj));
-  check('23 both screens say it worked and reload', /onDone=\{\(msg\) => \{ setClearedNote\(msg\); reload\(\); \}\}/.test(screen) && /refreshStore\('project_history'\)/.test(proj));
+  check('23 the project screen says it worked and reloads', /refreshStore\('project_history'\)/.test(proj));
   console.log(bad ? `\n${bad} failed` : '\nall passed');
   process.exit(bad ? 1 : 0);
 })();

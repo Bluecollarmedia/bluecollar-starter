@@ -53,8 +53,8 @@ check('24 the words say post and reel, and say that posts are shown square and c
 const hs = read('src/components/work/HighlightsScreen.tsx');
 check('25 Highlights: name (short), circle picture from the owner\'s photos or the first post, automatic by tag or hand-picked, reorder, delete (asked first)', /HIGHLIGHT_NAME_MAX/.test(hs) && /Choose the circle picture/.test(hs) && /Automatic, by tag/.test(hs) && /I pick the posts/.test(hs) && /saveHighlightOrder\(ids\)/.test(hs) && /confirmAction\('Delete this highlight\?'/.test(hs) && /uploadPortfolioPhoto\(kept, db\.companyId, 'covers'\)/.test(hs));
 const exists = (p) => fs.existsSync(path.join(__dirname, '../..', p));
-const rows = [['app/(owner)', '_layout.tsx', '(tabs)/more/index.tsx'], ['app/snow/owner', '_layout.tsx', '(tabs)/more.tsx']];
-check('26 the three owner screens exist in both owner areas, are registered, and More has an "Our Work" row', rows.every(([d, l, m]) => ['our-work', 'our-work-post', 'our-work-highlights'].every((s) => exists(`${d}/${s}.tsx`) && new RegExp(`name="${s}"`).test(read(`${d}/${l}`))) && /label="Our Work"|title="Our Work"/.test(read(`${d}/${m}`))));
+const rows = [['app/(owner)', '_layout.tsx', '(tabs)/more/index.tsx']];
+check('26 the three owner screens exist in the owner area, are registered, and More has an "Our Work" row', rows.every(([d, l, m]) => ['our-work', 'our-work-post', 'our-work-highlights'].every((s) => exists(`${d}/${s}.tsx`) && new RegExp(`name="${s}"`).test(read(`${d}/${l}`))) && /label="Our Work"|title="Our Work"/.test(read(`${d}/${m}`))));
 
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

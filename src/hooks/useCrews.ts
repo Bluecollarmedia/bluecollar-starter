@@ -3,7 +3,7 @@ import { db, useDb, insertRow, updateRow, deleteRow, rowsOf } from '@/data/store
 import type { Crew, CrewMember } from '@/types/crew';
 import { isMaintenanceWorker } from '@/hooks/useMaintenanceCrew';
 
-/** Crews: named groups of workers (e.g. "Maintenance Crew", "Snow Crew"). A worker can be in
+/** Crews: named groups of workers (e.g. "Maintenance Crew", "Install Crew"). A worker can be in
  * several crews. Owner/admin can change them; everyone in the company can see. */
 export function useCrews() {
   const v = useDb();

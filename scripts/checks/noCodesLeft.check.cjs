@@ -18,21 +18,14 @@ function walk(dir, out = []) {
 const files = [...walk(path.join(root, 'app')), ...walk(path.join(root, 'src'))];
 const hits = (re) => files.filter((f) => re.test(fs.readFileSync(f, 'utf8'))).map((f) => path.relative(root, f));
 
-const codeWords = /team code|snow code|signup code|join_with_code|lookup_team_code|lookup_any_code|lookup_snow_code|request_snow_access|approve_join_request|approve_snow_access|approve a new join request|join a team|Pending Requests|\bjoin request/i;
-const codeHits = hits(codeWords).filter((f) => !/snowActivity\.ts$/.test(f)); // old activity-log rows keep their historic label
-check('1 no join/team/snow codes, requests or "Join a Team" anywhere in the app code or wording', codeHits.length === 0, codeHits.join(', '));
+const codeWords = /team code|signup code|join_with_code|lookup_team_code|lookup_any_code|approve_join_request|approve a new join request|join a team|Pending Requests|\bjoin request/i;
+const codeHits = hits(codeWords);
+check('1 no join/team codes, requests or "Join a Team" anywhere in the app code or wording', codeHits.length === 0, codeHits.join(', '));
 
 check('2 the old code and request screens are gone', ['app/(auth)/join-team.tsx', 'app/(auth)/customer-access.tsx', 'app/(onboarding)/pending-approval.tsx', 'app/(onboarding)/declined.tsx',
-  'app/(owner)/(tabs)/more/pending-requests.tsx', 'app/(owner)/(tabs)/more/join-settings.tsx', 'app/(worker)/snow-access.tsx'].every((f) => !fs.existsSync(path.join(root, f))));
-check('3 there is no second route screen', !fs.existsSync(path.join(root, 'app/snow/owner/route')));
+  'app/(owner)/(tabs)/more/pending-requests.tsx', 'app/(owner)/(tabs)/more/join-settings.tsx'].every((f) => !fs.existsSync(path.join(root, f))));
 
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
-const storm = read('src/components/snow/storms/StormDetailScreen.tsx');
-check('4 the storm screen has no History section and no stats card on a draft', !/>History</.test(storm) && /storm\.status !== 'draft'/.test(storm));
-const dash = read('src/components/snow/dashboard/SnowDashboardScreen.tsx');
-check('5 the dashboard has no empty "Needs attention", no "clocked in now" line, and "View all routes" once', !/Nothing is waiting/.test(dash) && !/clocked in now/.test(dash) && (dash.match(/View all routes/g) || []).length <= 2 && !/See the full route list/.test(dash));
-const prop = read('app/(owner)/snow-property.tsx');
-check('6 the Snow property screen has no customer-notification card and no "Other contacts"', !/NOTIFICATIONS/.test(prop) && !/OTHER CONTACTS/.test(prop) && !/Add Contact/.test(prop) && !/OwnerPropertyNotifications/.test(prop));
 const setup = read('src/hooks/useCompanySetup.ts');
 check('7 the setup checklist talks about invite links, not a team code', /private link/.test(setup) && !/team code/i.test(setup));
 {

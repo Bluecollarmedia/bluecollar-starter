@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Alert, Platform } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { KEYBOARD_GAP } from '@/components/layout/ScreenContainer';
-import { useRouter, useLocalSearchParams, usePathname } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon } from '@/components/ui/Icon';
 import { Input, Avatar, CrewLabel, Switch, InlineNotice } from '@/components/ui';
@@ -34,8 +34,6 @@ export default function CrewEditScreen() {
   const [name, setName] = useState(existing?.name ?? '');
   const [color, setColor] = useState(existing?.color ?? CREW_COLORS[crews.length % CREW_COLORS.length]);
   const [memberIds, setMemberIds] = useState<string[]>(existing?.memberIds ?? []);
-  // Snow Mode shows the same screen without the Maintenance Crew switch.
-  const inSnow = usePathname().startsWith('/snow');
   const [isMaintenance, setIsMaintenance] = useState(!!existing?.isMaintenance);
   const otherMaintenance = maintenanceCrew && maintenanceCrew.id !== existing?.id ? maintenanceCrew : undefined;
 
@@ -135,7 +133,6 @@ export default function CrewEditScreen() {
           </View>
         </View>
 
-        {!inSnow && (
         <View style={[styles.card, { backgroundColor: colors.surface }, shadow.sm]}>
           <View style={styles.cardHeader}>
             <View style={{ flex: 1, gap: 2 }}>
@@ -150,7 +147,6 @@ export default function CrewEditScreen() {
             <InlineNotice icon="info" tone="warning" text={`${otherMaintenance.name} is the Maintenance Crew now. Saving moves that to this crew.`} />
           )}
         </View>
-        )}
 
         <View style={[styles.card, { backgroundColor: colors.surface }, shadow.sm]}>
           <View style={styles.cardHeader}>

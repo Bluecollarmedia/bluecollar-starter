@@ -44,7 +44,6 @@ check('UV is shown only when there is a figure of 1 or more', e[0].props.uv === 
 check('a missing temperature is an en dash, never 0', first(payload({ current: { tempF: null, text: '', icon: 'sun', isDaytime: true }, hourly: hours({ tempF: null }) })).temp === '–');
 check('missing high and low show nothing rather than 0', first(payload({ today: { highF: null, lowF: null } })).highLow === '');
 
-check('a posted storm outlook never appears on the widgets (the owner does not want it there)', !('storm' in first(payload())) && !/STORM OUTLOOK|\.storm/.test(read('src/widgets/BrightonWeather.tsx')) && !/storm/i.test(read('src/data/widgetSync.ts').replace(/\/\*[\s\S]*?\*\//g, '')));
 
 const bare = buildWidgetEntries(payload({ hourly: [] }), NOW, null);
 check('with no hourly forecast there is one honest entry from the current conditions', bare.length === 1 && bare[0].props.temp === '41°' && bare[0].props.hours.length === 0);

@@ -13,11 +13,11 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
 
 (async () => {
   const m = await import(pathToFileURL(path.join(root, 'src', 'lib', 'legalPaths.ts')).href);
-  check('1 each area has its own Legal & Support page: owner, worker, customer and Snow', m.legalHubPath('(owner)') === '/(owner)/legal-support' && m.legalHubPath('(worker)') === '/(worker)/legal-support' && m.legalHubPath('(customer)') === '/(customer)/legal-support' && m.legalHubPath('snow') === '/snow/legal-support' && m.legalHubPath(undefined) === '/legal');
+  check('1 each area has its own Legal & Support page: owner, worker and customer', m.legalHubPath('(owner)') === '/(owner)/legal-support' && m.legalHubPath('(worker)') === '/(worker)/legal-support' && m.legalHubPath('(customer)') === '/(customer)/legal-support' && m.legalHubPath(undefined) === '/legal');
   check('2 the page lists Privacy Policy, Terms of Use and Help & Support, in that order', m.LEGAL_ROWS.map((r) => r.title).join('|') === 'Privacy Policy|Terms of Use|Help & Support');
   check('3 a document address is the area\'s page plus the document', m.legalDocPath('/(customer)/legal-support', 'privacy') === '/(customer)/legal-support/privacy' && m.isLegalSlug('terms') && !m.isLegalSlug('nope'));
 
-  for (const [area, hub] of [['app/(owner)', '/(owner)/legal-support'], ['app/(worker)', '/(worker)/legal-support'], ['app/(customer)', '/(customer)/legal-support'], ['app/snow', '/snow/legal-support']]) {
+  for (const [area, hub] of [['app/(owner)', '/(owner)/legal-support'], ['app/(worker)', '/(worker)/legal-support'], ['app/(customer)', '/(customer)/legal-support']]) {
     const idx = exists(`${area}/legal-support/index.tsx`) ? read(`${area}/legal-support/index.tsx`) : '';
     const doc = exists(`${area}/legal-support/[slug].tsx`) ? read(`${area}/legal-support/[slug].tsx`) : '';
     check(`4 ${area} has the Legal & Support page and its documents, inside the area`, idx.includes(`basePath="${hub}"`) && /LegalDocRoute/.test(doc), hub);
@@ -40,7 +40,6 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
   check('10 the public /legal pages stay (they are the web address for the App Store privacy policy field) including a public hub', exists('app/legal/privacy.tsx') && exists('app/legal/terms.tsx') && exists('app/legal/support.tsx') && exists('app/legal/index.tsx'));
 
   const layout = read('app/_layout.tsx');
-  check('11 the Snow Legal & Support pages are treated as part of the Snow area (the sign-in redirect does not bounce them)', /const inLegal = s1 === 'legal-support'/.test(layout) && /s1 === role \|\| inLegal/.test(layout) && /s1 === 'notice' \|\| inLegal/.test(layout));
 
   const acct = read('app/(customer)/(tabs)/account.tsx');
   check('12 the customer Account profile card keeps its avatar and arrow off the card\'s edges (side padding like every other row)', /paddingVertical: spacing\.md, paddingHorizontal: spacing\.md/.test(acct));
@@ -48,8 +47,6 @@ const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 
   const padded = [
     ['app/(owner)/(tabs)/more/settings.tsx', /hero: \{[^}]*padding: spacing\.lg/s],
     ['app/(worker)/(tabs)/settings.tsx', /profileCard: \{[^}]*padding: spacing\.lg/s],
-    ['src/components/snow/SnowWorkerSettings.tsx', /profile: \{[^}]*padding: spacing\.lg/s],
-    ['app/snow/owner/(tabs)/more.tsx', /row: \{[^}]*paddingHorizontal: spacing\.lg/s],
     ['app/(owner)/customers/[id].tsx', /profileCard: \{[^}]*padding: spacing\.md/s],
     ['app/(owner)/(tabs)/workers/[id].tsx', /profileCard: \{[^}]*padding: spacing\.md/s],
     ['app/(owner)/(tabs)/workers/index.tsx', /workerCard: \{[^}]*padding: spacing\.md/s],

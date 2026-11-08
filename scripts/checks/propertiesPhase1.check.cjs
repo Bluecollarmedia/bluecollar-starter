@@ -15,10 +15,10 @@ const topLevel = (s) => strip(s).replace(/\$\$[\s\S]*?\$\$/g, '$$$$');
 
 check('1 running update 75 never deletes, truncates, drops tables/columns, or updates/inserts existing data (function bodies only run later, when called)',
   !/\b(delete\s+from|truncate|drop\s+table|drop\s+column)\b/i.test(topLevel(s75)) && !/^\s*update\s+public\./im.test(topLevel(s75))
-  && !/^\s*insert\s+into\s+public\.(projects|maintenance_properties|snow_properties|quotes|invoices|people|company_members)\b/im.test(topLevel(s75)));
+  && !/^\s*insert\s+into\s+public\.(projects|maintenance_properties|quotes|invoices|people|company_members)\b/im.test(topLevel(s75)));
 check('2 update 76 only DEFINES the function (nothing runs when the file is run)', !/^\s*select\s+public\.backfill_properties/im.test(strip(s76)) && /create or replace function public\.backfill_properties/.test(s76));
 check('3 the backfill is a dry run unless told "true", and only the company owner can run it', /p_apply boolean default false/.test(s76) && /m\.role = 'owner'/.test(s76) && /Only the company owner can run this/.test(s76));
-check('4 the backfill never updates address, name or customer columns (it only sets property_id)', !/update public\.(projects|maintenance_properties|snow_properties)[^;]*set\s+(?!property_id)/is.test(s76.replace(/--.*$/gm, '')));
+check('4 the backfill never updates address, name or customer columns (it only sets property_id)', !/update public\.(projects|maintenance_properties)[^;]*set\s+(?!property_id)/is.test(s76.replace(/--.*$/gm, '')));
 check('5 the guards run only for changes made from the app (the database functions are exempt), and only for new or changed links', (s75.match(/current_user not in \('authenticated', 'anon'\)/g) || []).length >= 4 && /is distinct from old\.customer_id/.test(s75));
 check('6 a deactivated customer is blocked in all four customer-access functions', (s75.match(/_customer_in_good_standing\(/g) || []).length >= 5);
 check('7 a project-code claim merges the owner-created record', /_merge_placeholder_customer\(pr\.company_id, pr\.old_customer, pid\)/.test(s75));

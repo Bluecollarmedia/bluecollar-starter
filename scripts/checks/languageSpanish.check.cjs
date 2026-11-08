@@ -11,7 +11,7 @@ let bad = 0;
 const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  - ' + detail}`); };
 
 const mod = (rel, fakes) => { const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read(rel), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, (n) => fakes[n]); return m.exports; };
-const parts = ['es', 'es.worker', 'es.maintenance', 'es.snow', 'es.customer', 'es.weather'].map((n) => mod(`src/i18n/${n}.ts`, {}));
+const parts = ['es', 'es.worker', 'es.maintenance', 'es.customer', 'es.weather'].map((n) => mod(`src/i18n/${n}.ts`, {}));
 const ES = Object.assign({}, ...parts.map((p) => Object.values(p)[0]).reverse());
 const i18n = mod('src/i18n/index.ts', { react: { useMemo: (f) => f(), useSyncExternalStore: () => 'en' }, '@react-native-async-storage/async-storage': { getItem: async () => null, setItem: async () => {} }, './dictionary': { DICTIONARY: ES } });
 const { translate, getLanguage } = i18n;
@@ -41,8 +41,8 @@ check('6 every Spanish text keeps the same {values} as its English', badVars.len
 // where the switch is
 const has = (f, re) => re.test(read(f));
 check('7 the switch is on the welcome, sign-in, forgot-password, invite and company-setup screens', ['app/(auth)/welcome.tsx', 'app/(auth)/login.tsx', 'app/(auth)/forgot-password.tsx', 'app/invite/[token].tsx', 'app/(auth)/create-company.tsx'].every((f) => has(f, /<LanguageSwitch \/>/)));
-check('8 and one Settings row for every role (worker + maintenance, owner, customer, Snow worker, Snow owner, Snow notice)', ['app/(worker)/(tabs)/settings.tsx', 'app/(owner)/(tabs)/more/settings.tsx', 'app/(customer)/(tabs)/account.tsx', 'src/components/snow/SnowWorkerSettings.tsx', 'app/snow/owner/(tabs)/more.tsx', 'app/snow/notice.tsx'].every((f) => has(f, /<LanguageRow \/>/)));
-check('9 the tab bars are translated (worker, maintenance, owner, customer, Snow)', ['app/(worker)/(tabs)/_layout.tsx', 'app/(worker)/maintenance/_layout.tsx', 'app/(owner)/(tabs)/_layout.tsx', 'app/(customer)/(tabs)/_layout.tsx'].every((f) => /Trigger\.Label>\{t\('/.test(read(f)) && /title: t\('/.test(read(f))) && /tx\(t\.title\)/.test(read('src/components/snow/SnowTabs.tsx')));
+check('8 and one Settings row for every role (worker + maintenance, owner, customer)', ['app/(worker)/(tabs)/settings.tsx', 'app/(owner)/(tabs)/more/settings.tsx', 'app/(customer)/(tabs)/account.tsx'].every((f) => has(f, /<LanguageRow \/>/)));
+check('9 the tab bars are translated (worker, maintenance, owner, customer)', ['app/(worker)/(tabs)/_layout.tsx', 'app/(worker)/maintenance/_layout.tsx', 'app/(owner)/(tabs)/_layout.tsx', 'app/(customer)/(tabs)/_layout.tsx'].every((f) => /Trigger\.Label>\{t\('/.test(read(f)) && /title: t\('/.test(read(f))));
 check('10 the choice is kept on the phone and read at startup', /brighton\.language/.test(read('src/i18n/index.ts')) && /loadLanguage\(\);/.test(read('src/i18n/index.ts')) && /AsyncStorage\.setItem\(STORAGE_KEY, next\)/.test(read('src/i18n/index.ts')));
 check('11 the website\'s dialogs are translated too', /t\(current\.title\)/.test(read('src/components/ui/WebDialogHost.tsx')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');

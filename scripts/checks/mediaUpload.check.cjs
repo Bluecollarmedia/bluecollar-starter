@@ -1,6 +1,6 @@
 // Run: node scripts/checks/mediaUpload.check.cjs <path to typescript package>
 // Checks every way a photo upload can succeed or fail, with a FAKE Supabase: the Supabase Storage fallback (used
-// before R2 is set up), the R2 path, the private Snow bucket, and what the person is told in each failure.
+// before R2 is set up), the R2 path, and what the person is told in each failure.
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
@@ -41,7 +41,7 @@ const load = (r2) => {
     if (name === './mediaFormats') return compile(read('src/lib/mediaFormats.ts'), () => ({}));
     // The phone's file upload is faked with the fake fetch (the harness has no phone): same answer shape as the real one.
     if (name === './uploadFile') return { putFile: async (uri, url, ct) => { const r = await globalThis.fetch(url, { method: 'PUT', headers: { 'Content-Type': ct }, body: {} }); return { status: r.status, body: typeof r.text === 'function' ? await r.text() : '' }; }, localFileSize: async () => 10 };
-    // The real timeout helper, so the time limits in snowMedia work in this harness too.
+    // The real timeout helper, so any time limits work in this harness too.
     if (name === './mediaQueue') return { withTimeout: (work, ms, onTimeout) => new Promise((res, rej) => { const t = setTimeout(() => rej(onTimeout()), ms); work.then((v) => { clearTimeout(t); res(v); }, (e) => { clearTimeout(t); rej(e); }); }) };
     // Compression is not what this check is about: treat every picture as already prepared.
     if (name === './mediaCompress') return { isPrepared: () => true, prepareImage: async (j) => ({ uri: j.sourceUri }) };
@@ -49,10 +49,7 @@ const load = (r2) => {
   };
   req.env = r2 ? { EXPO_PUBLIC_R2_PUBLIC_URL: 'https://r2.test' } : {};
   const media = compile(read('src/lib/media.ts'), req);
-  const req2 = (name) => (name === './media' ? media : req(name));
-  req2.env = req.env;
-  const snow = compile(read('src/lib/snowMedia.ts'), req2);
-  return { media, snow };
+  return { media };
 };
 
 globalThis.fetch = async () => ({ ok: true, status: 200, blob: async () => ({ size: 10 }) });
@@ -77,7 +74,7 @@ const msgOf = async (p) => { try { await p; return null; } catch (e) { return e.
   check('2 an unknown error is shown as it is (never hidden)', explainUploadError('weird thing 42') === 'weird thing 42' && explainUploadError(new Error('boom')) === 'boom');
 
   // Supabase Storage fallback (R2 not set up)
-  const { media, snow } = load(false);
+  const { media } = load(false);
   check('3 R2 is OFF when the build has no R2 address (the fallback is the Supabase "media" bucket)', media.r2Enabled === false);
   calls.length = 0;
   let r = await media.uploadImage('file:///a/b.png', 'co/projects/p1');
@@ -104,17 +101,7 @@ const msgOf = async (p) => { try { await p; return null; } catch (e) { return e.
   check('11 signed out: clear message, and the server is never asked', m && /signed out/.test(m) && calls.length === 0, m);
   session = { access_token: 't' };
 
-  // Snow private bucket
-  calls.length = 0; uploadResult = { error: null };
-  let key = await snow.uploadSnowMedia('file:///a.jpg', 'co/completion/v1');
-  check('12 Snow: uploads to the private "snow-media" bucket and returns the key', key === 'co/completion/v1/uuid-1.jpg' && calls[0].bucket === 'snow-media', JSON.stringify(calls));
-  uploadResult = { error: { message: 'new row violates row-level security policy' } };
-  m = await msgOf(snow.uploadSnowMedia('file:///a.jpg', 'co/completion/v1'));
-  check('13 Snow: a refused upload (not the lead, or stop already finished) is explained with the raw text', m && /refused this upload/.test(m) && /row-level security/.test(m), m);
-  uploadResult = { error: null }; session = null;
-  m = await msgOf(snow.uploadSnowMedia('file:///a.jpg', 'f'));
-  check('14 Snow: signed out gives the clear message', m && /signed out/.test(m), m);
-  session = { access_token: 't' };
+  uploadResult = { error: null };
 
   // R2 path
   const r2 = load(true);

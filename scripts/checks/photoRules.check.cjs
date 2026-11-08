@@ -1,5 +1,5 @@
-// Photo rules: one photo per maintenance task when photos are on; how many photos per service/stop/route; Snow per property service, route and stop.
-// File-text checks; the database rules are proved by supabase/tests/111_maintenance_photo_per_task.pglite.mjs and 112_snow_photo_rules.pglite.mjs.
+// Photo rules: one photo per maintenance task when photos are on; how many photos per service/stop/route.
+// File-text checks; the database rules are proved by supabase/tests/111_maintenance_photo_per_task.pglite.mjs.
 // Not covered here (needs phones): taking the photos and the screens' look.
 const fs = require('fs');
 const read = (p) => fs.readFileSync(p, 'utf8');
@@ -14,12 +14,4 @@ check('a photo saved for a task ticks that task, never undoing the photo if that
 check('a service can say how many photos (1 to 20), and new stops start from it', /minPhotos/.test(read('src/lib/maintenanceServiceDraft.ts')) && /filter\(\(r\) => r\.requiresPhotos\)\.map\(\(r\) => r\.minPhotos/.test(read('src/data/maintenance.ts')));
 const route = read('app/(owner)/(tabs)/maintenance/routes/[id].tsx');
 check('the owner can set photos for the whole maintenance route, or for each stop', /setRoutePhotoRule\(route\.id/.test(route) && /updateStop\(stop\.id, \{ requiresPhotos: on, minPhotos: n \}\)/.test(route));
-const sql112 = read('supabase/updates/112_snow_photo_rules.sql');
-check('Snow: a property service can carry a photo rule that new stops start from (a trigger), and a stop its own number', /photos_required boolean/.test(sql112) && /photo_count integer/.test(sql112) && /min_media integer/.test(sql112) && /_snow_visit_photo_defaults/.test(sql112));
-const edit = read('src/components/snow/routes/RouteEditScreen.tsx');
-check('Snow route screen: photos for the whole route, and each property with its own number', /Photos required at every stop/.test(edit) && /Photos required here/.test(edit) && /stopCount/.test(edit));
-const prop = read('app/(owner)/snow-property.tsx');
-check('Snow property screen: each service has follow-the-route / required (how many) / none', /Follow the route/.test(prop) && /Photos required/.test(prop) && /No photos/.test(prop) && /setServicePhotoRule/.test(prop));
-check('the lead\'s screen uses the stop\'s own photo number', /stopMinMedia\(current, route\)/.test(read('src/components/snow/routes/MyRouteScreen.tsx')));
-check('older databases without updates 111/112 keep working (the stop list falls back; the property rule explains the update)', /min_media/.test(read('src/data/snowRoutes.ts')) && /update 112/.test(read('src/data/snowProperties.ts')));
 process.exit(bad ? 1 : 0);

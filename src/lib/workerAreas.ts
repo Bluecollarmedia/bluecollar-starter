@@ -1,6 +1,6 @@
 /**
  * What a worker works on (supabase/updates/078_invite_links.sql). There is no "maintenance worker" versus "regular worker":
- * every worker is added the same way and the owner then switches on the areas: Landscaping, Maintenance, and (separately) Snow.
+ * every worker is added the same way and the owner then switches on the areas: Landscaping and Maintenance.
  * Rows from before update 78 only have the older worker type, which means Maintenance-only when it says 'maintenance'.
  */
 import type { CompanyMember } from '@/types/company';

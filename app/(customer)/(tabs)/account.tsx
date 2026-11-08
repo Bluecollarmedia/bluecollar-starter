@@ -12,12 +12,10 @@ import { isSupabaseConfigured } from '@/lib/supabase';
 import { ScreenContainer } from '@/components/layout';
 import { Avatar, ListSection, ListRow } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
-import { SnowNotifyChoices } from '@/components/snow/customer/SnowNotifyChoices';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { db, useDb } from '@/data/store';
 import { formatAddress } from '@/lib/address';
-import { useHasSnow } from '@/hooks/useHasSnow';
 import { usePortfolioEnabled } from '@/hooks/usePortfolio';
 
 export default function CustomerAccountScreen() {
@@ -26,7 +24,6 @@ export default function CustomerAccountScreen() {
   const { colors } = useTheme();
   const { user, signOut, switchDevRole } = useAuth();
   useDb();
-  const hasSnow = useHasSnow();
   const workOn = usePortfolioEnabled();
   const insets = useSafeAreaInsets();
 
@@ -56,8 +53,7 @@ export default function CustomerAccountScreen() {
         </Pressable>
       </ListSection>
 
-      {/* Snow and Maintenance updates open from their cards on Home (one way in each), so Account has no rows for them. Here are the customer's own Snow notification switches. */}
-      {hasSnow ? <SnowNotifyChoices /> : null}
+      {/* Maintenance updates open from their card on Home (one way in), so Account has no row for them. */}
 
       {workOn ? (
         <ListSection title={t('Our Work')}>

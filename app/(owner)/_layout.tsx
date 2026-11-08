@@ -47,18 +47,13 @@ export default function OwnerLayout() {
         <Stack.Screen name="customers" />
         {/* Maintenance: New Route opens from the Maintenance tab and a property. */}
         <Stack.Screen name="route-new" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="snow-property" />
         <Stack.Screen name="document" />
         <Stack.Screen name="document-new" options={{ presentation: 'modal' }} />
         <Stack.Screen name="document-edit" options={{ presentation: 'modal' }} />
         {/* Maintenance property + contract form: opened from Maintenance and from a route. */}
         <Stack.Screen name="maintenance-property-edit" options={{ presentation: 'modal' }} />
         <Stack.Screen name="maintenance-service-add" options={{ presentation: 'modal' }} />
-        {/* Snow Mode activity log: opened from the snow dashboard and settings. */}
-        <Stack.Screen name="snow-activity" />
         {/* Reported problems: opened from the dashboard card, More, and a notification. */}
-        {/* Brighton Weather storm outlook: opened from Settings (the owner writes it). */}
-        <Stack.Screen name="storm-outlook" />
         <Stack.Screen name="issues" />
         <Stack.Screen name="issue-detail" />
         <Stack.Screen name="setup" options={{ presentation: 'fullScreenModal', gestureEnabled: false }} />

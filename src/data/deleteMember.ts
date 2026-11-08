@@ -34,7 +34,7 @@ export async function deleteUnusedMember(personId: string): Promise<DeleteMember
     if (MISSING.test(error.message)) return { ok: false, hasHistory: false, error: 'Deleting is not switched on yet.' };
     const history = /^HAS_HISTORY:\s*/.test(error.message);
     // The database lists its table names; the owner only needs the plain reason.
-    if (history) return { ok: false, hasHistory: true, error: 'They have work history (jobs, routes, hours or snow), so they cannot be deleted. Deactivate them instead and their history stays.' };
+    if (history) return { ok: false, hasHistory: true, error: 'They have work history (jobs, routes or hours), so they cannot be deleted. Deactivate them instead and their history stays.' };
     return { ok: false, hasHistory: false, error: error.message };
   }
   await refresh('people', 'company_members', 'crew_members');

@@ -57,7 +57,7 @@
             {
               "name": "BrightonWeather",
               "displayName": "Brighton Forecast",
-              "description": "Your local weather, and Brighton's storm outlook when one is posted.",
+              "description": "Your local weather.",
               "ios": {
                 "supportedFamilies": [
                   "systemSmall",

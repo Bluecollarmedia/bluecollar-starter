@@ -7,26 +7,24 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { usePrefetchKeyImages } from '@/lib/imageCache';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import * as ExpoSplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
-import { ThemeProvider, useTheme } from '@/providers/ThemeProvider';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 import { AuthProvider, useAuth } from '@/providers/AuthProvider';
 import { SplashScreen } from '@/components/branding/SplashScreen';
 import { SignInWelcome } from '@/components/branding/WelcomeOverlay';
 import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { applyPendingSignup } from '@/data/pendingSignup';
-import { useModeAccess } from '@/hooks/useModeAccess';
 import { ensureGlobalErrorHandler, installGlobalErrorHandler, showLastErrorIfAny } from '@/lib/errorReporting';
 import { installWebAlert } from '@/lib/webDialog';
 import { syncLanguageToAccount } from '@/i18n';
 import { db } from '@/data/store';
 import { todayKey } from '@/lib/ids';
 import { hasOpenProjectWork } from '@/lib/workerAreas';
-import { useAdminWorksSnow } from '@/lib/adminSnowWork';
 import { WebDialogHost } from '@/components/ui/WebDialogHost';
 import { usePublicWeatherSwitch } from '@/hooks/usePublicWeatherSwitch';
 import { useWidgetSync } from '@/hooks/useWidgetSync';
@@ -47,10 +45,6 @@ function RootNavigator() {
   // The approval page (/approve/<token>), the invite page (/invite/<token>), the legal pages (/legal/privacy, terms, support) the password reset page and the email-link landing page (auth-callback) are public:
   // no sign-in, no redirects.
   const isPublicPage = ['approve', 'invite', 'legal', 'reset-password', 'auth-callback'].includes((segments as string[])[0]);
-  const { shell, pending: shellPending } = useModeAccess(user?.role);
-  // An admin who opened their Snow route may stay in the worker Snow area (see lib/adminSnowWork).
-  const adminOnSnowRoute = useAdminWorksSnow();
-  const { colors } = useTheme();
   // Is the public Weather experience on? Off unless the server (or a recent saved answer) says on. Never blocks launch.
   const weatherOn = usePublicWeatherSwitch(!isAuthenticated);
 
@@ -100,29 +94,18 @@ function RootNavigator() {
     }
 
     if (appState === 'active' && isAuthenticated && user) {
-      // Snow Mode has its own shells under /snow/<role>. Which one a person
-      // sees comes from useModeAccess: the company's mode, limited to the
-      // modes this person is allowed into (the mode itself grants nothing).
+      // Every signed-in person goes to their role's area.
       if (user.role !== 'owner' && user.role !== 'worker' && user.role !== 'customer') return;
-      // A worker's screen depends on answers that arrive a moment after launch: wait, rather than route to the wrong one first.
-      if (shellPending) return;
       const role = user.role;
-      const target =
-        shell === 'snow' ? `/snow/${role}` : shell === 'snow_notice' ? '/snow/notice' : `/(${role})`;
-      const s1 = (segments as string[])[1];
+      const target = `/(${role})`;
       // An admin who is put on a job can work it like a worker: the worker area is open to them while they have work coming up.
       const adminWorks = db.role === 'admin' && hasOpenProjectWork(db.assignments, db.personId, todayKey());
-      // Legal & Support opens inside the Snow area (so Back returns to Settings): it is part of whichever Snow shell they are in.
-      const inLegal = s1 === 'legal-support';
-      const onTarget =
-        shell === 'snow' ? currentGroup === 'snow' && (s1 === role || inLegal || (db.role === 'admin' && adminOnSnowRoute && s1 === 'worker'))
-        : shell === 'snow_notice' ? currentGroup === 'snow' && (s1 === 'notice' || inLegal)
-        : currentGroup === `(${role})` || (adminWorks && currentGroup === '(worker)');
+      const onTarget = currentGroup === `(${role})` || (adminWorks && currentGroup === '(worker)');
       if (inAuthGroup || inOnboardingGroup || !onTarget) {
         router.replace(target as any);
       }
     }
-  }, [isLoading, isAuthenticated, user, appState, onboardingStep, segments, splashDone, isPublicPage, shell, shellPending, adminOnSnowRoute, weatherOn]);
+  }, [isLoading, isAuthenticated, user, appState, onboardingStep, segments, splashDone, isPublicPage, weatherOn]);
 
   const handleSplashFinish = useCallback(() => {
     setSplashDone(true);
@@ -130,11 +113,6 @@ function RootNavigator() {
 
   if (!isPublicPage && (isLoading || !splashDone)) {
     return <SplashScreen onFinish={handleSplashFinish} />;
-  }
-
-  // Signed in, but which screen this worker gets is not known yet (a split second): a plain blank screen, never the wrong one.
-  if (!isPublicPage && shellPending && appState === 'active' && isAuthenticated) {
-    return <View style={{ flex: 1, backgroundColor: colors.background }} />;
   }
 
   // Same element tree for public and normal pages. If a public page (Privacy, Terms, Support) returned a different

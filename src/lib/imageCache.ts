@@ -2,7 +2,7 @@
  * The pictures worth keeping on the phone so screens open instantly and cost
  * no repeat downloads: everyone's profile pictures, the owner's dashboard
  * header, the workers' home header, and each project's cover photo. Big
- * galleries (job photos, Snow media) are NOT here; they load when opened.
+ * galleries (job photos) are NOT here; they load when opened.
  */
 
 import { useEffect, useRef } from 'react';

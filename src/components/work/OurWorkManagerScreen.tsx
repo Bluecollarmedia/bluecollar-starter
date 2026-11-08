@@ -26,7 +26,7 @@ const countsLabel = (p: OwnerPost): string => {
   return [photos ? `${photos} photo${photos === 1 ? '' : 's'}` : '', videos ? `${videos} video${videos === 1 ? '' : 's'}` : ''].filter(Boolean).join(', ') || 'Empty';
 };
 
-/** `base` is the owner area this screen sits in: '/(owner)' or '/snow/owner'. */
+/** `base` is the owner area this screen sits in: '/(owner)'. */
 export function OurWorkManagerScreen({ base }: { base: string }) {
   const { colors } = useTheme();
   const router = useRouter();

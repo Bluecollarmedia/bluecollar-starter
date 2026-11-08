@@ -6,7 +6,7 @@ import { WX, WeatherBackground } from '@/components/weather/WeatherUI';
 import { WEATHER_ON_THIS_DEVICE } from '@/lib/weatherPlatform';
 
 /**
- * The public Brighton Weather area: one light page behind its screens. The five tabs (Weather, Storm History, Our Work, Request, Brighton) live in (tabs);
+ * The public Brighton Weather area: one light page behind its screens. The four tabs (Weather, Our Work, Request, Brighton) live in (tabs);
  * a project, a reel and a story are screens in this stack on top of them, so each slides in, swipes back from the left edge, and is closed for real
  * when you leave (its videos and music stop and are released).
  * While it is open the app re-asks the owner's switch every 60 seconds; if Weather has been switched off, the app's launch routing

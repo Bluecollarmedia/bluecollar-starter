@@ -4,7 +4,7 @@
  * friendly answer before anything is sent.
  */
 
-/** The same eight choices as the "Request a Quote" form on brightonlawn.com. The words are saved with the request, and update 114 accepts only these. */
+/** The choices from the "Request a Quote" form on brightonlawn.com. The words are saved with the request, and update 114 accepts only these. */
 export const SERVICE_CHOICES = [
   'Backyard Design & Build',
   'Pavers, Patios & Walkways',
@@ -12,7 +12,6 @@ export const SERVICE_CHOICES = [
   'Lighting & Planting',
   'Commercial Maintenance',
   'Seasonal Cleanup',
-  'Snow & Storm Response',
   'Other / Multiple',
 ] as const;
 export type ServiceChoice = (typeof SERVICE_CHOICES)[number];

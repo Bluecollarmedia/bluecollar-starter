@@ -24,11 +24,8 @@ function targetFor(role: UserRole, d: PushData): string | { pathname: string; pa
   }
   if (role === 'customer') {
     if (DOC_TYPES.has(type) && id) return { pathname: '/(customer)/document', params: { kind: type, id } };
-    if (type === 'snow_visit' || type === 'snow_property') return '/(customer)/snow-updates';
     return '/(customer)';
   }
-  // A crew notice (update 82: storm dispatched, you were added to a route) opens the snow shell's My Route.
-  if (type === 'snow_route') return '/snow/worker';
   return '/(worker)/notifications';
 }
 
@@ -37,8 +34,7 @@ function useNativePushNotifications(role: UserRole | undefined, active: boolean)
   const segments = useSegments();
   const response = Notifications.useLastNotificationResponse();
   const handled = useRef(new Set<string>());
-  // The snow shell counts as "the role's screens are showing" too, so a tap isn't ignored in Snow Mode.
-  const inRoleGroup = !!role && (segments[0] === `(${role === 'admin' ? 'owner' : role})` || segments[0] === 'snow');
+  const inRoleGroup = !!role && segments[0] === `(${role === 'admin' ? 'owner' : role})`;
 
   useEffect(() => {
     if (active) registerForPush();

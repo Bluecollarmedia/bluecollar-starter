@@ -76,11 +76,10 @@ export default function MoreScreen() {
 
         <MenuGroup title="TEAM">
           <MenuRow icon="user-plus" label="Add Worker" subtitle="Name and phone, then send a private link" onPress={() => go('/(owner)/worker-new')} />
-          <MenuRow icon="shield" label="Team Access" subtitle="Landscaping and snow access, admins, deactivated workers" onPress={() => go('/(owner)/more/team-access')} />
+          <MenuRow icon="shield" label="Team Access" subtitle="Admins and deactivated workers" onPress={() => go('/(owner)/more/team-access')} />
           {memberRole !== 'admin' && (
             <MenuRow icon="users" label="Accounts" subtitle="Everyone who has signed up" onPress={() => go('/(owner)/more/accounts')} />
           )}
-          <MenuRow icon="cloud-snow" label="Snow Team" subtitle="Who works on snow and which services" onPress={() => go('/(owner)/more/snow-team')} />
         </MenuGroup>
 
         <MenuGroup title="OPERATIONS">

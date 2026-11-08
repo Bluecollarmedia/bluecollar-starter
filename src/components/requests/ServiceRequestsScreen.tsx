@@ -7,7 +7,7 @@ import { Linking, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View 
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, EmptyState, GlassIconButton, Icon, InlineNotice, LoadingSpinner } from '@/components/ui';
-import { SnowPill } from '@/components/snow/SnowPill';
+import { DotPill } from '@/components/ui/DotPill';
 import { useTheme } from '@/providers/ThemeProvider';
 import { setServiceRequestStatus, useServiceRequests } from '@/data/serviceRequests';
 import { REQUEST_STATUS_LABEL, type RequestStatus, type ServiceRequestRow } from '@/lib/serviceRequest';
@@ -64,7 +64,7 @@ export function ServiceRequestsScreen() {
                 <View key={r.id} style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.sm }}>
                     <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flexShrink: 1 }]} numberOfLines={1}>{r.name}</Text>
-                    <SnowPill label={REQUEST_STATUS_LABEL[r.status]} fg={tone.fg} bg={tone.bg} />
+                    <DotPill label={REQUEST_STATUS_LABEL[r.status]} fg={tone.fg} bg={tone.bg} />
                   </View>
                   <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: 2 }]}>
                     {r.property_type === 'commercial' ? 'Commercial' : 'Residential'} {'·'} {r.town} {'·'} {when(r.created_at)}

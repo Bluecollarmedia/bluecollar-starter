@@ -1,6 +1,6 @@
 /**
- * Every visit to one property for one service (Snow or Lawn), season by season: the date, what was done, when the crew arrived and left, and
- * the photos. Opened from "See all visits" on the property's Snow or Lawn tab. Real data only (useCustomerHome).
+ * Every lawn visit to one property, year by year: the date, what was done, when the crew arrived and left, and the photos. Opened from
+ * "See all visits" on the property's Lawn tab. Real data only (useCustomerHome).
  */
 import React, { useMemo, useState } from 'react';
 import { View, Text, Pressable, ScrollView, StyleSheet } from 'react-native';
@@ -9,15 +9,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { EmptyState, ScreenHeader } from '@/components/ui';
 import { Icon } from '@/components/ui/Icon';
 import { PhotoPager, type PagerPhoto } from '@/components/media/PhotoPager';
-import { TaskMediaViewer, type TaskMediaItem } from '@/components/tasks/TaskMedia';
 import { Stats } from '@/components/customerHome/PropertyHome';
 import { useCustomerHome } from '@/hooks/useCustomerHome';
 import { useT } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
 import {
-  SERVICE_LABEL, lawnVisits, seasonKey, seasonLabel, seasonsOf, shortDate, snowVisits, visitStats, visitTimes, visitsIn,
+  SERVICE_LABEL, lawnVisits, seasonKey, seasonLabel, seasonsOf, shortDate, visitStats, visitTimes, visitsIn,
 } from '@/lib/customerProperty';
-import { semantic } from '@/theme/colors';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 
@@ -25,31 +23,19 @@ export function CustomerHistoryScreen() {
   const t = useT();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ service?: string; property?: string }>();
-  const service: 'snow' | 'lawn' = params.service === 'lawn' ? 'lawn' : 'snow';
-  // Snow is blue, Lawn is green.
-  const accent = service === 'snow' ? semantic.info : colors.primary;
+  const params = useLocalSearchParams<{ property?: string }>();
+  const accent = colors.primary;
   const data = useCustomerHome();
   const group = data.groups.find((g) => g.key === params.property);
-  const visits = useMemo(
-    () => (!group ? [] : service === 'snow' ? snowVisits(data.timeline ?? [], group) : lawnVisits(data.lawn ?? [], group)),
-    [group, service, data.timeline, data.lawn],
-  );
-  const seasons = seasonsOf(visits, service);
-  const [season, setSeason] = useState<string>(() => seasonKey(new Date().toISOString(), service));
+  const visits = useMemo(() => (!group ? [] : lawnVisits(data.lawn ?? [], group)), [group, data.lawn]);
+  const seasons = seasonsOf(visits);
+  const [season, setSeason] = useState<string>(() => seasonKey(new Date().toISOString()));
   const current = seasons.includes(season) ? season : seasons[0];
-  const list = visitsIn(visits, service, current);
-  const stats = visitStats(visits, service, current);
+  const list = visitsIn(visits, current);
+  const stats = visitStats(visits, current);
   const [pager, setPager] = useState<{ photos: PagerPhoto[]; startId: string } | null>(null);
-  const [viewer, setViewer] = useState<{ items: TaskMediaItem[]; index: number } | null>(null);
 
   const openPhotos = (id: string) => {
-    if (service === 'snow') {
-      const entry = (data.timeline ?? []).find((e) => e.visitId === id);
-      const items: TaskMediaItem[] = (entry?.media ?? []).filter((m) => m.url).map((m) => ({ key: m.id, uri: m.url as string, mediaType: m.kind === 'photo' ? 'image' : 'video' }));
-      if (items.length) setViewer({ items, index: 0 });
-      return;
-    }
     const upd = (data.lawn ?? []).find((u) => u.stopId === id);
     const photos = (upd?.photos ?? []).map((p) => ({ id: p.id, url: p.url, key: p.key }));
     if (photos.length) setPager({ photos, startId: photos[0].id });
@@ -57,7 +43,7 @@ export function CustomerHistoryScreen() {
 
   return (
     <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
-      <ScreenHeader title={t(SERVICE_LABEL[service]) + ' ' + t('visits')} subtitle={group?.name} />
+      <ScreenHeader title={t(SERVICE_LABEL.lawn) + ' ' + t('visits')} subtitle={group?.name} />
       <ScrollView contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: insets.bottom + spacing['3xl'], gap: spacing.lg }}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: spacing.sm }} style={{ marginHorizontal: -spacing.lg }}>
           <View style={{ width: spacing.lg - spacing.sm }} />
@@ -65,7 +51,7 @@ export function CustomerHistoryScreen() {
             const on = s === current;
             return (
               <Pressable key={s} onPress={() => setSeason(s)} accessibilityRole="button" accessibilityState={{ selected: on }} style={[styles.chip, { backgroundColor: on ? accent : colors.surface, borderColor: on ? accent : colors.border }]}>
-                <Text style={[typeScale.labelLarge, { color: on ? colors.background : colors.textPrimary, fontWeight: '700' }]}>{seasonLabel(s, service)}</Text>
+                <Text style={[typeScale.labelLarge, { color: on ? colors.background : colors.textPrimary, fontWeight: '700' }]}>{seasonLabel(s)}</Text>
               </Pressable>
             );
           })}
@@ -107,7 +93,6 @@ export function CustomerHistoryScreen() {
         )}
       </ScrollView>
       <PhotoPager photos={pager?.photos ?? []} startId={pager?.startId ?? null} onClose={() => setPager(null)} />
-      <TaskMediaViewer items={viewer?.items ?? []} index={viewer ? viewer.index : null} onIndexChange={(i) => setViewer((v) => (v ? { ...v, index: i } : v))} onClose={() => setViewer(null)} />
     </View>
   );
 }

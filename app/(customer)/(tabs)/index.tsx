@@ -16,7 +16,7 @@ import { spacing } from '@/theme/spacing';
 
 /**
  * The customer's home, one property at a time (see src/components/customerHome/PropertyHome.tsx): a chip per property, and inside a property
- * one tab each for Snow, Lawn and Project when it has more than one. Finished projects are tucked into "Past work".
+ * one tab each for Lawn and Project when it has more than one. Finished projects are tucked into "Past work".
  */
 export default function CustomerHomeScreen() {
   const t = useT();

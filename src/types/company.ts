@@ -29,11 +29,6 @@ export interface Company {
   taskLeadOnly?: boolean;
   /** Payroll: pay each worker's target rate × hours, absorbing overtime into a lower base. */
   targetPayEnabled?: boolean;
-  /** Landscaping Mode or Snow Mode. Set by the owner; never grants anyone access. Missing means landscaping. */
-  activeMode?: CompanyMode;
-  /** When and by whom the mode last changed (stamped by the database). */
-  activeModeChangedAt?: string;
-  activeModeChangedBy?: string;
   /** First-time setup progress: which steps were finished or skipped. */
   setupState?: CompanySetupState;
   setupCompletedAt?: string;
@@ -41,7 +36,6 @@ export interface Company {
   updatedAt: string;
 }
 
-export type CompanyMode = 'landscaping' | 'snow';
 
 export type SetupStepKey = 'trucks' | 'workers' | 'payRates' | 'notifications' | 'company';
 
