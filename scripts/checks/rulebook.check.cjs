@@ -71,6 +71,15 @@ check('no JWT-looking key in CLAUDE.md', !/eyJ[A-Za-z0-9_-]{20,}/.test(md));
 check('no Brighton name in CLAUDE.md', !/brighton/i.test(md));
 check('no gmail address in CLAUDE.md', !/@gmail\.com/i.test(md));
 
+// The new-client playbook exists, CLAUDE.md points to it, and it keeps its key parts.
+const playbookPath = 'docs/NEW-CLIENT-PLAYBOOK.md';
+const playbook = read(playbookPath);
+check('docs/NEW-CLIENT-PLAYBOOK.md exists and CLAUDE.md points to it', !!playbook && md.includes(playbookPath));
+check('playbook has the interview, the everywhere map and the leftover sweep',
+  /INTERVIEW THE OWNER/.test(playbook) && /PUT THE CLIENT EVERYWHERE/.test(playbook) && /LEFTOVER SWEEP/.test(playbook));
+check('playbook lists the PDF logo copy (brandLogo.ts) and the database service list', /brandLogo\.ts/.test(playbook) && /submit_service_request/.test(playbook));
+check('no Brighton name or gmail address in the playbook', !/brighton/i.test(playbook) && !/@gmail\.com/i.test(playbook));
+
 // AGENTS.md points at the rulebook.
 check('AGENTS.md points to CLAUDE.md', /CLAUDE\.md/.test(read('AGENTS.md')));
 

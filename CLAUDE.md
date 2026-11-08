@@ -5,6 +5,10 @@ This file is the rulebook for the kit. Two readers:
 - **Claude** (every future session that builds a client app from this kit): follow every rule. They come from three months of
   building the original app; each one cost real time, money or a broken phone build to learn.
 
+**Starting a new client app?** Follow `docs/NEW-CLIENT-PLAYBOOK.md` from Phase 0 to Phase 9: the owner interview, how to
+translate the client's trade into the kit's words and switches, the complete map of where the logo / name / colors / words
+show up, the leftover sweep, and the phone test.
+
 Each rule is: **the rule**, then *Why* in one line. `scripts/checks/rulebook.check.cjs` fails if a key rule goes missing from this file.
 
 The app: a company app for contractors and trades (owner, managers, workers, customers). Expo SDK 57 + expo-router (iPhone,
@@ -208,7 +212,7 @@ Android, web), Supabase (logins, database, server functions), Cloudflare R2 (pho
 ## NEW CLIENT CHECKLIST
 
 1. **Agree what to build first:** a one-page feature list + approved mockups BEFORE any code. Decide every switch in
-   `brand.js` `features` (on/off).
+   `brand.js` `features` (on/off). The interview questions and trade cheat sheets are in `docs/NEW-CLIENT-PLAYBOOK.md`.
 2. **Fill in `src/config/brand.js`:** company and contact, app name, bundle id / Android package, scheme, web address on the
    client's own domain, colors, pictures (logo, icon, splash, Android icon), wording (Job / Job site / Crew words, Manager label,
    units, service types), switches, legal facts, weather town and nearby towns (brand.js is the ONLY town list: the weather
