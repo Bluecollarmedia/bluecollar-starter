@@ -127,12 +127,13 @@ const settle = () => new Promise((r) => setImmediate(r));
   const pub = layout.split(/\r?\n/).filter((l) => l.includes('const isPublicPage = [')).join('|');
   check('26 the list of public pages (invite, approve, legal, reset-password, auth-callback) is identical to before', sha(pub) === 'a14557971050ff7ae964d67dabb476b97a4c0dd60442ae6a37a1fa2c30923eb2');
   check('27 the signed-out branch now asks signedOutRedirect and nothing else changed there', /const goTo = signedOutRedirect\(\{ firstSegment: \(segments as string\[\]\)\[0\], weatherOn \}\);\s*if \(goTo\) router\.replace\(goTo as any\);/.test(layout) && /weatherOn\]\);/.test(layout) && !/router\.replace\('\/\(auth\)\/welcome'\)/.test(layout));
-  // Fingerprints retaken in Step 2c (the original company name and trade-specific wording were removed from these screens).
+  // Fingerprints retaken in Step 2c (the original company name and trade-specific wording were removed from these screens),
+  // and in Step 3 for welcome / create-company (the app name and company example now come from src/config/brand.js).
   const fp = {
-    'app/(auth)/welcome.tsx': '097af38a1ffaadbe96867147aafe3be88d4abe6aa6e28f759acf586a71558228',
+    'app/(auth)/welcome.tsx': '40a532add2d93ecd584afdfcc4c1da0cc3d950d75f89ab79e523f3d7ca13f5de',
     'app/(auth)/login.tsx': '879b7e355d33e5c88ce975be9e67018e38b94b70edbc415f351275bcdf73cf13',
     'app/(auth)/forgot-password.tsx': '5c502ed34a4ff2df6dd22d8dcb3f2b9387e9d816221ccab9a21f0eff27a016f5',
-    'app/(auth)/create-company.tsx': 'f14632b48b248abdcf29889873b81f168d4202caee61f57cf04766fa8c5c6446',
+    'app/(auth)/create-company.tsx': '1c7f27628d11be0545ab2ef28703de02ae1f54388c0571694067593547975fcd',
     'app/(auth)/_layout.tsx': '1d276fc0fd221a87d2e47732dd860a9f5000475e4e1e78bf5ca0eab379074109',
     'src/components/branding/WelcomeOverlay.tsx': '85244eedb874729513efdac4c3a7b19be9abd9190ee6f8d0ab6ed94bd18398e4',
   };
@@ -141,7 +142,8 @@ const settle = () => new Promise((r) => setImmediate(r));
   const wfiles = fs.existsSync(path.join(root, 'app/weather')) ? fs.readdirSync(path.join(root, 'app/weather')).sort().join() : '';
   check('29 the Weather area is exactly its layout and its screens (home, request, account), and no other new area exists', wfiles === '(tabs),_layout.tsx' && fs.readdirSync(path.join(root, 'app/weather/(tabs)')).sort().join() === '_layout.tsx,account.tsx,index.tsx,request.tsx', wfiles);
   check('30 the Weather screens are built, and the owner\'s switch still decides: the database default is OFF', WEATHER_EXPERIENCE_BUILT === true && /enabled boolean not null default false/.test(read('supabase/updates/103_public_weather_switch.sql')));
-  check('31 app.json has nothing about weather or location changes apart from the widget setup (permission text untouched)', !/weather/i.test(JSON.stringify(JSON.parse(read('app.json'), (k, v) => (Array.isArray(v) && v[0] === 'expo-widgets' ? undefined : v)))) && /Starter App uses your location to check you in when you arrive at a job site\./.test(read('app.json')));
+  const finalConfig = require('./_brand.cjs').expoConfig();
+  check('31 the build config has nothing about weather or location changes apart from the widget setup (permission text untouched)', !/weather/i.test(JSON.stringify(finalConfig, (k, v) => (Array.isArray(v) && v[0] === 'expo-widgets' ? undefined : v))) && JSON.stringify(finalConfig).includes(`${require('./_brand.cjs').brand.app.name} uses your location to check you in when you arrive at a job site.`));
   const walk = (d) => fs.readdirSync(path.join(root, d), { withFileTypes: true }).flatMap((e) => e.isDirectory() ? (e.name === 'node_modules' ? [] : walk(path.join(d, e.name))) : [path.join(d, e.name)]);
   const callers = [...walk('app'), ...walk('src')].filter((f) => /\.(ts|tsx)$/.test(f) && /set_public_weather_enabled/.test(read(f)));
   check('32 the owner-only switch function is called from exactly one place (the data file the owner\'s Settings row uses), and that row is shown only to the owner', callers.map((f) => f.replace(/\\/g, '/')).join() === 'src/data/publicWeather.ts' && /db\.role === 'owner'/.test(read('src/hooks/usePublicWeatherRow.ts')) && /weatherRow\.canChange/.test(read('app/(owner)/(tabs)/more/settings.tsx')));

@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 const m = { exports: {} };
-new Function('module', 'exports', ts.transpileModule(read('src/lib/materialList.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports);
+new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/materialList.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(() => ({}), ts));
 const l = m.exports;
 let bad = 0;
 const check = (n, ok, detail) => { if (!ok) bad++; console.log((ok ? 'PASS' : 'FAIL') + '  ' + n + (ok ? '' : ' - ' + (detail || ''))); };
@@ -35,7 +35,8 @@ const text = l.notesAsText([{ body: 'second', createdAt: '2026-10-05T10:00:00Z' 
 check('8 notes go to the sorter oldest first, each with its date', text.indexOf('first') < text.indexOf('second') && /^\[Oct 1\] first/.test(text), text);
 
 const sn = { exports: {} };
-new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/sortNotes.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(sn, sn.exports, () => ({}));
+const { withBrand } = require('./_brand.cjs');
+new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/sortNotes.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(sn, sn.exports, withBrand(() => ({}), ts));
 const sorted = sn.exports.sortNotesLocally(['Need 2 buckets crack filler', 'Need 12 yards dark gray gravel', '40 ft steel rebar (black)', '4 bags polymeric sand', '10 sheets plywood', 'Lot is 40 x 60', 'Call Dave about the gate', '3 rolls drainage fabric, 5 yards topsoil'].join(String.fromCharCode(10)), 'Test');
 const by = (n) => sorted.items.find((i) => i.item.toLowerCase().includes(n));
 check('9 the on-device sorter (no AI, no key) reads quantities and units, groups by category, keeps reminders and measurements as other notes, never guesses',

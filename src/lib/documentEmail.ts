@@ -29,7 +29,7 @@ export const EMAIL_ERRORS: Record<string, string> = {
   no_email: 'There is no email address for this customer. Type one to send it.',
   bad_email: "That doesn't look like an email address.",
   not_sent_yet: 'Mark it as sent (or issue the invoice) first. Drafts are never emailed.',
-  not_allowed: 'Only the owner or an admin can email a quote.',
+  not_allowed: 'Only the owner, or someone the owner allows, can email a quote.',
   sign_in_required: 'Please sign in again, then try once more.',
   not_found: "That document couldn't be found.",
   bad_request: 'The email service needs its update. Deploy send-document-email again (with database update 81 for invoices).',

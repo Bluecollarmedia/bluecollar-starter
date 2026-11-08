@@ -21,6 +21,7 @@ import { spacing, radius } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { isSupabaseConfigured, supabase } from '@/lib/supabase';
 import { showMessage } from '@/components/financials/ActionSheet';
+import { brand } from '@/config/brand';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_WIDTH = Math.min(SCREEN_WIDTH * 0.4, 180);
@@ -246,8 +247,8 @@ export default function CreateCompanyScreen() {
 
         {step === 'company' && (
           <View style={styles.form}>
-            <Input label={t('Company Name *')} placeholder={t('e.g. Your Company')} value={companyName} onChangeText={setCompanyName} icon="briefcase" />
-            <Input label={t('Company Phone *')} placeholder="(555) 555-0100" value={companyPhone} onChangeText={setCompanyPhone} keyboardType="phone-pad" icon="phone" textContentType="telephoneNumber" />
+            <Input label={t('Company Name *')} placeholder={t('e.g. {name}', { name: brand.company.name })} value={companyName} onChangeText={setCompanyName} icon="briefcase" />
+            <Input label={t('Company Phone *')} placeholder="(555) 123-4567" value={companyPhone} onChangeText={setCompanyPhone} keyboardType="phone-pad" icon="phone" textContentType="telephoneNumber" />
             <AddressFields
               required
               value={{ address: companyAddress, city: companyCity, state: companyState, zip: companyZip }}
@@ -268,7 +269,7 @@ export default function CreateCompanyScreen() {
               <Input label={t('Last Name *')} placeholder="Morgan" value={lastName} onChangeText={setLastName} containerStyle={{ flex: 1 }} />
             </View>
             <Input label={t('Email *')} placeholder="you@company.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" icon="mail" />
-            <Input label={t('Phone *')} placeholder="(555) 555-0100" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
+            <Input label={t('Phone *')} placeholder="(555) 123-4567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
             <Input label={t('Password *')} placeholder={t('At least 6 characters')} value={password} onChangeText={setPassword} secureTextEntry textContentType="newPassword" autoComplete="new-password" autoCapitalize="none" autoCorrect={false} icon="lock" />
             <Input label={t('Confirm Password *')} placeholder={t('Re-enter password')} value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry textContentType="newPassword" autoComplete="new-password" autoCapitalize="none" autoCorrect={false} icon="lock" />
             <Button title={t('Next')} onPress={handleNext} fullWidth size="lg" icon="arrow-right" />

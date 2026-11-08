@@ -6,6 +6,7 @@
 import { calcTotals, lineAmount } from '@/lib/money';
 import type { Project } from '@/types/project';
 import type { LineItem, LineItemCategory } from '@/types/financial';
+import { brand } from '@/config/brand';
 
 type Row = Record<string, any>;
 
@@ -82,7 +83,7 @@ export function buildMockFinancials(projects: Project[]) {
   invoices.push({
     id: 'inv1', ...company, projectId: p1.id, quoteId: 'quote1', changeOrderIds: ['co1'], customerId: p1.customerId,
     number: 'INV-1001', title: p1.name, status: 'draft', lineItems: invItems, taxRate: TAX, ...calcTotals(invItems, TAX),
-    paymentInstructions: 'Please make checks payable to Your Company. Payment is due within 30 days.',
+    paymentInstructions: `Please make checks payable to ${brand.company.name}. Payment is due within 30 days.`,
     invoiceDate: '2026-09-20', dueDate: '2026-10-20',
     createdBy: 'owner1', createdAt: '2026-09-20T13:00:00Z', updatedAt: '2026-09-20T13:00:00Z',
   });

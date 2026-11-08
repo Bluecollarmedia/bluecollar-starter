@@ -17,7 +17,7 @@ import { PICKER_AFTER_SHEET_MS, type ProfilePhotoSource } from '@/lib/profilePho
 import { useProfilePhoto } from '@/hooks/useProfilePhoto';
 import { loadMyBirthday, saveMyBirthday } from '@/data/birthday';
 import { parseBirthday, birthdayProblem, birthdayInputText } from '@/lib/birthday';
-import { WorkerExtrasFields } from '@/components/account/WorkerExtras';
+import { WORKER_EXTRAS_ON, WorkerExtrasFields } from '@/components/account/WorkerExtras';
 import { loadMyDetails, saveMyHoodie, saveMyId, removeMyId } from '@/data/workerDetails';
 import type { HoodieSize } from '@/lib/workerDetails';
 import { useT } from '@/i18n';
@@ -60,7 +60,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
     return () => { live = false; };
   }, [user?.id]);
 
-  // Shirt size (hoodie_size column) and ID photo (workers only). The ID is private: only this worker and the owner can see it.
+  // Clothing size (hoodie_size column) and ID photo (workers only; each only while its switch is on in the settings file). The ID is private: only this worker and the owner can see it.
   const [hoodie, setHoodie] = useState<HoodieSize | null>(null);
   const [savedHoodie, setSavedHoodie] = useState<HoodieSize | null>(null);
   const [savedIdKey, setSavedIdKey] = useState<string | null>(null);
@@ -213,7 +213,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
             label={requireAll ? t('Phone Number *') : t('Phone Number')}
             value={phone}
             onChangeText={setPhone}
-            placeholder="(555) 555-0100"
+            placeholder="(555) 123-4567"
             keyboardType="phone-pad"
             textContentType="telephoneNumber"
             autoComplete="tel"
@@ -239,7 +239,7 @@ export function EditProfileScreen({ requireAll = true, backLabel = 'Settings' }:
             icon="mail"
             hint={t("Your email is your login and can't be changed here.")}
           />
-          {requireAll ? (
+          {requireAll && WORKER_EXTRAS_ON ? (
             <WorkerExtrasFields
               hoodie={hoodie}
               onHoodie={setHoodie}

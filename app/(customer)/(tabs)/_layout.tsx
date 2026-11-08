@@ -5,6 +5,10 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { sizing } from '@/theme/spacing';
+import { isFeatureOn, words } from '@/config/brand';
+
+/** The Messages tab (settings file: features.messages). */
+const MESSAGES_ON = isFeatureOn('messages');
 
 let NativeTabs: any = null;
 try {
@@ -25,16 +29,18 @@ function CustomerNativeTabs() {
           sf={{ default: 'house', selected: 'house.fill' }}
           src={<NativeTabs.Trigger.VectorIcon family={Feather} name="home" />}
         />
-        <NativeTabs.Trigger.Label>{t('Properties')}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t(words.places)}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="messages">
-        <NativeTabs.Trigger.Icon
-          sf={{ default: 'message', selected: 'message.fill' }}
-          src={<NativeTabs.Trigger.VectorIcon family={Feather} name="message-circle" />}
-        />
-        <NativeTabs.Trigger.Label>{t('Messages')}</NativeTabs.Trigger.Label>
-      </NativeTabs.Trigger>
+      {MESSAGES_ON && (
+        <NativeTabs.Trigger name="messages">
+          <NativeTabs.Trigger.Icon
+            sf={{ default: 'message', selected: 'message.fill' }}
+            src={<NativeTabs.Trigger.VectorIcon family={Feather} name="message-circle" />}
+          />
+          <NativeTabs.Trigger.Label>{t('Messages')}</NativeTabs.Trigger.Label>
+        </NativeTabs.Trigger>
+      )}
 
       <NativeTabs.Trigger name="account">
         <NativeTabs.Trigger.Icon
@@ -73,7 +79,7 @@ function CustomerJSTabs() {
       <Tabs.Screen
         name="index"
         options={{
-          title: t('Properties'),
+          title: t(words.places),
           tabBarIcon: ({ color, size }) => (
             <Feather name="home" size={size} color={color} />
           ),
@@ -82,6 +88,7 @@ function CustomerJSTabs() {
       <Tabs.Screen
         name="messages"
         options={{
+          href: MESSAGES_ON ? undefined : null,
           title: t('Messages'),
           tabBarIcon: ({ color, size }) => (
             <Feather name="message-circle" size={size} color={color} />

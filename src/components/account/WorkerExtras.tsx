@@ -10,6 +10,14 @@ import { pickImage } from '@/lib/pickImage';
 import { HOODIE_SIZES, ID_PRIVACY_TEXT, type HoodieSize } from '@/lib/workerDetails';
 import { getIdViewUrl, loadHoodieSizes, loadIdKeys } from '@/data/workerDetails';
 import { useT } from '@/i18n';
+import { isFeatureOn, words } from '@/config/brand';
+
+/** The optional clothing-size question (settings file: features.uniformSize; its name is wording.uniformSizeLabel). */
+export const UNIFORM_SIZE_ON = isFeatureOn('uniformSize');
+/** The optional private ID photo (settings file: features.workerIdPhoto). */
+export const ID_PHOTO_ON = isFeatureOn('workerIdPhoto');
+/** Either one is in this app, so the "extras" section is worth showing at all. */
+export const WORKER_EXTRAS_ON = UNIFORM_SIZE_ON || ID_PHOTO_ON;
 
 interface FieldsProps {
   hoodie: HoodieSize | null;
@@ -24,7 +32,8 @@ interface FieldsProps {
   onError: (message: string) => void;
 }
 
-/** Shirt size (saved in the hoodie_size column) and ID photo: used when joining a team and again in Edit Profile, so they can be added or changed later. */
+/** Clothing size (saved in the hoodie_size column) and ID photo: used when joining a team and again in Edit Profile, so they can be added or changed later.
+ *  Each part shows only while its switch is on in the settings file. */
 export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, savedIdKey, onRemoveSaved, onError }: FieldsProps) {
   const t = useT();
   const { colors } = useTheme();
@@ -39,8 +48,9 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
 
   return (
     <View style={{ gap: spacing.lg }}>
+      {UNIFORM_SIZE_ON ? (
       <View>
-        <Text style={[typeScale.labelSmall, { color: colors.textPrimary, marginBottom: spacing.sm }]}>{t('Shirt Size (optional)')}</Text>
+        <Text style={[typeScale.labelSmall, { color: colors.textPrimary, marginBottom: spacing.sm }]}>{t('{label} (optional)', { label: t(words.uniformSizeLabel) })}</Text>
         <View style={styles.chips}>
           {HOODIE_SIZES.map((s) => {
             const on = hoodie === s;
@@ -58,7 +68,9 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
           })}
         </View>
       </View>
+      ) : null}
 
+      {ID_PHOTO_ON ? (
       <View>
         <Text style={[typeScale.labelSmall, { color: colors.textPrimary, marginBottom: spacing.xs }]}>{t('ID (optional)')}</Text>
         <Text style={[typeScale.caption, { color: colors.textSecondary, marginBottom: spacing.sm }]}>
@@ -95,7 +107,8 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
           </Pressable>
         ) : null}
       </View>
-      {savedIdKey ? <IdViewerModal visible={viewing} idKey={savedIdKey} onClose={() => setViewing(false)} /> : null}
+      ) : null}
+      {ID_PHOTO_ON && savedIdKey ? <IdViewerModal visible={viewing} idKey={savedIdKey} onClose={() => setViewing(false)} /> : null}
     </View>
   );
 }
@@ -143,7 +156,7 @@ export function ViewIdButton({ idKey }: { idKey: string | undefined }) {
   const t = useT();
   const { colors } = useTheme();
   const [open, setOpen] = useState(false);
-  if (!idKey) return null;
+  if (!idKey || !ID_PHOTO_ON) return null;
   return (
     <>
       <Pressable onPress={() => setOpen(true)} style={styles.viewRow} accessibilityRole="button">
@@ -155,7 +168,7 @@ export function ViewIdButton({ idKey }: { idKey: string | undefined }) {
   );
 }
 
-/** For the owner: a worker's shirt size and (owner only) a private View ID link. Shows nothing until one of them exists. */
+/** For the owner: a worker's clothing size and (owner only) a private View ID link. Shows nothing until one of them exists. */
 export function OwnerWorkerExtras({ personId }: { personId: string }) {
   const t = useT();
   const { colors } = useTheme();
@@ -163,17 +176,21 @@ export function OwnerWorkerExtras({ personId }: { personId: string }) {
   const [idKey, setIdKey] = useState<string | undefined>(undefined);
   useEffect(() => {
     let live = true;
-    Promise.all([loadHoodieSizes([personId]), loadIdKeys([personId])]).then(([h, k]) => {
+    if (!WORKER_EXTRAS_ON) return;
+    Promise.all([
+      UNIFORM_SIZE_ON ? loadHoodieSizes([personId]) : Promise.resolve({} as Record<string, string>),
+      ID_PHOTO_ON ? loadIdKeys([personId]) : Promise.resolve({} as Record<string, string>),
+    ]).then(([h, k]) => {
       if (!live) return;
-      setSize(h[personId] ?? null);
-      setIdKey(k[personId]);
+      setSize((h as Record<string, string | undefined>)[personId] ?? null);
+      setIdKey((k as Record<string, string | undefined>)[personId]);
     });
     return () => { live = false; };
   }, [personId]);
   if (!size && !idKey) return null;
   return (
     <View>
-      {size ? <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t('Shirt size: {size}', { size })}</Text> : null}
+      {size ? <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>{t('{label}: {size}', { label: t(words.uniformSizeLabel), size })}</Text> : null}
       <ViewIdButton idKey={idKey} />
     </View>
   );

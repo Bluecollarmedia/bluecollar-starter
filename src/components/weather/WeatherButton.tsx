@@ -5,7 +5,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-na
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useT } from '@/i18n';
 import { useTheme } from '@/providers/ThemeProvider';
-import { usePublicWeatherSwitch } from '@/hooks/usePublicWeatherSwitch';
+import { isFeatureOn } from '@/config/brand';
 import { useWeatherGlance } from '@/hooks/useWeatherGlance';
 import { WxPicture } from '@/components/weather/WeatherUI';
 import { typeScale } from '@/theme/typography';
@@ -13,13 +13,15 @@ import { typeScale } from '@/theme/typography';
 /**
  * The little weather button on the owner's, the customer's and every worker's home. It shows today's picture and temperature; tapping it
  * opens the full forecast (the route passed in `to`, which lives inside that person's own area) with the screen's slide-up. It springs in
- * when pressed. It is only there while the owner's Weather switch is on (the same switch as the public Weather), so it is never a dead button.
+ * when pressed. It is there whenever the settings file has weather on (features.weather). That is a different switch from the public
+ * visitor area (features.publicVisitorArea and the owner's "Public weather" row): signed-in weather works with the public area off,
+ * because the weather server function lets signed-in people through on its own.
  */
 export function WeatherButton({ to }: { to: string }) {
   const t = useT();
   const router = useRouter();
   const { colors } = useTheme();
-  const on = usePublicWeatherSwitch(false);
+  const on = isFeatureOn('weather');
   const glance = useWeatherGlance();
   const scale = useSharedValue(1);
   const spring = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));

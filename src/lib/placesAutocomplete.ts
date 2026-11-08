@@ -7,21 +7,22 @@
  */
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
-import appJson from '../../app.json';
 import { config } from '@/lib/config';
+import { brand, isFeatureOn } from '@/config/brand';
 import type { AddressParts } from '@/lib/address';
 
 export interface Suggestion { placeId: string; main: string; secondary: string }
 export interface PickedPlace extends AddressParts { latitude?: number; longitude?: number }
 
-export const placesEnabled = config.googlePlacesKey.length > 0;
+/** On only with a key AND the settings file's switch (features.addressSuggestions). */
+export const placesEnabled = config.googlePlacesKey.length > 0 && isFeatureOn('addressSuggestions');
 
 /** Why the last lookup failed ("" when it worked), so the address screen can say so instead of silently showing nothing. */
 let lastProblem = '';
 export const lastPlacesProblem = () => lastProblem;
 
-/** This app's bundle id. The key is restricted to the iPhone app, so Google must be told which app is asking: it is read from the running app, and if that is not available, from the app's own config file. */
-const BUNDLE_ID = Constants.expoConfig?.ios?.bundleIdentifier ?? Constants.manifest2?.extra?.expoClient?.ios?.bundleIdentifier ?? (appJson as { expo?: { ios?: { bundleIdentifier?: string } } }).expo?.ios?.bundleIdentifier;
+/** This app's bundle id. The key is restricted to the iPhone app, so Google must be told which app is asking: it is read from the running app, and if that is not available, from the settings file (src/config/brand.js, app.bundleId). */
+const BUNDLE_ID = Constants.expoConfig?.ios?.bundleIdentifier ?? Constants.manifest2?.extra?.expoClient?.ios?.bundleIdentifier ?? brand.app.bundleId;
 
 const BASE = 'https://places.googleapis.com/v1';
 

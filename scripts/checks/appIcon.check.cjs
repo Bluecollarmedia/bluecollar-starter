@@ -1,9 +1,11 @@
 // Run: node scripts/checks/appIcon.check.cjs
-// The App Store needs a 1024 x 1024 square PNG icon with no transparency. Checks the real files and app.json.
+// The App Store needs a 1024 x 1024 square PNG icon with no transparency. Checks the real files and the final Expo config
+// (app.json put through app.config.js, which fills in the values from the settings file src/config/brand.js).
 const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '../..');
-const app = JSON.parse(fs.readFileSync(path.join(root, 'app.json'), 'utf8')).expo;
+const { brand, expoConfig } = require('./_brand.cjs');
+const app = expoConfig();
 
 function png(rel) {
   const d = fs.readFileSync(path.join(root, rel));
@@ -21,7 +23,7 @@ check('3 the app icon has no transparency (color type 2 = RGB, no tRNS)', icon.c
 const fg = png(app.android.adaptiveIcon.foregroundImage.replace('./', ''));
 check('4 the Android icon foreground is a 1024 x 1024 PNG', fg.isPng && fg.w === 1024 && fg.h === 1024);
 check('5 iPhone only for the first release (no iPad screenshots or iPad review needed)', app.ios.supportsTablet === false);
-check('6 bundle id, version and encryption answer are set', app.ios.bundleIdentifier === 'com.yourcompany.starter' && !!app.version && app.ios.infoPlist.ITSAppUsesNonExemptEncryption === false);
+check('6 bundle id, version and encryption answer are set', app.ios.bundleIdentifier === brand.app.bundleId && !!app.version && app.ios.infoPlist.ITSAppUsesNonExemptEncryption === false);
 check('7 camera, photo, microphone and location texts explain why', ['photosPermission', 'cameraPermission', 'microphonePermission'].every((k) => JSON.stringify(app.plugins).includes(k)) && JSON.stringify(app.plugins).includes('locationWhenInUsePermission'));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

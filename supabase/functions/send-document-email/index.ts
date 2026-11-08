@@ -13,8 +13,9 @@
  * Secrets (Supabase → Edge Functions → Secrets):
  *   RESEND_API_KEY     — the Resend key (the same one the SMTP settings use is fine)
  *   NOTIFY_EMAIL_FROM  — e.g. "Your Company <noreply@yourcompany.com>" (a domain verified in Resend)
- *   APP_WEB_URL        — the web app's address, e.g. https://app.yourcompany.com
- * Replies go to the company's own email address (Company settings), else support@yourcompany.com (placeholder).
+ *   APP_WEB_URL        — the web app's address (src/config/brand.js app.webUrl)
+ *   COMPANY_NAME, SUPPORT_EMAIL, COMPANY_TIMEZONE, BRAND_COLOR — the same values as src/config/brand.js (optional; placeholders otherwise)
+ * Replies go to the company's own email address (Company settings), else SUPPORT_EMAIL.
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -27,6 +28,13 @@ const CORS = {
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+
+// This app's settings (the same values as src/config/brand.js, which a server function cannot read): set them as Supabase secrets.
+// The fallbacks are the starter kit's placeholders.
+const COMPANY_NAME = Deno.env.get('COMPANY_NAME') || 'Your Company';
+const SUPPORT_EMAIL = Deno.env.get('SUPPORT_EMAIL') || 'support@yourcompany.com';
+const COMPANY_TIMEZONE = Deno.env.get('COMPANY_TIMEZONE') || 'America/New_York';
+const BRAND_COLOR = /^#[0-9a-f]{6}$/i.test(Deno.env.get('BRAND_COLOR') ?? '') ? Deno.env.get('BRAND_COLOR')! : '#2B2B2B';
 
 const reply = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
@@ -101,22 +109,22 @@ serve(async (req: Request) => {
 
     const webUrl = (Deno.env.get('APP_WEB_URL') ?? 'https://app.yourcompany.com').replace(/\/+$/, '');
     const link = `${webUrl}/approve/${doc.share_token}`;
-    const companyName = company?.name ?? 'Your Company';
-    const contact = company?.email || 'support@yourcompany.com';
+    const companyName = company?.name ?? COMPANY_NAME;
+    const contact = company?.email || SUPPORT_EMAIL;
     const total = Number(doc.total).toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-    const date = new Date(doc.sent_at ?? doc.issued_at ?? Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' });
+    const date = new Date(doc.sent_at ?? doc.issued_at ?? Date.now()).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: COMPANY_TIMEZONE });
     const dueText = kind === 'invoice' && doc.due_date
-      ? new Date(`${doc.due_date}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' })
+      ? new Date(`${doc.due_date}T12:00:00`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: COMPANY_TIMEZONE })
       : undefined;
     const customerName = typed && !customer?.email ? '' : [customer?.first_name, customer?.last_name].filter(Boolean).join(' ').trim();
     const m = buildMessage({ customerName, kind, totalText: total, dateText: date, contactEmail: contact, company: companyName, dueText });
 
     const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1B3A2D;max-width:520px;line-height:1.55">
+<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1F2328;max-width:520px;line-height:1.55">
   <p style="margin:0 0 14px">${esc(m.hello)}</p>
   <p style="margin:0 0 14px">${esc(m.body)}</p>
   <p style="margin:0 0 20px">${esc(m.closing)}</p>
-  <p style="margin:0 0 24px"><a href="${esc(link)}" style="background:#2D5A43;color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:600;display:inline-block">View ${esc(m.what)}</a></p>
+  <p style="margin:0 0 24px"><a href="${esc(link)}" style="background:${BRAND_COLOR};color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:600;display:inline-block">View ${esc(m.what)}</a></p>
   <p style="margin:0;white-space:pre-line">${esc(m.sign)}</p>
 </div>`;
     const text = `${m.hello}\n\n${m.body}\n\n${m.closing}\n\nView ${m.what}: ${link}\n\n${m.sign}`;
@@ -125,7 +133,7 @@ serve(async (req: Request) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <noreply@yourcompany.com>',
+        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? `${COMPANY_NAME} <noreply@yourcompany.com>`,
         to: [to],
         reply_to: contact,
         subject: `Your ${m.what} ${doc.number} from ${companyName}`,

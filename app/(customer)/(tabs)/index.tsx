@@ -12,6 +12,7 @@ import { WeatherButton } from '@/components/weather/WeatherButton';
 import { PropertyHome } from '@/components/customerHome/PropertyHome';
 import { useCustomerHome } from '@/hooks/useCustomerHome';
 import { emptyPortalText } from '@/lib/customerPortal';
+import { isFeatureOn } from '@/config/brand';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 
@@ -38,7 +39,7 @@ export default function CustomerHomeScreen() {
         </View>
       </View>
 
-      <AnnouncementBanner />
+      {isFeatureOn('announcements') ? <AnnouncementBanner /> : null}
 
       {empty ? (
         <EmptyState icon="layers" title={t(emptyPortalText().title)} description={t(emptyPortalText().description)} />
@@ -46,7 +47,8 @@ export default function CustomerHomeScreen() {
         <PropertyHome data={data} />
       )}
 
-      <RequestServiceCard />
+      {/* "Request a service" (settings file: features.requests). It never depends on the public visitor area. */}
+      {isFeatureOn('requests') ? <RequestServiceCard /> : null}
     </ScreenContainer>
   );
 }

@@ -15,7 +15,7 @@ const closeRow = read('src/components/account/DeleteCompanyRow.tsx');
 
 check('1 the migration and its database test exist', fs.existsSync(path.join(root, 'supabase/tests/066_account_access.pglite.mjs')) && /create or replace function public\.deactivate_member/.test(sql));
 check('3 the private invite page signs people up with the link only: no code lookup, no join request', /inviteToken/.test(join) && /invite_lookup/.test(join) && !/lookupAnyCode|join_with_code|request_join/.test(join));
-check('4 the Team access screen uses plainly named actions', ['Deactivate worker', 'Reactivate', 'Make admin', 'Remove admin'].every((t) => team.includes(t)));
+check('4 the Team access screen uses plainly named actions (the leader role is shown by its label from the settings file, e.g. "Make manager")', ['Deactivate worker', 'Reactivate', 'title={`Make ${leader}`}', 'title={`Remove ${leader}`}', 'const leader = leaderWord();'].every((t) => team.includes(t)));
 check('5 deactivation shows warnings and needs a confirmation', /acknowledge/.test(hook) && /I have read this/.test(team));
 check('6 only the owner sees Make admin / Remove admin and Admin powers', /isOwner \? \(/.test(team) && /set_admin_permissions/.test(hook));
 check('7 closing the company shows what is still going on and blocks while people are clocked in', /company_closure_preview/.test(closeRow) && /stillGoing\.length > 0/.test(closeRow));

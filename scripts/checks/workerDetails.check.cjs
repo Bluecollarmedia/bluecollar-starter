@@ -18,8 +18,8 @@ const join = read('app/invite/[token].tsx');
 check('4 sign-up (workers) offers shirt size and ID and saves them right after joining',
   /<WorkerExtrasFields/.test(join) && /isWorker \? \(/.test(join) && /saveDetailsForCurrentUser\(\{ hoodieSize: hoodie, idUri \}\)/.test(join));
 const edit = read('src/components/account/EditProfileScreen.tsx');
-check('5 Edit Profile (workers) lets them add, replace or remove the ID and change the size later',
-  /requireAll \? \(\s*<WorkerExtrasFields/.test(edit) && /saveMyId\(user\.id, newIdUri, savedIdKey\)/.test(edit) && /removeMyId\(user\.id, savedIdKey\)/.test(edit) && /saveMyHoodie\(user\.id, hoodie\)/.test(edit));
+check('5 Edit Profile (workers) lets them add, replace or remove the ID and change the size later (while the settings file has either one on)',
+  /requireAll && WORKER_EXTRAS_ON \? \(\s*<WorkerExtrasFields/.test(edit) && /saveMyId\(user\.id, newIdUri, savedIdKey\)/.test(edit) && /removeMyId\(user\.id, savedIdKey\)/.test(edit) && /saveMyHoodie\(user\.id, hoodie\)/.test(edit));
 const data = read('src/data/workerDetails.ts');
 check('6 the ID is uploaded to the private ids folder, saved as a key (never a public link) and viewed through a signed link',
   /uploadImage\(localUri, idFolder\(personId\)\)/.test(data) && /id_key: key/.test(data) && !/id_key: url/.test(data) && /action: 'id-sign'/.test(data));

@@ -10,7 +10,8 @@
  *
  * Deploy:  supabase functions deploy clock-in-alert
  *          (or Supabase dashboard → Edge Functions → Deploy a new function → Via Editor; keep "Enforce JWT verification" ON)
- * Secrets (the same ones send-document-email uses): RESEND_API_KEY, NOTIFY_EMAIL_FROM.
+ * Secrets (the same ones send-document-email uses): RESEND_API_KEY, NOTIFY_EMAIL_FROM; optional COMPANY_NAME, APP_NAME,
+ * COMPANY_TIMEZONE, BRAND_COLOR (the same values as src/config/brand.js).
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -26,6 +27,16 @@ const ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
 
 const reply = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
+
+/** A setting from the Supabase secrets ('' when missing, or when this file is run outside Deno, as the checks do). */
+const setting = (k: string): string => {
+  try { return (globalThis as { Deno?: { env: { get(k: string): string | undefined } } }).Deno?.env.get(k) ?? ''; } catch { return ''; }
+};
+// This app's settings (the same values as src/config/brand.js, which a server function cannot read): set them as Supabase secrets.
+const COMPANY_NAME = setting('COMPANY_NAME') || 'Your Company';
+const APP_NAME = (setting('APP_NAME') || 'StarterApp').replace(/[^A-Za-z0-9]/g, '') || 'StarterApp';
+const COMPANY_TIMEZONE = setting('COMPANY_TIMEZONE') || 'America/New_York';
+const BRAND_COLOR = /^#[0-9a-f]{6}$/i.test(setting('BRAND_COLOR')) ? setting('BRAND_COLOR') : '#2B2B2B';
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
@@ -55,7 +66,7 @@ export interface AlertInput {
 /** The email's words, in one place so they can be checked. Says exactly where the worker clocked in from, and how far that is from the yard. */
 export function buildAlert(o: AlertInput): { subject: string; text: string; html: string } {
   const has = o.lat !== null && o.lng !== null;
-  const when = new Date(o.clockInAtIso).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: o.timeZone ?? 'America/New_York' });
+  const when = new Date(o.clockInAtIso).toLocaleString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: o.timeZone ?? COMPANY_TIMEZONE });
   const map = has ? `https://www.google.com/maps?q=${o.lat!.toFixed(6)},${o.lng!.toFixed(6)}` : '';
   const subject = has ? `${o.worker} clocked in away from the yard` : `${o.worker} clocked in, but their location could not be read`;
   const lines: string[] = [];
@@ -83,7 +94,7 @@ ${o.address ? `<div style="font-size:16px;font-weight:600">${esc(o.address)}</di
 <div style="color:#4B564F;margin-top:4px">${o.lat!.toFixed(6)}, ${o.lng!.toFixed(6)}${o.accuracyM !== null ? ` · accurate to about ${Math.round(o.accuracyM * 3.28084)} ft` : ''}</div>
 ${o.distanceM !== null ? `<div style="margin-top:6px">About <strong>${esc(distanceText(o.distanceM))}</strong> from ${esc(o.yardLabel || 'the yard')}.</div>` : ''}
 </div>
-<p style="margin:0 0 14px"><a href="${esc(map)}" style="background:#2D5A43;color:#fff;text-decoration:none;font-weight:700;border-radius:10px;padding:10px 16px;display:inline-block">Open on the map</a></p>` : '<p style="margin:0 0 12px">Clocking in was still allowed. You can ask them where they were.</p>'}
+<p style="margin:0 0 14px"><a href="${esc(map)}" style="background:${BRAND_COLOR};color:#fff;text-decoration:none;font-weight:700;border-radius:10px;padding:10px 16px;display:inline-block">Open on the map</a></p>` : '<p style="margin:0 0 12px">Clocking in was still allowed. You can ask them where they were.</p>'}
 <p style="margin:0;font-size:12px;color:#6A6E75">You get this because "Email me when someone clocks in away from the yard" is on in Settings. ${esc(o.company)}</p>
 </div>`;
   return { subject, text, html };
@@ -95,7 +106,7 @@ async function lookupAddress(lat: number, lng: number): Promise<string> {
     const ctl = new AbortController();
     const timer = setTimeout(() => ctl.abort(), 4000);
     const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18&lat=${lat}&lon=${lng}`, {
-      headers: { 'User-Agent': 'StarterApp/1.0 (clock-in alerts)', 'Accept-Language': 'en' },
+      headers: { 'User-Agent': `${APP_NAME}/1.0 (clock-in alerts)`, 'Accept-Language': 'en' },
       signal: ctl.signal,
     });
     clearTimeout(timer);
@@ -178,7 +189,7 @@ serve(async (req: Request) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <noreply@yourcompany.com>',
+        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? `${COMPANY_NAME} <noreply@yourcompany.com>`,
         to,
         subject: msg.subject,
         html: msg.html,

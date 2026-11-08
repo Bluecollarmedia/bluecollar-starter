@@ -9,6 +9,10 @@ import { Image, Platform } from 'react-native';
 import { buildWidgetEntries } from '@/lib/widgetData';
 import { setViewTz } from '@/lib/weatherView';
 import type { WeatherPayload } from '@/lib/weatherView';
+import { isFeatureOn } from '@/config/brand';
+
+/** Widgets exist in this app only when the settings file says so (features.widgets, which also needs features.weather). */
+const WIDGETS_ON = isFeatureOn('widgets') && isFeatureOn('weather');
 
 let lastKey = '';
 let leafPromise: Promise<string | null> | null = null;
@@ -37,7 +41,7 @@ function leafFile(dir: string | null): Promise<string | null> {
 }
 
 export async function syncWidgets(data: WeatherPayload | null): Promise<void> {
-  if (Platform.OS !== 'ios' || !data) return;
+  if (Platform.OS !== 'ios' || !data || !WIDGETS_ON) return;
   // Nothing new to say: same place, same forecast.
   const key = `${data.town}|${data.fetchedAt}`;
   if (key === lastKey) return;

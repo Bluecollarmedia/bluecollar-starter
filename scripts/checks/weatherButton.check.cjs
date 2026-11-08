@@ -10,7 +10,7 @@ let n = 0;
 const check = (name, ok, detail = '') => { n += 1; if (!ok) bad += 1; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n} ${name}${ok ? '' : '  - ' + detail}`); };
 
 const button = read('src/components/weather/WeatherButton.tsx');
-check('1 the button is only there while the owner\'s Weather switch is on (never a dead button)', /usePublicWeatherSwitch\(false\)/.test(button) && /if \(!on\) return null/.test(button));
+check('1 the button is there while the settings file has weather on (features.weather), not tied to the public visitor area switch', /isFeatureOn\('weather'\)/.test(button) && !/usePublicWeatherSwitch/.test(button) && /if \(!on\) return null/.test(button));
 check('2 it opens the route it is given and springs when pressed', /router\.push\(to as any\)/.test(button) && /withSpring/.test(button));
 const hook = read('src/hooks/useWeatherGlance.ts');
 check('3 its picture and temperature come from the forecast saved on the phone, never from a request of its own', /readLastWeather/.test(hook) && !/loadWeather|functions\.invoke|fetch\(/.test(hook));

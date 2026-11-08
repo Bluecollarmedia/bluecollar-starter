@@ -7,6 +7,7 @@ import type { TruckOptions } from '@/data/timeTracking';
 import { haptics } from '@/lib/haptics';
 import { useT, tr } from '@/i18n';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { isFeatureOn } from '@/config/brand';
 
 function say(title: string, message: string) {
   if (Platform.OS === 'web') (globalThis as { alert?: (m: string) => void }).alert?.(`${title}\n\n${message}`);
@@ -25,7 +26,8 @@ export function ClockRow() {
   const { workday: w } = useWorkerContext();
   const [pickTruck, setPickTruck] = useState<TruckOptions | null>(null);
   const [loading, setLoading] = useState(false);
-  if (w.installed !== true) return null;
+  // Also nothing when the settings file leaves the time clock out (features.timeClock).
+  if (w.installed !== true || !isFeatureOn('timeClock')) return null;
 
   const active = !!w.active;
   const canAgain = !active && !!w.today?.clockOutAt && w.day?.canClockIn !== false;

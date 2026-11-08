@@ -11,7 +11,8 @@
  * admins. It never returns the request's details. Deploy with "Verify JWT" OFF (supabase/config.toml does that). One file on purpose (no _shared imports): it is deployed by
  * pasting it into the Supabase website.
  *
- * Secrets (already set for send-document-email): RESEND_API_KEY, NOTIFY_EMAIL_FROM.
+ * Secrets (already set for send-document-email): RESEND_API_KEY, NOTIFY_EMAIL_FROM; optional COMPANY_NAME, COMPANY_TIMEZONE, BRAND_COLOR
+ * (the same values as src/config/brand.js).
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -25,6 +26,12 @@ const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 const FRESH_MS = 15 * 60 * 1000;
 
+// This app's settings (the same values as src/config/brand.js, which a server function cannot read): set them as Supabase secrets.
+// The fallbacks are the starter kit's placeholders.
+const COMPANY_NAME = Deno.env.get('COMPANY_NAME') || 'Your Company';
+const COMPANY_TIMEZONE = Deno.env.get('COMPANY_TIMEZONE') || 'America/New_York';
+const BRAND_COLOR = /^#[0-9a-f]{6}$/i.test(Deno.env.get('BRAND_COLOR') ?? '') ? Deno.env.get('BRAND_COLOR')! : '#2B2B2B';
+
 const reply = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -32,7 +39,7 @@ const looksLikeEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test((v ??
 
 /** The email's words, kept in one place. */
 export function buildRequestEmail(r: { name: string; town: string; property_type: string; services: string[]; details: string; phone: string; email: string; created_at: string }) {
-  const when = new Date(r.created_at).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
+  const when = new Date(r.created_at).toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: COMPANY_TIMEZONE });
   const kind = r.property_type === 'commercial' ? 'Commercial' : 'Residential';
   const lines = [
     `Name: ${r.name}`,
@@ -82,11 +89,11 @@ serve(async (req: Request) => {
 
     const m = buildRequestEmail(r);
     const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1B3A2D;max-width:520px;line-height:1.55">
+<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1F2328;max-width:520px;line-height:1.55">
   <p style="margin:0 0 14px;font-size:17px;font-weight:700">New service request</p>
   <p style="margin:0 0 14px">A new request came in through the app.</p>
   <table style="border-collapse:collapse;margin:0 0 18px">${m.lines.map((l) => { const i = l.indexOf(':'); return `<tr><td style="padding:3px 12px 3px 0;color:#5B6B62;white-space:nowrap;vertical-align:top">${esc(l.slice(0, i))}</td><td style="padding:3px 0;white-space:pre-line">${esc(l.slice(i + 2))}</td></tr>`; }).join('')}</table>
-  <p style="margin:0 0 6px"><a href="tel:${esc(r.phone.replace(/[^+\d]/g, ''))}" style="color:#2D5A43;font-weight:600">Call ${esc(r.name)}</a></p>
+  <p style="margin:0 0 6px"><a href="tel:${esc(r.phone.replace(/[^+\d]/g, ''))}" style="color:${BRAND_COLOR};font-weight:600">Call ${esc(r.name)}</a></p>
   <p style="margin:0;color:#5B6B62">Open the app → Requests to mark it contacted or done.</p>
 </div>`;
 
@@ -94,7 +101,7 @@ serve(async (req: Request) => {
       method: 'POST',
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <noreply@yourcompany.com>',
+        from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? `${COMPANY_NAME} <noreply@yourcompany.com>`,
         to,
         reply_to: looksLikeEmail(r.email) ? r.email : undefined,
         subject: m.subject,

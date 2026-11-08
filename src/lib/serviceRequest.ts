@@ -4,25 +4,21 @@
  * friendly answer before anything is sent.
  */
 
+import { brand, companyPhoneLink } from '@/config/brand';
+
 /**
- * The services people can pick. The words are saved with the request, and the database function submit_service_request accepts only
- * these, so the list in setup.sql must match it exactly (the old updates 114 and 118 still hold the original app's list).
+ * The services people can pick: the settings file's list (src/config/brand.js, wording.serviceTypes). The words are saved with the
+ * request, and the database function submit_service_request accepts only these, so the list in setup.sql must match it exactly
+ * (the old updates 114 and 118 still hold the original app's list).
  */
-export const SERVICE_CHOICES = [
-  'New installation',
-  'Repair',
-  'Maintenance',
-  'Inspection',
-  'Estimate request',
-  'Other',
-] as const;
-export type ServiceChoice = (typeof SERVICE_CHOICES)[number];
+export const SERVICE_CHOICES: readonly string[] = brand.wording.serviceTypes;
+export type ServiceChoice = string;
 export type PropertyType = 'residential' | 'commercial';
 
-/** Where people can reach the company directly. PLACEHOLDERS: a new client fills these in (Step 3 moves them to the brand settings). */
-export const COMPANY_PHONE_DISPLAY = '(555) 555-0100';
-export const COMPANY_PHONE_LINK = 'tel:5555550100';
-export const COMPANY_EMAIL = 'support@yourcompany.com';
+/** Where people can reach the company directly (settings file: company.phone and company.supportEmail). */
+export const COMPANY_PHONE_DISPLAY = brand.company.phone.display;
+export const COMPANY_PHONE_LINK = companyPhoneLink();
+export const COMPANY_EMAIL = brand.company.supportEmail;
 
 export interface ServiceRequestInput {
   propertyType: PropertyType;
@@ -39,7 +35,7 @@ export const DETAILS_MAX = 2000;
 /** The first thing wrong with a request, in plain words, or null when it can be sent. Mirrors the server's checks. */
 export function requestProblem(r: ServiceRequestInput): string | null {
   if (r.services.length < 1) return 'Choose at least one service.';
-  if (r.services.some((s) => !(SERVICE_CHOICES as readonly string[]).includes(s))) return 'Choose from the services listed.';
+  if (r.services.some((s) => !SERVICE_CHOICES.includes(s))) return 'Choose from the services listed.';
   if (r.town.trim().length < 2) return 'Enter the town or ZIP code of the property.';
   if (r.name.trim().length < 2) return 'Enter your name.';
   const digits = r.phone.replace(/\D/g, '');

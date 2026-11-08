@@ -1,9 +1,10 @@
 // Pure helpers for the links in Supabase's emails (confirm your email, reset your password) when they open the app itself.
-// The email link goes through Supabase, which then redirects to starter://auth-callback with the short-lived sign-in
+// The email link goes through Supabase, which then redirects to <scheme>://auth-callback (scheme: src/config/brand.js app.scheme) with the short-lived sign-in
 // token in the address (after the "#"). No network here.
+import { brand } from '@/config/brand';
 
 /** Where Supabase sends the person after they tap the email link. Must also be in Supabase > Auth > URL Configuration > Redirect URLs. */
-export const AUTH_CALLBACK_URL = 'starter://auth-callback'; // must match "scheme" in app.json
+export const AUTH_CALLBACK_URL = `${brand.app.scheme}://auth-callback`; // the app's own link scheme (settings file: app.scheme)
 
 export type AuthLink =
   | { kind: 'session'; purpose: 'recovery' | 'confirm'; accessToken: string; refreshToken: string }

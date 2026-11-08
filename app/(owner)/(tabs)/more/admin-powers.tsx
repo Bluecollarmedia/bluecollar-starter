@@ -9,6 +9,7 @@ import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
 import { ADMIN_POWERS, useAdminPermissions, type AdminPermissions } from '@/hooks/useTeamAccess';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { leaderPlural, words } from '@/config/brand';
 
 /** Owner only: what admins may do. Everything is on until you switch it off; the database enforces each switch, not just this screen. */
 export default function AdminPowersScreen() {
@@ -32,13 +33,13 @@ export default function AdminPowersScreen() {
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
         <Pressable onPress={() => router.back()} hitSlop={12} accessibilityRole="button" accessibilityLabel="Go back"><Icon name="arrow-left" size={24} color={colors.textPrimary} /></Pressable>
-        <Text style={[typeScale.headingLarge, { color: colors.textPrimary, flex: 1, textAlign: 'center' }]}>Admin powers</Text>
+        <Text style={[typeScale.headingLarge, { color: colors.textPrimary, flex: 1, textAlign: 'center' }]}>{words.leaderRoleLabel} powers</Text>
         <View style={{ width: 24 }} />
       </View>
       <ScrollView bounces={false} contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]} showsVerticalScrollIndicator={false}>
         <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginBottom: spacing.lg }]}>
-          Admins run the day to day: projects, schedules, customers, assignments. These five more sensitive powers are on by default; switch off any you want to keep for yourself.
-          Admins can never delete the company, deactivate or replace the owner, or make themselves an owner, whatever these say.
+          {leaderPlural()} run the day to day: {words.jobs.toLowerCase()}, schedules, customers, assignments. These more sensitive powers are on by default; switch off any you want to keep for yourself.
+          {' '}{leaderPlural()} can never delete the company, deactivate or replace the owner, or make themselves an owner, whatever these say.
         </Text>
         {A.error ? <Text style={[typeScale.bodySmall, { color: semantic.error }]}>{A.error}</Text> : null}
         {msg ? <Text style={[typeScale.bodySmall, { color: semantic.error, marginBottom: spacing.md }]}>{msg}</Text> : null}

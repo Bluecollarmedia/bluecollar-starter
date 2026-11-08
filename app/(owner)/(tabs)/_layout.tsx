@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/providers/ThemeProvider';
 import { typeScale } from '@/theme/typography';
 import { sizing } from '@/theme/spacing';
+import { words } from '@/config/brand';
 
 // Native tabs for iOS Liquid Glass — falls back to JS tabs on web/Android-if-needed
 let NativeTabs: any = null;
@@ -35,7 +36,7 @@ function OwnerNativeTabs() {
           sf={{ default: 'folder', selected: 'folder.fill' }}
           src={<NativeTabs.Trigger.VectorIcon family={Feather} name="folder" />}
         />
-        <NativeTabs.Trigger.Label>{t('Projects')}</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{t(words.jobs)}</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="workers">
@@ -95,7 +96,7 @@ function OwnerJSTabs() {
       <Tabs.Screen
         name="projects"
         options={{
-          title: t('Projects'),
+          title: t(words.jobs),
           tabBarIcon: ({ color, size }) => (
             <Feather name="folder" size={size} color={color} />
           ),

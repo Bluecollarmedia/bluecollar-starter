@@ -11,7 +11,9 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
 const fn = read('supabase/functions/invite-signup/index.ts');
 const lib = read('src/lib/inviteSignup.ts');
 const auth = read('src/providers/AuthProvider.tsx');
-const app = JSON.parse(read('app.json'));
+// The final Expo config (app.json put through app.config.js, which fills in src/config/brand.js).
+const { brand, expoConfig } = require('./_brand.cjs');
+const app = { expo: expoConfig() };
 
 check('1 the function makes the login already confirmed', /email_confirm: true/.test(fn));
 check('2 the function refuses unless the link is valid right now (reads the invites table itself: not used, cancelled or expired)', /from\('invites'\)/.test(fn) && /status === 'used'/.test(fn) && /status !== 'pending'/.test(fn) && /expires_at\) <= new Date\(\)/.test(fn) && /crypto\.subtle\.digest\('SHA-256'/.test(fn));
@@ -23,7 +25,7 @@ check('6 the app signs the person in right after, and only for invite sign-ups (
 check('7 if the function is not there, sign-up falls back to the normal way instead of failing', /'unavailable'/.test(lib) && /made !== 'unavailable'/.test(auth) && /status === 404/.test(lib));
 check('8 the reasons are plain sentences (used, expired, invalid, email already exists)', ['used', 'expired', 'invalid', 'email_exists'].every((k) => new RegExp(k + ':').test(lib)));
 const domains = (app.expo && app.expo.ios && app.expo.ios.associatedDomains) || [];
-check('9 the iPhone app claims the website addresses the invite links use, so tapping a link can open the app', domains.includes('applinks:app.yourcompany.com'), JSON.stringify(domains));
+check('9 the iPhone app claims the website addresses the invite links use, so tapping a link can open the app', domains.includes(`applinks:${new URL(brand.app.webUrl).host}`), JSON.stringify(domains));
 check('10 the website serves Apple\'s link file as JSON', /apple-app-site-association/.test(read('public/_headers')) && /application\/json/.test(read('public/_headers')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

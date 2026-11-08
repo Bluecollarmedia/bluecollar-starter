@@ -14,9 +14,11 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { formatMoney, lineAmount, parseAmount } from '@/lib/money';
 import { CATEGORY_ORDER, CATEGORY_LABEL } from '@/data/financials';
+import { brand } from '@/config/brand';
 import type { LineItem, LineItemCategory } from '@/types/financial';
 
-const UNITS = ['ea', 'hr', 'day', 'sq ft', 'sq yd', 'ln ft', 'ton', 'cu yd', 'gal', 'load', 'lot'];
+/** The quick unit choices (settings file: wording.units). */
+const UNITS = brand.wording.units;
 
 interface Props {
   visible: boolean;

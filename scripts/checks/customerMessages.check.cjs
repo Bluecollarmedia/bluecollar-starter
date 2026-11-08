@@ -20,7 +20,7 @@ check('3 the owner is told the real number reached, and the push + banner',
 check('4 the confirmation says who it goes to and that it cannot be unsent',
   /all your customers/.test(c.confirmText('customers_all').message) && /active project customers/.test(c.confirmText('customers_landscaping').message) && /can't be unsent/.test(c.confirmText('customers_all').message));
 check('5 errors are plain words (update not installed, not allowed)',
-  /update 55/.test(c.describeSendError('Could not find the function public.send_customer_announcement in the schema cache')) && /owner or an admin/.test(c.describeSendError('Only the owner or an admin can message customers.')));
+  /update 55/.test(c.describeSendError('Could not find the function public.send_customer_announcement in the schema cache')) && /Only the owner, or someone the owner allows/.test(c.describeSendError('Only the owner or an admin can message customers.')));
 
 const screen = read('src/components/announcements/MessageCustomersScreen.tsx');
 check('6 the compose screen: pick a group, title, message, confirm before sending, and a history of what was sent',

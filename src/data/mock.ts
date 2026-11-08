@@ -15,6 +15,7 @@ import type { Truck } from '@/types/truck';
 import type { Announcement, AnnouncementRead } from '@/types/announcement';
 import type { WorkerActivity, CheckIn, CheckOut, WorkerSettings } from '@/types/worker';
 import type { CompanyResource, ResourceAccess } from '@/types/resource';
+import { brand } from '@/config/brand';
 
 // ── People ──────────────────────────────────────────────────────
 
@@ -108,9 +109,9 @@ export const mockPeople: Record<string, PersonSummary> = {
 
 export const mockCompany: Company = {
   id: 'company1',
-  name: 'Your Company',
+  name: brand.company.name,
   phone: '(216) 555-0100',
-  email: 'support@yourcompany.com',
+  email: brand.company.supportEmail,
   address: '4521 Ridge Rd',
   city: 'Cleveland',
   state: 'OH',
@@ -1288,7 +1289,7 @@ export const mockCustomerTimeline: Record<string, CustomerTimelineEvent[]> = {
     },
     {
       id: 'ct61', projectId: 'proj6', eventType: 'project_completed',
-      title: 'Project completed', description: 'Your flagstone walkway is finished! Thanks for choosing Your Company.',
+      title: 'Project completed', description: `Your flagstone walkway is finished! Thanks for choosing ${brand.company.name}.`,
       timestamp: '2026-04-28T15:00:00Z',
     },
   ],

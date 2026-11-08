@@ -4,13 +4,14 @@ const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
-const compile = (src) => { const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(src, { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, () => ({})); return m.exports; };
+const { withBrand, expoConfig } = require('./_brand.cjs');
+const compile = (src) => { const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(src, { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, withBrand(() => ({}), ts)); return m.exports; };
 const { parseAuthLink, AUTH_CALLBACK_URL } = compile(read('src/lib/authLink.ts'));
 let bad = 0;
 const check = (name, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  ' + d}`); };
 
 const base = AUTH_CALLBACK_URL;
-check('1 the callback address uses the app scheme from app.json', JSON.parse(read('app.json')).expo.scheme + '://auth-callback' === base);
+check('1 the callback address uses the app scheme the build uses (settings file, through app.config.js)', expoConfig().scheme + '://auth-callback' === base);
 let r = parseAuthLink(`${base}#access_token=AAA&refresh_token=RRR&expires_in=3600&token_type=bearer&type=recovery`);
 check('2 a reset link gives the tokens and purpose "recovery"', r.kind === 'session' && r.purpose === 'recovery' && r.accessToken === 'AAA' && r.refreshToken === 'RRR', JSON.stringify(r));
 r = parseAuthLink(`${base}#access_token=AAA&refresh_token=RRR&type=signup`);

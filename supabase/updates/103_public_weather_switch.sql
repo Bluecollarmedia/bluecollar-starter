@@ -6,6 +6,11 @@
 --   * public_weather_config(): anyone (signed in or not) may ask "is public weather on?". Answers ONLY {"enabled": true|false}.
 --   * set_public_weather_enabled(on/off): ONLY a signed-in, ACTIVE member whose role is exactly 'owner'. Admins, workers, customers and
 --     signed-out callers are refused. Nothing in the app calls it yet.
+--
+-- STARTER KIT NOTE (Step 3): this switch now controls ONLY the public visitor area (what people who are NOT signed in see). Signed-in
+-- weather no longer depends on it: the weather function lets signed-in people through, and the app shows the weather button whenever
+-- the settings file (src/config/brand.js) has features.weather on. Default OFF here matches features.publicVisitorArea = false.
+-- (setup.sql must keep this same default.)
 -- ============================================================================
 
 create table if not exists public.public_weather_settings (

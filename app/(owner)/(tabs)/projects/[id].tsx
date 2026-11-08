@@ -21,6 +21,7 @@ import { ClearLogSheet } from '@/components/logs/ClearLogSheet';
 import { previewProjectClear, runProjectClear } from '@/data/activityClear';
 import { refresh as refreshStore } from '@/data/store';
 import { openDirections, formatDistance, DEFAULT_CHECKIN_RADIUS_M } from '@/lib/maps';
+import { isFeatureOn } from '@/config/brand';
 import { CheckInRadiusSheet } from '@/components/projects/CheckInRadiusSheet';
 import { ProjectPrivateNotes } from '@/components/projects/ProjectPrivateNotes';
 import { useIsProjectOwner, useOwnerNotes } from '@/data/ownerProjectNotes';
@@ -91,7 +92,12 @@ const SECTIONS = [
   { key: 'more', label: 'More' },
 ];
 
-const MORE_ITEMS = [
+// Feature switches from the settings file (src/config/brand.js) that hide parts of this screen.
+const PORTAL_ON = isFeatureOn('customerPortal');
+const MESSAGES_ON = isFeatureOn('messages') && PORTAL_ON;
+const MAPS_ON = isFeatureOn('maps');
+
+const MORE_ITEMS = ([
   {
     key: 'financials', label: 'Financials', icon: 'file-text' as const,
     description: 'Quotes, change orders and invoices for this project',
@@ -122,10 +128,10 @@ const MORE_ITEMS = [
     description: 'Configure project-level settings and requirements',
     iconBg: '#E9E9EC', iconColor: '#5B5B63',
   },
-];
+]).filter((item) => (item.key !== 'financials' || isFeatureOn('financials')) && (item.key !== 'materials' || isFeatureOn('materials')));
 
 type MoreSubSection = 'financials' | 'materials' | 'notes' | 'people' | 'activity' | 'settings';
-const MORE_DEEP_LINKS: string[] = ['financials', 'materials', 'notes'];
+const MORE_DEEP_LINKS: string[] = ['financials', 'materials', 'notes'].filter((k) => k === 'notes' || isFeatureOn(k as 'financials' | 'materials'));
 
 const PHOTO_TYPE_LABEL: Record<string, string> = {
   before: 'Before', after: 'After', progress: 'Progress', issue: 'Issue', general: 'General',
@@ -460,7 +466,7 @@ export default function ProjectDetailScreen() {
             {fullAddress && (
               <>
                 <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
-                <Pressable style={styles.infoRow} onPress={() => openDirections(p)} accessibilityRole="button" accessibilityLabel="Open address in Maps">
+                <Pressable style={styles.infoRow} onPress={MAPS_ON ? () => openDirections(p) : undefined} disabled={!MAPS_ON} accessibilityRole={MAPS_ON ? 'button' : 'text'} accessibilityLabel={MAPS_ON ? 'Open address in Maps' : undefined}>
                   <Icon name="map-pin" size={16} color={colors.textTertiary} />
                   <View style={styles.infoText}>
                     <Text style={[typeScale.caption, { color: colors.textTertiary }]}>
@@ -587,7 +593,7 @@ export default function ProjectDetailScreen() {
               <Button title="Reopen Project" icon="rotate-ccw" variant="secondary" onPress={handleReopenProject} fullWidth />
             </View>
           )}
-          <IssuesSection where={{ projectId: p.id }} />
+          {isFeatureOn('issues') ? <IssuesSection where={{ projectId: p.id }} /> : null}
         </View>
       </View>
     );
@@ -891,16 +897,18 @@ export default function ProjectDetailScreen() {
               Requests{pendingCount > 0 ? ` (${pendingCount})` : ''}
             </Text>
           </Pressable>
-          <Pressable
-            style={[styles.pillToggle, { backgroundColor: customerSubTab === 'messages' ? colors.primary : colors.backgroundTertiary }]}
-            onPress={() => setCustomerSubTab('messages')}
-          >
-            <Text style={[typeScale.labelSmall, { color: customerSubTab === 'messages' ? colors.textOnPrimary : colors.textSecondary }]}>
-              Messages{messageCount > 0 ? ` (${messageCount})` : ''}
-            </Text>
-          </Pressable>
+          {MESSAGES_ON && (
+            <Pressable
+              style={[styles.pillToggle, { backgroundColor: customerSubTab === 'messages' ? colors.primary : colors.backgroundTertiary }]}
+              onPress={() => setCustomerSubTab('messages')}
+            >
+              <Text style={[typeScale.labelSmall, { color: customerSubTab === 'messages' ? colors.textOnPrimary : colors.textSecondary }]}>
+                Messages{messageCount > 0 ? ` (${messageCount})` : ''}
+              </Text>
+            </Pressable>
+          )}
         </View>
-        {customerSubTab === 'updates' ? renderUpdates() : customerSubTab === 'requests' ? renderRequests() : (
+        {customerSubTab === 'updates' || (customerSubTab === 'messages' && !MESSAGES_ON) ? renderUpdates() : customerSubTab === 'requests' ? renderRequests() : (
           <View style={styles.sectionContent}>
             <MessageThread
               projectId={p.id}
@@ -1013,6 +1021,7 @@ export default function ProjectDetailScreen() {
               </View>
             </View>
 
+            {PORTAL_ON && (<>
             {/* Project Access */}
             <View style={[styles.accessCard, { backgroundColor: colors.surface }, shadow.sm]}>
               <View style={styles.accessCardTop}>
@@ -1146,9 +1155,9 @@ export default function ProjectDetailScreen() {
                 </View>
                 <Icon name="chevron-right" size={16} color={colors.textTertiary} />
               </Pressable>
-              <Divider style={{ marginVertical: spacing.xs }} />
+              {MESSAGES_ON && <Divider style={{ marginVertical: spacing.xs }} />}
 
-              <Pressable
+              {MESSAGES_ON && <Pressable
                 style={styles.customerContentRow}
                 onPress={() => { setCustomerSubTab('messages'); setCustomerDrilldown(true); }}
               >
@@ -1162,7 +1171,7 @@ export default function ProjectDetailScreen() {
                   </Text>
                 </View>
                 <Icon name="chevron-right" size={16} color={colors.textTertiary} />
-              </Pressable>
+              </Pressable>}
             </View>
 
             <Pressable style={[styles.previewBtn, { backgroundColor: colors.primary }]} onPress={handlePreviewCustomerView}>
@@ -1174,6 +1183,7 @@ export default function ProjectDetailScreen() {
             <Text style={[typeScale.caption, { color: colors.textTertiary, textAlign: 'center', marginTop: spacing.xs }]}>
               See exactly what {p.customer.firstName} sees in the customer portal.
             </Text>
+            </>)}
           </>
         )}
       </View>
@@ -1232,8 +1242,8 @@ export default function ProjectDetailScreen() {
 
     return (
       <View>
-        {moreSubSection === 'financials' && <ProjectFinancials projectId={p.id} />}
-        {moreSubSection === 'materials' && <ProjectMaterials projectId={p.id} />}
+        {moreSubSection === 'financials' && isFeatureOn('financials') && <ProjectFinancials projectId={p.id} />}
+        {moreSubSection === 'materials' && isFeatureOn('materials') && <ProjectMaterials projectId={p.id} />}
         {moreSubSection === 'notes' && isProjectOwner && (
           <View style={styles.sectionContent}>
             <ProjectPrivateNotes

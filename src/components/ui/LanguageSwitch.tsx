@@ -1,19 +1,21 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { useTheme } from '@/providers/ThemeProvider';
-import { LANGUAGES, useLanguage, useT } from '@/i18n';
+import { LANGUAGES, SPANISH_ON, useLanguage, useT } from '@/i18n';
 import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 
 /**
  * English | Español. Small on purpose: a pill for the sign-in / sign-up screens (so someone can read the page in Spanish before they sign up),
- * and the same switch as one quiet row in Settings. The choice stays on this phone.
+ * and the same switch as one quiet row in Settings. The choice stays on this phone. Neither shows when the settings file has Spanish off
+ * (features.spanish).
  */
 export function LanguageSwitch({ style, compact = false }: { style?: object; compact?: boolean }) {
   const { colors } = useTheme();
   const { language, setLanguage } = useLanguage();
   const t = useT();
+  if (!SPANISH_ON) return null;
   return (
     <View style={[styles.pill, { backgroundColor: colors.backgroundTertiary, borderColor: colors.borderLight }, style]} accessibilityRole="radiogroup" accessibilityLabel={t('Language')}>
       {LANGUAGES.map((l) => {
@@ -40,6 +42,7 @@ export function LanguageSwitch({ style, compact = false }: { style?: object; com
 export function LanguageRow() {
   const { colors } = useTheme();
   const t = useT();
+  if (!SPANISH_ON) return null;
   return (
     <View style={styles.row}>
       <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{t('Language')}</Text>

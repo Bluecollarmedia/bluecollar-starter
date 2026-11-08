@@ -258,7 +258,8 @@ export const ES_WORKER: Record<string, string> = {
   "Camera access is needed to take a profile photo. You can turn it on in your phone's Settings app.": 'Se necesita acceso a la cámara para tomar una foto de perfil. Puedes activarlo en la app de Ajustes de tu teléfono.',
   "Couldn't open the camera. Please try again.": 'No se pudo abrir la cámara. Inténtalo de nuevo.',
   "Couldn't open your photos. Please try again.": 'No se pudieron abrir tus fotos. Inténtalo de nuevo.',
-  'Shirt Size (optional)': 'Talla de camisa (opcional)',
+  '{label} (optional)': '{label} (opcional)',
+  'Shirt size': 'Talla de camisa',
   'ID (optional)': 'Identificación (opcional)',
   'A clear photo of your driver license or other ID.': 'Una foto clara de tu licencia de conducir u otra identificación.',
   'Only you and the company owner can see your ID. It is stored privately, never on a public link.': 'Solo tú y el dueño de la empresa pueden ver tu identificación. Se guarda de forma privada, nunca en un enlace público.',
@@ -271,7 +272,7 @@ export const ES_WORKER: Record<string, string> = {
   'Remove my ID': 'Quitar mi identificación',
   'Private. Only the worker and the owner can see this.': 'Privado. Solo el trabajador y el dueño pueden ver esto.',
   'View ID (private)': 'Ver identificación (privada)',
-  'Shirt size: {size}': 'Talla de camisa: {size}',
+  '{label}: {size}': '{label}: {size}',
 
   // ── Delete account ──
   'Accounts can’t be deleted in demo mode.': 'Las cuentas no se pueden eliminar en el modo de demostración.',
@@ -410,4 +411,8 @@ export const ES_WORKER: Record<string, string> = {
   'You have more work today. Clock back in': 'Tienes más trabajo hoy. Registra tu entrada otra vez',
   'Delete this photo?': '¿Eliminar esta foto?',
   "Couldn't delete": 'No se pudo eliminar',
+  // ── Settings file: the time clock switched off ──
+  'Great work!': '¡Buen trabajo!',
+  'Finish this job.': 'Termina este trabajo.',
+  'This marks {name} finished.': 'Esto marca {name} como terminado.',
 };

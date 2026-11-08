@@ -28,6 +28,7 @@ import { DOC_LABEL, STATUS_LABEL, STATUS_TONE, displayStatus } from '@/data/fina
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { FinancialDoc, FinancialEvent, DocumentSnapshot } from '@/types/financial';
+import { brand } from '@/config/brand';
 
 interface Shared {
   doc: FinancialDoc;
@@ -98,7 +99,7 @@ export default function ApprovePage() {
 
   useEffect(() => {
     if (Platform.OS === 'web' && shared) {
-      document.title = `${t(DOC_LABEL[shared.doc.kind])} ${shared.doc.number} · ${shared.doc.snapshot?.company.name ?? 'Your Company'}`;
+      document.title = `${t(DOC_LABEL[shared.doc.kind])} ${shared.doc.number} · ${shared.doc.snapshot?.company.name ?? brand.company.name}`;
     }
   }, [shared, t]);
 

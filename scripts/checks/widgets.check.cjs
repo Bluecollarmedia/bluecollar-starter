@@ -6,12 +6,13 @@ const fs = require('fs');
 const path = require('path');
 const root = path.join(__dirname, '../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+const { brandModule, brand } = require('./_brand.cjs');
 const cache = {};
 const load = (p) => {
   if (cache[p]) return cache[p];
   const m = { exports: {} };
   cache[p] = m.exports;
-  const req = (id) => (id.startsWith('@/') ? load(id.replace('@/', 'src/') + '.ts') : require(id));
+  const req = (id) => (id === '@/config/brand' ? brandModule(ts) : id.startsWith('@/') ? load(id.replace('@/', 'src/') + '.ts') : require(id));
   new Function('module', 'exports', 'require', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, req);
   cache[p] = m.exports;
   return m.exports;
@@ -51,14 +52,22 @@ check('every entry carries the place; the gauge only appears when low and high m
 
 // ── static ──
 const w = read('src/widgets/WeatherWidget.tsx');
-check('the widget declares the widget directive and every approved size', w.includes("'widget';") && ['systemSmall', 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'].every((f) => w.includes(f)) && w.includes('YOUR COMPANY FORECAST'));
-check('tapping any widget opens the weather screen', w.includes(`'${JSON.parse(read('app.json')).expo.scheme}://weather'`));
+check('the widget declares the widget directive and every approved size', w.includes("'widget';") && ['systemSmall', 'accessoryCircular', 'accessoryRectangular', 'accessoryInline'].every((f) => w.includes(f)) && w.includes('${p.company} FORECAST') && /widgetURL\(p\.link\)/.test(w));
+check('tapping any widget opens the weather screen (the app own link scheme from the settings file, passed in the props)', /widgetURL\(p\.link\)/.test(w) && /`\$\{brand\.app\.scheme\}:\/\/weather`/.test(read('src/lib/widgetData.ts')) && load('src/lib/widgetData.ts').buildWidgetEntries(payload({}), NOW, null)[0].props.link === `${brand.app.scheme}://weather`);
 const sync = read('src/data/widgetSync.ts');
 check('syncing does nothing off the iPhone and never throws (older builds without widgets just skip it)', sync.includes("Platform.OS !== 'ios'") && /try \{[\s\S]*require\('expo-widgets'\)[\s\S]*\} catch/.test(sync));
 check('the weather screen feeds the widgets', read('app/weather/(tabs)/index.tsx').includes('syncWidgets(data)'));
 const hook = read('src/hooks/useWidgetSync.ts');
 check('the widgets are fed in the background for everyone, signed in or not (mounted in the root layout, not in the weather screen)', /useWidgetSync\(\);/.test(read('app/_layout.tsx')) && /loadWeather\(place\)/.test(hook) && /readLastWeather/.test(hook) && !/useAuth|isAuthenticated/.test(hook));
-const app = JSON.parse(read('app.json'));
-const plug = app.expo.plugins.find((p) => Array.isArray(p) && p[0] === 'expo-widgets');
-check('app.json sets up the widget with an app group and the five sizes', !!plug && plug[1].groupIdentifier === `group.${app.expo.ios.bundleIdentifier}` && plug[1].widgets[0].name === 'ForecastWidget' && /createWidget\('ForecastWidget'/.test(w) && plug[1].widgets[0].ios.supportedFamilies.length === 5);
+// The widget plugin is set up by app.config.js from the settings file, and only while features.widgets (and weather) is on.
+const B = require('./_brand.cjs');
+const widgetsWas = B.brand.features.widgets;
+B.brand.features.widgets = true;
+const onCfg = B.expoConfig();
+B.brand.features.widgets = false;
+const offCfg = B.expoConfig();
+B.brand.features.widgets = widgetsWas;
+const plug = onCfg.plugins.find((p) => Array.isArray(p) && p[0] === 'expo-widgets');
+check('with widgets on, the build config sets up the widget with an app group (group.<bundle id>) and the five sizes', !!plug && plug[1].groupIdentifier === `group.${onCfg.ios.bundleIdentifier}` && plug[1].widgets[0].name === 'ForecastWidget' && /createWidget\('ForecastWidget'/.test(w) && plug[1].widgets[0].ios.supportedFamilies.length === 5);
+check('with widgets off (the default), there is no widget in the build and the app never feeds one', !offCfg.plugins.some((p) => (Array.isArray(p) ? p[0] : p) === 'expo-widgets') && /WIDGETS_ON = isFeatureOn\('widgets'\) && isFeatureOn\('weather'\)/.test(sync) && /!WIDGETS_ON\) return;/.test(sync) && /!WIDGETS_ON\) return;/.test(hook));
 process.exit(bad ? 1 : 0);

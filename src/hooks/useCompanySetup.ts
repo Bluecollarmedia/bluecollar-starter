@@ -1,6 +1,7 @@
 import { useMemo, useCallback } from 'react';
 import type { CompanySetupState, SetupStepKey } from '@/types/company';
 import { db, useDb, updateRow, findRow } from '@/data/store';
+import { isFeatureOn } from '@/config/brand';
 
 export interface SetupStepInfo {
   key: SetupStepKey;
@@ -9,14 +10,18 @@ export interface SetupStepInfo {
   icon: 'truck' | 'users' | 'dollar-sign' | 'bell' | 'briefcase';
 }
 
-/** The owner's first-time setup, in the order the wizard walks through it. */
-export const SETUP_STEPS: SetupStepInfo[] = [
+/** The owner's first-time setup, in the order the wizard walks through it. Steps for a feature switched off in the settings file
+ *  (trucks; pay rates belong to the time clock) are left out. */
+const ALL_SETUP_STEPS: SetupStepInfo[] = [
   { key: 'trucks', title: 'Add your trucks', subtitle: 'So you can hand out trucks to crews each day.', icon: 'truck' },
   { key: 'workers', title: 'Invite your workers', subtitle: 'Add a name and phone number, then text them a private link.', icon: 'users' },
   { key: 'payRates', title: 'Set pay rates', subtitle: 'Hourly rates power the payroll estimates.', icon: 'dollar-sign' },
   { key: 'notifications', title: 'Choose your alerts', subtitle: 'Pick what you want to be told about.', icon: 'bell' },
   { key: 'company', title: 'Company info & photos', subtitle: 'Contact details and your header photos.', icon: 'briefcase' },
 ];
+export const SETUP_STEPS: SetupStepInfo[] = ALL_SETUP_STEPS.filter(
+  (s) => (s.key !== 'trucks' || isFeatureOn('trucks')) && (s.key !== 'payRates' || isFeatureOn('timeClock')),
+);
 
 function activeWorkerIds(): string[] {
   return db.members.filter((m) => m.role === 'worker' && m.status === 'active').map((m) => m.personId);

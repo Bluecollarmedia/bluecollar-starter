@@ -1,5 +1,5 @@
 /**
- * Where the email links (confirm your email, reset your password) land inside the app: starter://auth-callback.
+ * Where the email links (confirm your email, reset your password) land inside the app: <scheme>://auth-callback (scheme: src/config/brand.js app.scheme).
  * Reads the short-lived sign-in token from the link, signs the person in, then moves on: a reset goes to "Choose a new
  * password", a confirmation goes into the app. A bad or used link says so and offers Sign In. Public page, no redirects.
  */

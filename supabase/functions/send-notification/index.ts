@@ -25,7 +25,8 @@
  *   RESEND_API_KEY      — from resend.com; without it no email is sent
  *   NOTIFY_EMAIL_FROM   — e.g. "Your Company <noreply@yourcompany.com>"
  *                         (a domain verified in Resend; defaults to Resend's test sender)
- *   APP_WEB_URL         — where the web app is hosted, e.g. https://app.yourcompany.com
+ *   APP_WEB_URL         — where the web app is hosted (src/config/brand.js app.webUrl)
+ *   COMPANY_NAME, COMPANY_TIMEZONE, BRAND_COLOR — the same values as src/config/brand.js (optional; placeholders otherwise)
  */
 import { serve } from 'https://deno.land/std@0.208.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
@@ -34,6 +35,12 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
 // Supabase dashboard's function editor.
 const getServiceClient = () =>
   createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '');
+
+// This app's settings (the same values as src/config/brand.js, which a server function cannot read): set them as Supabase secrets.
+// The fallbacks are the starter kit's placeholders.
+const COMPANY_NAME = Deno.env.get('COMPANY_NAME') || 'Your Company';
+const COMPANY_TIMEZONE = Deno.env.get('COMPANY_TIMEZONE') || 'America/New_York';
+const BRAND_COLOR = /^#[0-9a-f]{6}$/i.test(Deno.env.get('BRAND_COLOR') ?? '') ? Deno.env.get('BRAND_COLOR')! : '#2B2B2B';
 
 const EXPO_PUSH_URL = 'https://exp.host/--/api/v2/push/send';
 const EMAIL_EVENTS = new Set(['quote_approved', 'quote_declined']);
@@ -164,7 +171,7 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
   const link = webUrl && doc?.share_token ? `${webUrl}/approve/${doc.share_token}` : null;
   const approved = n.event_type === 'quote_approved';
   const total = doc ? Number(doc.total).toLocaleString('en-US', { style: 'currency', currency: 'USD' }) : null;
-  const when = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'America/New_York' });
+  const when = new Date().toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: COMPANY_TIMEZONE });
 
   const rows: [string, string | null | undefined][] = [
     ['Project', project ? [project.name, project.address, project.city].filter(Boolean).join(', ') : null],
@@ -174,12 +181,12 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
     ['Reason', approved ? null : doc?.decline_reason],
   ];
   const html = `
-<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1B3A2D;max-width:520px">
+<div style="font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#1F2328;max-width:520px">
   <p style="font-size:18px;font-weight:600;margin:0 0 12px">${esc(n.title)}</p>
   <table style="border-collapse:collapse;font-size:14px">
     ${rows.filter(([, v]) => v).map(([k, v]) => `<tr><td style="padding:4px 16px 4px 0;color:#6B7570">${esc(k)}</td><td style="padding:4px 0">${esc(String(v))}</td></tr>`).join('')}
   </table>
-  ${link ? `<p style="margin:20px 0"><a href="${esc(link)}" style="background:#7CB342;color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:600">View ${approved ? 'approved ' : ''}document &amp; PDF</a></p>` : ''}
+  ${link ? `<p style="margin:20px 0"><a href="${esc(link)}" style="background:${BRAND_COLOR};color:#fff;text-decoration:none;padding:10px 18px;border-radius:8px;font-weight:600">View ${approved ? 'approved ' : ''}document &amp; PDF</a></p>` : ''}
   <p style="font-size:12px;color:#8A948F">Sent by the app. It's also in your notifications.</p>
 </div>`;
 
@@ -187,7 +194,7 @@ async function sendEmail(db: Db, n: Notification): Promise<string> {
     method: 'POST',
     headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? 'Your Company <onboarding@resend.dev>',
+      from: Deno.env.get('NOTIFY_EMAIL_FROM') ?? `${COMPANY_NAME} <onboarding@resend.dev>`,
       to: [person.email],
       subject: n.title,
       html,

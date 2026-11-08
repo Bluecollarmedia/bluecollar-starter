@@ -99,7 +99,7 @@ export default function AddWorkerScreen() {
               <Input label="First Name *" placeholder="Gabriel" value={firstName} onChangeText={setFirstName} containerStyle={{ flex: 1 }} />
               <Input label="Last Name" placeholder="Rivera" value={lastName} onChangeText={setLastName} containerStyle={{ flex: 1 }} />
             </View>
-            <Input label="Phone *" placeholder="(555) 555-0100" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
+            <Input label="Phone *" placeholder="(555) 123-4567" value={phone} onChangeText={setPhone} keyboardType="phone-pad" icon="phone" />
             {error ? (
               <View style={[styles.note, { backgroundColor: semantic.errorLight, borderColor: semantic.error }]}>
                 <Icon name="alert-circle" size={14} color={semantic.error} />

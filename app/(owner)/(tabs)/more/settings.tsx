@@ -28,6 +28,10 @@ import { formatAddress } from '@/lib/address';
 import { formatBytes, storageLimitLabel } from '@/types/storage';
 import type { UserRole } from '@/types';
 import { appVersionText } from '@/lib/appVersion';
+import { isFeatureOn, words } from '@/config/brand';
+
+/** The owner's "Public weather" row exists only when the settings file has the public visitor area (and weather) on. */
+const PUBLIC_AREA_IN_APP = isFeatureOn('publicVisitorArea') && isFeatureOn('weather');
 
 export default function SettingsScreen() {
   const { colors } = useTheme();
@@ -146,35 +150,37 @@ export default function SettingsScreen() {
             subtitle={yard ? formatAddress(yard) : 'Not set yet'}
             onPress={() => router.push('/(owner)/more/yard-location' as any)}
           />
-          <SettingsRow
-            icon="bell"
-            tint={tileColors.orange}
-            title="Yard & clock-in alerts"
-            subtitle="Get an email when someone clocks in away from the yard"
-            onPress={() => router.push('/(owner)/more/yard-alerts' as any)}
-          />
+          {isFeatureOn('timeClock') && isFeatureOn('clockInAlerts') && (
+            <SettingsRow
+              icon="bell"
+              tint={tileColors.orange}
+              title="Yard & clock-in alerts"
+              subtitle="Get an email when someone clocks in away from the yard"
+              onPress={() => router.push('/(owner)/more/yard-alerts' as any)}
+            />
+          )}
           {!db.demo && (
             <SettingsRow
               icon="check-square"
               tint={tileColors.indigo}
               title="Recommended Setup"
-              subtitle="Trucks, workers, pay rates and more"
+              subtitle={isFeatureOn('trucks') ? 'Trucks, workers, pay rates and more' : 'Workers, pay rates and more'}
               onPress={() => router.push('/(owner)/setup' as any)}
             />
           )}
         </SettingsGroup>
 
-        {weatherRow.canChange ? (
+        {PUBLIC_AREA_IN_APP && weatherRow.canChange ? (
           <SettingsGroup title="Public Weather" footer="When on, anyone who opens the app without signing in sees local weather first, with a Sign In button. Off keeps the usual welcome screen.">
             <SettingsRow icon="cloud" tint={tileColors.blue} title={weatherRow.title} subtitle={weatherRow.subtitle} value={weatherRow.value} onPress={weatherRow.confirm} />
           </SettingsGroup>
         ) : null}
 
-        <SettingsGroup title="Crews" footer="Build a crew once, then add the whole crew to a job with one tap. A worker can be in more than one crew.">
-          <SettingsRow icon="users" tint={tileColors.green} title="Crews" subtitle="Make and edit your crews" onPress={() => router.push('/(owner)/crews' as any)} />
+        <SettingsGroup title={words.crews} footer={`Build a ${words.crew.toLowerCase()} once, then add the whole ${words.crew.toLowerCase()} to a ${words.job.toLowerCase()} with one tap. A worker can be in more than one ${words.crew.toLowerCase()}.`}>
+          <SettingsRow icon="users" tint={tileColors.green} title={words.crews} subtitle={`Make and edit your ${words.crews.toLowerCase()}`} onPress={() => router.push('/(owner)/crews' as any)} />
         </SettingsGroup>
 
-        <SettingsGroup title="Project Tasks" footer="By default anyone assigned to a project can check off its tasks. Choose Task Lead only to limit it to the lead you pick on each project.">
+        <SettingsGroup title={`${words.job} Tasks`} footer={`By default anyone assigned to a ${words.job.toLowerCase()} can check off its tasks. Choose Task Lead only to limit it to the lead you pick on each ${words.job.toLowerCase()}.`}>
           <SettingsRow
             icon="check-square"
             tint={tileColors.green}
@@ -185,15 +191,17 @@ export default function SettingsScreen() {
           />
         </SettingsGroup>
 
-        <SettingsGroup title="Quotes & Invoices">
-          <SettingsRow
-            icon="file-text"
-            tint={tileColors.orange}
-            title="Document Defaults"
-            subtitle={docDefaultsSummary}
-            onPress={() => router.push('/(owner)/more/document-defaults' as any)}
-          />
-        </SettingsGroup>
+        {isFeatureOn('financials') && (
+          <SettingsGroup title="Quotes & Invoices">
+            <SettingsRow
+              icon="file-text"
+              tint={tileColors.orange}
+              title="Document Defaults"
+              subtitle={docDefaultsSummary}
+              onPress={() => router.push('/(owner)/more/document-defaults' as any)}
+            />
+          </SettingsGroup>
+        )}
 
         <SettingsGroup title="Storage">
           <SettingsRow
@@ -211,9 +219,11 @@ export default function SettingsScreen() {
           </SettingsRow>
         </SettingsGroup>
 
-        <SettingsGroup title="Notifications" footer="Turning this off only stops the phone alert. Customer messages still appear in your notification center and on the bell.">
-          <CustomerMessagePushRow />
-        </SettingsGroup>
+        {isFeatureOn('messages') && isFeatureOn('customerPortal') && (
+          <SettingsGroup title="Notifications" footer="Turning this off only stops the phone alert. Customer messages still appear in your notification center and on the bell.">
+            <CustomerMessagePushRow />
+          </SettingsGroup>
+        )}
 
         <SettingsGroup title="App">
           <SettingsRow icon="info" tint={tileColors.gray} title="Version" value={appVersionText()} />

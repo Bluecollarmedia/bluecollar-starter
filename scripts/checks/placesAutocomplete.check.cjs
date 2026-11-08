@@ -9,7 +9,8 @@ let bad = 0;
 const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}${ok ? '' : '  - ' + detail}`); };
 
 const m = { exports: {} };
-const fakeRequire = (id) => (id === '@/lib/config' ? { config: { googlePlacesKey: '' } } : id === 'react-native' ? { Platform: { OS: 'ios' } } : id === 'expo-constants' ? { default: { expoConfig: {} } } : {});
+const { brandModule } = require('./_brand.cjs');
+const fakeRequire = (id) => (id === '@/config/brand' ? brandModule(ts) : id === '@/lib/config' ? { config: { googlePlacesKey: '' } } : id === 'react-native' ? { Platform: { OS: 'ios' } } : id === 'expo-constants' ? { default: { expoConfig: {} } } : {});
 new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/placesAutocomplete.ts'), { compilerOptions: { module: 'commonjs', esModuleInterop: true } }).outputText)(m, m.exports, fakeRequire);
 const { parseSuggestions, parsePlace, fetchSuggestions, fetchPlace, placesEnabled, newSessionToken } = m.exports;
 

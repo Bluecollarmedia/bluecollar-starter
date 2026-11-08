@@ -214,4 +214,9 @@ export const ES_CUSTOMER: Record<string, string> = {
   'visits': 'visitas',
   'Visits': 'Visitas',
   '1 photo': '1 foto',
+  // ── Settings file (src/config/brand.js): switched-off features and the place wording ──
+  'This part of the app is not turned on.': 'Esta parte de la app no está activada.',
+  'Go to home': 'Ir al inicio',
+  'Job site': 'Lugar de trabajo',
+  'Job sites': 'Lugares de trabajo',
 };

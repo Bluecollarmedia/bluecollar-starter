@@ -18,6 +18,7 @@
 
 import { db, insertRow, updateRow, deleteRow, upsertRow } from './store';
 import { todayKey } from '@/lib/ids';
+import { brand } from '@/config/brand';
 import { formatQuantity } from '@/lib/money';
 import { formatDocDate } from '@/lib/documentHtml';
 import type { MaterialPlan, MaterialSource, MaterialStatus, MaterialVendor, ProjectMaterial } from '@/types/materials';
@@ -201,10 +202,8 @@ export function deleteVendor(id: string) {
 // ── Suggestions from approved documents ─────────────────────────────────────
 
 /** Units that measure a material (normalised: lower case, no dots/plural s). */
-const MATERIAL_UNITS = new Set([
-  'ton', 'yd', 'cu yd', 'cuyd', 'cy', 'yard', 'cubic yard', 'bag', 'pallet', 'roll', 'gal', 'gallon',
-  'bundle', 'piece', 'pc', 'stone', 'block', 'paver', 'lb', 'sq yd', 'load', 'sheet',
-]);
+/** Units that mean a quote line is a material (settings file: wording.materialUnits). */
+const MATERIAL_UNITS = new Set(brand.wording.materialUnits.map((u) => u.toLowerCase().replace(/\./g, '').trim().replace(/s$/, '')));
 
 const normUnit = (u?: string) => (u ?? '').toLowerCase().replace(/\./g, '').trim().replace(/s$/, '');
 

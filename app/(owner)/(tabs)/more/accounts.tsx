@@ -15,6 +15,7 @@ import { useAccounts, type Account, type AccountStatus } from '@/hooks/useAccoun
 import { CollapsibleFilters } from '@/components/ui/CollapsibleFilters';
 import { haptics } from '@/lib/haptics';
 import { useTabBarClearance } from '@/hooks/useTabBarClearance';
+import { roleLabel } from '@/config/brand';
 
 type RoleFilter = 'all' | 'owner' | 'worker' | 'customer' | 'none';
 type StatusFilter = 'all' | AccountStatus;
@@ -23,7 +24,8 @@ type Action = 'remove' | 'restore' | 'delete';
 
 const CONFIRM_WORD = 'DELETE';
 
-const ROLE_LABEL: Record<string, string> = { owner: 'Owner', admin: 'Admin', worker: 'Worker', customer: 'Customer' };
+// The name SHOWN for each role (the database keeps 'admin'; people see the settings file's leaderRoleLabel, e.g. "Manager").
+const ROLE_LABEL: Record<string, string> = { owner: roleLabel('owner'), admin: roleLabel('admin'), worker: roleLabel('worker'), customer: roleLabel('customer') };
 
 const STATUS_BADGE: Record<AccountStatus, { label: string; status: 'success' | 'warning' | 'error' | 'neutral' }> = {
   active: { label: 'Active', status: 'success' },

@@ -22,6 +22,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { OwnerProjectPhoto } from '@/types/project';
 import { confirmAction } from '@/components/financials/ActionSheet';
+import { brand } from '@/config/brand';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
@@ -99,7 +100,7 @@ export function ProjectPrivateNotes({ projectId, projectName, address, internalN
   async function print(list: MaterialList) {
     try {
       await printHtml(
-        materialListHtml({ list, projectName, address, company: db.company?.name ?? 'Your Company', dateText: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }),
+        materialListHtml({ list, projectName, address, company: db.company?.name ?? brand.company.name, dateText: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }),
         list.title,
       );
     } catch (e) {

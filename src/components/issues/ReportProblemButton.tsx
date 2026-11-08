@@ -7,13 +7,15 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import type { IssueWhere } from '@/data/issues';
 import { useT } from '@/i18n';
+import { isFeatureOn } from '@/config/brand';
 
-/** Outlined "Report a Problem" button for a worker's job screens. */
+/** Outlined "Report a Problem" button for a worker's job screens. Nothing when the settings file has issues off (features.issues). */
 export function ReportProblemButton({ where }: { where: IssueWhere }) {
   const t = useT();
   const { colors } = useTheme();
   const router = useRouter();
   const params = { projectId: where.projectId };
+  if (!isFeatureOn('issues')) return null;
   return (
     <PressableScale
       onPress={() => router.push({ pathname: '/(worker)/report-issue', params } as any)}

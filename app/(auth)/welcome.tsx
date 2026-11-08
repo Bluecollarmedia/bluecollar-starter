@@ -14,6 +14,7 @@ import type { LegalDoc } from '@/legal/legalContent';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { brand } from '@/theme/colors';
+import { brand as brandSettings } from '@/config/brand';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const LOGO_WIDTH = Math.min(SCREEN_WIDTH * 0.55, 240);
@@ -76,7 +77,7 @@ export default function WelcomeScreen() {
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.lg }]}>
         <Text style={[typeScale.caption, { color: colors.textTertiary, textAlign: 'center' }]}>
-          Starter App
+          {brandSettings.app.name}
         </Text>
         <View style={styles.legalRow}>
           <Text style={[typeScale.caption, { color: colors.primary }]} onPress={() => setReading('privacy')}>{t('Privacy Policy')}</Text>
