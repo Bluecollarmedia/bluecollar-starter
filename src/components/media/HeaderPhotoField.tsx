@@ -17,6 +17,7 @@ import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
 import { fixed, whiteAlpha, blackAlpha } from '@/theme/colors';
+import { w } from '@/config/brand';
 
 /** Height of the photo header on the worker Today screen. */
 export const WORKER_HERO_HEIGHT = 400;
@@ -42,7 +43,7 @@ export function HeaderPhotoOverlay({ kind, compact }: { kind: HeaderPhotoKind; c
         <View style={[styles.overlayText, { padding: compact ? spacing.md : spacing.lg }]}>
           <Text style={[typeScale.overline, { color: whiteAlpha(0.8) }]}>TODAY</Text>
           <Text style={[compact ? typeScale.headingSmall : typeScale.headingLarge, { color: fixed.white, marginTop: 2, marginBottom: compact ? spacing.sm : spacing.md }]}>
-            3 jobs in progress
+            {w('3 jobs in progress')}
           </Text>
           <View style={[styles.statsRow, { marginBottom: compact ? spacing.sm : spacing.lg }]}>
             {['Workers', 'On site', 'Upcoming', 'Attention'].map((statLabel, i) => (

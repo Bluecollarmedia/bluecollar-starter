@@ -8,6 +8,7 @@ import { tr } from '@/i18n';
 import { useMemo } from 'react';
 import { db, insertRow, updateRow, deleteRow, rowsOf, useDb } from './store';
 import { uploadImage } from '@/lib/media';
+import { w } from '@/config/brand';
 
 export type IssueType = 'tree_down' | 'damage' | 'safety' | 'equipment' | 'customer_request' | 'other';
 
@@ -52,7 +53,7 @@ function shape(r: Record<string, any>): PropertyIssue {
   return {
     ...(r as PropertyIssue),
     photos: Array.isArray(r.photos) ? r.photos : [],
-    reporterName: nameOf(r.reportedBy) || 'A crew member',
+    reporterName: nameOf(r.reportedBy) || w('A crew member'),
     resolvedByName: nameOf(r.resolvedBy) || undefined,
   };
 }

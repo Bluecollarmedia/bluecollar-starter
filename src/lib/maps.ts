@@ -1,6 +1,7 @@
 import { Alert, Linking, Platform } from 'react-native';
 import * as Location from 'expo-location';
 import { formatAddress, type AddressParts } from './address';
+import { w } from '@/config/brand';
 
 export interface Place extends Partial<AddressParts> {
   latitude?: number;
@@ -141,7 +142,7 @@ export function describeRadius(feet: number): string {
   if (feet <= 300) return 'The lot plus the street out front';
   if (feet <= 500) return 'A few houses either way';
   if (feet <= 1000) return 'About the whole block';
-  if (feet <= 1320) return 'A few blocks around the job site';
+  if (feet <= 1320) return w('A few blocks around the job site');
   if (feet <= 2640) return 'The surrounding neighborhood';
   return 'Very loose, for estates and acreage';
 }

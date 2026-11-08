@@ -14,7 +14,7 @@ import { useServiceRequests } from '@/data/serviceRequests';
 import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { semantic } from '@/theme/colors';
-import { isFeatureOn, leaderPlural, words } from '@/config/brand';
+import { isFeatureOn, leaderPlural, words, w } from '@/config/brand';
 
 export default function MoreScreen() {
   const { colors } = useTheme();
@@ -69,7 +69,7 @@ export default function MoreScreen() {
             <MenuRow icon="file-text" label="Quotes & Invoices" subtitle="Quotes, change orders and invoices" onPress={() => go('/(owner)/more/financials')} />
           )}
           {isFeatureOn('issues') && (
-            <MenuRow icon="alert-triangle" label="Issues" subtitle="Problems your crew reported" count={openIssueCount} onPress={() => go('/(owner)/issues')} />
+            <MenuRow icon="alert-triangle" label="Issues" subtitle={w("Problems your crew reported")} count={openIssueCount} onPress={() => go('/(owner)/issues')} />
           )}
           {isFeatureOn('requests') && (
             <MenuRow icon="inbox" label="Service requests" subtitle="People who asked for work from the app" count={newRequestCount} onPress={() => go('/(owner)/service-requests')} />
@@ -78,7 +78,7 @@ export default function MoreScreen() {
             <MenuRow icon="flag" label="Reported content" subtitle="Messages and photos people flagged" count={openReportCount} onPress={() => go('/(owner)/reports')} />
           )}
           {isFeatureOn('materials') && (
-            <MenuRow icon="clipboard" label="Materials" subtitle="What to order or pick up for upcoming jobs" onPress={() => go('/(owner)/more/materials')} />
+            <MenuRow icon="clipboard" label="Materials" subtitle={w("What to order or pick up for upcoming jobs")} onPress={() => go('/(owner)/more/materials')} />
           )}
           <MenuRow icon="key" label="Company Resources" subtitle="Codes and info, and who can see them" onPress={() => go('/(owner)/resources')} />
           {isFeatureOn('announcements') && (
@@ -107,7 +107,7 @@ export default function MoreScreen() {
           <MenuRow icon="check-square" label="Payroll Review" subtitle="Approve each employee's day" onPress={() => go('/(owner)/more/labor-review')} />
           <MenuRow icon="calendar" label="Weekly Summary" subtitle="Hours, overtime and cost by employee" onPress={() => go('/(owner)/more/labor-week')} />
           <MenuRow icon="map-pin" label={`${words.place} & ${words.job} History`} subtitle="Every visit, averages and labor cost" onPress={() => go('/(owner)/more/labor-properties')} />
-          <MenuRow icon="user-check" label="Attendance" subtitle="Job check-ins and status" onPress={() => go('/(owner)/more/attendance')} />
+          <MenuRow icon="user-check" label="Attendance" subtitle={w("Job check-ins and status")} onPress={() => go('/(owner)/more/attendance')} />
           <MenuRow icon="dollar-sign" label="Payroll Estimate" subtitle="Weekly pay estimates and pay settings" onPress={() => go('/(owner)/more/payroll')} />
           <MenuRow icon="sliders" label="Hours & Labor Settings" subtitle="Breaks, photos, alerts and pay rates" onPress={() => go('/(owner)/more/labor-settings')} />
         </MenuGroup>

@@ -1,3 +1,4 @@
+import { w } from '@/config/brand';
 // Emailing a sent quote, change order or issued invoice to the customer. Pure helpers: the wording the customer reads (kept the same as
 // supabase/functions/send-document-email), who it goes to, and what to tell the owner when it can't be sent.
 
@@ -7,10 +8,10 @@ export function buildDocumentEmailMessage(o: EmailWords) {
   const what = o.kind === 'quote' ? 'quote' : o.kind === 'invoice' ? 'invoice' : 'change order';
   const hello = o.customerName ? `Hi ${o.customerName},` : 'Hello,';
   const body = o.kind === 'quote'
-    ? `Thank you for asking us to quote your job. The quote total is ${o.totalText} as of ${o.dateText}.`
+    ? w('Thank you for asking us to quote your job. The quote total is {totalText} as of {dateText}.', { totalText: o.totalText, dateText: o.dateText })
     : o.kind === 'invoice'
       ? `Here is your invoice. The invoice total is ${o.totalText} as of ${o.dateText}.${o.dueText ? ` Payment is due by ${o.dueText}.` : ''}`
-      : `Here is the change order for your job. The change order total is ${o.totalText} as of ${o.dateText}.`;
+      : w('Here is the change order for your job. The change order total is {totalText} as of {dateText}.', { totalText: o.totalText, dateText: o.dateText });
   const closing = `If you have any questions or concerns regarding this ${what}, please don't hesitate to get in touch with ${o.contactEmail}.`;
   return { what, hello, body, closing, sign: `Sincerely,\n${o.company}`, button: `View ${what}` };
 }

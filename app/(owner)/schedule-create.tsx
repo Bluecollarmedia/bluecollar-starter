@@ -24,7 +24,7 @@ import {
   addMonthsKey, describeHorizon, describeRepeat, occurrenceDates, HORIZON_OPTIONS, SERIES_HORIZON_DAYS,
 } from '@/lib/recurrence';
 import { showMessage } from '@/components/financials/ActionSheet';
-import { isFeatureOn, w } from '@/config/brand';
+import { isFeatureOn, w, w as settingsWords } from '@/config/brand';
 
 const today = todayKey();
 
@@ -345,7 +345,7 @@ export default function ScheduleCreateScreen() {
               onPress={() => toggleWorker(w.personId)}
               disabled={!!onJob && !selected}
               accessibilityRole="button"
-              accessibilityLabel={`${p.firstName} ${p.lastName}${onJob ? ', already on this job' : conflict ? ', unavailable' : ''}`}
+              accessibilityLabel={`${p.firstName} ${p.lastName}${onJob ? settingsWords(', already on this job') : conflict ? ', unavailable' : ''}`}
             >
               <Avatar firstName={p.firstName} lastName={p.lastName} size={36} uri={p.avatarUrl} />
               <View style={{ flex: 1 }}>
@@ -358,7 +358,7 @@ export default function ScheduleCreateScreen() {
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>
                       Scheduled {formatAssignmentTime(onJob)} · {onJob.project?.name}
                     </Text>
-                    <Text style={[typeScale.caption, { color: semantic.warning, fontWeight: '700' }]}>Already on this job</Text>
+                    <Text style={[typeScale.caption, { color: semantic.warning, fontWeight: '700' }]}>{settingsWords('Already on this job')}</Text>
                   </>
                 ) : conflict && (
                   <>
@@ -628,7 +628,7 @@ export default function ScheduleCreateScreen() {
                         {upcomingDays.map(formatDateShort).join(' · ')}{upcomingDays.length === 4 ? ' …' : ''}
                       </Text>
                       <Text style={[typeScale.caption, { color: colors.textTertiary }]}>
-                        Workers see their days {describeHorizon(horizonDays)} ahead, and more keep filling in on their own. A day the worker is already on this job is skipped.
+                        Workers see their days {describeHorizon(horizonDays)}{w(' ahead, and more keep filling in on their own. A day the worker is already on this job is skipped.')}
                       </Text>
                     </View>
                   )}

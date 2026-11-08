@@ -60,7 +60,7 @@ export default function LaborVisitScreen() {
     sheetNode = <TimeEditSheet visible title="Remove this time" fields={[]} saveLabel="Remove" description="It stays in the history, but no longer counts toward labor or pay." onSave={async (_v, reason) => done(await voidInterval(s.id, reason))} onClose={() => setSheet(null)} />;
   } else if (sheet?.kind === 'billable' && detail) {
     const next = !detail.visit.billable;
-    sheetNode = <TimeEditSheet visible title={next ? 'Mark as billable' : 'Mark as non-billable'} fields={[]} saveLabel="Save" description={next ? 'Counts toward the customer-job labor totals again.' : 'Employees\' hours and pay are not affected. This visit is left out of the billable labor totals (callbacks, rework, internal work).'} onSave={async (_v, reason) => done(await setVisitBillable(detail.visit.id, next, reason))} onClose={() => setSheet(null)} />;
+    sheetNode = <TimeEditSheet visible title={next ? 'Mark as billable' : 'Mark as non-billable'} fields={[]} saveLabel="Save" description={next ? w('Counts toward the customer-job labor totals again.') : 'Employees\' hours and pay are not affected. This visit is left out of the billable labor totals (callbacks, rework, internal work).'} onSave={async (_v, reason) => done(await setVisitBillable(detail.visit.id, next, reason))} onClose={() => setSheet(null)} />;
   } else if (sheet?.kind === 'pickEmployee') {
     sheetNode = (
       <FormSheet visible title="Whose time?" onClose={() => setSheet(null)}>
@@ -93,7 +93,7 @@ export default function LaborVisitScreen() {
             <KV label="Visit started" value={row.startedAt ? fmtClock(row.startedAt) : '–'} />
             <KV label="Visit ended" value={row.endedAt ? fmtClock(row.endedAt) : row.startedAt ? 'Still being worked' : '–'} />
             <KV label="Elapsed visit duration" value={row.elapsedMs == null ? '–' : durationText(row.elapsedMs)} hint="First start to last finish, however many employees" bold />
-            <KV label="Crew labor" value={`${durationText(row.laborMs)}  (${hoursText(row.laborMs)} labor-hours)`} hint="Each employee's own time added together" bold />
+            <KV label={w("Crew labor")} value={`${durationText(row.laborMs)}  (${hoursText(row.laborMs)} labor-hours)`} hint="Each employee's own time added together" bold />
             {row.targetMinutes ? <KV label="Time target" value={durationText(row.targetMinutes * 60000)} /> : null}
             {target ? <KV label="Actual vs target" value={`${durationText(Math.abs(target.diffMs))} ${target.over ? 'over' : 'under'}`} /> : null}
             <KV label="Labor cost" value={row.laborCost == null ? 'A rate is missing' : `$${row.laborCost.toFixed(2)}`} />

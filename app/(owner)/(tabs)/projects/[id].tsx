@@ -507,7 +507,7 @@ export default function ProjectDetailScreen() {
             <View style={styles.snapshotItem}>
               <Icon name="users" size={16} color={colors.textSecondary} />
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '600' }]}>
-                {team.length} Crew Member{team.length === 1 ? '' : 's'}
+                {team.length} {w(team.length === 1 ? 'Crew Member' : 'Crew Members')}
               </Text>
             </View>
             <View style={[styles.snapshotDivider, { backgroundColor: colors.borderLight }]} />
@@ -1030,7 +1030,7 @@ export default function ProjectDetailScreen() {
                   <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>
                     {access?.claimedBy || hasApp
                       ? w('{name} sees this job in the app automatically.', { name: p.customer.firstName })
-                      : `${p.customer.firstName} hasn't joined the app yet. They join once with one link; after that every job they are on shows up by itself.`}
+                      : w('{firstName} hasn\'t joined the app yet. They join once with one link; after that every job they are on shows up by itself.', { firstName: p.customer.firstName })}
                   </Text>
                 </View>
                 <StatusBadge label={access?.claimedBy || hasApp ? 'Connected' : 'Waiting'} status={access?.claimedBy || hasApp ? 'success' : 'neutral'} />
@@ -1348,7 +1348,7 @@ export default function ProjectDetailScreen() {
     if (!att) return;
     confirmAction(
       att.mediaType === 'video' ? 'Remove video?' : 'Remove photo?',
-      'The crew will no longer see it on this task.',
+      w('The crew will no longer see it on this task.'),
       'Remove',
       () => removeTaskMedia(att),
     );
@@ -1486,7 +1486,7 @@ export default function ProjectDetailScreen() {
           <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
             {db.company?.taskLeadOnly
               ? (p.taskLeadId
-                ? 'Only the Task Lead can start and complete tasks. The rest of the crew can see them.'
+                ? w('Only the Task Lead can start and complete tasks. The rest of the crew can see them.')
                 : 'Pick one worker to run the task list. Until then, workers cannot change tasks.')
               : (p.taskLeadId
                 ? w('Anyone on this job can check off tasks. (More → Settings → Job Tasks can limit this to the Task Lead.)')
@@ -2700,7 +2700,7 @@ export default function ProjectDetailScreen() {
 
               <Text style={[typeScale.labelSmall, { color: colors.textTertiary, marginTop: spacing.md }]}>Photos or videos (optional)</Text>
               <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>
-                Show the crew what to do. Videos can be up to a minute long.
+                {w('Show the crew what to do. Videos can be up to a minute long.')}
               </Text>
               <TaskMediaStrip
                 drafts

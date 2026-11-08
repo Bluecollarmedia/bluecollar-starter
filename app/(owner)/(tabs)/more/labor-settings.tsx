@@ -97,7 +97,7 @@ export default function LaborSettingsScreen() {
 
       <Card title="ALERTS">
         <Toggle label="Over-target alerts" hint={w('Tell you when a job site visit runs past its target (set per job in Job site & Job History).')} value={s.targetAlertsEnabled} onChange={(v) => update({ targetAlertsEnabled: v })} />
-        <Toggle label="Prompt the crew too" hint="Sends the crew a neutral 'check your progress' message. It never shows the target." value={s.targetNotifyCrew} onChange={(v) => update({ targetNotifyCrew: v })} disabled={!s.targetAlertsEnabled} />
+        <Toggle label={w("Prompt the crew too")} hint={w("Sends the crew a neutral 'check your progress' message. It never shows the target.")} value={s.targetNotifyCrew} onChange={(v) => update({ targetNotifyCrew: v })} disabled={!s.targetAlertsEnabled} />
         <Toggle label="Daily overtime alerts" hint="Alerts for approaching and reaching each employee's daily alert hours (set below)." value={s.overtimeAlertsEnabled} onChange={(v) => update({ overtimeAlertsEnabled: v })} />
         <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.sm }]}>Approaching means this share of the daily alert hours:</Text>
         <View style={styles.chips}>{[80, 90, 95].map((p) => <Chip key={p} label={`${p}%`} on={s.approachPercent === p} onPress={() => update({ approachPercent: p })} />)}</View>

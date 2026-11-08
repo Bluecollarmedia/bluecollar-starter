@@ -24,7 +24,7 @@ function say(title: string, message: string) {
 
 function skipLabel(s: LaborSkip): string {
   const a = db.assignments.find((x) => x.id === s.assignmentId);
-  return a?.project?.name ?? 'a job';
+  return a?.project?.name ?? w('a job');
 }
 
 /** Hours & Labor: today's workforce at a glance. Everything links down to the record behind it. */

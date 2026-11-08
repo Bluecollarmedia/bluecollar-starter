@@ -1,4 +1,5 @@
 import { properName } from './names';
+import { w } from '@/config/brand';
 
 // What the customer's home (Projects) screen lists, built only from what the customer is actually linked to: their projects.
 // Pure, no network. Nothing is invented: no placeholder rows, no made-up percentages, and a property is only "a property" when an
@@ -28,7 +29,7 @@ export interface ProjectLike {
   id: string; name: string; address?: string; city?: string; state?: string; zip?: string;
   status: string; progress: number; completedAt?: string;
 }
-const TYPE_LABEL: Record<HomeKind, string> = { project: 'Job' };
+const TYPE_LABEL: Record<HomeKind, string> = { project: w('Job') };
 
 /** "123 Main St, Your Town ST" for display. */
 export function addressLine(p: { address?: string; city?: string; state?: string }): string {

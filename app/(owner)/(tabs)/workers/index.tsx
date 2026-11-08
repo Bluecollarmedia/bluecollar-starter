@@ -137,11 +137,11 @@ export default function WorkersListScreen() {
             onPress={() => router.push('/(owner)/crews' as any)}
             style={({ pressed }) => [styles.crewChip, { backgroundColor: pressed ? colors.border : colors.backgroundTertiary }]}
             accessibilityRole="button"
-            accessibilityLabel={crews.length ? 'Manage crews' : 'Make a crew'}
+            accessibilityLabel={crews.length ? w('Manage crews') : w('Make a crew')}
           >
             <Icon name={crews.length ? 'edit-2' : 'plus'} size={13} color={colors.textPrimary} />
             <Text style={[typeScale.labelSmall, { color: colors.textPrimary, fontWeight: '700' }]}>
-              {crews.length ? 'Crews' : 'Make a Crew'}
+              {crews.length ? w('Crews') : w('Make a Crew')}
             </Text>
           </Pressable>
         </ScrollView>

@@ -292,7 +292,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
   /** What follows a check-in: remember the job, log it, tell the owner. (The records themselves are written by checkIn or by the database.) */
   const afterCheckIn = useCallback((job: Assignment, resuming: boolean) => {
     const now = new Date();
-    const projectName = job.project?.name ?? 'job site';
+    const projectName = job.project?.name ?? w('job site');
     setCurrentJobId(job.id);
     logActivity({ assignmentId: job.id, projectId: job.projectId, activityType: 'checked_in', description: `${resuming ? 'Checked back in' : 'Checked in'} at ${projectName}` });
 
@@ -331,7 +331,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
   /** Check-in through the workday: the database checks the clock-in, job order, photo rule and radius, then writes every record. */
   const checkInTimed = useCallback(async (gps: GPSCoordinates | null, assignmentId?: string): Promise<{ ok: true } | { ok: false; error: string }> => {
     const job = resolveCheckInJob(assignmentId);
-    if (!job) return { ok: false, error: 'There is no job to check in to.' };
+    if (!job) return { ok: false, error: w('There is no job to check in to.') };
     if (!workday.active) return { ok: false, error: 'Clock in first on the Clock tab.' };
     const resuming = job.status === 'completed';
     const g = gps ? { lat: gps.latitude, lng: gps.longitude, accuracy: gps.accuracy, raw: gps as unknown as Record<string, unknown> } : {};
@@ -348,7 +348,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
     if (!job) return;
 
     const nowIso = new Date().toISOString();
-    const projectName = job.project?.name ?? 'job site';
+    const projectName = job.project?.name ?? w('job site');
     insertRow('check_outs', {
       assignmentId: job.id, personId: workerId, projectId: job.projectId,
       timestamp: nowIso, gps,
@@ -368,14 +368,14 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
   /** Check-out through the workday: ends this employee's own time at the property. The workday keeps running. */
   const checkOutTimed = useCallback(async (gps: GPSCoordinates | null): Promise<{ ok: true } | { ok: false; error: string }> => {
     const job = currentJob;
-    if (!job) return { ok: false, error: 'There is no job to check out of.' };
+    if (!job) return { ok: false, error: w('There is no job to check out of.') };
     const cur = workday.day?.current;
     if (!cur || cur.projectId !== job.projectId) { checkOut(gps); return { ok: true }; }  // started before time tracking was switched on
     const g = gps ? { lat: gps.latitude, lng: gps.longitude, accuracy: gps.accuracy, raw: gps as unknown as Record<string, unknown> } : {};
     const r = await workday.completeVisit(cur.visitId, undefined, g);
     if (!r.ok) return { ok: false, error: r.error };
     await refreshStore(...JOB_TABLES);
-    const projectName = job.project?.name ?? 'job site';
+    const projectName = job.project?.name ?? w('job site');
     logActivity({ assignmentId: job.id, projectId: job.projectId, activityType: 'checked_out', description: `Checked out from ${projectName}` });
     notifyStaff('worker_checked_out', 'Worker checked out', `${workerName} checked out from ${projectName}.`, { type: 'assignment', id: job.id }, undefined, workerId);
     return { ok: true };

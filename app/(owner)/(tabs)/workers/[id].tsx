@@ -19,7 +19,7 @@ import { todayKey, localDateKey } from '@/lib/ids';
 import { loadBirthdays } from '@/data/birthday';
 import { OwnerWorkerExtras } from '@/components/account/WorkerExtras';
 import { OwnerClockCard } from '@/components/time/OwnerClockCard';
-import { isFeatureOn } from '@/config/brand';
+import { isFeatureOn, w as settingsWords } from '@/config/brand';
 
 const TRUCKS_ON = isFeatureOn('trucks');
 import { formatBirthday, birthdaySoon } from '@/lib/birthday';
@@ -146,7 +146,7 @@ export default function WorkerDetailScreen() {
   function handleDelete() {
     confirmAction(
       `Delete ${p.firstName} ${p.lastName}?`,
-      'This removes them completely and cannot be undone. It only works for a worker who never logged in and has no hours, jobs or other records.',
+      settingsWords('This removes them completely and cannot be undone. It only works for a worker who never logged in and has no hours, jobs or other records.'),
       'Delete',
       async () => {
         const res = await deleteUnusedMember(p.id);
@@ -226,9 +226,9 @@ export default function WorkerDetailScreen() {
           {/* Crew */}
           <View style={[styles.sectionCard, { backgroundColor: colors.surface }, shadow.sm]}>
             <View style={styles.sectionHeaderRow}>
-              <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700' }]}>Crew</Text>
+              <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700' }]}>{settingsWords('Crew')}</Text>
               <Pressable onPress={() => router.push('/(owner)/crews' as any)} hitSlop={8} accessibilityRole="button">
-                <Text style={[typeScale.bodySmall, { color: colors.primary, fontWeight: '600' }]}>Manage Crews</Text>
+                <Text style={[typeScale.bodySmall, { color: colors.primary, fontWeight: '600' }]}>{settingsWords('Manage Crews')}</Text>
               </Pressable>
             </View>
             <View style={styles.crewChoices}>
@@ -259,7 +259,7 @@ export default function WorkerDetailScreen() {
                 accessibilityRole="button"
               >
                 <Icon name="plus" size={13} color={colors.textSecondary} />
-                <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>New Crew</Text>
+                <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{settingsWords('New Crew')}</Text>
               </Pressable>
             </View>
           </View>

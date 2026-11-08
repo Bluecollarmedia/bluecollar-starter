@@ -9,6 +9,7 @@ import { useCrews } from '@/hooks/useCrews';
 import { db } from '@/data/store';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
+import { w } from '@/config/brand';
 
 /**
  * Crews (owner/admin): groups of workers like "Paving Crew". Lives above
@@ -29,21 +30,21 @@ export default function CrewsScreen() {
           <Icon name="arrow-left" size={24} color={colors.textPrimary} />
         </Pressable>
         <View style={{ flex: 1 }}>
-          <Text style={[typeScale.headingLarge, { color: colors.textPrimary }]}>Crews</Text>
+          <Text style={[typeScale.headingLarge, { color: colors.textPrimary }]}>{w('Crews')}</Text>
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: 2 }]}>
-            Group workers and schedule a whole crew at once
+            {w('Group workers and schedule a whole crew at once')}
           </Text>
         </View>
-        <Button title="New Crew" icon="plus" size="sm" onPress={addCrew} />
+        <Button title={w("New Crew")} icon="plus" size="sm" onPress={addCrew} />
       </View>
 
       <ScrollView bounces={false} contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + spacing['3xl'] }]}>
         {crews.length === 0 ? (
           <EmptyState
             icon="users"
-            title="No crews yet"
-            description="Make a crew like Paving Crew, add its workers, and each worker gets a crew label."
-            actionTitle="New Crew"
+            title={w("No crews yet")}
+            description={w("Make a crew like Paving Crew, add its workers, and each worker gets a crew label.")}
+            actionTitle={w("New Crew")}
             onAction={addCrew}
           />
         ) : crews.map(c => {

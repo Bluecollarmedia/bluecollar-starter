@@ -201,7 +201,7 @@ export const visitsCsv = (rows: VisitRow[]) => toCsv<VisitRow>(rows, [
   { header: 'Started (UTC)', value: (r) => dt(r.startedAt) },
   { header: 'Ended (UTC)', value: (r) => dt(r.endedAt) },
   { header: 'Elapsed visit hours', value: (r) => (r.elapsedMs == null ? '' : hoursText(r.elapsedMs)) },
-  { header: 'Crew labor hours', value: (r) => hoursText(r.laborMs) },
+  { header: w('Crew labor hours'), value: (r) => hoursText(r.laborMs) },
   { header: 'Target minutes', value: (r) => r.targetMinutes ?? '' },
   { header: 'Employees', value: (r) => r.employees.map((e) => `${e.name} ${hoursText(e.ms)}h`).join('; ') },
   { header: 'Labor cost', value: (r) => money(r.laborCost) },

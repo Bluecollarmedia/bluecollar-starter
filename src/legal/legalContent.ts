@@ -48,7 +48,7 @@ export const PRIVACY: LegalDoc = {
         'Weather: the Weather page shows a forecast for a town you choose from a list or type. It does not track you and does not read your location.',
         w('Messages sent inside a job, and reports of problems at a job site.'),
         'Quotes, change orders and invoices, including the name, time, IP address and browser a customer records when approving or declining one through a link.',
-        'Location: only when you tap to check in at a job site, the app reads your phone\'s precise location once to check that you are near the job. It does not track you in the background. If you deny location access, you can still use the app, and check-in then records that location was unavailable.',
+        w('Location: only when you tap to check in at a job site, the app reads your phone\'s precise location once to check that you are near the job. It does not track you in the background. If you deny location access, you can still use the app, and check-in then records that location was unavailable.'),
         'Device information needed to send notifications: a push notification token for your phone.',
         'Activity logs: who did what and when (for example a stop was finished), so the company can review its own work.',
       ],
@@ -80,7 +80,7 @@ export const PRIVACY: LegalDoc = {
         'Expo: delivery of push notifications to your phone.',
         'Resend: delivery of email notices: clock-in location alerts to the company, quote and invoice emails, and the email that tells the company about a new service request.',
         'OpenStreetMap (Nominatim): when a worker clocks in, the clock-in location (a map point) is sent to look up the nearest street address for the company\'s clock-in alert.',
-        'US National Weather Service (api.weather.gov): map points of places, such as a job site, are sent to get the weather forecast for them.',
+        w('US National Weather Service (api.weather.gov): map points of places, such as a job site, are sent to get the weather forecast for them.'),
         'Netlify: hosting of the web page that customers use to approve a quote, and of this policy.',
         'Google: address suggestions. When you type an address, the text you have typed so far is sent to Google Places to suggest matching addresses.',
       ],
@@ -88,7 +88,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: 'When the app opens other apps',
       paragraphs: [
-        'When you tap directions, the app opens Apple Maps, Google Maps or Waze with the job address. That address is then handled under that app\'s own privacy policy.',
+        w('When you tap directions, the app opens Apple Maps, Google Maps or Waze with the job address. That address is then handled under that app\'s own privacy policy.'),
       ],
     },
     {
@@ -158,7 +158,7 @@ export const TERMS: LegalDoc = {
     },
     {
       heading: 'Location',
-      paragraphs: ['Job-site check-in uses your phone\'s location only when you tap to check in, as described in the Privacy Policy. You can turn location off in your phone\'s Settings.'],
+      paragraphs: [w('Job-site check-in uses your phone\'s location only when you tap to check in, as described in the Privacy Policy. You can turn location off in your phone\'s Settings.')],
     },
     {
       heading: 'Quotes, invoices and payments',

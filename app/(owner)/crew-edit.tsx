@@ -15,6 +15,7 @@ import { spacing, radius, shadow } from '@/theme/spacing';
 import { semantic, fixed } from '@/theme/colors';
 import { haptics } from '@/lib/haptics';
 import { confirmAction, showMessage } from '@/components/financials/ActionSheet';
+import { w as settingsWords } from '@/config/brand';
 
 function notify(title: string, msg: string) {
   showMessage(title, msg);
@@ -45,8 +46,8 @@ export default function CrewEditScreen() {
 
   function handleSave() {
     const trimmed = name.trim();
-    if (!trimmed) return notify('Name Needed', 'Give the crew a name, like "Paving Crew".');
-    if (!isNameFree(trimmed, existing?.id)) return notify('Name Taken', `There's already a crew called "${trimmed}".`);
+    if (!trimmed) return notify('Name Needed', settingsWords('Give the crew a name, like "Paving Crew".'));
+    if (!isNameFree(trimmed, existing?.id)) return notify('Name Taken', settingsWords('There\'s already a crew called "{trimmed}".', { trimmed }));
     if (existing) {
       if (trimmed !== existing.name || color !== existing.color) updateCrew(existing.id, { name: trimmed, color });
       setCrewMembers(existing.id, memberIds);
@@ -59,9 +60,9 @@ export default function CrewEditScreen() {
 
   function handleDelete() {
     if (!existing) return;
-    const msg = `Delete ${existing.name}? Its workers stay on your team, just without a crew.`;
+    const msg = settingsWords('Delete {name}? Its workers stay on your team, just without a crew.', { name: existing.name });
     const run = () => { haptics.destructive(); deleteCrew(existing.id); router.back(); };
-    confirmAction('Delete Crew', msg, 'Delete Crew', run, true, 'Keep');
+    confirmAction(settingsWords('Delete Crew'), msg, settingsWords('Delete Crew'), run, true, 'Keep');
   }
 
   return (
@@ -81,14 +82,14 @@ export default function CrewEditScreen() {
           <Icon name="x" size={20} color={colors.textPrimary} />
         </Pressable>
         <Text style={[typeScale.displayLarge, { color: colors.textPrimary, marginTop: spacing.md }]}>
-          {existing ? 'Edit Crew' : 'New Crew'}
+          {existing ? settingsWords('Edit Crew') : settingsWords('New Crew')}
         </Text>
         <Text style={[typeScale.bodyLarge, { color: colors.textTertiary, marginTop: 2 }]}>
-          Group workers so you can pick the whole crew at once. A worker can be in more than one crew
+          {settingsWords('Group workers so you can pick the whole crew at once. A worker can be in more than one crew')}
         </Text>
 
         <View style={[styles.card, { backgroundColor: colors.surface }, shadow.sm]}>
-          <Input label="Crew name" value={name} onChangeText={setName} placeholder="Paving Crew" autoCapitalize="words" />
+          <Input label={settingsWords("Crew name")} value={name} onChangeText={setName} placeholder={settingsWords("Paving Crew")} autoCapitalize="words" />
           <Text style={[typeScale.labelSmall, { color: colors.textSecondary, marginTop: spacing.sm }]}>Label color</Text>
           <View style={styles.swatches}>
             {CREW_COLORS.map(c => (
@@ -156,14 +157,14 @@ export default function CrewEditScreen() {
         >
           <Icon name="check" size={18} color={colors.textOnPrimary} />
           <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary, fontSize: 17 }]}>
-            {existing ? 'Save Crew' : 'Create Crew'}
+            {existing ? settingsWords('Save Crew') : settingsWords('Create Crew')}
           </Text>
         </Pressable>
 
         {existing && (
           <Pressable onPress={handleDelete} style={styles.deleteButton} accessibilityRole="button">
             <Icon name="trash-2" size={16} color={semantic.error} />
-            <Text style={[typeScale.bodyLarge, { color: semantic.error, fontWeight: '600' }]}>Delete Crew</Text>
+            <Text style={[typeScale.bodyLarge, { color: semantic.error, fontWeight: '600' }]}>{settingsWords('Delete Crew')}</Text>
           </Pressable>
         )}
       </KeyboardAwareScrollView>

@@ -147,7 +147,7 @@ export default function OwnerDashboard() {
           disabled={reminding === item.id}
           hitSlop={8}
           accessibilityRole="button"
-          accessibilityLabel={item.confirmOwn ? 'Confirm my job' : item.remind ? `Remind ${item.remind.firstName || 'the worker'} to confirm` : item.actionLabel}
+          accessibilityLabel={item.confirmOwn ? w('Confirm my job') : item.remind ? `Remind ${item.remind.firstName || 'the worker'} to confirm` : item.actionLabel}
         >
           <Text style={[typeScale.labelSmall, { color: c.icon }]}>{reminding === item.id ? 'Sending…' : reminded[item.id] ? 'Sent' : item.actionLabel}</Text>
         </Pressable>
@@ -231,7 +231,7 @@ export default function OwnerDashboard() {
               )
             ) : null}
             <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: project.todayStatusLabel ? spacing.xs : 0 }]} numberOfLines={1}>
-              {project.todayStatusLabel ?? 'No crew scheduled'}
+              {project.todayStatusLabel ?? w('No crew scheduled')}
             </Text>
           </View>
         </View>
@@ -377,7 +377,7 @@ export default function OwnerDashboard() {
                 <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>
                   {openIssueCount} open {openIssueCount === 1 ? 'issue' : 'issues'}
                 </Text>
-                <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>Problems your crew reported</Text>
+                <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>{w('Problems your crew reported')}</Text>
               </View>
               <Icon name="chevron-right" size={18} color={colors.textTertiary} />
             </Pressable>
@@ -426,7 +426,7 @@ export default function OwnerDashboard() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>
-                Crew Today <Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {crewTodayTotal} scheduled</Text>
+                {w('Crew Today ')}<Text style={{ color: colors.textSecondary, fontWeight: '400' }}>· {crewTodayTotal} scheduled</Text>
               </Text>
               <Pressable onPress={() => router.push('/(owner)/workers' as any)}>
                 <Text style={[typeScale.labelSmall, { color: colors.primary }]}>View Team</Text>

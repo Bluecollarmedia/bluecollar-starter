@@ -78,7 +78,7 @@ export function MessageCustomersPanel() {
         </View>
         {help ? <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{help}</Text> : null}
 
-        <Input label="Title" value={title} onChangeText={setTitle} placeholder="For example: Crews start at 7 AM tomorrow" maxLength={TITLE_MAX} />
+        <Input label="Title" value={title} onChangeText={setTitle} placeholder={w("For example: Crews start at 7 AM tomorrow")} maxLength={TITLE_MAX} />
         <Input label="Message" value={body} onChangeText={setBody} placeholder="Write whatever you want your customers to know." multiline maxLength={BODY_MAX} containerStyle={{ minHeight: 140 }} />
 
         {note ? <InlineNotice icon={note.tone === 'success' ? 'check-circle' : 'alert-triangle'} tone={note.tone === 'success' ? 'success' : 'error'} text={note.text} /> : null}

@@ -12,6 +12,7 @@ import { keepPicked } from '@/lib/keepPickedFile';
 import { supabase } from '@/lib/supabase';
 import { uploadImage } from '@/lib/media';
 import { db, refresh } from '@/data/store';
+import { w } from '@/config/brand';
 
 export type TimedPhotoTarget = { kind: 'project'; projectId: string; assignmentId?: string };
 export type Phase = 'start' | 'complete';
@@ -20,7 +21,7 @@ const SAYS: Record<Phase, RegExp> = { start: /start photo/i, complete: /completi
 
 function ask(phase: Phase): Promise<boolean> {
   const title = phase === 'start' ? 'Start photo needed' : 'Completion photo needed';
-  const body = phase === 'start' ? 'Take a photo of the job site before you start.' : 'Take a photo of the finished work before you finish at this job site.';
+  const body = phase === 'start' ? w('Take a photo of the job site before you start.') : w('Take a photo of the finished work before you finish at this job site.');
   return new Promise((resolve) => {
     Alert.alert(title, body, [
       { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },

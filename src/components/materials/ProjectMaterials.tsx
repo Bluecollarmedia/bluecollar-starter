@@ -27,6 +27,7 @@ import { formatQuantity } from '@/lib/money';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius, shadow } from '@/theme/spacing';
 import type { ProjectMaterial } from '@/types/materials';
+import { w } from '@/config/brand';
 
 export function ProjectMaterials({ projectId }: { projectId: string }) {
   const { colors } = useTheme();
@@ -78,7 +79,7 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
             <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>Materials checklist</Text>
             <Text style={[typeScale.caption, { color: colors.textSecondary }]}>
               {items.length === 0 ? 'Nothing on the list yet' : `${done} of ${items.length} ready`}
-              {job ? `  ·  Job ${formatDocDate(job)}` : '  ·  Not scheduled yet'}
+              {job ? w('  ·  Job {job}', { job: formatDocDate(job) }) : '  ·  Not scheduled yet'}
             </Text>
           </View>
         </View>
@@ -151,8 +152,8 @@ export function ProjectMaterials({ projectId }: { projectId: string }) {
             </Text>
             <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={2}>
               {plan.reminderAt
-                ? (plan.reminderNote || (plan.reminderJobDate ? `For the job on ${formatDocDate(plan.reminderJobDate)}` : 'No job date yet'))
-                : job ? `Get reminded before the job on ${formatDocDate(job)}` : 'Pick a day to order or pick up materials'}
+                ? (plan.reminderNote || (plan.reminderJobDate ? w('For the job on {reminderJobDate}', { reminderJobDate: formatDocDate(plan.reminderJobDate) }) : w('No job date yet')))
+                : job ? w('Get reminded before the job on {job}', { job: formatDocDate(job) }) : 'Pick a day to order or pick up materials'}
             </Text>
           </View>
           <Icon name="chevron-right" size={18} color={colors.textTertiary} />

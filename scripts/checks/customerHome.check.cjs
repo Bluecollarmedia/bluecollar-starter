@@ -3,7 +3,7 @@
 const ts = require(process.argv[2] || 'typescript'); const fs = require('fs'); const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 const names = { exports: {} }; new Function('module', 'exports', ts.transpileModule(read('src/lib/names.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(names, names.exports);
-const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/customerHome.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, () => names.exports);
+const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read('src/lib/customerHome.ts'), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(() => names.exports, ts));
 const h = m.exports;
 let bad = 0; const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}${ok ? '' : ' — ' + d}`); };
 const proj = (id, name, status, extra = {}) => ({ id, name, status, progress: 40, address: '1 Elm Dr', city: 'Your Town', state: 'ST', zip: '00000', ...extra });
