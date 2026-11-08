@@ -5,8 +5,9 @@
  *   1. decides who may ask (weatherIsOn): a SIGNED-IN person always (the app's settings file, features.weather, decides whether they see
  *      weather at all); a signed-out visitor only while the owner's public visitor area switch is ON (public_weather_config, in setup.sql);
  *      nobody when the secret WEATHER_ENABLED is "false" (set it when the app has features.weather off);
- *   2. answers for the eight built-in nearby towns (fixed list below, each point from the US Census and checked against NWS) and for any other US point
- *      (its forecast grid is looked up from NWS /points, which also says the place's time zone);
+ *   2. answers for the map point (lat/lon) the app sends. This function keeps NO town list of its own: the towns live in ONE place, the app's
+ *      settings file (src/config/brand.js, weather.defaultPlace / nearbyTowns), and the app sends each town's point. The point's forecast
+ *      grid, zone and time zone are looked up from NWS /points (remembered for a day);
  *   3. reads NWS (forecast, hourly, raw grid for snowfall, active alerts), converts it, and keeps the answer for 10 minutes;
  *   4. if NWS is unreachable, hands back the last good answer marked stale, or says it is unavailable.
  * NWS needs no key; it asks for a User-Agent that says who is calling. Set the secret NWS_CONTACT to an email to add it (optional).
@@ -18,20 +19,74 @@
 
 // ───────────────────────────── pure part (no imports) ─────────────────────────────
 
+/** A place resolved from its map point: the NWS forecast office + grid square, the alert zone and the place's own time zone. */
 export interface Town { name: string; lat: number; lon: number; office: string; gridX: number; gridY: number; zone: string; tz: string }
 
-/** The supported towns. lat/lon: US Census 2023 Gazetteer internal point of the municipality, rounded to 4 decimals (the precision NWS accepts).
- *  grid/zone: from NWS /points for that point (2026-10-26). Freehold means the borough. */
-export const TOWNS: Record<string, Town> = {
-  'lakewood': { name: 'Lakewood', lat: 40.0771, lon: -74.1985, office: 'PHI', gridX: 82, gridY: 89, zone: 'NJZ020', tz: 'America/New_York' },
-  'jackson': { name: 'Jackson', lat: 40.0909, lon: -74.3613, office: 'PHI', gridX: 76, gridY: 89, zone: 'NJZ020', tz: 'America/New_York' },
-  'howell': { name: 'Howell', lat: 40.1781, lon: -74.2062, office: 'PHI', gridX: 81, gridY: 94, zone: 'NJZ013', tz: 'America/New_York' },
-  'toms-river': { name: 'Toms River', lat: 39.9943, lon: -74.1662, office: 'PHI', gridX: 84, gridY: 86, zone: 'NJZ020', tz: 'America/New_York' },
-  'brick': { name: 'Brick', lat: 40.0618, lon: -74.1096, office: 'PHI', gridX: 85, gridY: 89, zone: 'NJZ020', tz: 'America/New_York' },
-  'manchester': { name: 'Manchester', lat: 39.9616, lon: -74.3753, office: 'PHI', gridX: 77, gridY: 83, zone: 'NJZ020', tz: 'America/New_York' },
-  'freehold': { name: 'Freehold', lat: 40.2602, lon: -74.2759, office: 'PHI', gridX: 78, gridY: 97, zone: 'NJZ013', tz: 'America/New_York' },
-  'point-pleasant': { name: 'Point Pleasant', lat: 40.0777, lon: -74.0699, office: 'PHI', gridX: 87, gridY: 90, zone: 'NJZ026', tz: 'America/New_York' },
-};
+/** Rough boxes of the area the National Weather Service forecasts for: the lower 48, Alaska, Hawaii, Puerto Rico + the Virgin Islands. */
+const NWS_AREAS: Array<[number, number, number, number]> = [
+  // [south, north, west, east]
+  [24, 50, -125.5, -66], // lower 48
+  [51, 72, -180, -129], // Alaska
+  [18.5, 22.5, -161, -154.5], // Hawaii
+  [17.5, 18.8, -68, -64.3], // Puerto Rico and the US Virgin Islands
+];
+
+/** The point the app sent, checked: two real numbers inside the NWS area, rounded to 3 decimals (about 100 metres). null otherwise. */
+export function parsePoint(body: unknown): { lat: number; lon: number } | null {
+  const b = body as { lat?: unknown; lon?: unknown } | null;
+  if (!b || typeof b.lat !== 'number' || typeof b.lon !== 'number' || !Number.isFinite(b.lat) || !Number.isFinite(b.lon)) return null;
+  const lat = Math.round(b.lat * 1000) / 1000;
+  const lon = Math.round(b.lon * 1000) / 1000;
+  if (!NWS_AREAS.some(([s, n, w, e]) => lat >= s && lat <= n && lon >= w && lon <= e)) return null;
+  return { lat, lon };
+}
+
+/** One key per rounded point (the cache key for the grid lookup and the forecast). */
+export const pointKey = (lat: number, lon: number): string => `${lat.toFixed(3)},${lon.toFixed(3)}`;
+
+/** The NWS /points answer for a point -> its forecast grid, zone and time zone. null when NWS has no forecast for it. */
+export function placeFromPoints(points: any, lat: number, lon: number, name: string): Town | null {
+  const p = points?.properties;
+  const zone = String(p?.forecastZone ?? '').split('/').pop() ?? '';
+  if (!p?.gridId || !Number.isFinite(p.gridX) || !Number.isFinite(p.gridY) || !zone || !p.timeZone) return null;
+  return { name, lat, lon, office: String(p.gridId), gridX: Number(p.gridX), gridY: Number(p.gridY), zone, tz: String(p.timeZone) };
+}
+
+/** Reads NWS for one path (e.g. "/points/40.077,-74.199"); throws when NWS cannot answer. Passed in, so the flow below can be tested. */
+export type NwsGet = (path: string) => Promise<any>;
+
+/** A point's grid never changes: it is remembered (here for a day), and the cache is capped. */
+export const RESOLVE_TTL_MS = 24 * 60 * 60 * 1000;
+export const MEMORY_MAX = 300;
+
+/** Looks a point up with NWS /points, using and filling `cache`. null when NWS has no forecast for the point (or cannot be reached). */
+export async function resolvePoint(get: NwsGet, cache: Map<string, { at: number; town: Town | null }>, lat: number, lon: number, name: string, now: number): Promise<Town | null> {
+  const key = pointKey(lat, lon);
+  const hit = cache.get(key);
+  if (hit && now - hit.at < RESOLVE_TTL_MS) return hit.town ? { ...hit.town, name } : null;
+  let town: Town | null = null;
+  let reached = true;
+  try {
+    town = placeFromPoints(await get(`/points/${key}`), lat, lon, name);
+  } catch {
+    reached = false;
+  }
+  // A failed request is not remembered (it is asked again next time); an answer, even "no forecast here", is.
+  if (reached) {
+    if (cache.size >= MEMORY_MAX) cache.delete(cache.keys().next().value as string);
+    cache.set(key, { at: now, town });
+  }
+  return town ? { ...town } : null;
+}
+
+/** The forecast for a resolved place: forecast, hourly, raw grid and active alerts from NWS, shaped into the app's answer. */
+export async function forecastFor(get: NwsGet, town: Town, displayName: string, now: number): Promise<WeatherPayload> {
+  const grid = `/gridpoints/${town.office}/${town.gridX},${town.gridY}`;
+  const [forecast, hourly, gridData, alerts] = await Promise.all([
+    get(`${grid}/forecast`), get(`${grid}/forecast/hourly`), get(grid), get(`/alerts/active?zone=${town.zone}`),
+  ]);
+  return normalizeForecast({ townKey: `p:${pointKey(town.lat, town.lon)}`, town, displayName, forecast, hourly, grid: gridData, alerts, now });
+}
 
 export type WxIcon = 'sun' | 'moon' | 'partly' | 'partlynight' | 'cloud' | 'drizzle' | 'rain' | 'heavyrain' | 'storm' | 'snow' | 'heavysnow' | 'sleet' | 'hail' | 'fog' | 'haze' | 'smoke' | 'dust' | 'wind';
 
@@ -185,7 +240,7 @@ export function normalizeAlerts(alerts: any, now: number): WxAlert[] {
 
 /** NWS forecast + hourly + raw grid + alerts -> the small answer the app shows. */
 export function normalizeForecast(input: { townKey: string; town?: Town; displayName?: string; forecast: any; hourly: any; grid: any; alerts: any; now: number }): WeatherPayload {
-  const town = input.town ?? TOWNS[input.townKey];
+  const town = input.town;
   const tz = town?.tz ?? 'America/New_York';
   const now = input.now;
   const periods: any[] = input.forecast?.properties?.periods ?? [];
@@ -292,29 +347,9 @@ const NWS_TIMEOUT_MS = 8000;
 
 // Best-effort memory of recent answers (a warm instance keeps it; a cold one starts empty).
 const memory = new Map<string, { at: number; payload: WeatherPayload }>();
-const MEMORY_MAX = 300;
 
-// A point's forecast grid never changes, so it is remembered for a day.
+// Each point's forecast grid, looked up from NWS /points and remembered for a day (see resolvePoint above).
 const resolved = new Map<string, { at: number; town: Town | null }>();
-const RESOLVE_TTL_MS = 24 * 60 * 60 * 1000;
-
-/** The forecast grid, zone and time zone NWS gives for a point (4 decimals). null when NWS has no forecast for it (outside the US). */
-async function resolvePoint(lat: number, lon: number, name: string): Promise<Town | null> {
-  const key = `${lat.toFixed(4)},${lon.toFixed(4)}`;
-  const hit = resolved.get(key);
-  if (hit && Date.now() - hit.at < RESOLVE_TTL_MS) return hit.town ? { ...hit.town, name } : null;
-  let town: Town | null = null;
-  try {
-    const p = (await nws(`/points/${key}`))?.properties;
-    const zone = String(p?.forecastZone ?? '').split('/').pop() ?? '';
-    if (p?.gridId && Number.isFinite(p.gridX) && Number.isFinite(p.gridY) && zone && p.timeZone) {
-      town = { name, lat, lon, office: String(p.gridId), gridX: Number(p.gridX), gridY: Number(p.gridY), zone, tz: String(p.timeZone) };
-    }
-  } catch { town = null; }
-  if (resolved.size > MEMORY_MAX) resolved.delete(resolved.keys().next().value as string);
-  resolved.set(key, { at: Date.now(), town });
-  return town ? { ...town } : null;
-}
 
 /** A place name from a person: letters, numbers and a few marks only, at most 60 characters. */
 const cleanName = (v: unknown): string => String(v ?? '').replace(/[^\p{L}\p{N} .,'’-]/gu, '').trim().slice(0, 60);
@@ -363,48 +398,32 @@ serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json(405, { error: 'method' });
 
-  let body: { town?: unknown; lat?: unknown; lon?: unknown; name?: unknown } | null = null;
+  let body: { lat?: unknown; lon?: unknown; name?: unknown } | null = null;
   try { body = (await req.json()) as typeof body; } catch { /* handled below */ }
-  let townKey = '';
-  let town: Town | undefined;
-  let displayName = '';
-  if (typeof body?.town === 'string' && TOWNS[body.town]) {
-    townKey = body.town;
-    town = TOWNS[townKey];
-  } else if (body && Number.isFinite(Number(body.lat)) && Number.isFinite(Number(body.lon)) && body.lat !== null && body.lon !== null) {
-    // Any other US point: rounded to three decimals (about 100 metres), inside the United States and its territories.
-    const lat = Math.round(Number(body.lat) * 1000) / 1000;
-    const lon = Math.round(Number(body.lon) * 1000) / 1000;
-    if (lat < 17 || lat > 72 || lon < -180 || lon > -60) return json(400, { error: 'place' });
-    townKey = `p:${lat.toFixed(3)},${lon.toFixed(3)}`;
-    displayName = cleanName(body.name);
-  } else {
-    return json(400, { error: 'town' });
-  }
+  // The app sends the place's map point (from the settings file's towns, or any US place picked in the app). Nothing else is accepted.
+  const point = parsePoint(body);
+  if (!point) return json(400, { error: 'place' });
+  const key = pointKey(point.lat, point.lon);
+  const displayName = cleanName(body?.name) || 'This place';
 
   // A signed-out visitor gets nothing while the owner's public visitor area switch is off (or when it cannot be read).
   const on = await weatherIsOn(req);
   if (on === null) return json(503, { error: 'unavailable' });
   if (!on) return json(403, { error: 'disabled' });
 
-  const cached = memory.get(townKey);
+  const cached = memory.get(key);
   if (cached && Date.now() - cached.at < TTL_MS) return json(200, { ok: true, stale: false, data: cached.payload });
 
+  const town = await resolvePoint(nws, resolved, point.lat, point.lon, displayName, Date.now());
   if (!town) {
-    const [la, lo] = townKey.slice(2).split(',').map(Number);
-    const found = await resolvePoint(la, lo, displayName || 'This place');
-    if (!found) return json(404, { error: 'place' });
-    town = found;
+    if (cached) return json(200, { ok: true, stale: true, data: cached.payload });
+    return json(404, { error: 'place' });
   }
 
   try {
-    const grid = `/gridpoints/${town.office}/${town.gridX},${town.gridY}`;
-    const [forecast, hourly, gridData, alerts] = await Promise.all([
-      nws(`${grid}/forecast`), nws(`${grid}/forecast/hourly`), nws(grid), nws(`/alerts/active?zone=${town.zone}`),
-    ]);
-    const payload = normalizeForecast({ townKey, town, displayName, forecast, hourly, grid: gridData, alerts, now: Date.now() });
-    if (memory.size > MEMORY_MAX) memory.delete(memory.keys().next().value as string);
-    memory.set(townKey, { at: Date.now(), payload });
+    const payload = await forecastFor(nws, town, displayName, Date.now());
+    if (memory.size >= MEMORY_MAX) memory.delete(memory.keys().next().value as string);
+    memory.set(key, { at: Date.now(), payload });
     return json(200, { ok: true, stale: false, data: payload });
   } catch {
     if (cached) return json(200, { ok: true, stale: true, data: cached.payload });

@@ -51,10 +51,10 @@ export function SignupPhotoPicker({ uri, onChange, onError, firstName, lastName 
       <View>
         <Avatar firstName={firstName?.trim() || ' '} lastName={lastName ?? ''} size={88} uri={uri ?? undefined} />
         <View style={[styles.badge, { backgroundColor: colors.primary, borderColor: colors.background }]}>
-          <Icon name="camera" size={14} color={fixed.white} />
+          <Icon name="camera" size={14} color={colors.textOnPrimary} />
         </View>
       </View>
-      <Text style={[typeScale.labelLarge, { color: colors.primary, marginTop: spacing.sm }]}>
+      <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, marginTop: spacing.sm }]}>
         {uri ? t('Change photo') : t('Add a photo (optional)')}
       </Text>
       {photo.cropper}

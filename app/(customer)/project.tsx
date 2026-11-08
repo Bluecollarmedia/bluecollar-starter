@@ -50,7 +50,7 @@ const timelineIcons: Record<CustomerTimelineType, keyof typeof Feather.glyphMap>
 
 const timelineColors: Record<CustomerTimelineType, string> = {
   update_shared: semantic.info,
-  photo_shared: brand.primary,
+  photo_shared: brand.primaryOnWhite,
   progress_updated: semantic.warning,
   project_started: semantic.success,
   project_completed: semantic.success,
@@ -165,8 +165,8 @@ export default function CustomerProjectScreen() {
             <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1 }]}>{t('Job Activity')}</Text>
             {customerTimeline.length > 0 && (
               <Pressable onPress={() => setActiveSection('timeline')} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('View all job activity')} style={styles.viewAll}>
-                <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('View all')}</Text>
-                <Icon name="chevron-right" size={16} color={colors.primary} />
+                <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{t('View all')}</Text>
+                <Icon name="chevron-right" size={16} color={colors.primaryOnWhite} />
               </Pressable>
             )}
           </View>
@@ -277,7 +277,7 @@ export default function CustomerProjectScreen() {
                     <Icon
                       name={timelineIcons[event.eventType] ?? 'activity'}
                       size={14}
-                      color={timelineColors[event.eventType] ?? colors.primary}
+                      color={timelineColors[event.eventType] ?? colors.primaryOnWhite}
                     />
                   </View>
                   {i < customerTimeline.length - 1 && <View style={[styles.timelineLine, { backgroundColor: colors.borderLight }]} />}
@@ -408,8 +408,8 @@ export default function CustomerProjectScreen() {
                       },
                     ]}
                   >
-                    <Icon name={cat.icon} size={14} color={selected ? colors.primary : colors.textTertiary} />
-                    <Text style={[typeScale.caption, { color: selected ? colors.primary : colors.textSecondary, fontWeight: selected ? '600' : '400' }]}>
+                    <Icon name={cat.icon} size={14} color={selected ? colors.primaryOnWhite : colors.textTertiary} />
+                    <Text style={[typeScale.caption, { color: selected ? colors.primaryOnWhite : colors.textSecondary, fontWeight: selected ? '600' : '400' }]}>
                       {t(cat.label)}
                     </Text>
                   </Pressable>
@@ -466,7 +466,7 @@ export default function CustomerProjectScreen() {
                 )}
                 {req.responseNote && (
                   <View style={[styles.responseBox, { backgroundColor: colors.primarySurface }]}>
-                    <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '600' }]}>{t('Response from the company')}</Text>
+                    <Text style={[typeScale.caption, { color: colors.primaryOnWhite, fontWeight: '600' }]}>{t('Response from the company')}</Text>
                     <Text style={[typeScale.bodySmall, { color: colors.textPrimary, marginTop: spacing.xs }]}>
                       {req.responseNote}
                     </Text>

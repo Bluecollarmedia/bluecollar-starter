@@ -45,7 +45,7 @@ export function SectionTabs({ tabs, activeTab, onTabChange, style }: SectionTabs
               <Text
                 style={[
                   styles.tabText,
-                  { color: isActive ? colors.primary : colors.textTertiary },
+                  { color: isActive ? colors.primaryOnWhite : colors.textTertiary },
                   isActive && styles.tabTextActive,
                 ]}
               >

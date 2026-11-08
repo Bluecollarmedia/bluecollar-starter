@@ -55,7 +55,7 @@ export function CustomerPicker({ onPick, checkedId, disabled }: {
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]}>{`${p.firstName} ${p.lastName}`.trim() || p.email}</Text>
               {reach ? <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>{reach}</Text> : null}
             </View>
-            <Icon name={checkedId === m.personId ? 'check' : 'chevron-right'} size={18} color={checkedId === m.personId ? colors.primary : colors.textTertiary} />
+            <Icon name={checkedId === m.personId ? 'check' : 'chevron-right'} size={18} color={checkedId === m.personId ? colors.primaryOnWhite : colors.textTertiary} />
           </Pressable>
         );
       })}

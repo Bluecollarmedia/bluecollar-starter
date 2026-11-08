@@ -55,11 +55,11 @@ export function CustomerPropertiesCard({ customerId, firstName }: { customerId: 
         const uses = projects ? `${projects} ${w(projects === 1 ? 'job' : 'jobs')}` : '';
         return (
           <View key={p.id} style={[styles.row, i > 0 || true ? { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderLight } : null]}>
-            <Icon name="map-pin" size={18} color={colors.primary} />
+            <Icon name="map-pin" size={18} color={colors.primaryOnWhite} />
             <View style={{ flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>{p.name || p.address}</Text>
               <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>{[p.address, p.city, p.state].filter(Boolean).join(', ')}</Text>
-              {uses ? <Text style={[typeScale.caption, { color: colors.primary }]}>{uses}</Text> : null}
+              {uses ? <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>{uses}</Text> : null}
             </View>
           </View>
         );

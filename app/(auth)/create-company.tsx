@@ -299,8 +299,8 @@ export default function CreateCompanyScreen() {
                 <Text style={[typeScale.caption, { color: colors.textSecondary }]}>{signedIn ? user?.email : email}</Text>
                 {!signedIn && <Text style={[typeScale.caption, { color: colors.textSecondary }]}>{phone}</Text>}
                 <View style={[styles.roleBadge, { backgroundColor: colors.primarySurface }]}>
-                  <Icon name="shield" size={12} color={colors.primary} />
-                  <Text style={[typeScale.caption, { color: colors.primary, fontWeight: '600', marginLeft: 4 }]}>
+                  <Icon name="shield" size={12} color={colors.primaryOnWhite} />
+                  <Text style={[typeScale.caption, { color: colors.primaryOnWhite, fontWeight: '600', marginLeft: 4 }]}>
                     {t('Company Owner')}
                   </Text>
                 </View>
@@ -308,7 +308,7 @@ export default function CreateCompanyScreen() {
             </View>
 
             <View style={[styles.infoBox, { backgroundColor: colors.primarySurface, borderColor: colors.primary }]}>
-              <Icon name="info" size={16} color={colors.primary} />
+              <Icon name="info" size={16} color={colors.primaryOnWhite} />
               <Text style={[typeScale.caption, { color: colors.textSecondary, flex: 1, marginLeft: spacing.sm }]}>
                 {t("As the company owner, you'll have full control over your team, jobs, and settings. You can invite workers and customers after setup.")}
               </Text>

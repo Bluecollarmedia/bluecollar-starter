@@ -63,7 +63,7 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
                 accessibilityState={{ selected: on }}
                 style={[styles.chip, { backgroundColor: on ? colors.primary : colors.surface, borderColor: on ? colors.primary : colors.border }]}
               >
-                <Text style={[typeScale.labelSmall, { color: on ? fixed.white : colors.textPrimary }]}>{s}</Text>
+                <Text style={[typeScale.labelSmall, { color: on ? colors.textOnPrimary : colors.textPrimary }]}>{s}</Text>
               </Pressable>
             );
           })}
@@ -81,10 +81,10 @@ export function WorkerExtrasFields({ hoodie, onHoodie, newIdUri, onNewIdUri, sav
           <Image source={{ uri: newIdUri }} style={[styles.preview, { borderColor: colors.border }]} contentFit="cover" />
         ) : savedIdKey ? (
           <View style={[styles.onFile, { backgroundColor: colors.primarySurface }]}>
-            <Feather name="check-circle" size={16} color={colors.primary} />
-            <Text style={[typeScale.bodySmall, { color: colors.primary, marginLeft: spacing.sm, flex: 1 }]}>{t('ID on file')}</Text>
+            <Feather name="check-circle" size={16} color={colors.primaryOnWhite} />
+            <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite, marginLeft: spacing.sm, flex: 1 }]}>{t('ID on file')}</Text>
             <Pressable onPress={() => setViewing(true)} hitSlop={8}>
-              <Text style={[typeScale.labelSmall, { color: colors.primary }]}>{t('View')}</Text>
+              <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>{t('View')}</Text>
             </Pressable>
           </View>
         ) : null}
@@ -161,8 +161,8 @@ export function ViewIdButton({ idKey }: { idKey: string | undefined }) {
   return (
     <>
       <Pressable onPress={() => setOpen(true)} style={styles.viewRow} accessibilityRole="button">
-        <Feather name="credit-card" size={14} color={colors.primary} />
-        <Text style={[typeScale.bodySmall, { color: colors.primary, marginLeft: spacing.xs, fontWeight: '600' }]}>{t('View ID (private)')}</Text>
+        <Feather name="credit-card" size={14} color={colors.primaryOnWhite} />
+        <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite, marginLeft: spacing.xs, fontWeight: '600' }]}>{t('View ID (private)')}</Text>
       </Pressable>
       <IdViewerModal visible={open} idKey={idKey} onClose={() => setOpen(false)} />
     </>

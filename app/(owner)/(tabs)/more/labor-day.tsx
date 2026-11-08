@@ -213,7 +213,7 @@ export default function LaborDayScreen() {
               <View style={styles.btnRow}>
                 {wd.claimedOutAt ? (
                   <Pressable onPress={async () => { await done(await editWorkday(wd.id, null, wd.claimedOutAt!, 'Used the time the employee gave')); }} style={[styles.btn, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                    <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Use their time</Text>
+                    <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>Use their time</Text>
                   </Pressable>
                 ) : null}
                 <Pressable onPress={() => setSheet({ kind: 'workday' })} style={[styles.btn, { backgroundColor: colors.backgroundTertiary }]} accessibilityRole="button">
@@ -242,8 +242,8 @@ export default function LaborDayScreen() {
           </Card>
 
           <Card title="TIMELINE" right={<View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <Pressable onPress={() => setSheet({ kind: 'pickVisit' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>{w('Add job site time')}</Text></Pressable>
-            <Pressable onPress={() => setSheet({ kind: 'addBreak' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Add break</Text></Pressable>
+            <Pressable onPress={() => setSheet({ kind: 'pickVisit' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>{w('Add job site time')}</Text></Pressable>
+            <Pressable onPress={() => setSheet({ kind: 'addBreak' })} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Add break</Text></Pressable>
           </View>}>
             {timeline.map((e, i) => {
               const iv = e.kind === 'visit' || e.kind === 'open' ? row.intervals.find((x) => x.id === e.refId) : undefined;
@@ -275,7 +275,7 @@ export default function LaborDayScreen() {
             {row.intervals.some((i) => i.status === 'void') ? <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: spacing.sm }]}>{row.intervals.filter((i) => i.status === 'void').length} removed time(s) are not shown; see the history below.</Text> : null}
           </Card>
 
-          <Card title="CHANGE HISTORY" right={audit.length ? <Pressable onPress={onExportAudit} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Export</Text></Pressable> : undefined}>
+          <Card title="CHANGE HISTORY" right={audit.length ? <Pressable onPress={onExportAudit} hitSlop={8} accessibilityRole="button"><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Export</Text></Pressable> : undefined}>
             {audit.length === 0 ? <Text style={[typeScale.bodyMedium, { color: colors.textSecondary }]}>No corrections or approvals yet.</Text> : audit.map((a, i) => {
               const who = a.actorId ? `${db.people[a.actorId]?.firstName ?? ''} ${db.people[a.actorId]?.lastName ?? ''}`.trim() || 'Someone' : 'System';
               const fmt = (v: unknown) => (typeof v === 'string' && /^\d{4}-\d\d-\d\dT/.test(v) ? `${fmtDay(v.slice(0, 10))} ${fmtClock(v)}` : v == null ? 'nothing' : typeof v === 'object' ? JSON.stringify(v) : String(v));

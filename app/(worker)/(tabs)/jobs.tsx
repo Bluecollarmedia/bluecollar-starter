@@ -126,7 +126,7 @@ export default function WorkerJobsScreen() {
           appearance="light"
           backgroundColor={colors.groupedBackground}
           fontStyle={{ color: colors.textSecondary }}
-          activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+          activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
           style={styles.segmentControl}
         />
       </View>

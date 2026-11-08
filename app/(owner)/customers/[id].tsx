@@ -155,7 +155,7 @@ You can turn their portal access off instead.` : res.error);
                 onPress={handleCall}
                 disabled={!p.phone}
               >
-                <Icon name="phone" size={16} color={colors.primary} />
+                <Icon name="phone" size={16} color={colors.primaryOnWhite} />
                 <Text style={[typeScale.labelLarge, { color: colors.textPrimary, fontWeight: '700', marginLeft: spacing.xs }]}>Call</Text>
               </Pressable>
               <Pressable

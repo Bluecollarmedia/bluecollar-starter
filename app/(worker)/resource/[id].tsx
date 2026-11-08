@@ -49,7 +49,7 @@ export default function WorkerResourceDetailScreen() {
       <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
         {header}
         {!ready || checking ? (
-          <ActivityIndicator style={{ marginTop: spacing['3xl'] }} color={colors.primary} />
+          <ActivityIndicator style={{ marginTop: spacing['3xl'] }} color={colors.primaryOnWhite} />
         ) : (
           <EmptyState icon="lock" title={t('Not available')} description={t("This resource isn't available to you. Ask your manager if you need access.")} />
         )}

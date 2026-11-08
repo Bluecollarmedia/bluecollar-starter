@@ -98,7 +98,7 @@ export function TruckDocumentSheet({ visible, onClose, onSubmit }: Props) {
             <View style={[styles.fileBox, { borderColor: file ? colors.primary : colors.border, backgroundColor: colors.backgroundSecondary }]}>
               {file ? (
                 <View style={styles.fileRow}>
-                  <Icon name={file.mimeType === 'application/pdf' ? 'file-text' : 'image'} size={22} color={colors.primary} />
+                  <Icon name={file.mimeType === 'application/pdf' ? 'file-text' : 'image'} size={22} color={colors.primaryOnWhite} />
                   <View style={{ flex: 1 }}>
                     <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]} numberOfLines={1}>{file.name}</Text>
                     <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{[file.mimeType === 'application/pdf' ? 'PDF' : 'Photo', formatSize(file.size)].filter(Boolean).join(' · ')}</Text>
@@ -124,7 +124,7 @@ export function TruckDocumentSheet({ visible, onClose, onSubmit }: Props) {
 
             {error ? <Text style={[typeScale.bodySmall, { color: colors.error }]}>{error}</Text> : null}
             <Button title={busy ? 'Uploading…' : 'Add Insurance'} icon="upload" onPress={submit} loading={busy} disabled={busy} fullWidth size="lg" />
-            {busy ? <ActivityIndicator color={colors.primary} /> : null}
+            {busy ? <ActivityIndicator color={colors.primaryOnWhite} /> : null}
           </ScrollView>
         </Pressable>
       </Pressable>

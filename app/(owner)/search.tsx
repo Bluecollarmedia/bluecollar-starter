@@ -83,7 +83,7 @@ export default function SearchScreen() {
               onPress={() => handlePress(item)}
             >
               <View style={[styles.iconCircle, { backgroundColor: colors.primarySurface }]}>
-                <Icon name={item.icon as any} size={18} color={colors.primary} />
+                <Icon name={item.icon as any} size={18} color={colors.primaryOnWhite} />
               </View>
               <View style={styles.resultInfo}>
                 <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '500' }]}>

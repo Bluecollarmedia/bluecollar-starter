@@ -206,8 +206,8 @@ export default function ApprovePage() {
         {canAnswer && !declining && formOpen && (
           <>
             <Pressable onPress={() => setFormOpen(false)} style={styles.backToQuote} accessibilityRole="button" accessibilityLabel={t('Back to the quote')}>
-              <Icon name="chevron-down" size={16} color={colors.primary} />
-              <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('Back to the {doc}', { doc: label.toLowerCase() })}</Text>
+              <Icon name="chevron-down" size={16} color={colors.primaryOnWhite} />
+              <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{t('Back to the {doc}', { doc: label.toLowerCase() })}</Text>
             </Pressable>
             <Input
               label={t('Your full name')}
@@ -230,7 +230,7 @@ export default function ApprovePage() {
               accessibilityState={{ checked: agreed }}
             >
               <View style={[styles.box, { borderColor: agreed ? colors.primary : colors.border, backgroundColor: agreed ? colors.primary : 'transparent' }]}>
-                {agreed && <Icon name="check" size={14} color={fixed.white} />}
+                {agreed && <Icon name="check" size={14} color={colors.textOnPrimary} />}
               </View>
               <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1 }]}>
                 {t('I approve this {doc}, including the work, pricing and terms shown, for {total}.', { doc: label.toLowerCase(), total: formatMoney(doc.total) })}

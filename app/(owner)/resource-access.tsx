@@ -98,7 +98,7 @@ export default function ResourceAccessScreen() {
                 {selected.size} OF {activeWorkers.length} SELECTED
               </Text>
               <Pressable onPress={toggleAllVisible} hitSlop={8}>
-                <Text style={[typeScale.labelSmall, { color: colors.primary }]}>{allVisibleSelected ? 'Clear' : 'Select all'}</Text>
+                <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>{allVisibleSelected ? 'Clear' : 'Select all'}</Text>
               </Pressable>
             </View>
             <ListSection>

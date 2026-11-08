@@ -29,9 +29,9 @@ const EVENT_ICONS: Record<NotificationEventType, { icon: string; color: string }
   customer_request_submitted: { icon: 'message-square', color: semantic.info },
   customer_message: { icon: 'message-circle', color: semantic.info },
   service_request: { icon: 'inbox', color: semantic.info },
-  schedule_changed: { icon: 'calendar', color: brand.primary },
+  schedule_changed: { icon: 'calendar', color: brand.primaryOnWhite },
   schedule_conflict: { icon: 'alert-triangle', color: semantic.error },
-  announcement_posted: { icon: 'volume-2', color: brand.primary },
+  announcement_posted: { icon: 'volume-2', color: brand.primaryOnWhite },
   quote_approved: { icon: 'check-circle', color: semantic.success },
   quote_declined: { icon: 'x-circle', color: semantic.error },
   quote_sent: { icon: 'file-text', color: semantic.info },
@@ -42,7 +42,7 @@ const EVENT_ICONS: Record<NotificationEventType, { icon: string; color: string }
   time_unusual: { icon: 'alert-circle', color: semantic.warning },
   time_progress_check: { icon: 'clock', color: semantic.info },
 };
-const FALLBACK_ICON = { icon: 'bell', color: brand.primary };
+const FALLBACK_ICON = { icon: 'bell', color: brand.primaryOnWhite };
 
 function formatTimeAgo(isoStr: string): string {
   const now = Date.now();
@@ -84,7 +84,7 @@ export default function NotificationCenterScreen() {
         <View style={styles.topActions}>
           {unreadCount > 0 && (
             <Pressable onPress={markAllRead} hitSlop={10} accessibilityRole="button" accessibilityLabel="Mark all notifications as read">
-              <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Read All</Text>
+              <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Read All</Text>
             </Pressable>
           )}
           {sorted.length > 0 && (
@@ -97,7 +97,7 @@ export default function NotificationCenterScreen() {
 
       {unreadCount > 0 && (
         <View style={[styles.unreadBanner, { backgroundColor: colors.primarySurface }]}>
-          <Text style={[typeScale.labelSmall, { color: colors.primary }]}>
+          <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>
             {unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}
           </Text>
         </View>

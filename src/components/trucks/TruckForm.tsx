@@ -141,14 +141,14 @@ export function TruckForm({ truckId }: { truckId?: string }) {
             </>
           ) : (
             <>
-              <View style={[styles.photoCircle, { backgroundColor: colors.primarySurface }]}><Icon name="camera" size={28} color={colors.primary} /></View>
+              <View style={[styles.photoCircle, { backgroundColor: colors.primarySurface }]}><Icon name="camera" size={28} color={colors.primaryOnWhite} /></View>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700', marginTop: spacing.md }]}>Add a photo (optional)</Text>
               <Text style={[typeScale.caption, { color: colors.textTertiary, marginTop: 2 }]}>Helps easily identify this vehicle</Text>
             </>
           )}
         </Pressable>
         {photoUri ? (
-          <Pressable onPress={() => setPhotoSheet(true)} style={{ alignSelf: 'center' }}><Text style={[typeScale.labelLarge, { color: colors.primary }]}>Change photo</Text></Pressable>
+          <Pressable onPress={() => setPhotoSheet(true)} style={{ alignSelf: 'center' }}><Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Change photo</Text></Pressable>
         ) : null}
 
         <Input label="Name" value={name} onChangeText={setName} placeholder="e.g. Truck #5" />
@@ -189,7 +189,7 @@ export function TruckForm({ truckId }: { truckId?: string }) {
             <Text style={[typeScale.caption, { color: colors.textTertiary }]}>Optional. PDFs or photos. Only you can see these.</Text>
             {staged.map((d, i) => (
               <View key={`${d.uri}-${i}`} style={styles.stagedRow}>
-                <Icon name={d.mimeType === 'application/pdf' ? 'file-text' : 'image'} size={18} color={colors.primary} />
+                <Icon name={d.mimeType === 'application/pdf' ? 'file-text' : 'image'} size={18} color={colors.primaryOnWhite} />
                 <View style={{ flex: 1 }}>
                   <Text style={[typeScale.bodyLarge, { color: colors.textPrimary }]} numberOfLines={1}>{d.title}</Text>
                   <Text style={[typeScale.caption, { color: colors.textTertiary }]}>{[kindLabel(d.kind), formatSize(d.size)].filter(Boolean).join(' · ')}</Text>

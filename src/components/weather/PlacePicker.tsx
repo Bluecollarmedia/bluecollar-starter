@@ -47,7 +47,7 @@ export function PlacePicker({ visible, current, onClose, onPick }: { visible: bo
   const row = (p: Place, key: string) => (
     <Pressable key={key} onPress={() => choose(p)} accessibilityRole="button" accessibilityLabel={`${p.name}, ${p.state}`} style={({ pressed }) => [styles.item, pressed && { backgroundColor: WX.leafTint }]}>
       <Text style={styles.itemText}>{p.name}{p.state ? <Text style={styles.itemState}>, {p.state}</Text> : null}</Text>
-      {p.key === current.key ? <MaterialCommunityIcons name="check" size={20} color={WX.deep} /> : null}
+      {p.key === current.key ? <MaterialCommunityIcons name="check" size={20} color={WX.deepText} /> : null}
     </Pressable>
   );
 

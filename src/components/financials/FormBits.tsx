@@ -49,7 +49,7 @@ export function DateRow({ label, value, onChange, minimumDate, optional, onClear
         mode="date"
         display="compact"
         minimumDate={minimumDate ? keyToDate(minimumDate) : undefined}
-        accentColor={colors.primary}
+        accentColor={colors.primaryOnWhite}
         onChange={(_e: DateTimePickerEvent, d?: Date) => d && onChange(localDateKey(d))}
       />
     );
@@ -61,7 +61,7 @@ export function DateRow({ label, value, onChange, minimumDate, optional, onClear
         accessibilityRole="button"
         accessibilityLabel={`${label}. ${value ? formatDocDate(value) : 'Not set'}. Opens the date picker`}
       >
-        <Text style={[typeScale.bodyLarge, { color: value ? colors.textPrimary : colors.primary }]}>
+        <Text style={[typeScale.bodyLarge, { color: value ? colors.textPrimary : colors.primaryOnWhite }]}>
           {value ? formatDocDate(value) : 'Add'}
         </Text>
       </Pressable>

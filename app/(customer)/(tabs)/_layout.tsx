@@ -21,7 +21,7 @@ function CustomerNativeTabs() {
 
   return (
     <NativeTabs
-      tintColor={colors.primary}
+      tintColor={colors.primaryOnWhite}
       minimizeBehavior="automatic"
     >
       <NativeTabs.Trigger name="index">
@@ -61,7 +61,7 @@ function CustomerJSTabs() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors.primaryOnWhite,
         tabBarInactiveTintColor: colors.textTertiary,
         tabBarStyle: {
           backgroundColor: colors.surface,

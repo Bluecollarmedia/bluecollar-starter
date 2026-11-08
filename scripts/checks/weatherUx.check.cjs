@@ -41,8 +41,9 @@ check('12 hours are grouped by the local (Eastern) day they start on', V.hoursOn
 
 // ── the towns ──
 const wx = read('supabase/functions/weather/index.ts');
-const fnTowns = [...wx.matchAll(/'([a-z-]+)': \{ name: '[^']+', lat: ([\d.-]+), lon: ([\d.-]+)/g)].map((m) => [m[1], Number(m[2]), Number(m[3])]);
-check('13 the app\'s town points are exactly the data function\'s points (so sunrise and the forecast are for the same place)', fnTowns.length === 8 && fnTowns.every(([k, la, lo]) => { const c = towns.townCoords(k); return c.lat === la && c.lon === lo; }), JSON.stringify(fnTowns));
+const fnTowns = [...wx.matchAll(/'([a-z-]+)': \{ name: '[^']+', lat: ([\d.-]+), lon: ([\d.-]+)/g)];
+check('13 the forecast and sunrise are for the same point: the app sends each town\'s own point from the settings file, and the data function keeps no town points of its own',
+  fnTowns.length === 0 && /const body = \{ lat: place\.lat, lon: place\.lon/.test(read('src/data/weather.ts')) && towns.townCoords(towns.DEFAULT_TOWN).lat === towns.DEFAULT_PLACE.lat);
 
 // ── the screens follow the rules (file text) ──
 const home = read('app/weather/(tabs)/index.tsx'); const det = read('src/components/weather/WeatherDetails.tsx'); const ui = read('src/components/weather/WeatherUI.tsx'); const bar = read('src/components/weather/FloatingTabBar.tsx');

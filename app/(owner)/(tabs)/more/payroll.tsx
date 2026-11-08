@@ -104,18 +104,18 @@ export default function PayrollScreen() {
 
       <View style={[styles.weekNav, { borderBottomColor: colors.borderLight }]}>
         <Pressable onPress={() => setWeekOffset((w) => w - 1)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Previous week">
-          <Icon name="chevron-left" size={24} color={colors.primary} />
+          <Icon name="chevron-left" size={24} color={colors.primaryOnWhite} />
         </Pressable>
         <View style={styles.weekLabelWrap}>
           <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>
             {formatDate(weekRange.start)} – {formatDate(weekRange.end)}
           </Text>
           {weekOffset === 0 && (
-            <Text style={[typeScale.caption, { color: colors.primary }]}>This Week</Text>
+            <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]}>This Week</Text>
           )}
         </View>
         <Pressable onPress={() => setWeekOffset((w) => w + 1)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Next week">
-          <Icon name="chevron-right" size={24} color={weekOffset >= 0 ? colors.textTertiary : colors.primary} />
+          <Icon name="chevron-right" size={24} color={weekOffset >= 0 ? colors.textTertiary : colors.primaryOnWhite} />
         </Pressable>
       </View>
 
@@ -123,7 +123,7 @@ export default function PayrollScreen() {
         <View style={[styles.summaryRow, { gap: spacing.md }]}>
           <View style={[styles.summaryCard, { backgroundColor: colors.primarySurface }, shadow.sm]}>
             <Text style={[typeScale.caption, { color: colors.textSecondary }]}>ESTIMATED TOTAL</Text>
-            <Text style={[typeScale.displaySmall, { color: colors.primary }]}>
+            <Text style={[typeScale.displaySmall, { color: colors.primaryOnWhite }]}>
               {formatMoney(totalPay)}
             </Text>
           </View>
@@ -285,7 +285,7 @@ function PayrollCard({
             {overtimeSummary(ot)}
           </Text>
         </View>
-        <Text style={[typeScale.headingLarge, { color: colors.primary }]}>
+        <Text style={[typeScale.headingLarge, { color: colors.primaryOnWhite }]}>
           {formatMoney(estimate.totalPay)}
         </Text>
         <Icon
@@ -348,7 +348,7 @@ function PayrollCard({
               <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
               <View style={styles.payRow}>
                 <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>Total estimate</Text>
-                <Text style={[typeScale.labelLarge, { color: colors.primary }]}>
+                <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>
                   {formatMoney(estimate.totalPay)}
                 </Text>
               </View>
@@ -377,7 +377,7 @@ function PayrollCard({
               />
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>/hr</Text>
               <Pressable onPress={handleSaveRate} style={[styles.rateSave, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                <Text style={[typeScale.labelSmall, { color: fixed.white, fontWeight: '600' }]}>Save</Text>
+                <Text style={[typeScale.labelSmall, { color: colors.textOnPrimary, fontWeight: '600' }]}>Save</Text>
               </Pressable>
             </View>
           </View>
@@ -400,7 +400,7 @@ function PayrollCard({
                 />
                 <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>/hr</Text>
                 <Pressable onPress={handleSaveTarget} style={[styles.rateSave, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                  <Text style={[typeScale.labelSmall, { color: fixed.white, fontWeight: '600' }]}>Save</Text>
+                  <Text style={[typeScale.labelSmall, { color: colors.textOnPrimary, fontWeight: '600' }]}>Save</Text>
                 </Pressable>
               </View>
               <Text style={[typeScale.caption, { color: colors.textSecondary, marginTop: spacing.xs }]}>
@@ -459,7 +459,7 @@ function PayrollCard({
                 </View>
                 {otDirty && (
                   <Pressable onPress={handleSaveOvertime} style={[styles.rateSave, styles.otSave, { backgroundColor: colors.primary }]} accessibilityRole="button">
-                    <Text style={[typeScale.labelSmall, { color: fixed.white, fontWeight: '600' }]}>Save overtime</Text>
+                    <Text style={[typeScale.labelSmall, { color: colors.textOnPrimary, fontWeight: '600' }]}>Save overtime</Text>
                   </Pressable>
                 )}
               </View>
@@ -524,12 +524,12 @@ function TargetPayStub({ estimate, tp, colors }: { estimate: PayrollEstimate; tp
         />
       )}
       <View style={[styles.divider, { backgroundColor: colors.borderLight }]} />
-      <StubRow label="Gross (target-pay)" value={formatMoney(tp.grossPay)} strong color={colors.primary} colors={colors} />
+      <StubRow label="Gross (target-pay)" value={formatMoney(tp.grossPay)} strong color={colors.primaryOnWhite} colors={colors} />
 
       <View style={styles.compareRow}>
         <View style={[styles.compareBox, { backgroundColor: colors.primarySurface }]}>
           <Text style={[typeScale.caption, { color: colors.textSecondary }]}>Target-pay</Text>
-          <Text style={[typeScale.headingLarge, { color: colors.primary }]}>{formatMoney(tp.grossPay)}</Text>
+          <Text style={[typeScale.headingLarge, { color: colors.primaryOnWhite }]}>{formatMoney(tp.grossPay)}</Text>
         </View>
         <View style={[styles.compareBox, { backgroundColor: colors.backgroundSecondary }]}>
           <Text style={[typeScale.caption, { color: colors.textSecondary }]}>Standard overtime</Text>

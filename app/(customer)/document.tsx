@@ -49,7 +49,7 @@ export default function CustomerDocumentScreen() {
       <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1, textAlign: 'center' }]} numberOfLines={1}>{title}</Text>
       {doc && customerCanSee(doc) ? (
         <Pressable onPress={() => share(doc)} hitSlop={12} style={styles.iconBtn} accessibilityRole="button" accessibilityLabel={t('Save or share PDF')} disabled={busy}>
-          <Icon name="share-2" size={20} color={busy ? colors.textTertiary : colors.primary} />
+          <Icon name="share-2" size={20} color={busy ? colors.textTertiary : colors.primaryOnWhite} />
         </Pressable>
       ) : <View style={styles.iconBtn} />}
     </View>

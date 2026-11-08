@@ -67,7 +67,7 @@ export function StreetSuggestions({ text, onPick }: { text: string; onPick: (pla
           accessibilityRole="button"
           accessibilityLabel={`Use ${s.main}, ${s.secondary}`}
         >
-          <Icon name="map-pin" size={16} color={colors.primary} />
+          <Icon name="map-pin" size={16} color={colors.primaryOnWhite} />
           <View style={{ flex: 1 }}>
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>{s.main}</Text>
             {s.secondary ? <Text style={[typeScale.caption, { color: colors.textSecondary }]} numberOfLines={1}>{s.secondary}</Text> : null}

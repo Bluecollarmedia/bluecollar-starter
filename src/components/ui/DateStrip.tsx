@@ -4,7 +4,7 @@ import { useTheme } from '@/providers/ThemeProvider';
 import { haptics } from '@/lib/haptics';
 import { typeScale } from '@/theme/typography';
 import { spacing, radius } from '@/theme/spacing';
-import { fixed, whiteAlpha } from '@/theme/colors';
+import { fixed, whiteAlpha, withAlpha } from '@/theme/colors';
 
 /** Day cards for a list ("22 Thu"): tap one to show only that day; tap it again, or "All", to show everything. */
 export function DateStrip({ dates, selected, onSelect, allLabel = 'All' }: { dates: string[]; selected: string | null; onSelect: (date: string | null) => void; allLabel?: string }) {
@@ -19,8 +19,8 @@ export function DateStrip({ dates, selected, onSelect, allLabel = 'All' }: { dat
       accessibilityLabel={label}
       style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundTertiary }]}
     >
-      <Text style={[typeScale.caption, { color: on ? whiteAlpha(0.85) : colors.textSecondary }]}>{top}</Text>
-      <Text style={[typeScale.headingSmall, { color: on ? fixed.white : colors.textPrimary }]}>{big}</Text>
+      <Text style={[typeScale.caption, { color: on ? withAlpha(colors.textOnPrimary, 0.85) : colors.textSecondary }]}>{top}</Text>
+      <Text style={[typeScale.headingSmall, { color: on ? colors.textOnPrimary : colors.textPrimary }]}>{big}</Text>
     </Pressable>
   );
   return (

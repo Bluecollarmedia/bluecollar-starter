@@ -108,7 +108,7 @@ export default function YardLocationScreen() {
       >
         <Card title="Saved Location">
           <View style={styles.savedRow}>
-            <Icon name="map-pin" size={18} color={yard ? colors.primary : colors.textTertiary} />
+            <Icon name="map-pin" size={18} color={yard ? colors.primaryOnWhite : colors.textTertiary} />
             <View style={{ flex: 1 }}>
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]}>{label}</Text>
               <Text style={[typeScale.bodySmall, { color: colors.textSecondary }]}>

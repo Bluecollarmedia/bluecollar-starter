@@ -38,11 +38,12 @@ async function customers(check) {
   check('4 the same email again (any capitalisation) gives back the same record: no duplicate', lee.ok && r.ok && r.v.person_id === lee.v.person_id && r.v.outcome === 'already_customer' && (await people()) === before);
 
   const existing = await signUp('existing@example.com', { first_name: 'Existing', last_name: 'Account' });
+  await db.query(`update auth.users set email_confirmed_at = now() where id = $1`, [existing.u]);   // R6: only a CONFIRMED login is linked
   await db.query(`insert into public.company_members (company_id, person_id, role, status) values ($1, $2, 'customer', 'active')`, [B, existing.pid]);
   before = await people();
   r = await add(A.u, 'Typed', 'Differently', 'EXISTING@example.com');
-  check('5 someone who already has a login (a customer of another company) is added as that SAME person, invite pending; no second person',
-    r.ok && r.v.person_id === existing.pid && r.v.outcome === 'existing_account' && (await people()) === before && (await memberOf(A.cid, existing.pid)).status === 'invited', JSON.stringify(r));
+  check('5 someone who already has a CONFIRMED login (a customer of another company) is added as that SAME person, with access; no second person',
+    r.ok && r.v.person_id === existing.pid && r.v.outcome === 'existing_account' && (await people()) === before && (await memberOf(A.cid, existing.pid)).status === 'active', JSON.stringify(r));
   check('6 ...their other company is untouched and their name is not overwritten by what the owner typed', (await memberOf(B, existing.pid)).status === 'active'
     && (await one(`select first_name from public.people where id = $1`, [existing.pid])).first_name === 'Existing');
   r = await add(A.u, 'Typed', 'Again', 'existing@example.com');
@@ -60,6 +61,7 @@ async function customers(check) {
   r = await add(A.u, 'Wil', 'Liam', 'worker@example.com');
   check('10 an email that belongs to someone on the team is refused (they are not a customer)', !r.ok && /someone on your team/.test(r.msg), r.msg);
   const outsider = await member(B, 'outsider@example.com', 'worker', 'Otto');
+  await db.query(`update auth.users set email_confirmed_at = now() where id = $1`, [outsider.u]);
   before = await people();
   r = await add(A.u, 'Out', 'Sider', 'outsider@example.com');
   check('11 a login that works for another company becomes a customer here as the same person; their other role is untouched',
@@ -84,11 +86,8 @@ async function customers(check) {
   const reachBefore = await reach();
   check('15 before: the customer sees her job', (await seesJob()) === 1);
   r = await access(A.u, cora.pid, false);
-  // NOTE (not checked on purpose): after access is turned off she can STILL read her own job row, because the
-  // projects_select policy in setup.sql matches customer_id = my_person_id() without checking that her membership is
-  // active (is_project_customer, used by tasks/chat/etc., does check it). Add "(await seesJob()) === 0" here once fixed.
-  check('16 turning access off makes her inactive, and her job is kept', r.ok && r.v === 'inactive' && (await status(cora.pid)) === 'inactive'
-    && (await one(`select count(*)::int c from public.projects where customer_id = $1`, [cora.pid])).c === 1, JSON.stringify(r));
+  check('16 turning access off makes her inactive, her job is kept, and she can no longer read it', r.ok && r.v === 'inactive' && (await status(cora.pid)) === 'inactive'
+    && (await one(`select count(*)::int c from public.projects where customer_id = $1`, [cora.pid])).c === 1 && (await seesJob()) === 0, JSON.stringify(r));
   const reachOff = await reach();
   check('17 Message customers no longer counts her', reachOff.customers_all === reachBefore.customers_all - 1 && reachOff.customers_active === reachBefore.customers_active - 1, JSON.stringify({ reachBefore, reachOff }));
   r = await add(A.u, 'Cora', 'Again', 'cora@example.com');

@@ -214,7 +214,7 @@ export default function ScheduleScreen() {
                             {a.project?.name ?? w('Unknown job')}
                           </Text>
                           {a.seriesId && (
-                            <Icon name="repeat" size={11} color={colors.primary} />
+                            <Icon name="repeat" size={11} color={colors.primaryOnWhite} />
                           )}
                         </View>
                         {a.project?.address && (
@@ -270,7 +270,7 @@ export default function ScheduleScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={[
                   typeScale.bodySmall,
-                  { color: isToday ? colors.primary : colors.textPrimary, fontWeight: isToday ? '700' : '500' },
+                  { color: isToday ? colors.primaryOnWhite : colors.textPrimary, fontWeight: isToday ? '700' : '500' },
                 ]}>
                   {day.label}{isToday ? ' (Today)' : ''}
                 </Text>
@@ -363,14 +363,14 @@ export default function ScheduleScreen() {
               <View style={styles.pickerHeader}>
                 <Text style={[typeScale.headingSmall, { color: colors.textPrimary }]}>Go to Date</Text>
                 <Pressable onPress={() => setShowIosPicker(false)} hitSlop={12} accessibilityRole="button">
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Done</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Done</Text>
                 </Pressable>
               </View>
               <DateTimePicker
                 value={selectedDateObj}
                 mode="date"
                 display="inline"
-                accentColor={colors.primary}
+                accentColor={colors.primaryOnWhite}
                 onChange={(e: DateTimePickerEvent, d?: Date) => { handleDatePicked(e, d); setShowIosPicker(false); }}
               />
             </Pressable>
@@ -387,7 +387,7 @@ export default function ScheduleScreen() {
           appearance="light"
           backgroundColor={colors.groupedBackground}
           fontStyle={{ color: colors.textSecondary }}
-          activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+          activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
           style={styles.segmentControl}
         />
       </View>
@@ -496,8 +496,8 @@ function AssignmentSheet({
       <Divider />
 
       <Pressable style={styles.sheetActionRow} onPress={() => onMove(assignment)} accessibilityRole="button">
-        <Icon name="arrow-right-circle" size={18} color={colors.primary} />
-        <Text style={[typeScale.bodyLarge, { color: colors.primary, flex: 1 }]}>Move Assignment</Text>
+        <Icon name="arrow-right-circle" size={18} color={colors.primaryOnWhite} />
+        <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite, flex: 1 }]}>Move Assignment</Text>
         <Icon name="chevron-right" size={16} color={colors.textTertiary} />
       </Pressable>
 

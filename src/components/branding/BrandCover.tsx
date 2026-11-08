@@ -3,7 +3,10 @@ import { Image, StyleSheet, View } from 'react-native';
 import type { ImageStyle, StyleProp, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { OptimizedImage } from '@/components/ui/OptimizedImage';
-import { brand, fixed } from '@/theme/colors';
+import { brand, fixed, blackAlpha } from '@/theme/colors';
+
+/** True when the brand color is too light for white text on it (then the backdrop gets a dark veil). */
+const LIGHT_BRAND = brand.onPrimary !== fixed.white;
 
 /** The plain logo mark (settings: swap the picture file to change it). */
 const MARK = require('../../../assets/images/logo-mark.png');
@@ -28,6 +31,8 @@ export function BrandCover({ uri, style, variant = 'hero' }: BrandCoverProps) {
         end={{ x: 0, y: 1 }}
         style={StyleSheet.absoluteFill}
       />
+      {/* White words sit on this backdrop (greetings, headers). A LIGHT brand color gets a dark veil so they stay readable. */}
+      {LIGHT_BRAND ? <View style={[StyleSheet.absoluteFill, { backgroundColor: blackAlpha(0.55) }]} /> : null}
       {variant === 'hero' ? (
         <Image source={MARK} style={styles.bigMark} resizeMode="contain" />
       ) : (

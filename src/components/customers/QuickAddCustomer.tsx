@@ -49,8 +49,8 @@ export function QuickAddCustomer({ onAdded }: { onAdded: (personId: string, isNe
   if (!open) {
     return (
       <Pressable onPress={() => setOpen(true)} style={styles.addRow} accessibilityRole="button" accessibilityLabel="Add a new customer">
-        <Feather name="user-plus" size={18} color={colors.primary} />
-        <Text style={[typeScale.bodyLarge, { color: colors.primary, fontWeight: '600' }]}>Add a new customer</Text>
+        <Feather name="user-plus" size={18} color={colors.primaryOnWhite} />
+        <Text style={[typeScale.bodyLarge, { color: colors.primaryOnWhite, fontWeight: '600' }]}>Add a new customer</Text>
       </Pressable>
     );
   }

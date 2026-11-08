@@ -98,7 +98,7 @@ export default function SettingsScreen() {
             <Avatar firstName={user?.firstName ?? 'O'} lastName={user?.lastName ?? ''} size={66} uri={user.avatarUrl} />
           ) : (
             <View style={[styles.heroInitials, { backgroundColor: colors.primary }]}>
-              <Text style={[typeScale.headingLarge, { color: fixed.white, fontWeight: '800' }]}>
+              <Text style={[typeScale.headingLarge, { color: colors.textOnPrimary, fontWeight: '800' }]}>
                 {`${(user?.firstName ?? 'O')[0] ?? ''}${(user?.lastName ?? '')[0] ?? ''}`.toUpperCase()}
               </Text>
             </View>

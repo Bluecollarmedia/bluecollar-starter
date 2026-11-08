@@ -63,7 +63,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
           <View style={[styles.handle, { backgroundColor: colors.borderLight }]} />
           {sent ? (
             <View style={{ alignItems: 'center', paddingVertical: spacing.lg }}>
-              <Icon name="check-circle" size={32} color={colors.primary} />
+              <Icon name="check-circle" size={32} color={colors.primaryOnWhite} />
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary, marginTop: spacing.sm }]}>{t('Report sent')}</Text>
               <Text style={[typeScale.bodyMedium, { color: colors.textSecondary, textAlign: 'center', marginTop: spacing.xs }]}>
                 {t('Thank you. The company owner reviews reports within two business days.')}
@@ -90,7 +90,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
                     <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>{t(r.label)}</Text>
                     <Text style={[typeScale.caption, { color: colors.textSecondary }]}>{t(r.hint)}</Text>
                   </View>
-                  {reason === r.key ? <Icon name="check" size={18} color={colors.primary} /> : null}
+                  {reason === r.key ? <Icon name="check" size={18} color={colors.primaryOnWhite} /> : null}
                 </Pressable>
               ))}
               <TextInput
@@ -106,7 +106,7 @@ export function ReportSheet({ target, onClose }: { target: ReportTarget | null; 
               <Button title={t('Send report')} onPress={send} loading={busy} disabled={!reason} fullWidth size="lg" style={{ marginTop: spacing.md }} />
               {mailto ? (
                 <Pressable onPress={emailInstead} style={{ alignSelf: 'center', marginTop: spacing.sm }} hitSlop={8}>
-                  <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('Email us instead')}</Text>
+                  <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{t('Email us instead')}</Text>
                 </Pressable>
               ) : null}
               <Pressable onPress={onClose} style={{ alignSelf: 'center', marginTop: spacing.sm }} hitSlop={8}>

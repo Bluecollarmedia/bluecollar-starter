@@ -14,16 +14,16 @@ import {
 } from '@/hooks/useWorkerActivitySummary';
 import type { WorkerActivity, WorkerActivityType } from '@/types/worker';
 import { useT } from '@/i18n';
-import { fixed, brand, neutral, semantic } from '@/theme/colors';
+import { fixed, brand, neutral, semantic, onColor } from '@/theme/colors';
 
 const EVENT_CONFIG: Record<WorkerActivityType, { icon: keyof typeof Feather.glyphMap; color: string }> = {
-  checked_in: { icon: 'log-in', color: brand.primary },
+  checked_in: { icon: 'log-in', color: brand.primaryDark },
   task_started: { icon: 'play', color: neutral.gray700 },
   task_completed: { icon: 'check', color: semantic.success },
   photo_taken: { icon: 'camera', color: neutral.gray700 },
   checked_out: { icon: 'log-out', color: neutral.gray600 },
   schedule_confirmed: { icon: 'check-circle', color: semantic.success },
-  schedule_acknowledged: { icon: 'eye', color: brand.primary },
+  schedule_acknowledged: { icon: 'eye', color: brand.primaryDark },
   overtime_flagged: { icon: 'alert-circle', color: semantic.warning },
 };
 
@@ -116,7 +116,7 @@ export default function DayDetailScreen() {
                       >
                         <View style={styles.timelineGutter}>
                           <View style={[styles.timelineDot, { backgroundColor: config.color }]}>
-                            <Feather name={config.icon} size={10} color={fixed.white} />
+                            <Feather name={config.icon} size={10} color={onColor(config.color)} />
                           </View>
                           {!isLast && <View style={[styles.timelineLine, { backgroundColor: colors.borderLight }]} />}
                         </View>

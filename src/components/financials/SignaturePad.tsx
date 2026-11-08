@@ -80,7 +80,7 @@ export function SignaturePad({ onChange }: Props) {
         {empty && <Text pointerEvents="none" style={[typeScale.bodySmall, styles.hint, { color: colors.textTertiary }]}>{t('Sign here with your finger or mouse')}</Text>}
       </View>
       <Pressable onPress={() => commit([])} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('Clear signature')} style={styles.clear}>
-        <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('Clear')}</Text>
+        <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{t('Clear')}</Text>
       </Pressable>
     </View>
   );

@@ -155,7 +155,7 @@ export default function JobDetailScreen() {
                   style={[styles.navDot, { backgroundColor: colors.primarySurface }]}
                   hitSlop={8}
                 >
-                  <Feather name="navigation" size={14} color={colors.primary} />
+                  <Feather name="navigation" size={14} color={colors.primaryOnWhite} />
                 </Pressable>
               </View>
             )}
@@ -220,7 +220,7 @@ export default function JobDetailScreen() {
           {assignment.notes && (
             <View style={[styles.card, { backgroundColor: colors.surface }, shadow.sm]}>
               <View style={styles.labelRow}>
-                <Feather name="file-text" size={14} color={colors.primary} />
+                <Feather name="file-text" size={14} color={colors.primaryOnWhite} />
                 <Text style={[typeScale.caption, { color: colors.textSecondary, marginLeft: spacing.xs, fontWeight: '600' }]}>
                   {t('JOB NOTES')}
                 </Text>
@@ -261,10 +261,10 @@ export default function JobDetailScreen() {
                     </Text>
                     {taskPhotos.length > 0 && (
                       <Pressable onPress={() => openViewer(taskPhotos)} hitSlop={8} style={styles.viewPhotoRow}>
-                        <Text style={[typeScale.bodySmall, { color: colors.primary, fontWeight: '600' }]}>
+                        <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite, fontWeight: '600' }]}>
                           {taskPhotos.length === 1 ? t('View Photo') : t('View Photos ({n})', { n: taskPhotos.length })}
                         </Text>
-                        <Feather name="chevron-right" size={14} color={colors.primary} />
+                        <Feather name="chevron-right" size={14} color={colors.primaryOnWhite} />
                       </Pressable>
                     )}
                   </View>
@@ -281,8 +281,8 @@ export default function JobDetailScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.pillButton}
               >
-                <Feather name="navigation" size={18} color={fixed.white} />
-                <Text style={[typeScale.labelLarge, { color: fixed.white, marginLeft: spacing.sm }]}>
+                <Feather name="navigation" size={18} color={colors.textOnPrimary} />
+                <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary, marginLeft: spacing.sm }]}>
                   {t('Get Directions')}
                 </Text>
               </LinearGradient>

@@ -228,7 +228,7 @@ export default function WorkerDetailScreen() {
             <View style={styles.sectionHeaderRow}>
               <Text style={[typeScale.headingSmall, { color: colors.textPrimary, fontWeight: '700' }]}>{settingsWords('Crew')}</Text>
               <Pressable onPress={() => router.push('/(owner)/crews' as any)} hitSlop={8} accessibilityRole="button">
-                <Text style={[typeScale.bodySmall, { color: colors.primary, fontWeight: '600' }]}>{settingsWords('Manage Crews')}</Text>
+                <Text style={[typeScale.bodySmall, { color: colors.primaryOnWhite, fontWeight: '600' }]}>{settingsWords('Manage Crews')}</Text>
               </Pressable>
             </View>
             <View style={styles.crewChoices}>
@@ -370,7 +370,7 @@ export default function WorkerDetailScreen() {
               accessibilityLabel="Manage resource access"
             >
               <View style={[styles.resourceIcon, { backgroundColor: colors.primarySurface }]}>
-                <Icon name="key" size={18} color={colors.primary} />
+                <Icon name="key" size={18} color={colors.primaryOnWhite} />
               </View>
               <View style={{ flex: 1, marginLeft: spacing.md }}>
                 <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Manage Resource Access</Text>

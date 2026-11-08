@@ -81,7 +81,7 @@ export default function AttendanceScreen() {
 
       <View style={[styles.dayNav, { borderBottomColor: colors.borderLight }]}>
         <Pressable onPress={() => setDayOffset((d) => d - 1)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Previous day">
-          <Icon name="chevron-left" size={24} color={colors.primary} />
+          <Icon name="chevron-left" size={24} color={colors.primaryOnWhite} />
         </Pressable>
         <Pressable onPress={() => setDayOffset(0)}>
           <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>
@@ -89,7 +89,7 @@ export default function AttendanceScreen() {
           </Text>
         </Pressable>
         <Pressable onPress={() => setDayOffset((d) => d + 1)} hitSlop={8} accessibilityRole="button" accessibilityLabel="Next day">
-          <Icon name="chevron-right" size={24} color={dayOffset >= 0 ? colors.textTertiary : colors.primary} />
+          <Icon name="chevron-right" size={24} color={dayOffset >= 0 ? colors.textTertiary : colors.primaryOnWhite} />
         </Pressable>
       </View>
 

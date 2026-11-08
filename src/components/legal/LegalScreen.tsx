@@ -70,8 +70,8 @@ function Action({ label, icon, onPress }: { label: string; icon: 'mail' | 'phone
       accessibilityRole="button"
       accessibilityLabel={label}
     >
-      <Icon name={icon} size={16} color={colors.primary} />
-      <Text style={[typeScale.labelLarge, { color: colors.primary, marginLeft: spacing.xs }]}>{label}</Text>
+      <Icon name={icon} size={16} color={colors.primaryOnWhite} />
+      <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite, marginLeft: spacing.xs }]}>{label}</Text>
     </Pressable>
   );
 }

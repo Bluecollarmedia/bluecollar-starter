@@ -153,7 +153,7 @@ export const ES_WORKER: Record<string, string> = {
   'Version': 'Versión',
   'Sign Out?': '¿Cerrar sesión?',
   'Are you sure you want to sign out of your account?': '¿Seguro que quieres cerrar sesión en tu cuenta?',
-  "Alerts about your jobs arrive on this phone when notifications are allowed for this app in your phone's Settings. This switch only saves your choice for now; to stop the alerts, turn notifications off in your phone's Settings.": 'Las alertas sobre tus trabajos llegan a este teléfono cuando las notificaciones de esta app están permitidas en los Ajustes del teléfono. Por ahora este interruptor solo guarda tu elección; para dejar de recibir alertas, desactiva las notificaciones en los Ajustes del teléfono.',
+  "On: alerts about your jobs come to this phone. Off: no phone alerts are sent to you, but every notice still shows in the app. Your phone's own Settings must also allow notifications for this app.": 'Encendido: las alertas sobre tus trabajos llegan a este teléfono. Apagado: no se te envían alertas al teléfono, pero cada aviso sigue apareciendo en la app. Los Ajustes del teléfono también deben permitir las notificaciones de esta app.',
   'Push Notifications': 'Notificaciones push',
   'Job updates, schedule changes and reminders': 'Novedades de trabajos, cambios de horario y recordatorios',
 

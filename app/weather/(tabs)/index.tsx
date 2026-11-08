@@ -24,7 +24,7 @@ import { fixed } from '@/theme/colors';
 import { wxArt } from '@/theme/weather';
 
 const ON_DARK = WX.onDeep;
-const INK = WX.deep;
+const INK = WX.deepText;
 const SOFT = WX.soft;
 const FAINT = WX.faint;
 const HERO_RATIO = 1640 / 1170;
@@ -506,7 +506,7 @@ export function WeatherHomeScreen({ embedded = false }: { embedded?: boolean }) 
                   <MiniBars
                     values={next24.map((h) => h.windMph)}
                     max={Math.max(15, ...next24.map((h) => h.windMph ?? 0))}
-                    color={WX.leaf}
+                    color={WX.deepText}
                     caption={t('Slide your finger across to read any hour')}
                     describe={(i) => `${hourLabel(next24[i].time, locale)} · ${next24[i].windMph === null ? t('Unavailable') : `${Math.round(next24[i].windMph as number)} mph ${next24[i].windDir}`}`}
                   />
@@ -714,7 +714,7 @@ const styles = StyleSheet.create({
   alertView: { color: INK, fontSize: 13.5, fontWeight: '700', textDecorationLine: 'underline' },
   hour: { width: HOUR_W, alignItems: 'center', gap: 5, paddingVertical: 8, borderRadius: 14 },
   dayCol: { position: 'absolute', left: 0, top: 8, bottom: 8, width: DAY_W, borderRadius: 12, backgroundColor: WX.leafTint, alignItems: 'center', justifyContent: 'center', zIndex: 2 },
-  dayColText: { color: WX.deep, fontSize: 12, fontWeight: '800', lineHeight: 16 },
+  dayColText: { color: WX.deepText, fontSize: 12, fontWeight: '800', lineHeight: 16 },
   moreWrap: { width: MORE_W, alignItems: 'center', justifyContent: 'center' },
   moreBtn: { width: 48, height: 48, borderRadius: 24, backgroundColor: WX.deep, alignItems: 'center', justifyContent: 'center', shadowColor: WX.deep, shadowOpacity: 0.3, shadowRadius: 6, shadowOffset: { width: 0, height: 3 }, elevation: 3 },
   hourText: { color: SOFT, fontSize: 12 },

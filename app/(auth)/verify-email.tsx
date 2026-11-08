@@ -96,7 +96,7 @@ export default function VerifyEmailScreen() {
         ) : null}
         {notice ? (
           <View style={[styles.notice, { backgroundColor: colors.primarySurface }]}>
-            <Icon name="check-circle" size={16} color={colors.primary} />
+            <Icon name="check-circle" size={16} color={colors.primaryOnWhite} />
             <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1, marginLeft: spacing.sm }]}>{notice}</Text>
           </View>
         ) : null}

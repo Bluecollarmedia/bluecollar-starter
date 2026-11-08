@@ -7,7 +7,7 @@
  */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { DEFAULT_PLACE, WEATHER_TOWNS, asPlace, isBuiltInKey, type Place } from '@/lib/weatherTowns';
+import { DEFAULT_PLACE, WEATHER_TOWNS, asPlace, type Place } from '@/lib/weatherTowns';
 import { completePayload, type WeatherPayload } from '@/lib/weatherView';
 import { shareInFlight } from '@/lib/sharedRequest';
 
@@ -33,10 +33,9 @@ export function loadWeather(place: Place): Promise<WeatherResult> {
 async function loadWeatherNow(place: Place): Promise<WeatherResult> {
   if (!isSupabaseConfigured) return { ok: false, reason: 'unavailable' };
   try {
-    // The built-in nearby towns are asked for by name (their forecast grid is already known); any other place by its point. A nearby town
-    // also sends its point, so a town added to the settings file but not (yet) to the weather function still works.
-    const point = { lat: place.lat, lon: place.lon, name: place.name, state: place.state };
-    const body = isBuiltInKey(place.key) ? { town: place.key, ...point } : point;
+    // Every place (the settings file's towns and any other US place) is asked for by its map point. The weather function keeps no town
+    // list of its own: the towns live only in src/config/brand.js.
+    const body = { lat: place.lat, lon: place.lon, name: place.name, state: place.state };
     const call = supabase.functions.invoke('weather', { body });
     const stop = new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Timed out.')), REQUEST_LIMIT_MS));
     const { data, error } = await Promise.race([Promise.resolve(call), stop]);

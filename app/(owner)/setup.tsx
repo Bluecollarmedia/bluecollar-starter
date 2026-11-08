@@ -79,7 +79,7 @@ export default function CompanySetupScreen() {
     <View style={[styles.screen, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <View style={{ flex: 1 }}>
-          <Text style={[typeScale.overline, { color: colors.primary }]}>
+          <Text style={[typeScale.overline, { color: colors.primaryOnWhite }]}>
             RECOMMENDED SETUP · STEP {index + 1} OF {SETUP_STEPS.length}
           </Text>
           <Text style={[typeScale.headingLarge, { color: colors.textPrimary, marginTop: 2 }]}>{step.title}</Text>
@@ -173,7 +173,7 @@ function TrucksStep() {
         <Card title={`Your trucks (${allTrucks.length})`} style={styles.section}>
           {allTrucks.map((t) => (
             <View key={t.id} style={[styles.listItem, { borderBottomColor: colors.borderLight }]}>
-              <Icon name="truck" size={16} color={colors.primary} />
+              <Icon name="truck" size={16} color={colors.primaryOnWhite} />
               <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1 }]}>{t.name}</Text>
               <Text style={[typeScale.caption, { color: colors.textTertiary }]}>
                 {[t.make, t.model, t.licensePlate].filter(Boolean).join(' · ')}
@@ -221,7 +221,7 @@ function WorkersStep() {
           <Text style={[typeScale.bodySmall, { color: colors.textTertiary }]}>No workers yet.</Text>
         ) : workers.map((w) => (
           <View key={w.id} style={[styles.listItem, { borderBottomColor: colors.borderLight }]}>
-            <Icon name="user" size={16} color={colors.primary} />
+            <Icon name="user" size={16} color={colors.primaryOnWhite} />
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, flex: 1 }]}>
               {`${w.person!.firstName} ${w.person!.lastName}`.trim()}
             </Text>

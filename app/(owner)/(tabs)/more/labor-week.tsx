@@ -46,9 +46,9 @@ export default function LaborWeekScreen() {
       {L.notInstalled ? <NotInstalled /> : null}
       {L.error ? <Card><Text style={[typeScale.bodyMedium, { color: colors.error }]}>{L.error}</Text></Card> : null}
       <View style={styles.nav}>
-        <Pressable onPress={() => setWeekStart(shiftDay(weekStart, -7))} hitSlop={10} accessibilityRole="button" accessibilityLabel="Previous week"><Icon name="chevron-left" size={26} color={colors.primary} /></Pressable>
+        <Pressable onPress={() => setWeekStart(shiftDay(weekStart, -7))} hitSlop={10} accessibilityRole="button" accessibilityLabel="Previous week"><Icon name="chevron-left" size={26} color={colors.primaryOnWhite} /></Pressable>
         <Text style={[typeScale.labelLarge, { color: colors.textPrimary }]}>{weekStart === weekStartKey(todayKey()) ? 'This week' : `Week of ${fmtDay(weekStart)}`}</Text>
-        <Pressable onPress={() => setWeekStart(shiftDay(weekStart, 7))} hitSlop={10} accessibilityRole="button" accessibilityLabel="Next week"><Icon name="chevron-right" size={26} color={weekStart >= weekStartKey(todayKey()) ? colors.textTertiary : colors.primary} /></Pressable>
+        <Pressable onPress={() => setWeekStart(shiftDay(weekStart, 7))} hitSlop={10} accessibilityRole="button" accessibilityLabel="Next week"><Icon name="chevron-right" size={26} color={weekStart >= weekStartKey(todayKey()) ? colors.textTertiary : colors.primaryOnWhite} /></Pressable>
       </View>
 
       {!L.notInstalled ? (
@@ -58,8 +58,8 @@ export default function LaborWeekScreen() {
             <KV label="Overtime hours" value={`${hoursText(totalOt)} h`} hint="Per each employee's overtime terms" />
             <KV label="Payable cost" value={`$${totalCost.toFixed(2)}`} hint="Regular + overtime premium, at the saved rates" />
             <View style={styles.exp}>
-              <Pressable onPress={() => exp('week')} style={styles.expBtn} accessibilityRole="button"><Icon name="download" size={16} color={colors.primary} /><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Export weekly CSV</Text></Pressable>
-              <Pressable onPress={() => exp('days')} style={styles.expBtn} accessibilityRole="button"><Icon name="download" size={16} color={colors.primary} /><Text style={[typeScale.labelSmall, { color: colors.primary }]}>Export daily CSV</Text></Pressable>
+              <Pressable onPress={() => exp('week')} style={styles.expBtn} accessibilityRole="button"><Icon name="download" size={16} color={colors.primaryOnWhite} /><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Export weekly CSV</Text></Pressable>
+              <Pressable onPress={() => exp('days')} style={styles.expBtn} accessibilityRole="button"><Icon name="download" size={16} color={colors.primaryOnWhite} /><Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Export daily CSV</Text></Pressable>
             </View>
           </Card>
 

@@ -38,7 +38,7 @@ export function RadiusMapDrawn({ fraction, height = 180, style }: RadiusMapProps
         }}
       />
       <View style={[styles.pin, { backgroundColor: colors.surface }, shadow.sm]}>
-        <Feather name="home" size={16} color={colors.primary} />
+        <Feather name="home" size={16} color={colors.primaryOnWhite} />
       </View>
     </View>
   );

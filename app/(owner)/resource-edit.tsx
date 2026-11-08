@@ -81,7 +81,7 @@ export default function ResourceEditScreen() {
       <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
         <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
           <Pressable onPress={() => router.back()} hitSlop={12} accessibilityRole="button">
-            <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Close</Text>
+            <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Close</Text>
           </Pressable>
         </View>
         <EmptyState icon="alert-circle" title="Resource not found" description="It may have been deleted." />
@@ -134,7 +134,7 @@ export default function ResourceEditScreen() {
     <View style={[styles.screen, { backgroundColor: colors.groupedBackground }]}>
       <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <Pressable onPress={() => router.back()} hitSlop={12} accessibilityRole="button">
-          <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Cancel</Text>
+          <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Cancel</Text>
         </Pressable>
         <Text style={[typeScale.headingSmall, { color: colors.textPrimary, flex: 1, textAlign: 'center' }]}>
           {isNew ? 'Add Resource' : 'Edit Resource'}
@@ -248,7 +248,7 @@ export default function ResourceEditScreen() {
                 <ProtectedCode label={info.secretLabel} reveal={() => revealSecret(existing.id)} />
                 <View style={styles.codeLinks}>
                   <Pressable onPress={() => setSecretMode('replace')} hitSlop={8}>
-                    <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Change code</Text>
+                    <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Change code</Text>
                   </Pressable>
                   <Pressable onPress={() => setSecretMode('remove')} hitSlop={8}>
                     <Text style={[typeScale.labelSmall, { color: colors.error }]}>Remove code</Text>
@@ -259,7 +259,7 @@ export default function ResourceEditScreen() {
               <View style={styles.removeRow}>
                 <Text style={[typeScale.bodySmall, { color: colors.textSecondary, flex: 1 }]}>The code will be erased when you save.</Text>
                 <Pressable onPress={() => setSecretMode('keep')} hitSlop={8}>
-                  <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Undo</Text>
+                  <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Undo</Text>
                 </Pressable>
               </View>
             ) : (
@@ -282,7 +282,7 @@ export default function ResourceEditScreen() {
                 </Text>
                 {existing?.hasSecret && (
                   <Pressable onPress={() => { setSecret(''); setSecretMode('keep'); }} hitSlop={8} style={{ marginTop: spacing.sm }}>
-                    <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Keep current code</Text>
+                    <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Keep current code</Text>
                   </Pressable>
                 )}
               </>

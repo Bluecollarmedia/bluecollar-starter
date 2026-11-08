@@ -48,7 +48,7 @@ export function CollapsibleFilters({ groups, style, startOpen = false }: { group
         </Pressable>
         {active.length > 0 ? (
           <Pressable onPress={() => groups.forEach((g) => g.onSelect(defaultOf(g)))} hitSlop={8} accessibilityRole="button" accessibilityLabel="Clear all filters">
-            <Text style={[typeScale.labelSmall, { color: colors.primary }]}>Clear</Text>
+            <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>Clear</Text>
           </Pressable>
         ) : null}
       </View>

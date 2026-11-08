@@ -86,16 +86,16 @@ export function Button({
 
     switch (variant) {
       case 'primary':
-        bg = pressed ? colors.primaryDark : colors.primary;
+        bg = pressed ? colors.primaryPressed : colors.primary;
         textColor = colors.textOnPrimary;
         break;
       case 'secondary':
         bg = pressed ? colors.border : colors.primarySurface;
-        textColor = colors.primary;
+        textColor = colors.primaryOnWhite;
         break;
       case 'ghost':
         bg = pressed ? colors.primarySurface : 'transparent';
-        textColor = colors.primary;
+        textColor = colors.primaryOnWhite;
         break;
       case 'danger':
         bg = pressed ? semantic.errorDark : semantic.error;

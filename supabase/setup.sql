@@ -1454,6 +1454,21 @@ create table if not exists public.service_requests (
   constraint service_requests_town_check CHECK (((char_length(town) >= 2) AND (char_length(town) <= 80)))
 );
 
+-- R6: "Add customer" by email found a login with that email that has NOT confirmed it yet. The owner's customer record is kept
+-- unlinked and noted here; the login is linked to it only when that SAME login confirms that SAME email (trigger
+-- _link_customer_on_email_confirm on auth.users). Private: the app cannot read or change it (only the database functions do).
+create table if not exists public.customer_email_links (
+  company_id uuid not null,
+  person_id uuid not null,
+  user_id uuid not null,
+  email text not null,
+  created_by uuid,
+  created_at timestamp with time zone default now() not null,
+  constraint customer_email_links_pkey PRIMARY KEY (person_id, user_id)
+);
+
+-- Worker push on/off lives in worker_settings.notifications_enabled (each person's own row; see push_app_notification).
+
 -- ============================================================================
 -- PART 2. FUNCTIONS
 -- Database functions: the helpers the security rules use (names starting with "_" are internal and
@@ -1940,6 +1955,53 @@ begin
     null;   -- something outside the customer_id columns still points at it: keep the person rather than lose data
   end;
   return true;
+end;
+$function$;
+
+-- R6: runs when a login CONFIRMS its email (auth.users.email_confirmed_at goes from empty to set). Links that login to each customer
+-- record the owner added by that exact email while this same login was still unconfirmed (customer_email_links), with the same
+-- company rules as add_customer: never someone on the team, never a customer whose access the owner removed, only a record that is
+-- still unlinked and still "invited". Never blocks the confirmation itself. Needs Supabase "Confirm email" ON to mean anything.
+create or replace function public._link_customer_on_email_confirm()
+ returns trigger
+ language plpgsql
+ security definer
+ set search_path to 'public'
+as $function$
+declare
+  me uuid;
+  l record;
+  m record;
+begin
+  if new.email_confirmed_at is null or old.email_confirmed_at is not null then return new; end if;
+  begin
+    select id into me from public.people where user_id = new.id order by created_at limit 1;
+    if me is not null then
+      for l in
+        select k.company_id, k.person_id from public.customer_email_links k
+          join public.people p on p.id = k.person_id and p.user_id is null
+          join public.company_members cm on cm.company_id = k.company_id and cm.person_id = k.person_id and cm.role = 'customer' and cm.status = 'invited'
+         where k.user_id = new.id and lower(k.email) = lower(coalesce(new.email, ''))
+      loop
+        select role, status into m from public.company_members where company_id = l.company_id and person_id = me;
+        if found then
+          if m.role <> 'customer' or m.status = 'inactive' then continue; end if;
+          update public.company_members set status = 'active' where company_id = l.company_id and person_id = me and status = 'invited';
+        else
+          insert into public.company_members (company_id, person_id, role, status, join_method)
+          values (l.company_id, me, 'customer', 'active', 'email_invitation');
+        end if;
+        if public._merge_placeholder_customer(l.company_id, l.person_id, me) then
+          insert into public.membership_audit_log (company_id, event_type, actor_id, target_id, metadata)
+          values (l.company_id, 'customer_linked_email_confirmed', me, me, jsonb_build_object('customer_record', l.person_id));
+        end if;
+      end loop;
+    end if;
+    delete from public.customer_email_links where user_id = new.id;
+  exception when others then
+    raise warning 'customer link on email confirm failed: %', sqlerrm;
+  end;
+  return new;
 end;
 $function$;
 
@@ -2937,6 +2999,7 @@ declare
   phone text := nullif(trim(coalesce(p_phone, '')), '');
   m record;
   acct record;
+  wait_uid uuid;
   pid uuid;
 begin
   if cid is null then raise exception 'Only the owner or an admin can add customers.'; end if;
@@ -2956,19 +3019,33 @@ begin
       return jsonb_build_object('person_id', m.person_id, 'outcome', 'already_customer');
     end if;
 
-    -- A person who has a login (anywhere): reuse that person, never create a second one.
-    select id into acct from public.people where lower(email) = mail and user_id is not null order by created_at limit 1;
-    if found then
+    -- R6: a login with this email is linked (that same person is reused, never a second one) ONLY when the login has CONFIRMED
+    -- this email. An unconfirmed login (anyone can type someone else's email at sign-up) waits: the customer record below is made
+    -- unlinked and noted in customer_email_links, and that login is linked when it confirms the email (_link_customer_on_email_confirm).
+    -- This protection needs Supabase "Confirm email" ON (with it off, Supabase marks every email confirmed at sign-up).
+    select p.id, (u.email_confirmed_at is not null) as confirmed, u.id as uid into acct
+      from public.people p join auth.users u on u.id = p.user_id
+     where lower(u.email) = mail
+     order by (u.email_confirmed_at is not null) desc, p.created_at limit 1;
+    if found and acct.confirmed then
+      -- The login is now this company's customer, with access (as an invite link would give).
       insert into public.company_members (company_id, person_id, role, status, join_method, approved_by, approved_at)
-      values (cid, acct.id, 'customer', 'invited', 'email_invitation', me, now())
+      values (cid, acct.id, 'customer', 'active', 'email_invitation', me, now())
       on conflict (company_id, person_id) do nothing;
       return jsonb_build_object('person_id', acct.id, 'outcome', 'existing_account');
+    elsif found then
+      wait_uid := acct.uid;
     end if;
   end if;
 
   insert into public.people (email, first_name, last_name, phone) values (mail, first, last, phone) returning id into pid;
   insert into public.company_members (company_id, person_id, role, status, join_method, approved_by, approved_at)
   values (cid, pid, 'customer', 'invited', 'email_invitation', me, now());
+  if wait_uid is not null then
+    insert into public.customer_email_links (company_id, person_id, user_id, email, created_by)
+    values (cid, pid, wait_uid, mail, me) on conflict do nothing;
+    return jsonb_build_object('person_id', pid, 'outcome', 'waiting_for_email_confirmation');
+  end if;
   return jsonb_build_object('person_id', pid, 'outcome', 'created');
 end;
 $function$;
@@ -4430,11 +4507,14 @@ create or replace function public.push_app_notification()
  security definer
  set search_path to 'public'
 as $function$
-declare url text;
+declare url text; push_on boolean;
 begin
-  -- Only worth a call if the person has a phone registered or it's an emailed event.
-  if not exists (select 1 from public.push_tokens where person_id = new.recipient_id)
-     and new.event_type not in ('quote_approved','quote_declined') then
+  -- The person's own "Push Notifications" switch (worker_settings.notifications_enabled; no row = on). Off = no phone push;
+  -- the notice itself is still saved and shows in the app.
+  select coalesce((select s.notifications_enabled from public.worker_settings s where s.person_id = new.recipient_id), true) into push_on;
+  -- Only worth a call if the person wants pushes and has a phone registered, or it's an emailed event (the function then skips the push).
+  if new.event_type not in ('quote_approved','quote_declined')
+     and (not push_on or not exists (select 1 from public.push_tokens where person_id = new.recipient_id)) then
     return new;
   end if;
   select value into url from public.app_settings where key = 'functions_url';
@@ -6302,6 +6382,9 @@ do $$ begin alter table public.truck_maintenance add constraint truck_maintenanc
 do $$ begin alter table public.invites add constraint invites_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
 do $$ begin alter table public.invites add constraint invites_created_by_fkey FOREIGN KEY (created_by) REFERENCES public.people(id) ON DELETE SET NULL; exception when duplicate_object then null; end $$;
 do $$ begin alter table public.invites add constraint invites_person_id_fkey FOREIGN KEY (person_id) REFERENCES public.people(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
+do $$ begin alter table public.customer_email_links add constraint customer_email_links_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
+do $$ begin alter table public.customer_email_links add constraint customer_email_links_person_id_fkey FOREIGN KEY (person_id) REFERENCES public.people(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
+do $$ begin alter table public.customer_email_links add constraint customer_email_links_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
 do $$ begin alter table public.public_weather_settings add constraint public_weather_settings_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
 do $$ begin alter table public.public_weather_settings add constraint public_weather_settings_updated_by_fkey FOREIGN KEY (updated_by) REFERENCES public.people(id) ON DELETE SET NULL; exception when duplicate_object then null; end $$;
 do $$ begin alter table public.company_yard_alerts add constraint company_yard_alerts_company_id_fkey FOREIGN KEY (company_id) REFERENCES public.companies(id) ON DELETE CASCADE; exception when duplicate_object then null; end $$;
@@ -6407,6 +6490,9 @@ create index if not exists idx_service_requests_phone ON public.service_requests
 
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created AFTER INSERT ON auth.users FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+-- R6: a login that confirms its email is linked to a customer record the owner added by that email while it was unconfirmed.
+drop trigger if exists on_auth_email_confirmed on auth.users;
+create trigger on_auth_email_confirmed AFTER UPDATE OF email_confirmed_at ON auth.users FOR EACH ROW EXECUTE FUNCTION public._link_customer_on_email_confirm();
 drop trigger if exists companies_no_delete on public.companies;
 create trigger companies_no_delete BEFORE DELETE ON public.companies FOR EACH ROW EXECUTE FUNCTION public.prevent_company_delete();
 drop trigger if exists companies_no_truncate on public.companies;
@@ -6711,6 +6797,7 @@ alter table public.storage_cleanup_queue enable row level security;
 alter table public.properties enable row level security;
 alter table public.truck_maintenance enable row level security;
 alter table public.invites enable row level security;
+alter table public.customer_email_links enable row level security;
 alter table public.public_weather_settings enable row level security;
 alter table public.company_yard_alerts enable row level security;
 alter table public.time_clock_locations enable row level security;
@@ -7093,7 +7180,7 @@ create policy project_updates_staff on public.project_updates for all to public
   with check (public.is_staff(company_id));
 drop policy if exists projects_select on public.projects;
 create policy projects_select on public.projects for select to public
-  using ((public.is_crew(company_id) OR ((public.my_person_id() IS NOT NULL) AND ((customer_id = public.my_person_id()) OR (customer_claimed_by = public.my_person_id())))));
+  using ((public.is_crew(company_id) OR ((public.my_person_id() IS NOT NULL) AND ((customer_id = public.my_person_id()) OR (customer_claimed_by = public.my_person_id())) AND public.is_member(company_id))));
 drop policy if exists projects_write on public.projects;
 create policy projects_write on public.projects for all to public
   using (public.is_staff(company_id))
@@ -7347,36 +7434,37 @@ create policy worker_settings_own on public.worker_settings for all to public
 
 revoke all on table public.resource_secrets from anon, authenticated;
 revoke all on table public.resource_audit_log from anon, authenticated;
-grant select, truncate, references, trigger on table public.resource_audit_log to anon;
-grant select, truncate, references, trigger on table public.resource_audit_log to authenticated;
+grant select on table public.resource_audit_log to anon;
+grant select on table public.resource_audit_log to authenticated;
 revoke all on table public.content_reports from anon;
 revoke all on table public.time_settings from anon;
 revoke all on table public.time_person_settings from anon;
 revoke all on table public.time_property_targets from anon;
 revoke all on table public.time_workdays from anon, authenticated;
-grant select, references, trigger on table public.time_workdays to authenticated;
+grant select on table public.time_workdays to authenticated;
 revoke all on table public.time_workday_rates from anon, authenticated;
-grant select, references, trigger on table public.time_workday_rates to authenticated;
+grant select on table public.time_workday_rates to authenticated;
 revoke all on table public.time_breaks from anon, authenticated;
-grant select, references, trigger on table public.time_breaks to authenticated;
+grant select on table public.time_breaks to authenticated;
 revoke all on table public.time_visits from anon, authenticated;
-grant select, references, trigger on table public.time_visits to authenticated;
+grant select on table public.time_visits to authenticated;
 revoke all on table public.time_intervals from anon, authenticated;
-grant select, references, trigger on table public.time_intervals to authenticated;
+grant select on table public.time_intervals to authenticated;
 revoke all on table public.time_interval_rates from anon, authenticated;
-grant select, references, trigger on table public.time_interval_rates to authenticated;
+grant select on table public.time_interval_rates to authenticated;
 revoke all on table public.time_skip_requests from anon, authenticated;
-grant select, references, trigger on table public.time_skip_requests to authenticated;
+grant select on table public.time_skip_requests to authenticated;
 revoke all on table public.time_audit from anon, authenticated;
-grant select, references, trigger on table public.time_audit to authenticated;
+grant select on table public.time_audit to authenticated;
 revoke all on table public.time_alerts from anon, authenticated;
-grant select, references, trigger on table public.time_alerts to authenticated;
+grant select on table public.time_alerts to authenticated;
 revoke all on table public.time_project_estimates from anon;
 revoke all on table public.company_admin_permissions from anon, authenticated;
-grant select, references, trigger on table public.company_admin_permissions to authenticated;
+grant select on table public.company_admin_permissions to authenticated;
 revoke all on table public.company_closure_log from anon, authenticated;
 revoke all on table public.storage_cleanup_queue from anon, authenticated;
 revoke all on table public.invites from anon, authenticated;
+revoke all on table public.customer_email_links from anon, authenticated;
 revoke all on table public.public_weather_settings from anon, authenticated;
 revoke all on table public.company_yard_alerts from anon, authenticated;
 revoke all on table public.time_clock_locations from anon, authenticated;
@@ -7434,6 +7522,8 @@ revoke all on function public._mentions_card_credential(t text) from public, ano
 grant execute on function public._mentions_card_credential(t text) to service_role;
 revoke all on function public._merge_placeholder_customer(p_company uuid, p_placeholder uuid, p_real uuid) from public, anon, authenticated, service_role;
 grant execute on function public._merge_placeholder_customer(p_company uuid, p_placeholder uuid, p_real uuid) to service_role;
+revoke all on function public._link_customer_on_email_confirm() from public, anon, authenticated, service_role;
+grant execute on function public._link_customer_on_email_confirm() to service_role;
 revoke all on function public._my_owned_company() from public, anon, authenticated, service_role;
 grant execute on function public._my_owned_company() to service_role;
 revoke all on function public._my_owned_or_staff_company() from public, anon, authenticated, service_role;
@@ -7762,6 +7852,19 @@ revoke all on function public.time_withdraw_skip(p_request_id uuid) from public,
 grant execute on function public.time_withdraw_skip(p_request_id uuid) to authenticated, service_role;
 revoke all on function public.unregister_push_token(p_token text) from public, anon, authenticated, service_role;
 grant execute on function public.unregister_push_token(p_token text) to authenticated, service_role;
+
+-- No app role may EMPTY a table (TRUNCATE skips the row rules) or needs REFERENCES / TRIGGER rights. Supabase grants all three by
+-- default; they are taken back from the app roles on every table here, and for tables made later (default privileges).
+-- The app keeps select / insert / update / delete exactly as above (row level security still decides which rows).
+do $$
+declare t text;
+begin
+  for t in select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace
+            where n.nspname = 'public' and c.relkind in ('r', 'p', 'v', 'm', 'f') loop
+    execute format('revoke truncate, references, trigger on table public.%I from public, anon, authenticated', t);
+  end loop;
+end $$;
+alter default privileges in schema public revoke truncate, references, trigger on tables from public, anon, authenticated;
 
 -- ============================================================================
 -- PART 8. LIVE UPDATES (Supabase Realtime): the app listens to these tables

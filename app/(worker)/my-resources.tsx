@@ -34,7 +34,7 @@ export default function WorkerResourcesScreen() {
 
   let body: React.ReactNode;
   if (!ready) {
-    body = <ActivityIndicator style={{ marginTop: spacing['3xl'] }} color={colors.primary} />;
+    body = <ActivityIndicator style={{ marginTop: spacing['3xl'] }} color={colors.primaryOnWhite} />;
   } else if (loadError && resources.length === 0) {
     body = (
       <EmptyState

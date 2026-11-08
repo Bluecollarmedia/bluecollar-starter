@@ -55,11 +55,15 @@ Android, web), Supabase (logins, database, server functions), Cloudflare R2 (pho
 17. **One company per database.** "Create a Company" shows only while no company exists. Every client gets its own new Supabase project.
     *Why:* the whole database and its security rules are built around one company.
 18. **Workers and customers join ONLY through a private invite link** (Add Worker / Add Customer = name + phone, then text or copy
-    the link). No join codes, never matching people by email. *Why:* matching by email let a stranger take over a record (R5).
+    the link). No join codes; sign-up never matches people by email. The one exception: "Add customer by email" links an existing
+    login only once that login has CONFIRMED that email (unconfirmed = it waits and links when the email is confirmed; R6).
+    *Why:* matching by email let a stranger take over a record (R5, R6).
 19. **Email confirmation uses a 6-digit code typed in the app, not a link.** *Why:* the confirm link was broken in the original app.
 20. **Turn "Confirm email" ON for every client - in this order:** (1) set the Supabase "Confirm signup" email template to show the
     6-digit code, (2) deploy `invite-signup` from the repo (login check OFF), (3) test one worker invite sign-up on a phone,
-    (4) THEN turn Confirm email on. *Why:* on too early breaks invite sign-ups; left off, "Add customer by email" can link a stranger (R6, R7).
+    (4) THEN turn Confirm email on. *Why:* on too early breaks invite sign-ups. Left off, Supabase marks EVERY sign-up's email as
+    confirmed, so the R6 guard ("Add customer by email" links only a login whose email is CONFIRMED) protects nothing and a stranger
+    who signed up with a customer's email could be linked to that customer's jobs (R6, R7).
 21. **Add the auth redirect URL `<scheme>://auth-callback`** in Supabase > Authentication > URL Configuration (scheme = `app.scheme`
     in brand.js), then **test confirm AND password reset on a real phone before launch.** *Why:* without it email links never come back into the app.
 22. **Password reset needs a real email sender:** the client's own domain verified in Resend, set as Supabase custom SMTP.
@@ -85,6 +89,10 @@ Android, web), Supabase (logins, database, server functions), Cloudflare R2 (pho
     *Why:* one change in brand.js renames every screen, in English and Spanish. (Checks: `wordingNoProjectProperty`, `wordingFromSettings`.)
 30. **Colors only through the theme** (`@/theme`; the brand color is `look.brandColor`). Green / amber / red only mean done / warning / error.
     *Why:* one brand color restyles the app. (Check: `plainLook` fails on a typed-in color.)
+30b. **Any brand color must stay readable, light or dark.** Text / icons ON the brand color use `colors.textOnPrimary` (it turns dark
+    on a light brand color); pressed buttons and brand gradients use `colors.primaryPressed`; the brand color AS text or an icon on
+    white uses `colors.primaryOnWhite` (darkened when needed), never plain `colors.primary`; any other colored background uses
+    `onColor(bg)`. *Why:* a yellow or cyan brand color once left white text unreadable. (Check: `brandContrast`.)
 31. **Feature switches:** `brand.js` `features`. Hide entry points with `isFeatureOn('x')` and list the feature's screens in
     `src/config/featureRoutes.ts` (they show "Not available" when off). Switches marked "build" need a new phone build.
     *Why:* each client gets only what it paid for, without deleting code.
@@ -203,8 +211,8 @@ Android, web), Supabase (logins, database, server functions), Cloudflare R2 (pho
    `brand.js` `features` (on/off).
 2. **Fill in `src/config/brand.js`:** company and contact, app name, bundle id / Android package, scheme, web address on the
    client's own domain, colors, pictures (logo, icon, splash, Android icon), wording (Job / Job site / Crew words, Manager label,
-   units, service types), switches, legal facts, weather town and nearby towns. Change the weather server function's town list
-   (`supabase/functions/weather/index.ts`, TOWNS) to match. Run `node scripts/build-legal-pages.cjs` and rebuild `src/lib/brandLogo.ts`.
+   units, service types), switches, legal facts, weather town and nearby towns (brand.js is the ONLY town list: the weather
+   function looks each place up by its map point). Run `node scripts/build-legal-pages.cjs` and rebuild `src/lib/brandLogo.ts`.
 3. **New Supabase project** (one per client): turn on the extensions (pg_net, supabase_vault), edit the FILL IN line, and the owner
    runs `supabase/setup.sql`. Set the function secrets from `.env.example` (`supabase secrets set`). Deploy the functions with the
    CLI (`supabase functions deploy`). Set the auth email templates to the 6-digit code, add the redirect URL
@@ -253,19 +261,23 @@ Path alias: `@/` = `src/`.
 
 ## KNOWN ROUGH EDGES
 
-- **R6 - Add customer by email:** an existing login with that email is linked to the customer. Safe once Confirm email is ON
-  (rule 20); until then prefer the invite link.
-- **Customer access off:** a customer whose access is turned off can still READ his own old job rows (a 1-line fix in setup.sql,
-  not made yet - owner's call).
-- **TRUNCATE grants:** a low-risk database permission is granted too widely; the app cannot use it, but removing it is good hardening (not done).
-- **Light brand color:** with a LIGHT `look.brandColor` some buttons keep white text. Fine with charcoal or any dark color.
+- **R6 - Add customer by email:** an existing login is linked only if its email is CONFIRMED; otherwise the customer record waits
+  and that login is linked when it confirms the email. This only protects anything while Supabase "Confirm email" is ON (rule 20);
+  until then prefer the invite link (still the main way).
+- **Customer access off (fixed):** a customer whose access is turned off reads none of his old jobs or their tasks, photos,
+  messages, quotes or invoices (every customer read rule needs an active membership; check `customerAccessOff`).
+- **TRUNCATE (fixed):** the app roles have no TRUNCATE / REFERENCES / TRIGGER rights on any table, now or later (check `noTruncate`).
+- **Light brand color (fixed, rule 30b):** text on the brand color turns dark on a light brand color. Seen only in the checks so far
+  (charcoal, white, yellow, cyan, blue, red, black), not on a real phone.
 - **Not seen on a real phone yet:** the glass bars on white, gray cards next to white sheets, the new home-screen icon, and hiding
   the worker Clock tab / customer Messages tab when switched off.
-- **Weather towns live in 2 places:** brand.js and `supabase/functions/weather/index.ts` (a check keeps them equal). The kit
-  ships example New Jersey towns - replace both.
+- **Weather towns live in ONE place:** brand.js (`weather.defaultPlace`, `weather.nearbyTowns`). The app sends each town's map
+  point and the `weather` function looks up its NWS grid (`/points`, remembered for a day); it keeps no town list. The kit ships
+  example New Jersey towns - replace them in brand.js only. Redeploy `weather` once after this change.
 - **To test on a phone (from the original app):** B2 - email confirm / reset links (add the redirect URL first);
   B3 - task photo upload on a real iPhone.
-- **Notice switches:** the worker "Push Notifications" switch is saved but the server ignores it, and a few notice types offered
-  as switches are never sent (H16).
+- **Notice switches:** the worker "Push Notifications" switch is now respected by the server (fixed: off = no phone push, the
+  notice still shows in the app; redeploy `send-notification`). Still open (H16): a few notice types offered as owner switches
+  are never sent, and the owner's per-type switches do not stop pushes for notices the server makes.
 - **No offline mode:** the app needs a signal. Very large companies: each list loads at most 5,000 rows.
 - **Server emails** were restyled; redeploy the functions per client for that to show.

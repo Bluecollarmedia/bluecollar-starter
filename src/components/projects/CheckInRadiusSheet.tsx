@@ -184,7 +184,7 @@ export function CheckInRadiusSheet({ visible, place, radiusMeters, onClose, onSa
             accessibilityState={{ disabled: !canSave }}
             style={({ pressed }) => [styles.save, { backgroundColor: colors.primary, opacity: !canSave ? 0.4 : pressed ? 0.85 : 1 }]}
           >
-            <Text style={[typeScale.labelLarge, { color: fixed.white }]}>Save distance</Text>
+            <Text style={[typeScale.labelLarge, { color: colors.textOnPrimary }]}>Save distance</Text>
           </Pressable>
         </Pressable>
       </Pressable>

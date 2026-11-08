@@ -54,7 +54,7 @@ export function CustomerInviteCard({ personId, firstName, phone, autoMake }: { p
   if (hasLogin) {
     return (
       <View style={[styles.row, { backgroundColor: colors.primarySurface }]}>
-        <Icon name="check-circle" size={16} color={colors.primary} />
+        <Icon name="check-circle" size={16} color={colors.primaryOnWhite} />
         <Text style={[typeScale.bodySmall, { color: colors.textPrimary, flex: 1, marginLeft: spacing.sm }]}>{firstName || 'This customer'} has a login.</Text>
       </View>
     );
@@ -68,7 +68,7 @@ export function CustomerInviteCard({ personId, firstName, phone, autoMake }: { p
       {invite ? (
         <>
           <View style={[styles.linkBox, { backgroundColor: colors.primarySurface }]}>
-            <Text style={[typeScale.caption, { color: colors.primary }]} selectable numberOfLines={2}>{url}</Text>
+            <Text style={[typeScale.caption, { color: colors.primaryOnWhite }]} selectable numberOfLines={2}>{url}</Text>
           </View>
           <View style={styles.actions}>
             <Button title="Text Message" icon="message-circle" onPress={text} style={{ flex: 1 }} />

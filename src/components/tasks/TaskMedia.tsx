@@ -92,8 +92,8 @@ export function TaskMediaStrip({ items, onOpen, onAdd, onRemove, drafts }: TaskM
           accessibilityRole="button"
           accessibilityLabel={t('Add photo or video')}
         >
-          <Icon name="camera" size={20} color={colors.primary} />
-          <Text style={[typeScale.caption, { color: colors.primary, marginTop: 2, fontWeight: '600' }]}>{t('Add')}</Text>
+          <Icon name="camera" size={20} color={colors.primaryOnWhite} />
+          <Text style={[typeScale.caption, { color: colors.primaryOnWhite, marginTop: 2, fontWeight: '600' }]}>{t('Add')}</Text>
         </Pressable>
       )}
     </View>

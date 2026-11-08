@@ -38,7 +38,7 @@ export function CustomerMessagePushRow() {
   return (
     <View>
       <View style={styles.row}>
-        <IconTile name="bell" color={colors.primary} />
+        <IconTile name="bell" color={colors.primaryOnWhite} />
         <View style={{ flex: 1 }}>
           <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '700' }]}>Customer Message Notifications</Text>
           <Text style={[typeScale.bodySmall, { color: colors.textSecondary, marginTop: 1 }]}>Receive push notifications when customers send you messages.</Text>
@@ -50,7 +50,7 @@ export function CustomerMessagePushRow() {
           <Icon name="alert-triangle" size={16} color={colors.warning} />
           <Text style={[typeScale.caption, { color: colors.textSecondary, flex: 1 }]}>
             Notifications are turned off for this app in your phone's settings, so alerts can't reach you. Messages still show in your notification center.
-            <Text style={{ color: colors.primary, fontWeight: '700' }}> Open phone settings</Text>
+            <Text style={{ color: colors.primaryOnWhite, fontWeight: '700' }}> Open phone settings</Text>
           </Text>
         </Pressable>
       )}

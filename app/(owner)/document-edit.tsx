@@ -229,7 +229,7 @@ export default function DocumentEditScreen() {
             <Text style={[typeScale.caption, { color: colors.textSecondary }]}>Draft</Text>
           </View>
           <Pressable onPress={close} hitSlop={12} style={styles.headerBtn} accessibilityRole="button" accessibilityLabel="Save draft and close">
-            <Text style={[typeScale.labelLarge, { color: colors.primary }]}>Save</Text>
+            <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>Save</Text>
           </Pressable>
         </View>
         <View style={styles.stepper}>
@@ -240,8 +240,8 @@ export default function DocumentEditScreen() {
               <Pressable key={s} style={styles.stepItem} onPress={() => i !== step && goTo(i)} accessibilityRole="tab" accessibilityState={{ selected: active }}>
                 <View style={[styles.stepDot, { backgroundColor: active || done ? colors.primary : colors.backgroundTertiary }]}>
                   {done
-                    ? <Icon name="check" size={12} color={fixed.white} />
-                    : <Text style={[typeScale.labelSmall, { color: active ? fixed.white : colors.textSecondary }]}>{i + 1}</Text>}
+                    ? <Icon name="check" size={12} color={colors.textOnPrimary} />
+                    : <Text style={[typeScale.labelSmall, { color: active ? colors.textOnPrimary : colors.textSecondary }]}>{i + 1}</Text>}
                 </View>
                 <Text style={[typeScale.labelSmall, { color: active ? colors.textPrimary : colors.textSecondary }]}>{s}</Text>
               </Pressable>

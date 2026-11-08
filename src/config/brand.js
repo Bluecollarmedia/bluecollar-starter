@@ -226,10 +226,9 @@ module.exports = {
     /** EXAMPLE - REPLACE: the place weather shows the first time. key = a short lowercase id; lat/lon = its map point. */
     defaultPlace: { key: 'lakewood', name: 'Lakewood', state: 'NJ', lat: 40.0771, lon: -74.1985 },
     /** EXAMPLE - REPLACE: the short list of nearby towns at the top of the weather town picker (the default place first).
-     *  These New Jersey towns come from the original app. IMPORTANT: the weather server function
-     *  (supabase/functions/weather/index.ts, the TOWNS list) must hold the same keys and names, each with its National
-     *  Weather Service grid. If you change this list, change that one too (or empty both: any US place still works by its
-     *  map point). A check (weatherData.check.cjs) keeps the two lists the same. */
+     *  These New Jersey towns come from the original app. This is the ONLY town list: the weather server function keeps
+     *  none of its own (the app sends each town's lat/lon and the function looks up its National Weather Service grid), so
+     *  changing towns here needs no server change. Any US place still works by its map point. */
     nearbyTowns: [
       { key: 'lakewood', name: 'Lakewood', state: 'NJ', lat: 40.0771, lon: -74.1985 },
       { key: 'jackson', name: 'Jackson', state: 'NJ', lat: 40.0909, lon: -74.3613 },

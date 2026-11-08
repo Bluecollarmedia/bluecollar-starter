@@ -103,12 +103,12 @@ export default function YardAlertsScreen() {
               <InlineNotice icon="alert-circle" tone="error" text="No yard location is set yet, so nothing can be checked. Set it first." style={{ marginTop: spacing.md }} />
             ) : (
               <View style={styles.savedRow}>
-                <Icon name="map-pin" size={16} color={colors.primary} />
+                <Icon name="map-pin" size={16} color={colors.primaryOnWhite} />
                 <Text style={[typeScale.bodySmall, { color: colors.textSecondary, flex: 1 }]}>Yard: {yard?.yardAddress || 'set on the Yard Location screen'}</Text>
               </View>
             )}
             <Pressable onPress={() => router.push('/(owner)/more/yard-location' as any)} style={{ minHeight: 44, justifyContent: 'center' }} accessibilityRole="button">
-              <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{needsYard ? 'Set the yard location' : 'Change the yard location'}</Text>
+              <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{needsYard ? 'Set the yard location' : 'Change the yard location'}</Text>
             </Pressable>
           </Card>
 
@@ -119,7 +119,7 @@ export default function YardAlertsScreen() {
                 return (
                   <Pressable key={o.meters} onPress={() => setRadiusM(o.meters)} accessibilityRole="button" accessibilityState={{ selected: on }}
                     style={[styles.chip, { backgroundColor: on ? colors.primary : colors.backgroundSecondary, borderColor: on ? colors.primary : colors.border }]}>
-                    <Text style={[typeScale.bodySmall, { color: on ? fixed.white : colors.textPrimary, fontWeight: '700' }]}>{o.label}</Text>
+                    <Text style={[typeScale.bodySmall, { color: on ? colors.textOnPrimary : colors.textPrimary, fontWeight: '700' }]}>{o.label}</Text>
                   </Pressable>
                 );
               })}

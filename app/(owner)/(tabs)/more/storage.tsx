@@ -152,7 +152,7 @@ export default function StorageScreen() {
             appearance="light"
             backgroundColor={colors.groupedBackground}
             fontStyle={{ color: colors.textSecondary }}
-            activeFontStyle={{ color: fixed.white, fontWeight: '600' }}
+            activeFontStyle={{ color: colors.textOnPrimary, fontWeight: '600' }}
             style={styles.segment}
           />
           {selectedIndex === customIndex && (
@@ -180,7 +180,7 @@ export default function StorageScreen() {
                 ]}
                 accessibilityLabel="Save storage limit"
               >
-                <Text style={[typeScale.labelLarge, { color: customValid ? fixed.white : colors.textTertiary }]}>
+                <Text style={[typeScale.labelLarge, { color: customValid ? colors.textOnPrimary : colors.textTertiary }]}>
                   {customValid && customGb === limitGb ? 'Saved' : 'Save'}
                 </Text>
               </PressScale>
@@ -251,7 +251,7 @@ export default function StorageScreen() {
                   accessibilityLabel={`Set the max file size to ${mbLabel(mb)}`}
                   style={[styles.maxChip, { backgroundColor: maxMb === mb ? colors.primary : colors.groupedBackground }]}
                 >
-                  <Text style={[typeScale.labelLarge, { color: maxMb === mb ? fixed.white : colors.textSecondary }]}>{mb}</Text>
+                  <Text style={[typeScale.labelLarge, { color: maxMb === mb ? colors.textOnPrimary : colors.textSecondary }]}>{mb}</Text>
                 </Pressable>
               ))}
             </View>
@@ -276,7 +276,7 @@ export default function StorageScreen() {
                 style={[styles.customSave, { backgroundColor: typedMax ? colors.primary : colors.backgroundTertiary }]}
                 accessibilityLabel="Save max file size"
               >
-                <Text style={[typeScale.labelLarge, { color: typedMax ? fixed.white : colors.textTertiary }]}>Save</Text>
+                <Text style={[typeScale.labelLarge, { color: typedMax ? colors.textOnPrimary : colors.textTertiary }]}>Save</Text>
               </PressScale>
             </View>
           </View>
@@ -292,8 +292,8 @@ export default function StorageScreen() {
           <View style={styles.typeGrid}>
             {['JPEG', 'PNG', 'WebP', 'HEIC'].map(type => (
               <View key={type} style={[styles.typeChip, { backgroundColor: colors.primarySurface }]}>
-                <Icon name="check" size={12} color={colors.primary} />
-                <Text style={[typeScale.caption, { color: colors.primary, marginLeft: 4 }]}>
+                <Icon name="check" size={12} color={colors.primaryOnWhite} />
+                <Text style={[typeScale.caption, { color: colors.primaryOnWhite, marginLeft: 4 }]}>
                   {type}
                 </Text>
               </View>
@@ -303,7 +303,7 @@ export default function StorageScreen() {
 
         {/* Info */}
         <View style={[styles.infoBox, { backgroundColor: colors.surface }, shadow.sm]}>
-          <Icon name="shield" size={16} color={colors.primary} />
+          <Icon name="shield" size={16} color={colors.primaryOnWhite} />
           <View style={{ flex: 1, marginLeft: spacing.sm }}>
             <Text style={[typeScale.bodySmall, { color: colors.textPrimary, fontWeight: '500' }]}>
               Secure Storage

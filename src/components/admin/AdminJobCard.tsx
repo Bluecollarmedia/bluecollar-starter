@@ -44,7 +44,7 @@ export function AdminJobCard() {
                 <Text style={[typeScale.caption, { color: colors.textSecondary }]}>{a.isFullDay ? t('Full Day') : `${a.startTime ?? ''} – ${a.endTime ?? ''}`}</Text>
               </View>
               {confirmed ? (
-                <Text style={[typeScale.labelSmall, { color: colors.primary }]}>{t('Confirmed')}</Text>
+                <Text style={[typeScale.labelSmall, { color: colors.primaryOnWhite }]}>{t('Confirmed')}</Text>
               ) : (
                 <Pressable
                   onPress={() => { haptics.select(); updateRow('assignments', a.id, { confirmationState: 'confirmed' }); }}
@@ -59,7 +59,7 @@ export function AdminJobCard() {
         })}
         <WorkdayCard compact />
         <Pressable onPress={() => { haptics.select(); router.push('/(worker)/(tabs)' as any); }} accessibilityRole="button" style={[styles.open, { borderColor: colors.primary }]}>
-          <Text style={[typeScale.labelLarge, { color: colors.primary }]}>{t('Open my worker view')}</Text>
+          <Text style={[typeScale.labelLarge, { color: colors.primaryOnWhite }]}>{t('Open my worker view')}</Text>
         </Pressable>
       </View>
     </WorkerProvider>
