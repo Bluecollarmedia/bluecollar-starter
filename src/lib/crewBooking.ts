@@ -1,0 +1,17 @@
+import { db, rowsOf } from '@/data/store';
+
+/**
+ * Where a worker is already booked on a day, or null when they are free. A project job or a
+ * maintenance route counts; a cancelled one does not. Used when a whole crew is added at once,
+ * so someone who is already out on another job that day is flagged instead of double-booked.
+ */
+export function bookedOn(personId: string, dateKey: string): string | null {
+  const job = db.assignments.find((a) =>
+    a.personId === personId && a.scheduledDate === dateKey && a.status !== 'cancelled' && a.status !== 'reassigned');
+  if (job) return db.projects.find((p) => p.id === job.projectId)?.name ?? 'another job';
+  const crewRows = rowsOf('maintenance_route_crew');
+  const route = rowsOf('maintenance_routes').find((r) =>
+    r.serviceDate === dateKey && r.status !== 'cancelled' &&
+    (r.leadPersonId === personId || crewRows.some((c) => c.routeId === r.id && c.personId === personId)));
+  return route ? (route.name || 'a maintenance route') : null;
+}

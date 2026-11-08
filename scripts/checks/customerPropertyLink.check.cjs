@@ -1,0 +1,23 @@
+// Customer <-> maintenance property link is read from the one column Maintenance uses, on the customer screens; photo sharing is a clear button.
+const fs = require('node:fs');
+const path = require('node:path');
+const read = (p) => fs.readFileSync(path.join(__dirname, '..', '..', p), 'utf8');
+let bad = 0;
+const check = (n, ok) => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}`); };
+const hook = read('src/hooks/useCustomers.ts');
+const detail = read('app/(owner)/customers/[id].tsx');
+const list = read('app/(owner)/customers/index.tsx');
+const routes = read('app/(owner)/(tabs)/maintenance/routes/[id].tsx');
+const sql = read('supabase/updates/069_maintenance_revoke_customer_link.sql');
+check('1 the customer hook reads maintenance_properties.customer_id (db.maintenance.properties customerId), not a new field', /db\.maintenance\.properties\.filter\(\(p\) => p\.customerId === m\.personId\)/.test(hook));
+check('2 the customer search also matches linked maintenance property names/addresses', /maintenanceProperties\.some/.test(hook));
+check('3 the customer detail lists the linked maintenance properties and opens the property', /Maintenance properties \(/.test(detail) && /maintenance\/properties\/\$\{mp\.id\}/.test(detail));
+check('4 the customer list shows a maintenance property when there is no project', /Maintenance\s*\n?\s*<\/Text>/.test(list) || /· Maintenance/.test(list));
+check('5 revoking clears customer_id unconditionally (no claimed_by requirement)', /if p_revoke then\s+update public\.maintenance_properties set customer_id = null where id = p_property_id;/.test(sql) && !/customer_id = who/.test(sql));
+check('6 the photo control is a labelled pill ("Customer sees" / "Internal") using the existing setStopPhotoShared', /Customer sees/.test(routes) && /sharePill/.test(routes) && /setStopPhotoShared\(ph\.id, !ph\.isCustomerVisible\)/.test(routes));
+check('7 share-all is offered only on a finished stop and uses the same per-photo setting', /stop\.status === 'completed' \? \(/.test(routes) && /Share all photos with the customer/.test(routes));
+const hook2 = read('src/hooks/useCustomers.ts');
+check('8 "Add customer" is decided by the database (add_customer) so existing accounts are reused, with demo mode keeping the local behaviour', /rpc\('add_customer'/.test(hook2) && /if \(!db\.demo\)/.test(hook2));
+check('9 all three places that add a customer wait for the result and show the reason when it is refused', /await addCustomer\(/.test(read('app/(owner)/customers/new.tsx')) && /await addCustomer\(/.test(read('src/components/customers/QuickAddCustomer.tsx')) && /addCustomer\(\{ firstName: first[^]*?\.catch\(/.test(read('src/components/financials/NewProjectForm.tsx')));
+console.log(bad ? `\n${bad} failed` : '\nall passed');
+process.exit(bad ? 1 : 0);

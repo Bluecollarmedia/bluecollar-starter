@@ -1,0 +1,8 @@
+{
+  "name": "audio-trim",
+  "version": "1.0.0",
+  "description": "Cuts an audio file down to a chosen start and end on the phone (AAC .m4a).",
+  "license": "UNLICENSED",
+  "author": "Brighton Lawn + Landscape",
+  "homepage": "https://brightonlawn.com"
+}

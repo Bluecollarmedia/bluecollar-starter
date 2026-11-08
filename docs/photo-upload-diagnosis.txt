@@ -1,0 +1,85 @@
+WHY ONLY SOME PHOTOS WORK — DIAGNOSIS (2026-10-23)
+===================================================
+
+THE SHORT VERSION
+-----------------
+Photos are split into two groups that take two different routes:
+
+  PUBLIC  (one bucket, open web address)  -> WORKS
+  PRIVATE (a second, locked bucket)       -> BROKEN
+
+Everything you said works is public. Everything you said is broken is private.
+The private bucket (named "brighton-private" in Cloudflare) is almost certainly
+deleted, renamed, or the access key lost its permission to it. Your hunch was right.
+
+WHICH PHOTOS ARE PUBLIC vs PRIVATE
+----------------------------------
+PUBLIC (works):
+  - Profile pictures            (avatars/...)
+  - Project photos shared to a customer, and project cover photos (.../projects/...)
+
+PRIVATE (broken):
+  - Maintenance / task photos on a property stop (.../maintenance/...)
+  - Snow photos                 (.../reference/..., .../completion/...)
+  - Worker ID photos            (ids/...)
+
+The app decides "private" purely by the folder name in the key:
+maintenance, reference, completion, ids  ->  private bucket.
+Everything else  ->  public bucket.
+
+WHY THIS CAUSES "ONLY SOME WORK"
+--------------------------------
+When a photo is uploaded, the server (the "media" Edge Function) picks the bucket:
+  - public key  -> writes to the public bucket  -> succeeds
+  - private key -> writes to "brighton-private" -> FAILS if that bucket is gone
+A failed write to a missing bucket comes back as an error like 404 / NoSuchBucket
+or 403 / AccessDenied. So the private photos never land, and you see "didn't work,"
+while the public ones keep working perfectly.
+
+Note: R2 has no "folders" to delete — keys are flat. What matters is the BUCKET.
+So "I deleted a folder" can't break it, but "I deleted / renamed the bucket" or
+"the API token lost access to it" absolutely can.
+
+ABOUT THE "BACKGROUND PHOTO"
+----------------------------
+Project cover photos are PUBLIC (same route as project sharing), so they should
+work on the new build. If a cover photo still fails, that's a separate, smaller
+bug — tell me and I'll look. Don't lump it in with the private ones.
+
+WHAT TO CHECK (only you can see these)
+--------------------------------------
+1. Cloudflare -> R2: is there still a bucket named "brighton-private"?
+   - If it's gone or renamed -> that's the cause.
+   - Check the R2 API token too: does it still have access to that bucket?
+2. Supabase -> Edge Functions -> Secrets: is R2_PRIVATE_BUCKET_NAME set, and does
+   its value match a bucket that actually exists in Cloudflare?
+
+TWO WAYS TO FIX IT
+------------------
+OPTION A — ONE BUCKET FOR EVERYTHING (what you asked for)
+  Stop treating any photo as private. Every upload goes to the one public bucket
+  and is read by its normal address, exactly like profile and project photos.
+  - Pro: simplest, most robust, everything "just works," nothing to maintain.
+  - I do: a code change to the media function + the app so nothing is "private."
+  - You do: remove the R2_PRIVATE_BUCKET_NAME secret and redeploy the function.
+  - Trade-off: worker ID photos (driver's license, etc.) would then live in the
+    public bucket. Their web addresses are random and unguessable, so they can't
+    be browsed to, but they wouldn't be access-controlled the way they are now.
+    For snow and maintenance photos this trade-off is harmless. For ID photos it
+    is a real (if small) downgrade — your call.
+
+OPTION B — KEEP TWO BUCKETS, JUST FIX THE PRIVATE ONE
+  Recreate (or re-point to) the "brighton-private" bucket in Cloudflare and make
+  sure the API token can write to it, then confirm R2_PRIVATE_BUCKET_NAME matches.
+  - Pro: keeps ID / snow / maintenance photos truly private.
+  - Con: it's the fragile setup that just bit you; more moving parts to maintain.
+  - Mostly your action in Cloudflare/Supabase; little or no code change.
+
+MY RECOMMENDATION
+-----------------
+For getting everything working now with the least that can break later: Option A,
+but keep worker ID photos private (that's the one genuinely sensitive case). That
+is the best of both — one simple path for all the normal photos, privacy only where
+it actually matters. I can build it that way if you want.
+
+NOTHING HAS BEEN CHANGED YET. This is diagnosis only, as you asked.

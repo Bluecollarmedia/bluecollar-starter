@@ -1,0 +1,125 @@
+{
+  "expo": {
+    "name": "Brighton Lawn + Landscape",
+    "slug": "brighton-lawn-landscape",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "brighton-lawn",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.brightonlawn.app",
+      "buildNumber": "27",
+      "associatedDomains": [
+        "applinks:brighton-app.netlify.app",
+        "applinks:app.brightonlawn.com",
+        "applinks:brighton-app.netlify.app",
+        "applinks:app.brightonlawn.com"
+      ],
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/icon-foreground.png"
+      },
+      "package": "com.brightonlawn.app",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/images/icon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-widgets",
+        {
+          "groupIdentifier": "group.com.brightonlawn.app",
+          "widgets": [
+            {
+              "name": "BrightonWeather",
+              "displayName": "Brighton Forecast",
+              "description": "Your local weather, and Brighton's storm outlook when one is posted.",
+              "ios": {
+                "supportedFamilies": [
+                  "systemSmall",
+                  "systemMedium",
+                  "accessoryCircular",
+                  "accessoryRectangular",
+                  "accessoryInline"
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-dev-client",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Brighton Lawn to access your photos and videos for profile pictures, job photos, task instructions, and the projects, reels and stories you share on Our Work.",
+          "cameraPermission": "Allow Brighton Lawn to use the camera for profile pictures, job photos, task instructions and videos.",
+          "microphonePermission": "Allow Brighton Lawn to record sound when you film a video for a task or for Our Work."
+        }
+      ],
+      "expo-video",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/logo-full.png",
+          "imageWidth": 240
+        }
+      ],
+      "@react-native-community/datetimepicker",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Brighton Lawn uses your location to check you in when you arrive at a job site."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#7CB342"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c9628d1e-80c3-4a58-a2bd-f008542a71d2"
+      }
+    },
+    "owner": "abbacohen",
+    "updates": {
+      "url": "https://u.expo.dev/c9628d1e-80c3-4a58-a2bd-f008542a71d2"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}

@@ -1,0 +1,141 @@
+SNOW PLATFORM AUDIT — Oct 21, 2026
+Read-only. NOTHING was changed. Audited on a local scratch branch that merges all
+your open snow work (#152 invite links, #153 storm setup, #154 properties), so this
+is the app as it will look once those merge. The scratch branch is never pushed.
+
+Health of the merged state: every check script and every snow database test passes
+(only the mediaUpload check fails, and it is already broken on master, unrelated to snow).
+
+════════════════════════════════════════════════
+A. REAL BUGS (found by the audit, confirmed in code)
+════════════════════════════════════════════════
+1. An ADMIN without the "invites" power cannot open Snow Team at all.
+   The database helper the snow team functions use was changed (update 66) to require
+   the invites permission, so list/change/remove snow access and the Team Access list
+   all answer "Only the owner can do this" for such an admin. Owner unaffected.
+2. "Add Worker" does nothing inside Snow Mode.
+   The button opens an owner-mode screen; the app's router immediately bounces you
+   back to the snow dashboard. Works from landscaping mode only.
+3. Tapping a push notification while in Snow Mode does nothing.
+   The notification router only knows landscaping screens, so owner stop alerts
+   can't be opened from the snow shell.
+4. "Save as template" saves templates that NOTHING can use.
+   The "start a route from a template" side was removed at some point; saving remains.
+   Half a feature. Either remove the button or restore "from template".
+5. Deleting a company misses Snow-only workers.
+   Their logins survive (they land on "Finish setting up") and their files are not
+   queued for cleanup. (SQL fix, for the ledger.)
+6. A silent trap around sign-in for Snow-only workers.
+   Sign-in still calls an old function that reads the dead snow-requests table and
+   swallows any error. If we ever drop that table first, Snow-only workers would be
+   silently treated as having no company. Fix: switch sign-in to the newer function
+   first, then the old one can go.
+7. A draft storm can end up with NO route, with no message.
+   The storm screen auto-creates the route and ignores most failures; after that it
+   never retries. Also: cancelling a storm's only route quietly creates a new blank
+   one next time the storm opens.
+8. The Snow Properties list goes stale.
+   After adding a property and turning services on, going back still shows
+   "No services on yet" until a manual refresh.
+9. "Customer messages" switches: a mixed state shows as Off, and a property added
+   later gets the default (finished=on, arrives=off) instead of your choice. Honest
+   fix is one company-level setting; today it writes per property.
+
+════════════════════════════════════════════════
+B. DEAD CODE (safe to delete; nothing references it)
+════════════════════════════════════════════════
+- 1 whole file: SnowPlaceholder.tsx.
+- The leftover halves of removed features: route templates (load/apply), renameStorm,
+  per-customer notification prefs (3 functions), removeContact, skip-list helpers,
+  the old "add from customer" helpers (now check-only), setStormServices and six
+  service-toggle helpers, historyEvents, crew label helpers.
+- The code/request era remains in useSnowOnboarding: demo signup code and demo
+  requests, SnowAccessRequest type, mapRequest, useMySnowStatus, an unreachable
+  setServices, and error wording about "requests no longer pending".
+- ~25 unused imports and ~20 unused style blocks across the storm, property,
+  activity and notification screens (mostly from the redesigns).
+- "Result" type declared in 6 snow data files, imported from none.
+- A dozen types exported but only used in their own file.
+- Admin-powers hint still says "Team codes, Snow codes, approving join requests".
+
+════════════════════════════════════════════════
+C. DUPLICATES (same thing built twice or more)
+════════════════════════════════════════════════
+- Service labels exist in FIVE places with two different spellings:
+  "Shoveling / Sidewalks" in three, "Shoveling" in two. The service icon also
+  disagrees between two screens, and the SnowService type is declared three times.
+  -> One shared file for the service list, labels and icons.
+- Address normalizing has THREE different rules (app snow helper, app property
+  helper, database). Two spellings of one address can slip past the app checks
+  that the database would catch. -> Port the database rule once into lib/address.
+- Snow services for a worker can be edited from three screens calling different
+  database functions (Snow Team, worker page Works On card, Team Access).
+  -> Keep Snow Team as the editor; the others link to it.
+- Two near-identical customer pickers (Add Snow Property vs the snow property
+  screen). -> One shared CustomerPicker.
+- Snow Team and Properties are each reachable by 2–3 different routes; the Snow
+  "More" tab and Snow Settings repeat eight of the same items, including a
+  re-implemented legal section.
+- The date format "Mon D, h:mm" is hand-written in 4 places; confirm/alert helpers
+  copied in 4 places; identical status-pill maps in 2; identical fromDb/camel row
+  converters in 4 data files; the snow_settings row is read/written in 2 files.
+- Two delete-storm functions; the storm screen still calls the old draft-only one.
+
+════════════════════════════════════════════════
+D. WORDING THAT DESCRIBES REMOVED FLOWS
+════════════════════════════════════════════════
+- New Storm help text still explains one-route-per-service ("plowing routes and
+  shoveling routes"); storms now create one combined route.
+- Storm notes are saved but shown nowhere.
+- Several header comments describe the removed templates/services/history sections,
+  the removed customer notification prefs, and "lead only" route rules that now
+  include crew. Worker empty-state says routes appear when you're "made a route
+  lead" — crew see routes too. A worker error says "Pull to refresh" on a screen
+  with no pull-to-refresh.
+
+════════════════════════════════════════════════
+E. PERFORMANCE (clear cases only)
+════════════════════════════════════════════════
+- The storm screen subscribes to 4 realtime tables and re-runs both of its queries
+  on every change with no debounce — while the embedded route editor does NOT
+  refresh, so the stop list can be stale while the summary is live.
+- Every action in the route editor reloads 5 queries; removing a multi-service stop
+  deletes one visit at a time.
+- Each "Customer messages" toggle writes one database call per property, serially.
+- The worker tabs poll "my routes" twice in parallel (two mounts of the same hook).
+- The route editor file is 669 lines and should be split.
+
+════════════════════════════════════════════════
+F. VS JOBBER (what's missing, what's better)
+════════════════════════════════════════════════
+Worth building (ranked by value for one company):
+1. Push the crew lead a notification when a storm is DISPATCHED (and when their
+   route changes). Today they only find out by opening the app — at 3am that's the
+   weak link. Small job; the notification plumbing already exists.
+2. Money: completed snow visits never reach invoices. No price on a property's
+   snow services, and you retype storm work into landscaping invoices by hand.
+   A per-property price + "End Storm -> draft invoice" closes the loop. Bigger job,
+   but it's the biggest gap; everything it needs already exists.
+3. "Optimize stop order" button: properties already store map coordinates, nothing
+   uses them for ordering. A simple nearest-first sort into the existing reorder
+   would do it. Medium job.
+Not worth it for your size (my take): season-contract billing engines, customer
+ETAs ("you're 3rd in line"), live GPS crew maps, weather-triggered auto-storms.
+What this app does BETTER than Jobber for snow (don't break these): storms as a
+real object with a draft->dispatched->ended lifecycle; photo proof with an owner
+review gate before customers see anything; the skip-request approval flow;
+versioned per-property instructions; everything enforced server-side and safe to
+double-tap on a bad connection.
+
+════════════════════════════════════════════════
+G. WHAT I'D DO WITH THIS (when you say go)
+════════════════════════════════════════════════
+Batch 1 — bug fixes (app): A2 Add Worker in Snow Mode, A3 push routing, A4 remove
+  "Save as template", A7 route auto-create errors, A8 list refresh, D wording.
+Batch 2 — cleanup (app): everything in B, the shared service file, one customer
+  picker, shared date/alert helpers, de-duplicated More vs Settings.
+Batch 3 — SQL 080 (goes on the ledger, runs when you ask, with the others):
+  A1 admin permission fix, A5 company-delete fix, A6 sign-in switch, revoke the
+  handful of leftover functions, then drop the two dead code-era tables.
+Batch 4 — new features (your call which): dispatch push, storm->invoice, optimize
+  stop order.
