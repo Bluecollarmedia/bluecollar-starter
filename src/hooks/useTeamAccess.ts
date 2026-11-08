@@ -4,7 +4,7 @@ import { w } from '@/config/brand';
 
 /**
  * The owner's Team access screen: who is on the team, who is an admin, and who is deactivated.
- * Everything is decided by the database (update 66); this hook only shows it and asks for changes. A change is shown as done
+ * Everything is decided by the database (supabase/setup.sql); this hook only shows it and asks for changes. A change is shown as done
  * only after the database says so.
  */
 
@@ -16,8 +16,8 @@ export interface TeamPerson {
   email: string;
   avatarUrl?: string;
   role?: 'owner' | 'admin' | 'worker' | 'customer';
-  /** Has team access (the database column is still called `landscaping`). */
-  landscaping: boolean;
+  /** Has team access: an active owner, admin or worker (has_access from team_access_overview). */
+  hasAccess: boolean;
   isStaff: boolean;
   pendingTeam: boolean;
   deactivatedAt?: string;
@@ -29,17 +29,17 @@ export interface TeamPerson {
 interface Row {
   person_id: string; first_name: string | null; last_name: string | null; email: string | null; avatar_url: string | null;
   role: TeamPerson['role'] | null; member_status: string | null;
-  landscaping: boolean | null; is_staff: boolean | null;
+  has_access: boolean | null; is_staff: boolean | null;
   pending_team_request: boolean; deactivated_at: string | null; deactivated_by_name: string | null; is_me: boolean;
 }
 
 function fromRow(r: Row): TeamPerson {
-  const landscaping = !!r.landscaping;
+  const hasAccess = !!r.has_access;
   // 'waiting' = invited: added with a name and phone, link not opened yet.
-  const state: TeamState = landscaping ? 'active' : r.member_status === 'invited' || r.pending_team_request ? 'waiting' : 'deactivated';
+  const state: TeamState = hasAccess ? 'active' : r.member_status === 'invited' || r.pending_team_request ? 'waiting' : 'deactivated';
   return {
     personId: r.person_id, firstName: r.first_name ?? '', lastName: r.last_name ?? '', email: r.email ?? '', avatarUrl: r.avatar_url ?? undefined,
-    role: r.role ?? undefined, landscaping, isStaff: !!r.is_staff,
+    role: r.role ?? undefined, hasAccess, isStaff: !!r.is_staff,
     pendingTeam: r.pending_team_request, deactivatedAt: r.deactivated_at ?? undefined,
     deactivatedByName: r.deactivated_by_name ?? undefined, isMe: !!r.is_me, state,
   };
@@ -84,7 +84,7 @@ export function useTeamAccess() {
   return {
     people, loading, error, myRole, reload: load, check,
     deactivate: (personId: string, acknowledge: boolean) => act('deactivate_member', { p_person_id: personId, p_acknowledge: acknowledge }),
-    reactivate: (personId: string) => act('reactivate_member', { p_person_id: personId, p_landscaping: true }),
+    reactivate: (personId: string) => act('reactivate_member', { p_person_id: personId }),
     setRole: (personId: string, role: 'admin' | 'worker') => act('set_member_role', { p_person_id: personId, p_role: role }),
   };
 }
@@ -109,8 +109,6 @@ export function useAdminPermissions() {
   const save = useCallback(async (next: AdminPermissions) => {
     const { error: e } = await rpc('set_admin_permissions', {
       p_team: next.team, p_invites: next.invites, p_time_corrections: next.time_corrections, p_pay_rates: next.pay_rates,
-      // The current database function (SQL 066) still has this argument; drop this line when setup.sql drops it.
-      p_snow_access: false,
     });
     if (e) return e.message;
     setPerms(next);

@@ -1,12 +1,12 @@
 // Messages from the owner to their customers. Pure helpers: who a message can go to, checks before sending, and the sentences
 // the owner sees (written with the default words; the screen shows them through w() for the settings words). The database (supabase/updates/055) does the real work of finding the customers.
 
-/** 'customers_landscaping' is the database's name for "customers with an active job" (supabase/updates/055). */
-export type CustomerAudience = 'customers_all' | 'customers_landscaping';
+/** 'customers_active' = customers with an active (or on-hold) job. Must match the database (supabase/setup.sql, _customer_audience). */
+export type CustomerAudience = 'customers_all' | 'customers_active';
 
 export const AUDIENCES: { key: CustomerAudience; label: string; help: string }[] = [
   { key: 'customers_all', label: 'All customers', help: 'Everyone with an account.' },
-  { key: 'customers_landscaping', label: 'Active job', help: 'Customers with an active job.' },
+  { key: 'customers_active', label: 'Active job', help: 'Customers with an active job.' },
 ];
 
 export const TITLE_MAX = 120;

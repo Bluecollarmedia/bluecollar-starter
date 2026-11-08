@@ -50,6 +50,7 @@
     "react-native-webview": "13.16.1"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.15",
     "@types/react": "~19.2.2",
     "sf-symbols-typescript": "^2.2.0",
     "typescript": "~6.0.3"
@@ -58,7 +59,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test:db": "node supabase/tests/run-setup-tests.mjs"
   },
   "private": true
 }
