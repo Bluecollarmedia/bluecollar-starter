@@ -9,18 +9,15 @@ export const ES_CUSTOMER: Record<string, string> = {
   'Active Projects': 'Proyectos activos',
   'Completed Projects': 'Proyectos completados',
   'Nothing here yet': 'Aún no hay nada aquí',
-  'Your landscaping projects and maintenance visits appear here once your landscaper links them to your account.': 'Tus proyectos de jardinería y visitas de mantenimiento aparecerán aquí cuando tu equipo de jardinería los vincule a tu cuenta.',
-  'Visits and photos': 'Visitas y fotos',
+  "Tell us what you need and we'll reach out.": 'Cuéntanos qué necesitas y nos comunicaremos contigo.',
+  'Your projects appear here once your contractor links them to your account.': 'Tus proyectos aparecerán aquí cuando tu contratista los vincule a tu cuenta.',
   '{headline}. {detail} Open': '{headline}. {detail} Abrir',
-  'Last service {when}': 'Último servicio: {when}',
   '{date} at {time}': '{date} a las {time}',
-  'No service yet this season': 'Aún no hay servicio esta temporada',
   'Last update {date}': 'Última actualización: {date}',
   '{percent}% complete': '{percent}% completado',
   '{type}: {name}. {address}. {status}': '{type}: {name}. {address}. {status}',
   'Completed project: {name}. {address}. Open': 'Proyecto completado: {name}. {address}. Abrir',
   'Completed {date}': 'Completado el {date}',
-  'Open': 'Abrir',
   'Project': 'Proyecto',
   'On hold': 'En pausa',
   'In progress': 'En curso',
@@ -30,7 +27,6 @@ export const ES_CUSTOMER: Record<string, string> = {
   // ── Project screen ──
   'Overview': 'Resumen',
   'Timeline': 'Cronología',
-  'Photos': 'Fotos',
   'Requests': 'Solicitudes',
   'Quote': 'Cotización',
   'In Progress': 'En curso',
@@ -170,7 +166,6 @@ export const ES_CUSTOMER: Record<string, string> = {
 
   // ── Account ──
   'Your Project Team': 'Tu equipo del proyecto',
-  'Call': 'Llamar',
 
   // ── Customer home ──
   'Crew on site': 'Equipo en la propiedad',
@@ -184,15 +179,6 @@ export const ES_CUSTOMER: Record<string, string> = {
   'photos': 'fotos',
   "Couldn't save": 'No se pudo guardar',
   'Not connected.': 'No hay conexión.',
-
-  // ── Maintenance updates (customer) ──
-  'Maintenance updates': 'Novedades de mantenimiento',
-  'YOUR PROPERTIES': 'TUS PROPIEDADES',
-  'No maintenance visits yet': 'Aún no hay visitas de mantenimiento',
-  "After each visit to your property you'll see it here, with photos when we've shared them.": 'Después de cada visita a tu propiedad la verás aquí, con fotos cuando las hayamos compartido.',
-  'Maintenance visit': 'Visita de mantenimiento',
-  'Photo from your visit': 'Foto de tu visita',
-  "Maintenance updates need the live database, which isn't connected in this version of the app.": 'Las novedades de mantenimiento necesitan la base de datos en vivo, que no está conectada en esta versión de la app.',
 
   // ── Report sheet (messages and shared photos) ──
   'Inappropriate or offensive': 'Inapropiado u ofensivo',
@@ -224,24 +210,8 @@ export const ES_CUSTOMER: Record<string, string> = {
   'All done': 'Todo listo',
   'Photos today': 'Fotos de hoy',
   'Latest photos': 'Últimas fotos',
-  'Visits this season': 'Visitas esta temporada',
-  'Visits this year': 'Visitas este año',
-  'Last visit': 'Última visita',
-  'Next visit': 'Próxima visita',
-  'No visit scheduled yet': 'Aún no hay una visita programada',
-  'Your next visit will show here once it is scheduled.': 'Tu próxima visita aparecerá aquí cuando esté programada.',
-  'Photo: {task}': 'Foto: {task}',
-  'No photos were shared for this visit.': 'No se compartieron fotos de esta visita.',
-  'See all visits': 'Ver todas las visitas',
   'Open project': 'Abrir proyecto',
-  'Arrived {a} · Left {b}': 'Llegó {a} · Salió {b}',
-  'Finished {b}': 'Terminó {b}',
-  'Lawn': 'Césped',
   'visits': 'visitas',
   'Visits': 'Visitas',
-  'No visits in this season': 'No hay visitas en esta temporada',
-  'When we visit, it will be listed here with the time and photos.': 'Cuando visitemos, aparecerá aquí con la hora y las fotos.',
-  '{count} photos': '{count} fotos',
   '1 photo': '1 foto',
-  'See the projects and reels we have done': 'Mira los proyectos y reels que hemos hecho',
 };

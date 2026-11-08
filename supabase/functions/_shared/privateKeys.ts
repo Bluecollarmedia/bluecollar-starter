@@ -4,9 +4,8 @@
  *
  *   ids/{personId}/...                 ID photos — the ONLY private files
  *
- * Maintenance photos used to be private too, but they are just pictures of properties and work, so
- * they are public now (the owner still chooses whether a maintenance photo is shared with the customer). Only worker ID photos need a
- * locked bucket. The app has the same rule in src/lib/privateMedia.ts (a check keeps the two identical).
+ * Work photos are just pictures of properties and work, so they are public (the owner still chooses whether a photo is shared with the
+ * customer). Only worker ID photos need a locked bucket. The media function has the same rule (a check keeps the two identical).
  */
 const PRIVATE_FOLDERS = new Set<string>([]);
 

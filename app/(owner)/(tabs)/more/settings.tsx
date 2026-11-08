@@ -169,7 +169,7 @@ export default function SettingsScreen() {
           </SettingsGroup>
         ) : null}
 
-        <SettingsGroup title="Crews" footer="Build a crew once, then add the whole crew to a job or route with one tap. A worker can be in more than one crew.">
+        <SettingsGroup title="Crews" footer="Build a crew once, then add the whole crew to a job with one tap. A worker can be in more than one crew.">
           <SettingsRow icon="users" tint={tileColors.green} title="Crews" subtitle="Make and edit your crews" onPress={() => router.push('/(owner)/crews' as any)} />
         </SettingsGroup>
 

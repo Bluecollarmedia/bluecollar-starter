@@ -1,6 +1,6 @@
 // Run: node scripts/checks/uploadProgress.check.cjs
 // While a photo or video is being sent, its tile shows a real progress bar with a percent (every screen that queues footage shares the
-// one overlay: tasks, project photos, maintenance stops). The percent comes from the phone's own upload, end to end.
+// one overlay: tasks and project photos). The percent comes from the phone's own upload, end to end.
 const fs = require('fs');
 const path = require('path');
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');

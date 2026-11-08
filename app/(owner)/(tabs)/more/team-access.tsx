@@ -61,7 +61,7 @@ export default function TeamAccessScreen() {
     const p = sheet.person;
     let e = '';
     if (sheet.kind === 'deactivate') e = await T.deactivate(p.personId, ack || sheet.warnings.length === 0);
-    else if (sheet.kind === 'reactivate') e = await T.reactivate(p.personId, p.workerType ?? 'landscaping');
+    else if (sheet.kind === 'reactivate') e = await T.reactivate(p.personId);
     else if (sheet.kind === 'role') e = await T.setRole(p.personId, sheet.to);
     setBusy(false);
     if (e) { setErr(e); return; }
@@ -95,7 +95,7 @@ export default function TeamAccessScreen() {
             <Text style={[typeScale.bodyLarge, { color: colors.textPrimary, fontWeight: '600' }]} numberOfLines={1}>{name(p)}{p.isMe ? ' (you)' : ''}</Text>
             <View style={styles.badges}>
               {p.role ? <StatusBadge label={ROLE_LABEL[p.role] ?? p.role} status="info" /> : null}
-              {p.landscaping ? <StatusBadge label={p.workerType === 'maintenance' ? 'Maintenance' : 'Landscaping'} status="success" /> : null}
+              {p.state === 'active' ? <StatusBadge label="Active" status="success" /> : null}
               {p.state === 'waiting' ? <StatusBadge label="Invited" status="info" /> : null}
               {p.state === 'deactivated' ? <StatusBadge label="Deactivated" status="error" /> : null}
             </View>

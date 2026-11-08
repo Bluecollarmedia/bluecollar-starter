@@ -1,7 +1,6 @@
 /**
- * "Report a problem" form for a worker standing at a property: pick what kind
- * of problem, add photos, optionally type a note, send. Reached from a
- * maintenance stop and from a regular job.
+ * "Report a problem" form for a worker standing at a job: pick what kind
+ * of problem, add photos, optionally type a note, send. Reached from a job.
  */
 
 import React, { useState } from 'react';
@@ -23,10 +22,8 @@ export function ReportIssueScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ maintenancePropertyId?: string; projectId?: string }>();
-  const where: IssueWhere | null = params.maintenancePropertyId
-    ? { maintenancePropertyId: params.maintenancePropertyId }
-    : params.projectId ? { projectId: params.projectId } : null;
+  const params = useLocalSearchParams<{ projectId?: string }>();
+  const where: IssueWhere | null = params.projectId ? { projectId: params.projectId } : null;
 
   const [type, setType] = useState<IssueType | null>(null);
   const [notes, setNotes] = useState('');

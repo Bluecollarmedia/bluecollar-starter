@@ -1,25 +1,12 @@
-// Pure helpers for the customer's property-first home: one property at a time, and inside it one tab per kind of service (Lawn,
-// Project) so the two never share a list. Which tab opens first, the "visits this year" numbers, the history rows and the "next visit"
-// words. No network, no screens; every value comes from real data passed in.
+// Pure helpers for the customer's property-first home: the customer's projects grouped by property (street address), one property at a
+// time, with finished projects in "Past work". No network, no screens; every value comes from real data passed in.
 import type { HomeItem } from './customerHome';
-
-/** The screens pass in their translator (t from useT) so the sentences built here can be shown in Spanish. Without one, English comes back as written. */
-export type Translate = (text: string, vars?: Record<string, string | number>) => string;
-const plain: Translate = (text, vars) => (vars ? text.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m)) : text);
-
-export type Service = 'lawn' | 'project';
-export const SERVICE_ORDER: Service[] = ['lawn', 'project'];
-export const SERVICE_LABEL: Record<Service, string> = { lawn: 'Lawn', project: 'Project' };
-
-const serviceOf = (k: HomeItem['kind']): Service => (k === 'maintenance' ? 'lawn' : k);
 
 export interface PropertyGroup {
   key: string;
   /** What the chip and the big title say. */
   name: string;
   address: string;
-  /** Which tabs exist, in a fixed order. One entry means no switch is drawn. */
-  services: Service[];
   items: HomeItem[];
 }
 
@@ -35,12 +22,10 @@ export function groupProperties(items: HomeItem[]): PropertyGroup[] {
     byKey.set(k, [...(byKey.get(k) ?? []), i]);
   }
   return [...byKey.entries()].map(([key, list]) => {
-    const services = SERVICE_ORDER.filter((s) => list.some((i) => serviceOf(i.kind) === s));
-    const named = list.find((i) => i.kind !== 'project') ?? list[0];
     const street = (list.find((i) => i.address)?.address ?? '').split(',')[0];
-    // A lawn property already has the name its owner gave it; with only projects, one project names it and several fall back to the street.
-    const name = named.kind !== 'project' || list.length === 1 ? named.name : street || named.name;
-    return { key, name, address: list.find((i) => i.address)?.address ?? '', services, items: list };
+    // One project names the property; several fall back to the street.
+    const name = list.length === 1 ? list[0].name : street || list[0].name;
+    return { key, name, address: list.find((i) => i.address)?.address ?? '', items: list };
   });
 }
 
@@ -50,75 +35,4 @@ export const pastWork = (items: HomeItem[]): HomeItem[] =>
 /** Properties by name. */
 export function sortGroups(groups: PropertyGroup[]): PropertyGroup[] {
   return [...groups].sort((a, b) => a.name.localeCompare(b.name));
-}
-
-/** The tab a property opens on: the recurring Lawn service, then the Project. */
-export function defaultService(group: PropertyGroup): Service {
-  for (const s of SERVICE_ORDER) if (group.services.includes(s)) return s;
-  return 'project';
-}
-
-// ── visits and seasons ────────────────────────────────────────────────────────
-
-export interface Visit { id: string; arrivedAt?: string; completedAt: string; photos: number; title: string }
-
-/** A season is the calendar year. */
-export function seasonKey(iso: string): string {
-  return String(new Date(iso).getFullYear());
-}
-export const seasonLabel = (key: string): string => key;
-
-/** The seasons that have visits, newest first, always including the current one so an empty season is still a choice. */
-export function seasonsOf(visits: Visit[], now = new Date()): string[] {
-  const keys = new Set(visits.map((v) => seasonKey(v.completedAt)));
-  keys.add(seasonKey(now.toISOString()));
-  return [...keys].sort((a, b) => b.localeCompare(a));
-}
-
-export const visitsIn = (visits: Visit[], key: string): Visit[] =>
-  visits.filter((v) => seasonKey(v.completedAt) === key).sort((a, b) => b.completedAt.localeCompare(a.completedAt));
-
-export interface VisitStats { visits: number; lastAt?: string; photos: number }
-export function visitStats(visits: Visit[], key: string): VisitStats {
-  const list = visitsIn(visits, key);
-  return { visits: list.length, lastAt: list[0]?.completedAt, photos: list.reduce((n, v) => n + v.photos, 0) };
-}
-
-const sameName = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
-const keyIds = (group: PropertyGroup, kind: 'maintenance') => group.items.filter((i) => i.kind === kind).map((i) => i.key.slice(kind.length + 1));
-const keyNames = (group: PropertyGroup, kind: 'maintenance') => group.items.filter((i) => i.kind === kind).map((i) => i.name);
-
-export interface LawnUpdateLike { stopId: string; propertyId?: string; propertyName: string; arrivedAt?: string; completedAt: string; services?: string; photos: unknown[] }
-
-/** The lawn visits that belong to this property (by property id, or by the same name on an older database). */
-export function lawnVisits(updates: LawnUpdateLike[], group: PropertyGroup): Visit[] {
-  const ids = keyIds(group, 'maintenance');
-  const names = keyNames(group, 'maintenance');
-  return updates
-    .filter((u) => (u.propertyId ? ids.includes(u.propertyId) : names.some((n) => sameName(n, u.propertyName))))
-    .map((u) => ({ id: u.stopId, arrivedAt: u.arrivedAt, completedAt: u.completedAt, photos: u.photos.length, title: u.services || 'Lawn visit' }));
-}
-
-const timeOf = (iso: string) => new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-
-/** "Arrived 6:05 AM · Left 6:40 AM", or just "Finished 6:40 AM" when the arrival was not recorded or is not the same day. */
-export function visitTimes(v: Pick<Visit, 'arrivedAt' | 'completedAt'>, tx: Translate = plain): string {
-  const sameDay = v.arrivedAt && new Date(v.arrivedAt).toDateString() === new Date(v.completedAt).toDateString() && v.arrivedAt < v.completedAt;
-  return sameDay
-    ? tx('Arrived {a} · Left {b}', { a: timeOf(v.arrivedAt!), b: timeOf(v.completedAt) })
-    : tx('Finished {b}', { b: timeOf(v.completedAt) });
-}
-
-/** "Oct 28". */
-export const shortDate = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-
-/** "Today", "Tomorrow", or "Thursday, Oct 30" for a date saved as "2026-10-30" (a calendar day, read in the phone's own time zone). */
-export function nextVisitLabel(day: string, now = new Date(), tx: Translate = plain): string {
-  const [y, m, d] = day.split('-').map(Number);
-  const when = new Date(y, m - 1, d);
-  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const diff = Math.round((when.getTime() - start.getTime()) / 86_400_000);
-  if (diff === 0) return tx('Today');
-  if (diff === 1) return tx('Tomorrow');
-  return when.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 }

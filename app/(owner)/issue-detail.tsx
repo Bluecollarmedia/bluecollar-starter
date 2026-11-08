@@ -45,8 +45,7 @@ export default function IssueDetailScreen() {
   }
 
   function openPlace() {
-    if (issue!.maintenancePropertyId) router.push(`/(owner)/maintenance/properties/${issue!.maintenancePropertyId}` as any);
-    else if (issue!.projectId) router.push(`/(owner)/projects/${issue!.projectId}` as any);
+    if (issue!.projectId) router.push(`/(owner)/projects/${issue!.projectId}` as any);
   }
 
   return (

@@ -42,7 +42,7 @@ export interface Workday {
   endBreak: () => Promise<Result<MyDay>>;
   /** Tell the owner when you really stopped a day you never clocked out of (null = not sure). Saved only; no hours change. */
   claimStale: (workdayId: string, stoppedAtIso: string | null, note?: string) => Promise<Result<MyDay>>;
-  startVisit: (source: 'maintenance_stop' | 'assignment', refId: string, gps?: Gps) => Promise<Result<MyDay>>;
+  startVisit: (source: 'assignment', refId: string, gps?: Gps) => Promise<Result<MyDay>>;
   completeVisit: (visitId: string, note?: string, gps?: Gps) => Promise<Result<MyDay>>;
 }
 
@@ -84,7 +84,7 @@ export function useMyWorkday(enabled: boolean): Workday {
     return () => { clearInterval(poll); sub.remove(); };
   }, [enabled, refresh]);
 
-  // Something else (a maintenance stop screen, for example) started or finished a property: pick the new state up now.
+  // Something else (a job screen, for example) started or finished a property: pick the new state up now.
   useEffect(() => (enabled ? onTimeChanged(() => { refresh(); }) : undefined), [enabled, refresh]);
 
   const act = useCallback(async <T,>(run: () => Promise<Result<T>>): Promise<Result<T>> => {
@@ -133,7 +133,7 @@ export function useMyWorkday(enabled: boolean): Workday {
   const startBreak = useCallback(() => act(() => apiStartBreak().then(doApply)), [act, doApply]);
   const endBreak = useCallback(() => act(() => apiEndBreak().then(doApply)), [act, doApply]);
   const claimStale = useCallback((workdayId: string, stoppedAtIso: string | null, note?: string) => act(() => apiClaimStale(workdayId, stoppedAtIso, note).then(doApply)), [act, doApply]);
-  const startVisit = useCallback((source: 'maintenance_stop' | 'assignment', refId: string, gps?: Gps) => act(() => apiStartVisit(source, refId, gps).then(doApply)), [act, doApply]);
+  const startVisit = useCallback((source: 'assignment', refId: string, gps?: Gps) => act(() => apiStartVisit(source, refId, gps).then(doApply)), [act, doApply]);
   const completeVisit = useCallback((visitId: string, note?: string, gps?: Gps) => act(() => apiCompleteVisit(visitId, note, gps).then(doApply)), [act, doApply]);
   const loadTrucks = useCallback(() => loadTruckOptions(todayKey()), []);
 

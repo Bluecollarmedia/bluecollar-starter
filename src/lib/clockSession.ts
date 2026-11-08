@@ -1,10 +1,10 @@
-// One definition of what state a clock session is in, for EVERY clock in the app (the workday clock for landscaping and maintenance),
+// One definition of what state a clock session is in, for EVERY clock in the app (the workday clock),
 // so no screen can disagree with another about "am I clocked in?". Pure functions; no database, no screens.
 //
 //   current  = open, and recent enough that it can be today's work.
 //   closed   = has an end time.
 //   stale    = open for a very long time: almost certainly a clock-out that was forgotten. It never counts as "clocked in", never gates
-//              today's Clock In or route, never feeds today's timer. The database flags it (needs review) and counts it as zero hours
+//              today's Clock In, never feeds today's timer. The database flags it (needs review) and counts it as zero hours
 //              until a person decides the real end time; the original clock-in is never changed and no end time is ever invented.
 //   review   = the database already flagged it (needs review). Same treatment as stale, plus the worker's answer is shown.
 import { getLanguage, tr } from '@/i18n';

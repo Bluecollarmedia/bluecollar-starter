@@ -1,13 +1,10 @@
-/** A named group of workers, e.g. "Maintenance Crew". A worker is in at most one. */
+/** A named group of workers, e.g. "Paving Crew". A worker is in at most one. */
 export interface Crew {
   id: string;
   companyId: string;
   name: string;
   /** Hex color for the crew's label. */
   color: string;
-  /** The company's maintenance crew (at most one). Its maintenance-type
-   * workers are who "Assign Maintenance Crew" puts on a route. */
-  isMaintenance?: boolean;
   createdAt: string;
   updatedAt: string;
   /** People in this crew (derived from crew_members). */

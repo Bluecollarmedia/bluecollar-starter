@@ -47,8 +47,7 @@ export interface Assignment {
 
 export type RepeatFrequency = 'weekly' | 'biweekly' | 'monthly' | 'custom';
 
-/** A repeating schedule for one worker on one job (e.g. the maintenance crew
- * every 2 weeks). Its days are filled in as normal assignments a few weeks
+/** A repeating schedule for one worker on one job (e.g. every 2 weeks). Its days are filled in as normal assignments a few weeks
  * ahead, so workers confirm and check in exactly as usual. */
 export interface ScheduleSeries {
   id: string;

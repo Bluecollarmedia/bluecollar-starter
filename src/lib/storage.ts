@@ -200,8 +200,6 @@ export async function getStorageInfo(): Promise<StorageInfo> {
   let totalBytes = 0;
   let photoCount = 0;
   let avatarCount = 0;
-  let workCount = 0;
-  let workBytes = 0;
   const results = await Promise.all(folders.map((f) => bucket.list(f, { limit: 1000 })));
   results.forEach(({ data }, i) => {
     for (const obj of data ?? []) {
@@ -222,20 +220,16 @@ export async function getStorageInfo(): Promise<StorageInfo> {
       totalBytes += data.bytes;
       photoCount += data.photos ?? 0;
       avatarCount += data.avatars ?? 0;
-      workCount += data.work ?? 0;
-      workBytes += data.workBytes ?? 0;
     }
   }
   const maxStorageBytes = companyStorageLimitBytes();
   return {
     usage: {
       totalBytes,
-      fileCount: photoCount + avatarCount + workCount,
+      fileCount: photoCount + avatarCount,
       photoCount,
       avatarCount,
       documentCount: 0,
-      workCount,
-      workBytes,
       percentUsed: percentOf(totalBytes, maxStorageBytes),
     },
     settings: {

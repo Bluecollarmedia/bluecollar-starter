@@ -7,7 +7,6 @@ let bad = 0;
 const check = (n, ok) => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}`); };
 const s75 = read('supabase/updates/075_properties_and_integrity.sql');
 const s76 = read('supabase/updates/076_properties_backfill.sql');
-const edit = read('app/(owner)/maintenance-property-edit.tsx');
 const email = read('supabase/functions/send-document-email/index.ts');
 const strip = (s) => s.replace(/--.*$/gm, '');
 // Statements that run when the file is run (function bodies between $$ ... $$ only run later, when the function is called).
@@ -22,7 +21,6 @@ check('4 the backfill never updates address, name or customer columns (it only s
 check('5 the guards run only for changes made from the app (the database functions are exempt), and only for new or changed links', (s75.match(/current_user not in \('authenticated', 'anon'\)/g) || []).length >= 4 && /is distinct from old\.customer_id/.test(s75));
 check('6 a deactivated customer is blocked in all four customer-access functions', (s75.match(/_customer_in_good_standing\(/g) || []).length >= 5);
 check('7 a project-code claim merges the owner-created record', /_merge_placeholder_customer\(pr\.company_id, pr\.old_customer, pid\)/.test(s75));
-check('8 choosing a different customer in the maintenance form clears the old project link', /if \(id !== customerId\) \{ setSourceProjectId\(undefined\); setLinkedPropertyId\(undefined\); \}/.test(edit));
 check('9 the document email goes to the customer the document was made for', /doc\.customer_id \?\? project\?\.customer_id/.test(email) && /project_id, company_id, status, customer_id/.test(email));
 check('10 the rules are written down for the owner', fs.existsSync(path.join(__dirname, '..', '..', 'docs', 'customers-and-properties.md')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');

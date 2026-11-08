@@ -18,7 +18,6 @@ const sites = {
   'src/components/issues/ReportIssueScreen.tsx': /keepPicked\(a\.uri\)/,
   'src/components/media/HeaderPhotoField.tsx': /keepPicked\(asset\.uri\)/,
   'src/lib/profilePhoto.ts': /keepPicked\(result\.assets\[0\]\.uri\)/,
-  'src/lib/stopPhotoPicker.ts': /keepPicked\(a\.uri\)/,
   'src/lib/pickImage.ts': /keepPicked\(a\.uri\)/,
   'src/data/timePhotos.ts': /keepPicked\(shot\.assets\[0\]\.uri\)/,
   'app/(owner)/(tabs)/projects/[id].tsx': /keepPicked\(result\.assets\[0\]\.uri\)/,

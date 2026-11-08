@@ -66,7 +66,6 @@ export default function MoreScreen() {
           <MenuRow icon="user" label="Customers" subtitle="Customer directory and their projects" onPress={() => go('/(owner)/customers')} />
           <MenuRow icon="file-text" label="Quotes & Invoices" subtitle="Quotes, change orders and invoices" onPress={() => go('/(owner)/more/financials')} />
           <MenuRow icon="alert-triangle" label="Issues" subtitle="Problems your crew reported" count={openIssueCount} onPress={() => go('/(owner)/issues')} />
-          <MenuRow icon="image" label="Our Work" subtitle="Show off your projects: posts, reels, story, highlights" onPress={() => go('/(owner)/our-work')} />
           <MenuRow icon="inbox" label="Service requests" subtitle="People who asked for work from the app" count={newRequestCount} onPress={() => go('/(owner)/service-requests')} />
           <MenuRow icon="flag" label="Reported content" subtitle="Messages and photos people flagged" count={openReportCount} onPress={() => go('/(owner)/reports')} />
           <MenuRow icon="clipboard" label="Materials" subtitle="What to order or pick up for upcoming jobs" onPress={() => go('/(owner)/more/materials')} />

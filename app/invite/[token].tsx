@@ -179,7 +179,7 @@ export default function InviteScreen() {
       if (birthdayIso) await saveBirthdayForCurrentUser(birthdayIso);
       if (isWorker) {
         const note = await saveDetailsForCurrentUser({ hoodieSize: hoodie, idUri });
-        if (note) say('Not saved', `You're in, but ${note} You can add your hoodie size and ID later by tapping your name in Settings.`);
+        if (note) say('Not saved', `You're in, but ${note} You can add your shirt size and ID later by tapping your name in Settings.`);
       }
       if (photoUri) {
         try {

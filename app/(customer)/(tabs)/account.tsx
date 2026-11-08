@@ -16,7 +16,6 @@ import { typeScale } from '@/theme/typography';
 import { spacing } from '@/theme/spacing';
 import { db, useDb } from '@/data/store';
 import { formatAddress } from '@/lib/address';
-import { usePortfolioEnabled } from '@/hooks/usePortfolio';
 
 export default function CustomerAccountScreen() {
   const t = useT();
@@ -24,7 +23,6 @@ export default function CustomerAccountScreen() {
   const { colors } = useTheme();
   const { user, signOut, switchDevRole } = useAuth();
   useDb();
-  const workOn = usePortfolioEnabled();
   const insets = useSafeAreaInsets();
 
   return (
@@ -52,21 +50,6 @@ export default function CustomerAccountScreen() {
           <Icon name="chevron-right" size={18} color={colors.textTertiary} />
         </Pressable>
       </ListSection>
-
-      {/* Maintenance updates open from their card on Home (one way in), so Account has no row for them. */}
-
-      {workOn ? (
-        <ListSection title={t('Our Work')}>
-          <ListRow
-            icon="image"
-            iconColor={colors.primary}
-            title={t('Our Work')}
-            subtitle={t('See the projects and reels we have done')}
-            showChevron
-            onPress={() => router.push('/(customer)/work' as any)}
-          />
-        </ListSection>
-      ) : null}
 
       <ListSection title={t('Your Project Team')}>
         <ListRow

@@ -9,7 +9,7 @@
 import { Platform } from 'react-native';
 import { File, Directory, Paths } from 'expo-file-system';
 import { CompressionError, type MediaJob } from './mediaQueue';
-import { planImage, planVideo, formatBytes, type ImagePlan } from './mediaPlan';
+import { planImage, planVideo, type ImagePlan } from './mediaPlan';
 
 export const OUT_MARK = '/media-queue/out/';
 /** A file this module already produced. */
@@ -86,7 +86,7 @@ export async function prepareVideo(job: MediaJob): Promise<Prepared> {
   try { compressor = require('react-native-compressor'); } catch { compressor = undefined; }
   if (!compressor?.Video) return original;
   // The compressor takes the LONG side as its limit, so a plan for a 1920x1080 source gives the right limit (1280) whatever the orientation.
-  // (A square guess here once shrank every Our Work video to 404x720: measured on the server on 2026-10-28.)
+  // (A square guess here once shrank every video to 404x720: measured on the server on 2026-10-28.)
   const plan = job.width && job.height ? planVideo({ width: job.width, height: job.height }) : planVideo({ width: VIDEO_FALLBACK_W, height: VIDEO_FALLBACK_H });
   // Already 720p or smaller (the picker hands videos over at 720p): sent as it is, never encoded a second time.
   if (!plan.resize) return original;
@@ -117,20 +117,6 @@ export async function prepareVideo(job: MediaJob): Promise<Prepared> {
   }
 }
 
-/**
- * Shrinks a video file for the screens that upload straight away (Our Work posts and stories); the original comes back if it cannot be shrunk.
- * Give the video's real size when the picker reported it: a video already 720p or smaller is then sent as it is.
- */
-export async function shrinkVideoUri(uri: string, size?: { width?: number | null; height?: number | null }): Promise<string> {
-  try {
-    const job = { sourceUri: uri, kind: 'video', width: size?.width || undefined, height: size?.height || undefined } as unknown as MediaJob;
-    return (await prepareVideo(job)).uri;
-  } catch { return uri; }
-}
-
 // If the picker did not report the video's size, plan for a 1080p source (the result only sets maxSize, which never enlarges).
 const VIDEO_FALLBACK_W = 1920;
 const VIDEO_FALLBACK_H = 1080;
-
-export const describeSaving = (inBytes?: number, outBytes?: number) =>
-  inBytes && outBytes ? `${formatBytes(inBytes)} → ${formatBytes(outBytes)}` : '';

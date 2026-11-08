@@ -74,7 +74,7 @@ export async function saveDetailsForCurrentUser(d: { hoodieSize: HoodieSize | nu
     if (d.idUri) { const r = await saveMyId(pid, d.idUri); if (!r.ok) notes.push(r.error); }
     return notes.length ? notes.join(' ') : null;
   } catch (err) {
-    return err instanceof Error ? err.message : 'Your hoodie size or ID could not be saved.';
+    return err instanceof Error ? err.message : 'Your shirt size or ID could not be saved.';
   }
 }
 

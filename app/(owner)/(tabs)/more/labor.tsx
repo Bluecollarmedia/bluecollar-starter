@@ -22,7 +22,6 @@ function say(title: string, message: string) {
 }
 
 function skipLabel(s: LaborSkip): string {
-  if (s.maintenanceStopId) return db.maintenance.stopById[s.maintenanceStopId]?.property?.name ?? 'a maintenance stop';
   const a = db.assignments.find((x) => x.id === s.assignmentId);
   return a?.project?.name ?? 'a job';
 }

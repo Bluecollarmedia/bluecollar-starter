@@ -32,7 +32,6 @@ import { useWorkers } from '@/hooks/useWorkers';
 import { useCustomerAccess } from '@/hooks/useCustomerAccess';
 import { getProjectImageUri } from '@/lib/projectImages';
 import { BrandCover } from '@/components/branding/BrandCover';
-import { getMockPhotoImageUri } from '@/lib/mockPhotoImages';
 import { haptics } from '@/lib/haptics';
 import { todayKey, localDateKey, isoToLocalDateKey } from '@/lib/ids';
 import { typeScale } from '@/theme/typography';
@@ -1664,7 +1663,7 @@ export default function ProjectDetailScreen() {
         onPress={() => openPhotoReview(photo)}
       >
         <View style={styles.photoGridImageWrap}>
-          <OptimizedImage source={getMockPhotoImageUri(photo, 500)} style={styles.photoGridImage} placeholder={photo.blurhash} />
+          <OptimizedImage source={photo.fileUrl} style={styles.photoGridImage} placeholder={photo.blurhash} />
           <View style={[styles.photoTypePill, { backgroundColor: typeColor }]}>
             <Text style={[typeScale.caption, { color: '#FFFFFF', fontWeight: '700' }]}>
               {PHOTO_TYPE_LABEL[photo.photoType] ?? photo.photoType}
@@ -2191,7 +2190,7 @@ export default function ProjectDetailScreen() {
                             </View>
                             {linkedPhoto && (
                               <Pressable onPress={() => openPhotoReview(linkedPhoto)} accessibilityRole="button" accessibilityLabel="View photo">
-                                <OptimizedImage source={getMockPhotoImageUri(linkedPhoto, 120)} style={styles.activityThumb} />
+                                <OptimizedImage source={linkedPhoto.fileUrl} style={styles.activityThumb} />
                               </Pressable>
                             )}
                           </View>
@@ -3147,7 +3146,7 @@ export default function ProjectDetailScreen() {
               ) : (
                 <View style={styles.previewPhotoGrid}>
                   {photos.filter(ph => ph.isCustomerVisible).map(ph => (
-                    <OptimizedImage key={ph.id} source={getMockPhotoImageUri(ph, 300)} style={styles.previewPhotoThumb} />
+                    <OptimizedImage key={ph.id} source={ph.fileUrl} style={styles.previewPhotoThumb} />
                   ))}
                 </View>
               )}

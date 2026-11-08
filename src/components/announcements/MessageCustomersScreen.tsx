@@ -1,5 +1,5 @@
 /**
- * The owner writes a message to their customers (landscaping and maintenance). Each customer gets a push notification and
+ * The owner writes a message to their customers. Each customer gets a push notification and
  * a banner on their home screen, like an announcement to workers but for customers. Below the form, the messages already sent.
  * Used by the owner (More > Announcements).
  */

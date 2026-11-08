@@ -1,9 +1,4 @@
 import { WorkdayCard } from '@/components/time/WorkdayCard';
-import { WorkerToday } from '@/components/today/WorkerToday';
-import { useDayWork } from '@/hooks/useDayWork';
-import { OtherWorkCard } from '@/components/worker/OtherWorkCard';
-import { useWorkerLanding } from '@/hooks/useWorkerLanding';
-import { useMyMaintenanceRoute } from '@/hooks/useMaintenance';
 import { SkipRequestSheet } from '@/components/time/SkipRequestSheet';
 import { withTimedPhoto } from '@/data/timePhotos';
 import { loadMySkipRequests, requestSkip, type MySkipRequest } from '@/data/timeTracking';
@@ -80,7 +75,11 @@ function minutesUntil(time: string): number {
   return Math.round((target.getTime() - now.getTime()) / 60000);
 }
 
-function LandscapingToday() {
+/**
+ * Today for a worker on project jobs. With the time clock installed, a worker who is not clocked in sees only a Clock In button
+ * (never the work); once a day is running the clock disappears and the job screen is shown.
+ */
+export default function WorkerTodayScreen() {
   const t = useT();
   const { colors } = useTheme();
   const { user } = useAuth();
@@ -88,8 +87,6 @@ function LandscapingToday() {
   const insets = useSafeAreaInsets();
   const tabBarClearance = useTabBarClearance();
   const { resources } = useResources();
-  const { onRoute } = useWorkerLanding();
-  const todayRoute = useMyMaintenanceRoute();
   const {
     todayAssignments, currentJob, jobState, checkIns, checkOuts, moveToNextJob,
     scheduleConfirmed, confirmSchedule, checkIn, checkOut, locateForCheckIn, locateForCheckOut, openMapsNavigation,
@@ -469,14 +466,6 @@ function LandscapingToday() {
 
         <View style={[styles.content, { paddingTop: showWorking ? spacing.xl : PILL_OVERHANG + spacing.xl }]}>
           <WorkdayCard gate />
-          {onRoute ? (
-            <OtherWorkCard
-              icon="map"
-              title={todayRoute ? t('Your maintenance route today') : t('You have a maintenance route coming up')}
-              subtitle={todayRoute ? (todayRoute.stops.length === 1 ? t('1 stop. Tap to open it.') : t('{n} stops. Tap to open it.', { n: todayRoute.stops.length })) : t('Tap to see it.')}
-              onPress={() => router.push('/(worker)/maintenance' as any)}
-            />
-          ) : null}
           {unreadAnnouncement && (() => {
             const weatherMeta = unreadAnnouncement.weatherAction ? WEATHER_ACTION_META[unreadAnnouncement.weatherAction] : null;
             const isStrong = unreadAnnouncement.priority === 'urgent' || !!weatherMeta;
@@ -1124,20 +1113,3 @@ const styles = StyleSheet.create({
     borderRadius: radius.full,
   },
 });
-
-/**
- * Today for a worker on project jobs.
- *  - A worker with route stops today gets the simple Today: just the stops, or the one combined list when they also have jobs.
- *  - With the time clock installed, a worker who is not clocked in sees only a Clock In button (never the work); once a day is running
- *    the clock disappears and the existing job screen below is shown unchanged.
- */
-export default function WorkerTodayScreen() {
-  const { workday } = useWorkerContext();
-  const day = useDayWork();
-  const timeOn = workday.installed === true;
-  // A project job is worked (checked into, ticked off, finished) on the job screen below, not on the read-only job page, so when the next
-  // thing on the list is a job and the worker is clocked in, that screen is the one to show. Route stops keep the new Today.
-  if (timeOn && day.hasStops && workday.active && day.next?.kind === 'job') return <LandscapingToday />;
-  if (timeOn && day.hasStops) return <WorkerToday combined={day.both} />;
-  return <LandscapingToday />;
-}

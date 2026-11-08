@@ -17,7 +17,6 @@ const files = [...walk('src'), ...walk('app'), ...walk('supabase/functions')];
 const text = files.map((f) => fs.readFileSync(path.join(root, f), 'utf8')).join('\n');
 const used = dropped.filter((n) => text.includes("'" + n + "'") || text.includes('"' + n + '"') || text.includes('`' + n + '`'));
 check('3 the app and the edge functions call none of them', used.length === 0, used.join(', '));
-check('4 the old maintenance customer-code file is gone, and the property page no longer has a "Remove Customer\'s Access" button that used it', !fs.existsSync(path.join(root, 'src/data/maintenanceCodes.ts')) && !/regenerateMaintenanceCode|Remove Customer/.test(read('src/components/maintenance/CustomerAccessSection.tsx')));
-check('5 the leftover tables are NOT dropped here (live functions still read them): the update is functions and triggers only', !/join_requests\b.*drop|drop.*team_codes/i.test(sql.replace(/--.*$/gm, '')));
+check('4 the leftover tables are NOT dropped here (live functions still read them): the update is functions and triggers only', !/join_requests\b.*drop|drop.*team_codes/i.test(sql.replace(/--.*$/gm, '')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

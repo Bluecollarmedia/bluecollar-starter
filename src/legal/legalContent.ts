@@ -24,7 +24,7 @@ export const PRIVACY: LegalDoc = {
     {
       heading: 'Who uses the app and who controls the data',
       paragraphs: [
-        'The app is a business tool for landscaping and maintenance companies. A company owner sets up the company, and its workers and customers join with a code or invitation.',
+        'The app is a business tool for contracting and trade companies. A company owner sets up the company, and its workers and customers join with a code or invitation.',
         'Information about a company\'s projects, properties, customers, schedules and records belongs to that company, and the company decides who on its team can see it. If you are a customer or worker, your company can also answer questions about your records.',
       ],
     },
@@ -34,9 +34,8 @@ export const PRIVACY: LegalDoc = {
         'Account details: your name, email address and password (the password is stored in scrambled form and is never visible to us). Optional: phone number, birthday and profile photo.',
         'Company details entered by the owner: company name, address, phone, email, logo and header photos.',
         'Customer and property details entered by the company: names, phone numbers, email addresses, service addresses, contact and gate or access instructions, and notes.',
-        'Work records: projects, tasks, schedules, hours worked, pay rates and payroll estimates, maintenance routes and visit history, and clock-in/clock-out times.',
-        'Photos and videos you take or choose (job photos, stop photos, problem reports, profile photos). The app asks for camera and photo-library permission before it can use them.',
-        'Our Work: the company owner can add photos, videos (reels), stories and music (an audio file chosen from the phone, or the sound taken from one of its videos) to show finished projects. When the owner turns Our Work on, these are public: anyone who opens the app, including people who are not signed in, can see them. They show the town of a project, never the name or address of a customer.',
+        'Work records: projects, tasks, schedules, hours worked, pay rates and payroll estimates, visit history, and clock-in/clock-out times.',
+        'Photos and videos you take or choose (job photos, problem reports, profile photos). The app asks for camera and photo-library permission before it can use them.',
         'Service requests: if you use the Request page (you do not need an account), the name, phone number, optional email address, town or ZIP code, kind of property, services you choose and any details you write. They are saved for the company, shown to its owner and administrators in the app, and emailed to them.',
         'Weather: the Weather page shows a forecast for a town you choose from a list or type. It does not track you and does not read your location.',
         'Messages sent inside a project, and reports of problems at a property.',

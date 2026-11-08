@@ -21,7 +21,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.116.0';
 import { AwsClient } from 'https://esm.sh/aws4fetch@1.0.20';
 /**
  * Which stored files are private (kept in the private bucket). Written out here, identical to supabase/functions/_shared/privateKeys.ts
- * and src/lib/privateMedia.ts (a check keeps the three the same), so this one file can be pasted into the Supabase dashboard as it is.
+ * (a check keeps the two the same), so this one file can be pasted into the Supabase dashboard as it is.
  */
 const PRIVATE_FOLDERS = new Set<string>([]);
 function isPrivateKey(key: string): boolean {
@@ -78,19 +78,6 @@ const TYPES: Record<string, string> = {
   'application/pdf': 'pdf',
   'video/mp4': 'mp4',
   'video/quicktime': 'mov',
-  // Our Work music (the owner's own tracks)
-  'audio/mpeg': 'mp3',
-  'audio/mp3': 'mp3',
-  'audio/mp4': 'm4a',
-  'audio/x-m4a': 'm4a',
-  'audio/aac': 'aac',
-  'audio/wav': 'wav',
-  'audio/x-wav': 'wav',
-  'audio/aiff': 'aiff',
-  'audio/x-aiff': 'aiff',
-  'audio/x-caf': 'caf',
-  'audio/flac': 'flac',
-  'audio/x-flac': 'flac',
   // More video containers every phone plays
   'video/x-m4v': 'm4v',
   'video/3gpp': '3gp',
@@ -218,29 +205,12 @@ serve(async (req: Request) => {
       return reply({ url: await presignGet(key, 300) });
     }
 
-    // Maintenance photos opened through a short-lived private link. The database decides who may open which file
-    // (maintenance_photos_i_can_open, update 71): owner/admin, the crew on the route, or the linked customer for a shared photo on a
-    // finished stop. Only the keys it allows are signed. NOT used by the app yet; it only protects once the files themselves are private.
-    if (body.action === 'maint-sign') {
-      const keys: string[] = Array.isArray(body.keys) ? body.keys.filter(safePath).slice(0, 100) : [];
-      const userClient = createClient(SUPABASE_URL, ANON_KEY, {
-        global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
-      });
-      const { data, error } = await userClient.rpc('maintenance_photos_i_can_open', { p_keys: keys });
-      if (error) return reply({ error: 'Could not check access' }, 502);
-      const urls: Record<string, string> = {};
-      await Promise.all(((data ?? []) as string[]).map(async (k) => { urls[k] = await presignGet(k, 3600); }));
-      return reply({ urls });
-    }
-
     if (body.action === 'usage') {
       // Adds up this company's files (and the caller's own avatars) in R2.
       const prefixes = [...Object.keys(me.roles).map((c) => `${c}/`), `avatars/${me.personId}/`];
       let bytes = 0;
       let photos = 0;
       let avatars = 0;
-      let work = 0;
-      let workBytes = 0;
       for (const base of [BUCKET_URL, PRIVATE_BUCKET_URL].filter(Boolean)) for (const prefix of prefixes) {
         let token = '';
         do {
@@ -252,15 +222,13 @@ serve(async (req: Request) => {
           for (const m of xml.matchAll(/<Contents>[\s\S]*?<\/Contents>/g)) {
             const size = Number(/<Size>(\d+)<\/Size>/.exec(m[0])?.[1] ?? 0);
             bytes += size;
-            // Our Work files live under <company>/portfolio/ and are counted on their own line.
             if (prefix.startsWith('avatars/')) avatars++;
-            else if ((/<Key>([^<]*)<\/Key>/.exec(m[0])?.[1] ?? '').includes('/portfolio/')) { work++; workBytes += size; }
             else photos++;
           }
           token = /<NextContinuationToken>([^<]+)<\/NextContinuationToken>/.exec(xml)?.[1] ?? '';
         } while (token);
       }
-      return reply({ bytes, photos, avatars, work, workBytes });
+      return reply({ bytes, photos, avatars });
     }
 
     return reply({ error: 'Unknown action' }, 400);

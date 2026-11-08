@@ -14,7 +14,7 @@ check('1 on a phone the file is sent with the native file upload (legacy createU
 check('2 the phone path has a time limit that cancels the native request', /withTimeout\(task\.uploadAsync\(\)/.test(up) && /task\.cancelAsync\(\)/.test(up));
 check('3 the phone checks the file exists (with the legacy API, which can read picker files) and says so plainly if it does not', /legacy\.getInfoAsync\(localUri\)/.test(up) && /could not read the file/.test(up));
 check('4 the server\'s real answer comes back (status and body) so the screen can show its reason', /return \{ status: res\.status, body: res\.body/.test(up));
-check('6 every other photo, video and PDF (profile, projects, maintenance...) uses it too', /putFile\(localUri, data\.uploadUrl/.test(media) && !/new Blob|\.blob\(\)/.test(media.slice(media.indexOf('async function uploadToR2'), media.indexOf('export async function removeMedia'))));
+check('6 every other photo, video and PDF (profile, projects, trucks...) uses it too', /putFile\(localUri, data\.uploadUrl/.test(media) && !/new Blob|\.blob\(\)/.test(media.slice(media.indexOf('async function uploadToR2'), media.indexOf('export async function removeMedia'))));
 check('7 the size check reads the size from disk on a phone', /localFileSize\(localUri\)/.test(media) && /info\.size/.test(up));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

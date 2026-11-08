@@ -15,7 +15,7 @@ export interface TeamPerson {
   email: string;
   avatarUrl?: string;
   role?: 'owner' | 'admin' | 'worker' | 'customer';
-  workerType?: 'landscaping' | 'maintenance';
+  /** Has team access (the database column is still called `landscaping`). */
   landscaping: boolean;
   isStaff: boolean;
   pendingTeam: boolean;
@@ -27,7 +27,7 @@ export interface TeamPerson {
 
 interface Row {
   person_id: string; first_name: string | null; last_name: string | null; email: string | null; avatar_url: string | null;
-  role: TeamPerson['role'] | null; member_status: string | null; worker_type: 'landscaping' | 'maintenance' | null;
+  role: TeamPerson['role'] | null; member_status: string | null;
   landscaping: boolean | null; is_staff: boolean | null;
   pending_team_request: boolean; deactivated_at: string | null; deactivated_by_name: string | null; is_me: boolean;
 }
@@ -38,7 +38,7 @@ function fromRow(r: Row): TeamPerson {
   const state: TeamState = landscaping ? 'active' : r.member_status === 'invited' || r.pending_team_request ? 'waiting' : 'deactivated';
   return {
     personId: r.person_id, firstName: r.first_name ?? '', lastName: r.last_name ?? '', email: r.email ?? '', avatarUrl: r.avatar_url ?? undefined,
-    role: r.role ?? undefined, workerType: r.worker_type ?? undefined, landscaping, isStaff: !!r.is_staff,
+    role: r.role ?? undefined, landscaping, isStaff: !!r.is_staff,
     pendingTeam: r.pending_team_request, deactivatedAt: r.deactivated_at ?? undefined,
     deactivatedByName: r.deactivated_by_name ?? undefined, isMe: !!r.is_me, state,
   };
@@ -83,8 +83,7 @@ export function useTeamAccess() {
   return {
     people, loading, error, myRole, reload: load, check,
     deactivate: (personId: string, acknowledge: boolean) => act('deactivate_member', { p_person_id: personId, p_acknowledge: acknowledge }),
-    reactivate: (personId: string, workerType: 'landscaping' | 'maintenance') =>
-      act('reactivate_member', { p_person_id: personId, p_landscaping: true, p_worker_type: workerType }),
+    reactivate: (personId: string) => act('reactivate_member', { p_person_id: personId, p_landscaping: true }),
     setRole: (personId: string, role: 'admin' | 'worker') => act('set_member_role', { p_person_id: personId, p_role: role }),
   };
 }

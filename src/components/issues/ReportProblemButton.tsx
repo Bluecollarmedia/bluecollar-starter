@@ -8,14 +8,12 @@ import { spacing, radius } from '@/theme/spacing';
 import type { IssueWhere } from '@/data/issues';
 import { useT } from '@/i18n';
 
-/** Outlined "Report a Problem" button for a worker's property/job screens. */
+/** Outlined "Report a Problem" button for a worker's job screens. */
 export function ReportProblemButton({ where }: { where: IssueWhere }) {
   const t = useT();
   const { colors } = useTheme();
   const router = useRouter();
-  const params = 'maintenancePropertyId' in where
-    ? { maintenancePropertyId: where.maintenancePropertyId }
-    : { projectId: where.projectId };
+  const params = { projectId: where.projectId };
   return (
     <PressableScale
       onPress={() => router.push({ pathname: '/(worker)/report-issue', params } as any)}

@@ -6,11 +6,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useT } from '@/i18n';
 import { WX } from '@/components/weather/WeatherUI';
-import { usePortfolioEnabled } from '@/hooks/usePortfolio';
 
 const TABS: { path: string; label: string; icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'] }[] = [
   { path: '/weather', label: 'Weather', icon: 'weather-partly-cloudy' },
-  { path: '/weather/work', label: 'Our Work', icon: 'image-multiple-outline' },
   { path: '/weather/request', label: 'Request', icon: 'clipboard-check-outline' },
   { path: '/weather/account', label: 'Brighton', icon: 'leaf' },
 ];
@@ -21,15 +19,10 @@ export function FloatingTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  // Our Work is in the bar only while the owner's switch for it is on.
-  const workOn = usePortfolioEnabled();
-  const tabs = TABS.filter((tab) => tab.path !== '/weather/work' || workOn);
-  // Full-screen viewers (a video, a story) have no tab bar over them.
-  if (pathname.startsWith('/weather/work-video') || pathname.startsWith('/weather/work-story')) return null;
   return (
     <View style={[styles.wrap, { bottom: Math.max(insets.bottom, 10) + 4 }]} pointerEvents="box-none">
       <View style={styles.bar}>
-        {tabs.map((tab) => {
+        {TABS.map((tab) => {
           const on = tab.path === '/weather' ? pathname === '/weather' || pathname === '/weather/' : pathname.startsWith(tab.path);
           return (
             <Pressable
@@ -38,7 +31,7 @@ export function FloatingTabBar() {
               accessibilityState={{ selected: on }}
               accessibilityLabel={t(tab.label)}
               onPress={() => {
-                // Tapping the tab you are already on takes that page back to its top (a long page, the Our Work feed, anything).
+                // Tapping the tab you are already on takes that page back to its top (a long page, anything).
                 if (on) scrollTopOf(tab.path);
                 else router.navigate(tab.path as any);
               }}

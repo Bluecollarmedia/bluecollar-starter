@@ -209,12 +209,6 @@ export default function StorageScreen() {
             colors={colors}
           />
           <StatRow
-            icon="film"
-            label="Our Work"
-            value={`${usage?.workCount ?? 0} · ${formatBytes(usage?.workBytes ?? 0)}`}
-            colors={colors}
-          />
-          <StatRow
             icon="user"
             label="Profile Photos"
             value={String(usage?.avatarCount ?? 0)}

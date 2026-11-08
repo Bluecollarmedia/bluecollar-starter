@@ -1,6 +1,6 @@
 /**
- * One place for every property (supabase/updates/075 and 079). A property is entered once, for one customer; landscaping projects,
- * Maintenance properties are that same property (linked by property_id) with their own settings.
+ * One place for every property (supabase/updates/075 and 079). A property is entered once, for one customer; projects there
+ * link to that same property (by property_id).
  *
  * Every form that asks for an address goes through `propertyForSave`: it picks the customer's existing property, or makes it once.
  * Before update 79 is installed the function does not exist; then the form just saves as it always did, so nothing breaks.

@@ -36,6 +36,5 @@ check('9 the root layout installs it', /installGlobalErrorHandler\(\)/.test(read
 const src = read('src/lib/errorReporting.ts');
 check('10 the last fatal error is remembered and shown on the next launch, and the handler is put back if something replaced it', /rememberError\(/.test(src) && /showLastErrorIfAny/.test(src) && /ensureGlobalErrorHandler/.test(src) && /showLastErrorIfAny\(\)/.test(read('app/_layout.tsx')) && /ensureGlobalErrorHandler\(\)/.test(read('app/_layout.tsx')));
 check('11 a breadcrumb before a risky step is wiped 8 seconds later if the app lives, and shown on the next launch if it died', /export function markStep/.test(src) && /STEP_TTL_MS = 8000/.test(src) && /It closed right after: /.test(src));
-check('12 a story or highlight closes before it opens a project or reel, with a breadcrumb first', /markStep\(what\);\s*goBack\(\);\s*setTimeout\(\(\) => router\.push\(href as any\), 150\)/.test(read('app/weather/work-story.tsx')));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

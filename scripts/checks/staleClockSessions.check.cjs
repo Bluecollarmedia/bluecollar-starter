@@ -1,5 +1,5 @@
 // Run: node scripts/checks/staleClockSessions.check.cjs
-// A clock session that was never closed (the workday clock for landscaping + maintenance) must never get in the way of the
+// A clock session that was never closed (the workday clock) must never get in the way of the
 // next day and must never be given an invented end time. One rule (lib/clockSession) used by every clock, the database flags the old session
 // at zero hours, the worker answers with ONE card, the owner settles it, and Sign Out warns while a clock is running.
 const ts = require('typescript');

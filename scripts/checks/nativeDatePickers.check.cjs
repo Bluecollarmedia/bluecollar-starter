@@ -36,6 +36,6 @@ check('5 DateField is exported from the ui index', /DateField/.test(read('src/co
 check('6 DateRow opens a picker for an empty optional date on iPhone (no silent "today")', !/onChange\(localDateKey\(new Date\(\)\)\)\)/.test(read('src/components/financials/FormBits.tsx')) && /IosDateSheet/.test(read('src/components/financials/FormBits.tsx')));
 
 // 7. Time fields stay on native time pickers.
-const timeFiles = ['src/components/maintenance/TimeCorrectionSheet.tsx', 'src/components/materials/ReminderSheet.tsx', 'app/(owner)/schedule-create.tsx'];
+const timeFiles = ['src/components/materials/ReminderSheet.tsx', 'app/(owner)/schedule-create.tsx'];
 check('7 time fields use the native DateTimePicker', timeFiles.every((f) => /DateTimePicker/.test(read(f))));
 console.log(bad ? `\n${bad} failed` : '\nall passed'); process.exit(bad ? 1 : 0);

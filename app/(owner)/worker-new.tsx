@@ -18,7 +18,7 @@ interface Sent { who: string; phone: string; invite: IssuedInvite }
 
 /**
  * Add a worker: a name and a phone number, nothing else. The worker gets a private link that works once (7 days). They set up
- * their own login from it: name, email, password, birthday, hoodie size, ID, photo. After that the owner decides what they work on.
+ * their own login from it: name, email, password, birthday, shirt size, ID, photo. After that the owner decides what they work on.
  */
 export default function AddWorkerScreen() {
   const { colors } = useTheme();
