@@ -1,6 +1,6 @@
 /**
  * Materials preparation for each project (owner/admin only; see
- * supabase/updates/015).
+ * supabase/setup.sql).
  *
  *  • One checklist per project (project_materials) plus one plan row
  *    (project_material_plans) for the vendor / pickup details and the prep

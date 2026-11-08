@@ -5,6 +5,7 @@
 const ts = require('typescript');
 const fs = require('fs');
 const path = require('path');
+const SETUP_SQL = require('./_sql.cjs').setup;   // supabase/setup.sql, the one file that builds the database
 const root = path.join(__dirname, '../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 let bad = 0;
@@ -46,7 +47,7 @@ const guard = read('src/hooks/useGuardedSignOut.ts');
 check('19 the warning offers "Sign out anyway" and a failed check never stops a sign-out', /Sign out anyway/.test(guard) && (guard.match(/catch \{/g) || []).length >= 1);
 
 // ── the database ──
-const sql = read('supabase/updates/090_stale_clock_sessions.sql');
+const sql = SETUP_SQL;   // the time functions are spread over setup.sql
 check('20 a stale workday is closed at its OWN clock-in (zero hours), never at now(), and the original clock-in is untouched', /set clock_out_at = clock_in_at, status = 'needs_review'/.test(sql) && !/set clock_out_at = now\(\), status = 'needs_review'/.test(sql));
 check('22 clocking in and out flag a stale session first, so it never blocks today and clock-out never closes the old one at now()', (sql.match(/_time_flag_stale\(me, cid\)/g) || []).length >= 3);
 check('23 the worker\'s answer is only SAVED (bounded between clock-in and now); it changes no hours', /p_stopped_at < w\.clock_in_at or p_stopped_at > now\(\)/.test(sql) && /set claimed_out_at = p_stopped_at/.test(sql) && !/claimed_out_at.*clock_out_at = p_stopped_at/.test(sql));

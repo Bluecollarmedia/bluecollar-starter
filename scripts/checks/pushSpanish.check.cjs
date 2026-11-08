@@ -1,5 +1,5 @@
 // Run: node scripts/checks/pushSpanish.check.cjs
-// A person in Español gets the server's push notices in Spanish (the language is saved on the account, update 95). Only known system
+// A person in Español gets the server's push notices in Spanish (the language is saved on the account, people.language in setup.sql). Only known system
 // notices are translated, by event type and exact wording; text people typed (announcements, chat and customer messages) is never changed.
 const ts = require('typescript');
 const fs = require('fs');

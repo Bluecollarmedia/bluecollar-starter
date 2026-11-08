@@ -1,6 +1,6 @@
 /**
  * The owner clocks a worker in or out by hand (a forgotten clock-in, a dead phone, sending someone home). This uses the owner's EXISTING,
- * audited time functions (update 64): time_staff_add_workday starts a day, time_staff_edit_workday closes one. Both need a reason, are
+ * audited time functions (in setup.sql): time_staff_add_workday starts a day, time_staff_edit_workday closes one. Both need a reason, are
  * written to the time history, refuse the same unsafe things the worker's own clock refuses (a running property timer or break, an
  * overlapping day), and never touch an approved or flagged day. Nothing new in the database.
  */

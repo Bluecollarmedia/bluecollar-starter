@@ -1,5 +1,5 @@
 /**
- * Estimated project progress from its tasks. The same formula the database uses (update 121, _recompute_project_progress):
+ * Estimated project progress from its tasks. The same formula the database uses (_recompute_project_progress in setup.sql):
  * a completed task counts 1, an in-progress task counts half, divided by all tasks; never 100 (only completing the project sets 100).
  * No tasks: no estimate (null), so the number is left alone.
  */

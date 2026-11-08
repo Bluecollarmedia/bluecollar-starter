@@ -1,5 +1,5 @@
 /**
- * A worker's shirt size (people.hoodie_size) and ID photo (supabase/updates/058). The size sits on the person; the ID photo is kept in its own
+ * A worker's shirt size (people.hoodie_size) and ID photo (supabase/setup.sql). The size sits on the person; the ID photo is kept in its own
  * table that only the worker and the company OWNER can read, and its file is never shown from a public link: the owner (or the
  * worker) gets a short-lived private link from the media function.
  */
@@ -10,7 +10,7 @@ import { idFolder, isHoodieSize, isIdKeyFor, type HoodieSize } from '@/lib/worke
 
 export type Result = { ok: true } | { ok: false; error: string };
 
-const NOT_ON = 'This feature is not switched on yet (update 58 is missing). Your other changes were saved.';
+const NOT_ON = 'This feature is not switched on yet (the database setup is missing it). Your other changes were saved.';
 const missing = (m: string | undefined) => /(hoodie|person_ids)/i.test(m ?? '') && /(column|schema cache|does not exist|relation)/i.test(m ?? '');
 
 export interface MyDetails { hoodieSize: HoodieSize | null; idKey: string | null }

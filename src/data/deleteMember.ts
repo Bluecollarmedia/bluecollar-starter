@@ -1,5 +1,5 @@
 /**
- * Deleting a worker or customer (supabase/updates/092). Only someone with no login and no records at all can be deleted (for example
+ * Deleting a worker or customer (supabase/setup.sql). Only someone with no login and no records at all can be deleted (for example
  * one added by mistake, or a placeholder nobody linked). Anyone else is deactivated instead, which keeps their history and payroll.
  * The database decides; this only asks and reports back in plain words.
  */

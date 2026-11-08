@@ -77,9 +77,9 @@ const TABLES = {
   owner_material_lists: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'title', 'items', 'sourceText', 'createdBy', 'createdAt', 'updatedAt'] },
   trucks: { scope: 'company', cols: ['id', 'companyId', 'name', 'make', 'model', 'year', 'licensePlate', 'vin', 'color', 'photoUrl', 'status', 'notes', 'assignedTo', 'createdAt', 'updatedAt'] },
   assignments: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'personId', 'scheduledDate', 'startTime', 'endTime', 'isFullDay', 'sortOrder', 'status', 'confirmationState', 'truckId', 'notes', 'cancelledAt', 'cancelledBy', 'cancellationReason', 'reassignedFrom', 'reassignedTo', 'seriesId', 'createdAt', 'updatedAt'] },
-  // Repeating schedules (supabase/updates/012). Their days are filled in as
+  // Repeating schedules (supabase/setup.sql). Their days are filled in as
   // assignments by extend_schedule_series().
-  // Crews (supabase/updates/014). A worker is in at most one crew.
+  // Crews (supabase/setup.sql). A worker is in at most one crew.
   crews: { scope: 'company', cols: ['id', 'companyId', 'name', 'color', 'createdAt', 'updatedAt'] },
   crew_members: { scope: 'company', cols: ['id', 'companyId', 'crewId', 'personId', 'createdAt'] },
   schedule_series: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'personId', 'frequency', 'intervalDays', 'horizonDays', 'startDate', 'endDate', 'startTime', 'endTime', 'isFullDay', 'truckId', 'notes', 'createdBy', 'stoppedAt', 'createdAt', 'updatedAt'] },
@@ -101,7 +101,7 @@ const TABLES = {
   membership_audit_log: { scope: 'company', cols: ['id', 'companyId', 'eventType', 'actorId', 'targetId', 'metadata', 'createdAt'] },
   // Company Resources. hasSecret/createdBy/updatedBy are set by the database
   // only, so they aren't listed as writable columns. Codes never come through
-  // here — see reveal_resource_secret() in supabase/updates/006.
+  // here — see reveal_resource_secret() in supabase/setup.sql.
   company_resources: { scope: 'company', cols: ['id', 'companyId', 'category', 'name', 'description', 'truckId', 'itemName', 'cardLastFour', 'cardHolderId', 'createdAt', 'updatedAt'] },
   resource_access: { scope: 'company', cols: ['id', 'companyId', 'resourceId', 'personId', 'createdAt'] },
   resource_audit_log: { scope: 'company', cols: ['id', 'companyId', 'resourceId', 'resourceName', 'actorId', 'eventType', 'targetPersonId', 'metadata', 'createdAt'] },
@@ -109,10 +109,10 @@ const TABLES = {
   change_orders: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'quoteId', 'customerId', 'number', 'title', 'description', 'status', 'lineItems', 'taxRate', 'subtotal', 'taxAmount', 'total', 'notes', 'terms', 'issueDate', 'snapshot', 'sentAt', 'approvedAt', 'approvedBy', 'approvedName', 'approvedSignature', 'shareToken', 'declinedAt', 'declinedBy', 'declineReason', 'createdBy', 'createdAt', 'updatedAt'] },
   invoices: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'quoteId', 'changeOrderIds', 'customerId', 'number', 'title', 'status', 'lineItems', 'taxRate', 'subtotal', 'taxAmount', 'total', 'notes', 'paymentInstructions', 'invoiceDate', 'dueDate', 'snapshot', 'shareToken', 'issuedAt', 'voidedAt', 'voidReason', 'createdBy', 'createdAt', 'updatedAt'] },
   financial_events: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'documentType', 'documentId', 'eventType', 'actorId', 'note', 'metadata', 'createdAt'] },
-  // Update 015: document defaults and materials preparation (owner/admin only).
+  // Document defaults and materials preparation (owner/admin only).
   financial_settings: { scope: 'company', pk: 'companyId', cols: ['companyId', 'defaultTaxRate', 'defaultTerms', 'defaultExclusions', 'defaultPaymentInstructions', 'defaultInvoiceNotes', 'updatedAt'] },
   material_vendors: { scope: 'company', cols: ['id', 'companyId', 'name', 'contactName', 'phone', 'email', 'address', 'pickupInstructions', 'notes', 'createdAt', 'updatedAt'] },
-  // Update 017: photos/videos the owner attaches to a task.
+  // Photos/videos the owner attaches to a task.
   task_attachments: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'taskId', 'mediaType', 'fileUrl', 'fileKey', 'sizeBytes', 'createdBy', 'createdAt'] },
   project_materials: { scope: 'company', cols: ['id', 'companyId', 'projectId', 'name', 'quantity', 'unit', 'status', 'vendorId', 'notes', 'source', 'sortOrder', 'createdBy', 'createdAt', 'updatedAt'] },
   project_material_plans: { scope: 'company', pk: 'projectId', cols: ['projectId', 'companyId', 'vendorId', 'pickupLocation', 'pickupInstructions', 'handlingNotes', 'reminderAt', 'reminderJobDate', 'reminderNote', 'dismissedSources', 'updatedAt'] },
@@ -989,7 +989,7 @@ export function deleteRow(table: TableName, id: string): void {
         .eq(snake(pk), id),
       (e) => { reportError(`Removing from ${label(table)}`, e); reloadTable(table); },
     );
-    // Whatever stored file the deleted row (or a row that goes with it) held is deleted from storage a few seconds later (update 119).
+    // Whatever stored file the deleted row (or a row that goes with it) held is deleted from storage a few seconds later (see setup.sql).
     sweepStorageSoon();
   }
 }

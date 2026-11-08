@@ -3,6 +3,7 @@
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
+const SETUP_SQL = require('./_sql.cjs').setup;   // supabase/setup.sql, the one file that builds the database
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 const load = (p) => { const m = { exports: {} }; new Function('module', 'exports', 'require', ts.transpileModule(read(p), { compilerOptions: { module: 'commonjs' } }).outputText)(m, m.exports, require('./_brand.cjs').withBrand(require, ts)); return m.exports; };
 const email = load('src/lib/documentEmail.ts');
@@ -44,8 +45,10 @@ check('10 invoices are no longer refused by the app, the link works for them, an
   !/Invoices are not emailed from here yet/.test(read('src/data/financials.ts'))
   && !/doc\.kind === 'invoice' \|\| doc\.status === 'draft'/.test(read('src/data/financials.ts'))
   && /'Text Invoice Link'/.test(doc) && /doc\.status === 'issued'/.test(doc));
-check('11 the database update gives invoices a token and the public page shows them read-only (test 081 proves the behavior)',
-  fs.existsSync(path.join(__dirname, '../../supabase/updates/081_invoice_links.sql')) && fs.existsSync(path.join(__dirname, '../../supabase/tests/081_invoice_links.pglite.mjs')));
+check('11 setup.sql gives invoices a unique token and the public page shows only issued (not draft) invoices (supabase/tests/setup/11_customers_jobs proves the behavior)',
+  /^\s+share_token text,$/m.test(require('./_sql.cjs').table('invoices')) && /create unique index if not exists invoices_share_token_key ON public\.invoices USING btree \(share_token\);/.test(SETUP_SQL)
+  && /from public\.invoices i where i\.share_token = p_token and i\.status <> 'draft'/.test(require('./_sql.cjs').fn('get_shared_document'))
+  && fs.existsSync(path.join(__dirname, '../../supabase/tests/setup/11_customers_jobs.test.mjs')));
 
 const strokes = [[{ x: 1, y: 2 }, { x: 3.14, y: 4 }, { x: 5, y: 6 }, { x: 7, y: 8 }, { x: 9, y: 10 }], [{ x: 20, y: 20 }, { x: 25, y: 22 }, { x: 30, y: 21 }, { x: 35, y: 25 }]];
 const path1 = sig.strokesToPath(strokes);
@@ -61,7 +64,7 @@ check('11 the customer can Request Changes (with what to change) and Download PD
   /title=\{t\('Request Changes'\)\}/.test(page) && /What would you like changed\?/.test(page) && /title=\{t\('Send Request'\)\}/.test(page) && /title=\{t\('Download PDF'\)\}/.test(page));
 const html = read('src/lib/documentHtml.ts');
 check('12 the approved PDF prints the signature, re-checked as plain path text first', /isValidSignaturePath\(doc\.approvedSignature\)/.test(html) && /<path d=/.test(html));
-const sql = read('supabase/updates/054_quote_signature.sql');
+const sql = SETUP_SQL;
 check('13 the database saves it with the approval, only as path text, and never lets it change after', /approved_signature text/.test(sql) && /\^\[ML0-9\.,\[:space:\]-\]\+\$/.test(sql) && /The approval signature can''t be changed/.test(sql));
 console.log(bad ? '\n' + bad + ' failed' : '\nall passed');
 process.exit(bad ? 1 : 0);

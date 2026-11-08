@@ -1,5 +1,5 @@
 /**
- * Sending a message to customers (supabase/updates/055). One database call finds the customers in the chosen group, saves the
+ * Sending a message to customers (send_customer_announcement in supabase/setup.sql). One database call finds the customers in the chosen group, saves the
  * message in the owner's announcements history, and gives each customer an unread notification, which the phone-push system
  * then delivers. The owner is told how many people it really reached.
  */
@@ -24,7 +24,7 @@ export async function sendCustomerMessage(input: { title: string; body: string; 
   }
 }
 
-/** How many people each group reaches right now (update 83). Null when it can't be read; the screen just shows no counts. */
+/** How many people each group reaches right now (in setup.sql). Null when it can't be read; the screen just shows no counts. */
 export async function fetchCustomerReach(): Promise<Partial<Record<CustomerAudience, number>> | null> {
   if (!isSupabaseConfigured) return null;
   try {

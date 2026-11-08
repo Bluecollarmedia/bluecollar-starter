@@ -5,7 +5,7 @@
  * clock-in. It emails the owner exactly where the worker clocked in from. The worker is never blocked: clocking in always works. Nothing
  * is emailed when the worker is at the yard, when no yard is set, or when the owner switched alerts off (Settings > Yard and clock-in alerts).
  *
- * Who may call it: the signed-in worker whose workday it is. The function trusts the database record (update 107), not the app: it reads
+ * Who may call it: the signed-in worker whose workday it is. The function trusts the database record (see supabase/setup.sql), not the app: it reads
  * where the clock-in was recorded and whether that is outside the yard, so the app cannot talk it into sending or not sending.
  *
  * Deploy:  supabase functions deploy clock-in-alert

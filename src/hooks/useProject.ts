@@ -86,7 +86,7 @@ export function useProject(projectId: string) {
     const changes: Partial<ProjectTask> = { ...patch };
     delete changes.assignee;
     delete changes.completer;
-    // The database stamps the real time and person (update 016); these keep
+    // The database stamps the real time and person (see setup.sql); these keep
     // the screen right until the saved row comes back.
     if (patch.status === 'completed' && before?.status !== 'completed') {
       changes.completedAt = new Date().toISOString();

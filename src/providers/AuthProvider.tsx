@@ -12,7 +12,7 @@
  *  - authenticated, active membership → role-based routing
  *
  * Who you are and which company you belong to comes from the
- * get_my_context() database function (see supabase/schema.sql).
+ * get_my_context() database function (see supabase/setup.sql).
  */
 
 import React, { createContext, useContext, useEffect, useMemo, useReducer, useCallback, useRef } from 'react';
@@ -118,7 +118,7 @@ export interface SignUpProfile {
 }
 
 /** What to do as part of creating the account. Handled by the database at
- * sign-up (supabase/schema.sql handle_new_user), so it works even when email
+ * sign-up (handle_new_user in supabase/setup.sql), so it works even when email
  * confirmation is turned on. */
 export interface SignUpIntent {
   company?: {
@@ -130,7 +130,7 @@ export interface SignUpIntent {
     state?: string;
     zip?: string;
   };
-  /** A private one-time invite link (supabase/updates/078_invite_links.sql): the database attaches the new login to the person the owner added. */
+  /** A private one-time invite link (supabase/setup.sql): the database attaches the new login to the person the owner added. */
   inviteToken?: string;
 }
 

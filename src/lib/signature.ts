@@ -1,5 +1,5 @@
 // A drawn signature, kept as plain SVG path text ("M x y L x y ..." inside a 300 x 120 box). Pure, no network.
-// The database accepts only this alphabet (supabase/updates/054), so it can never carry anything but a line drawing.
+// The database accepts only this alphabet (supabase/setup.sql), so it can never carry anything but a line drawing.
 
 export const SIG_WIDTH = 300;
 export const SIG_HEIGHT = 120;

@@ -1,7 +1,7 @@
 import { w } from '@/config/brand';
 // Is a worker close enough to a project to check in? Real geographic distance between the phone's GPS fix and the project's
 // coordinates, against the project's saved check-in distance. Pure, no network. The database repeats the same rule
-// (supabase/updates/052) so a modified app can't skip it.
+// (supabase/setup.sql) so a modified app can't skip it.
 
 export interface LatLng { latitude: number; longitude: number }
 export interface GpsFix extends LatLng { accuracy?: number }

@@ -3,7 +3,7 @@
  *
  * The app never talks to NWS itself. It asks this function for a town, and the function:
  *   1. decides who may ask (weatherIsOn): a SIGNED-IN person always (the app's settings file, features.weather, decides whether they see
- *      weather at all); a signed-out visitor only while the owner's public visitor area switch is ON (public_weather_config, update 103);
+ *      weather at all); a signed-out visitor only while the owner's public visitor area switch is ON (public_weather_config, in setup.sql);
  *      nobody when the secret WEATHER_ENABLED is "false" (set it when the app has features.weather off);
  *   2. answers for the eight built-in nearby towns (fixed list below, each point from the US Census and checked against NWS) and for any other US point
  *      (its forecast grid is looked up from NWS /points, which also says the place's time zone);

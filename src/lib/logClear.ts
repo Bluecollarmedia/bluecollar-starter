@@ -78,6 +78,6 @@ export function clearConfirmation(scope: ClearScope, mode: ClearMode, count: num
   };
 }
 
-/** Message for a database that hasn't had update 51 yet. */
-export const NEEDS_UPDATE_51 = 'Clearing the log needs database update 51, which has not been installed yet.';
+/** Message for a database that doesn't have log clearing (setup.sql) yet. */
+export const NEEDS_DATABASE_SETUP = 'Clearing the log needs the latest database setup (supabase/setup.sql), which has not been run yet.';
 export const isMissingFunction = (msg: string | undefined) => /could not find the function|schema cache/i.test(msg ?? '');

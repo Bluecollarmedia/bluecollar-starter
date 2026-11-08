@@ -28,7 +28,7 @@ App code imports from `@/config/brand`; never type a client value anywhere else 
 - `src/providers/` — React context providers (Auth, Theme)
 - `src/lib/` — Supabase client, Cloudflare R2 storage utilities
 - `src/types/` — TypeScript type definitions
-- `supabase/migrations/` — Database migration SQL files
+- `supabase/setup.sql` — The whole database in one file (tests: `supabase/tests/setup/`)
 
 ## Commands
 - `npm start` — Start Expo dev server
@@ -74,7 +74,7 @@ Quotes & invoices follow the same rule: `document` (view a quote / change order 
 `ScheduleProvider` wraps the whole `Stack` in `(owner)/_layout.tsx` (not inside `(tabs)/_layout.tsx`) so the tabs and the modal screens share the same schedule state.
 
 ## Quotes, Change Orders & Invoices
-- Tables: `quotes`, `change_orders`, `invoices`, `financial_events` (`supabase/updates/008_quotes_invoices.sql`). Line items live in each document's `line_items` JSON, so a document always re-prints as saved.
+- Tables: `quotes`, `change_orders`, `invoices`, `financial_events` (in `supabase/setup.sql`). Line items live in each document's `line_items` JSON, so a document always re-prints as saved.
 - Once a document leaves Draft the database locks its contents (trigger `lock_financial_document`); statuses only move forward. Change a sent document by duplicating it as a new draft (`duplicateAsDraft`).
 - Customers see only sent/issued documents of their own project and answer through the `respond_to_financial_document` RPC. Workers can't see financials.
 - Logic: `src/data/financials.ts`. Money math in cents: `src/lib/money.ts`.

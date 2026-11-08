@@ -1,7 +1,7 @@
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
 /**
- * Asks the storage-cleanup function to delete the stored files of everything that was deleted (update 119: the database lists a file for
+ * Asks the storage-cleanup function to delete the stored files of everything that was deleted (setup.sql: the database lists a file for
  * deletion whenever a row that holds one goes, however it goes). Safe to call as often as you like: it only works on that list, never on
  * anything the caller names, and it does nothing when the list is empty. Runs a few seconds after a delete (so the delete has reached the
  * server first), a second time a little later, and once a while after the app opens, so nothing waits long. Never throws.

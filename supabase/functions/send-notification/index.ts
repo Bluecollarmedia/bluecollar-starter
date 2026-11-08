@@ -6,7 +6,7 @@
  * id, only sends a notification created in the last 15 minutes (MAX_AGE_MS), and claims each one once (pushed_at is null -> set) before
  * sending. Keep those rules, and never add a feature here that trusts the caller (a check script fails if they are removed).
  *
- * Called by the database (trigger app_notifications_push, update 008) each
+ * Called by the database (trigger app_notifications_push, in setup.sql) each
  * time an in-app notification is created. It:
  *   1. sends it as a push to every phone the person is signed in on
  *      (Expo push service → Apple / Google), and
@@ -115,7 +115,7 @@ async function sendPush(db: Db, n: Notification): Promise<string> {
     .eq('recipient_id', n.recipient_id)
     .eq('status', 'unread');
 
-  // The person's language (update 95): Español gets Spanish text for the system notices we know (by event type); anything else goes as written.
+  // The person's language (in setup.sql): Español gets Spanish text for the system notices we know (by event type); anything else goes as written.
   const { data: who } = await db.from('people').select('language').eq('id', n.recipient_id).maybeSingle();
   const text = who?.language === 'es' ? spanishPush(n.event_type, n.title, n.body) : { title: n.title, body: n.body };
   const messages = tokens.map(({ token }) => ({
@@ -210,13 +210,13 @@ function esc(s: string): string {
 // ── Spanish push texts (same as _shared/pushSpanish.ts; this function is pasted by hand, so it carries its own copy).
 // Only known system notices, by event type and exact wording; people's own text (announcements, messages) is never changed. ──
 const RULES: Record<string, [RegExp, string][]> = {
-  // update 94: "Remind" asks a worker to confirm their schedule
+  // "Remind" asks a worker to confirm their schedule
   schedule_reminder: [
     [/^Please confirm your schedule$/, 'Confirma tu horario'],
     [/^(.+) (today|tomorrow|[A-Z][a-z]{2} \d{1,2}), full day\. Open the app to confirm\.$/, '$1 $2, todo el día. Abre la app para confirmar.'],
     [/^(.+) (today|tomorrow|[A-Z][a-z]{2} \d{1,2}), starts (.+)\. Open the app to confirm\.$/, '$1 $2, empieza a las $3. Abre la app para confirmar.'],
   ],
-  // updates 64 / 98: the mid-day "check your progress" nudge
+  // the mid-day "check your progress" nudge
   time_progress_check: [
     [/^Check your progress$/, 'Revisa tu avance'],
     [/^Take a moment to check how the work at (.+) is going\.?$/, 'Tómate un momento para ver cómo va el trabajo en $1.'],

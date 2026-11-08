@@ -1,7 +1,7 @@
 /**
  * Edge Function: send-document-email
  *
- * The owner taps "Email to customer" on a sent quote, change order or issued invoice (update 81). This emails the customer
+ * The owner taps "Email to customer" on a sent quote, change order or issued invoice (see supabase/setup.sql). This emails the customer
  * a short message with a "View quote" / "View invoice" button that opens the private page (…/approve/<token>). Nothing is
  * emailed for a draft.
  *

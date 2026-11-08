@@ -7,7 +7,7 @@ const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 let bad = 0;
 const check = (n, ok, d = '') => { if (!ok) bad++; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n}${ok ? '' : '  - ' + d}`); };
 const page = read('app/invite/[token].tsx');
-const sql = read('supabase/updates/078_invite_links.sql');
+const sql = require('./_sql.cjs').fn('handle_new_user');   // the sign-up trigger function in supabase/setup.sql
 const photo = page.slice(page.indexOf('styles.photoSection}>') - 80, page.indexOf('styles.photoSection}>') + 40);
 
 check('1 the photo option is shown to everyone on the sign-up form, customers included (not only workers)', /styles\.photoSection/.test(page) && !/\{isWorker \? \(\s*<View style=\{styles\.photoSection\}>/.test(page) && /onPress=\{choosePhoto\}/.test(page), photo);

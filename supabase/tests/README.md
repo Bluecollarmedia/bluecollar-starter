@@ -22,14 +22,15 @@ a Vault stand-in, a pg_net stand-in that records calls, the Realtime publication
 | `05_delete_company` | delete_my_company (owner only, typed name, not while clocked in, logins removed, closure record, storage clean-up list) and deleting an unused team member |
 | `06_features` | request form choices = `src/config/brand.js` `wording.serviceTypes`, crews, announcements and customer messages, job chat, public weather switch (starts OFF), push trigger using `functions_url` |
 | `07_demo_data_and_reset` | demo_data.sql (refuses CHANGE-ME, bcrypt logins, identities, the demo content, re-run, refuses a database with a real company, the "remove demo logins" line) and admin_reset_all_data.sql |
+| `08_time_tracking` | time tracking in depth: request ids and one open day, trucks at clock-in, breaks, job order, required photos, rate snapshots, owner corrections and approval with history, alerts, skip requests, the owner clocking a worker in and out by hand, companies kept apart, no writes around the functions |
+| `09_clock_rules` | check-in distance (radius, GPS accuracy, Anywhere), clocking in with or without scheduled work, forgotten (stale) workdays, the day closing itself after the last job, the midnight rule, settling a day with no hours, clock-out ending open work, yard clock-in alerts |
+| `10_team` | one-company rule in depth, birthday / shirt size / language / worker ID photo, invite links in depth, owner protection, admin powers, deactivate / reactivate, deleting unused members, Remind, Task Leads, crews, a company delete that fails half way |
+| `11_customers_jobs` | Add customer, customer access on/off, Message customers reach, one customer record + one link, job sites (`ensure_property`, `normalize_address`, link guards), quote approval with a signature, invoice links, problem reports, what customers see of tasks, automatic progress, repeating schedules |
+| `12_records_files` | content reports, clearing a job's activity, the owner's private truck and job records, the truck service log, Company Resources (Vault codes, access per worker), the public weather switch in detail, the storage clean-up queue, the old code / join-request functions staying gone |
 
 What PGlite cannot prove (check these once on a real, empty Supabase test project): the real login service (that the
 demo logins can actually sign in), Supabase Storage itself, the Vault's encryption, pg_net really calling the Edge
 Function, Realtime, and the exact Postgres version Supabase runs.
 
-## The older per-update tests
-
-The `NNN_*.pglite.mjs` and `*_test.sql` files test the old numbered files in `supabase/updates/`, one update at a time
-(`helpers/fullSchema.mjs` loads `schema.sql` and the updates). Those updates now depend on Snow and lawn-maintenance
-files that were removed in Step 2, so most of these no longer load; they are kept only until the old update files are
-retired. Their generic checks were ported into `setup/*.test.mjs` above.
+The old per-update test files (and the numbered update files they tested) were removed in Step 6; every generic case
+they had is in the files above.

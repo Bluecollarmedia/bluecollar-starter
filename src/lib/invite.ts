@@ -1,5 +1,5 @@
 /**
- * Private invite links (supabase/updates/078_invite_links.sql), sent by text message (no email service needed).
+ * Private invite links (supabase/setup.sql), sent by text message (no email service needed).
  *
  * The owner types a name and a phone number, then either copies the link or opens the phone's Messages app with the text and
  * link filled in. The link works once and expires after 7 days; tapping it opens the sign-up page for that one person.

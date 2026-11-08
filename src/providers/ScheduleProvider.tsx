@@ -207,7 +207,7 @@ export function ScheduleProvider({ children }: { children: React.ReactNode }) {
       confirmationState: 'awaiting',
       truckId: params.truckId,
       notes: params.notes,
-      // Only sent when set, so plain scheduling works before update 012 is run.
+      // Only sent when set, so plain scheduling works on a database without repeating schedules.
       ...(params.seriesId ? { seriesId: params.seriesId } : {}),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

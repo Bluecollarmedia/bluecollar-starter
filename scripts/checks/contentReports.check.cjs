@@ -1,6 +1,6 @@
 // Run: node scripts/checks/contentReports.check.cjs <path to typescript package>
 // Logic checks for "Report content": the helpers, and how the app talks to the database (FAKE supabase),
-// including a database that has not had update 49 yet.
+// including a database that does not have content reports yet (setup.sql not run).
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
@@ -62,7 +62,7 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
   check('7 reporting the same item again counts as sent (no scary error)', r.ok);
   handler = () => ({ error: { message: 'relation "public.content_reports" does not exist' } });
   r = await submitReport({ projectId: 'p1', type: 'message', contentId: 'm2', reason: 'harassment', details: 'abuse', where: 'Smith patio' }, 'me');
-  check('8 before update 49: a clear message and a ready email to support instead', !r.ok && r.needsUpdate && /email/i.test(r.error) && r.mailto.startsWith('mailto:'), JSON.stringify(r));
+  check('8 without content reports in the database: a clear message and a ready email to support instead', !r.ok && r.needsUpdate && /email/i.test(r.error) && r.mailto.startsWith('mailto:'), JSON.stringify(r));
   handler = () => ({ error: { message: 'new row violates row-level security policy' } });
   r = await submitReport({ projectId: 'p1', type: 'message', contentId: 'm3', reason: 'spam' }, 'me');
   check('9 any other error is shown as it is, with the email fallback', !r.ok && /row-level security/.test(r.error) && !!r.mailto);
@@ -84,7 +84,7 @@ const check = (name, ok, detail = '') => { if (!ok) bad++; console.log(`${ok ? '
   check('11 a message that was already deleted is marked gone', r.ok && r.data[0].gone === true && r.data[1].gone === false);
   handler = () => ({ data: null, error: { message: 'relation "public.content_reports" does not exist' } });
   r = await loadReports();
-  check('12 before update 49 the owner list is simply empty (no error)', r.ok && r.data.length === 0);
+  check('12 without content reports in the database the owner list is simply empty (no error)', r.ok && r.data.length === 0);
 
   // handle
   const item = { id: 'r1', content_type: 'message', content_id: 'm1', gone: false };

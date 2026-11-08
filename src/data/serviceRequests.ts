@@ -1,5 +1,5 @@
 /**
- * Service requests (update 114). A visitor sends one with submit_service_request (works signed out); the owner and admins read them and mark
+ * Service requests (in setup.sql). A visitor sends one with submit_service_request (works signed out); the owner and admins read them and mark
  * them contacted or done. Every call returns a plain result and never throws.
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -23,7 +23,7 @@ export async function submitServiceRequest(r: ServiceRequestInput): Promise<{ ok
     });
     // The server's own wording (code P0001: it refused the request) is shown as is; anything else (no connection, the update not run yet) gets the plain sentence.
     if (error) return { ok: false, error: error.code === 'P0001' && error.message ? error.message : UNREACHABLE };
-    // Update 118 returns the new request's id: the owner is emailed about it (notify-request). Before 118 there is no id and no email; the
+    // submit_service_request (setup.sql) returns the new request's id: the owner is emailed about it (notify-request). An older database returns no id and sends no email; the
     // request is saved and shown in the app either way, so a failure here is never shown to the visitor.
     const id = (data as { id?: unknown } | null)?.id;
     if (typeof id === 'string') void supabase.functions.invoke('notify-request', { body: { id } }).catch(() => {});

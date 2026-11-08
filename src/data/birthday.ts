@@ -1,7 +1,7 @@
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 
-// Birthday lives in its own column (SQL 044), read and written here instead of the shared
-// people loader so a database without the update keeps working everywhere else.
+// Birthday lives in its own column (in setup.sql), read and written here instead of the shared
+// people loader so a database without that column keeps working everywhere else.
 
 export type BirthdayResult = { ok: true } | { ok: false; error: string; needsUpdate?: boolean };
 

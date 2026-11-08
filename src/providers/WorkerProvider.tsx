@@ -58,7 +58,7 @@ interface WorkerContextValue {
   /** Checks in to the given job (or the current/next one). Works again after checking out, to resume a job. */
   checkIn: (gps: GPSCoordinates | null, assignmentId?: string) => void;
   checkOut: (gps: GPSCoordinates | null) => void;
-  /** The workday clock (update 63). `timeOn` is true once the database update is installed; then check-in and check-out go through the workday. */
+  /** The workday clock (in setup.sql). `timeOn` is true once the database has it; then check-in and check-out go through the workday. */
   workday: Workday;
   timeOn: boolean;
   checkInTimed: (gps: GPSCoordinates | null, assignmentId?: string) => Promise<{ ok: true } | { ok: false; error: string }>;
@@ -71,7 +71,7 @@ interface WorkerContextValue {
   checkOuts: CheckOut[];
 
   projectTasks: (projectId: string) => ProjectTask[];
-  /** Whether this worker is the job's Task Lead (only the lead can change its tasks, update 016). */
+  /** Whether this worker is the job's Task Lead (only the lead can change its tasks, enforced in setup.sql). */
   isTaskLead: (projectId: string) => boolean;
   /** Both refuse (with a message) when this worker isn't the job's Task Lead. */
   startTask: (taskId: string) => boolean;
@@ -388,7 +388,7 @@ export function WorkerProvider({ children }: { children: React.ReactNode }) {
   const projectTasksFn = useCallback((projectId: string): ProjectTask[] =>
     db.tasks[projectId] ?? [], [v]);
 
-  // Who may check off a job's tasks (update 120): its Task Lead always; anyone else on the job too, unless the owner turned on
+  // Who may check off a job's tasks (enforced in setup.sql): its Task Lead always; anyone else on the job too, unless the owner turned on
   // "Only the Task Lead checks off tasks" (company.taskLeadOnly). Kept under the old name: every screen asks "may I change tasks here?".
   const isTaskLead = useCallback((projectId: string) => {
     if (db.projects.find(p => p.id === projectId)?.taskLeadId === workerId) return true;

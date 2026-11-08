@@ -1,6 +1,6 @@
 /**
  * "Request a service" (the public Weather area's Request tab): the services people can ask for, and the checks a request must pass before it is
- * sent. Pure (no React, no network). The server (update 114, submit_service_request) repeats every check, so this only gives a person a quick,
+ * sent. Pure (no React, no network). The server (submit_service_request in setup.sql) repeats every check, so this only gives a person a quick,
  * friendly answer before anything is sent.
  */
 
@@ -8,8 +8,7 @@ import { brand, companyPhoneLink } from '@/config/brand';
 
 /**
  * The services people can pick: the settings file's list (src/config/brand.js, wording.serviceTypes). The words are saved with the
- * request, and the database function submit_service_request accepts only these, so the list in setup.sql must match it exactly
- * (the old updates 114 and 118 still hold the original app's list).
+ * request, and the database function submit_service_request accepts only these, so the list in setup.sql must match it exactly.
  */
 export const SERVICE_CHOICES: readonly string[] = brand.wording.serviceTypes;
 export type ServiceChoice = string;

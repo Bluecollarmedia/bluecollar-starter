@@ -2,7 +2,7 @@
  * Quotes, change orders and invoices: creating, editing drafts, and moving
  * them through their statuses.
  *
- * Rules (also enforced by the database, see supabase/updates/008):
+ * Rules (also enforced by the database, see supabase/setup.sql):
  *  • Only drafts can be edited or deleted. Once a document is sent/issued its
  *    contents and price are locked; to change it, duplicate it as a new draft.
  *  • Statuses only move forward: draft → sent → approved / declined / expired
@@ -578,7 +578,7 @@ function personName(id?: string): string | undefined {
 export const approvalLinksEnabled = !!config.webUrl;
 
 /** The private link a customer opens in any browser, without the app: view and approve a sent quote or change order,
- * or view an issued invoice (update 81). */
+ * or view an issued invoice (in setup.sql). */
 export async function approvalLink(doc: FinancialDoc): Promise<string | null> {
   if (!config.webUrl || doc.status === 'draft') return null;
   let token = doc.shareToken;

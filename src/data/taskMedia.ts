@@ -1,6 +1,6 @@
 /**
  * Task photos and videos: what the owner attaches to a task to show the crew
- * what to do (supabase/updates/017).
+ * what to do (supabase/setup.sql).
  *
  * Files go in the project's folder of the "media" bucket, so they count toward
  * the storage limit the owner picked in Settings → Storage. Picks that would go

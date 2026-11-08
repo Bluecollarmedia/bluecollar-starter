@@ -6,42 +6,29 @@
 //   R9  only owner/admin, or the uploader, may delete a company file; no unused role names
 //   R19 R2 is required in the app: no quiet fallback to the public Supabase bucket
 //   R18 the privacy policy lists every service that gets data
-// SQL files are read in the order the database is built (schema.sql, then the numbered updates by name): the last word counts.
+// The database is supabase/setup.sql (one file, the final definitions), read here without its comments.
 const fs = require('fs');
 const path = require('path');
+const sqlHelper = require('./_sql.cjs');
 const root = path.join(__dirname, '../..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8').replace(/\r\n/g, '\n');
 let bad = 0;
 let n = 0;
 const check = (name, ok, detail = '') => { n += 1; if (!ok) bad += 1; console.log(`${ok ? 'PASS' : 'FAIL'}  ${n} ${name}${ok ? '' : '  - ' + detail}`); };
 
-const files = ['supabase/schema.sql', ...fs.readdirSync(path.join(root, 'supabase/updates'))
-  .filter((f) => /^\d+.*\.sql$/.test(f) && !f.startsWith('reset')).sort().map((f) => `supabase/updates/${f}`)];
-const all = files.map((f) => ({ f, sql: read(f).replace(/--[^\n]*/g, '') }));
-/** Position of the last create / drop of a policy, across the files in build order. */
-function lastPolicyEvent(name) {
-  let last = null;
-  all.forEach(({ f, sql }, i) => {
-    for (const m of sql.matchAll(new RegExp(`(create|drop) policy (?:if exists )?${name}\\b[^;]*;`, 'g'))) last = { kind: m[1], text: m[0], file: f, i, at: m.index };
-  });
-  return last;
-}
-const s200 = read('supabase/updates/200_security_fixes.sql');
+const setup = sqlHelper.setup.replace(/\r\n/g, '\n').replace(/--[^\n]*/g, '');
+const createdPolicy = (name) => (setup.match(new RegExp(`create policy ${name}\\b[^;]*;`)) || [null])[0];
 
 // R3
 for (const p of ['media_public_read', 'media_authenticated_upload', 'media_owner_delete']) {
-  const e = lastPolicyEvent(p);
-  check(`R3 the open "media" bucket rule ${p} ends up dropped`, e && e.kind === 'drop', JSON.stringify(e));
+  check(`R3 the open "media" bucket rule ${p} is dropped and never made again`, new RegExp(`drop policy if exists ${p} on storage\\.objects;`).test(setup) && !createdPolicy(p));
 }
-const i200 = all.findIndex(({ f }) => f.endsWith('200_security_fixes.sql'));
-const writesFrom200 = all.slice(i200).some(({ sql }) => /create policy \w+ on storage\.objects for (insert|update|delete|all)[^;]*'media'/.test(sql));
-check('R3 from update 200 on, no file gives signed-in people a write rule on the "media" bucket again', i200 >= 0 && !writesFrom200);
-const read200 = lastPolicyEvent('media_company_read');
-check('R3 listing the "media" bucket is limited to active members of the company whose folder it is (no cast of a non-id folder)', read200 && read200.kind === 'create' && /to authenticated/.test(read200.text) && /public\.is_member\(\(\(storage\.foldername\(name\)\)\[1\]\)::uuid\)/.test(read200.text) && /case\s+when \(storage\.foldername\(name\)\)\[1\] ~\*/.test(read200.text));
+check('R3 setup.sql gives signed-in people no write rule on file storage (no insert/update/delete/all rule on storage.objects)', !/create policy \w+ on storage\.objects for (insert|update|delete|all)/.test(setup));
+const mediaRead = createdPolicy('media_company_read');
+check('R3 listing the "media" bucket is limited to active members of the company whose folder it is (no cast of a non-id folder)', mediaRead && /to authenticated/.test(mediaRead) && /public\.is_member\(\(\(storage\.foldername\(name\)\)\[1\]\)::uuid\)/.test(mediaRead) && /case\s+when \(storage\.foldername\(name\)\)\[1\] ~\*/.test(mediaRead));
 
 // R4
-const pi = lastPolicyEvent('people_insert');
-check('R4 the open people insert rule (check (true)) ends up dropped', pi && pi.kind === 'drop', JSON.stringify(pi));
+check('R4 there is no open people insert rule: nobody may insert into people directly (no insert/all rule on people)', !createdPolicy('people_insert') && !/create policy \w+ on public\.people for (insert|all)\b/.test(setup));
 const appPeopleInsert = (() => {
   const hits = [];
   const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) walk(p); else if (/\.(ts|tsx)$/.test(e.name)) { const t = fs.readFileSync(p, 'utf8'); if (/from\(['"]people['"]\)\s*\.(insert|upsert)\(/.test(t)) hits.push(p); } } };
@@ -51,9 +38,10 @@ const appPeopleInsert = (() => {
 check('R4 the app never inserts people directly (people are made by database functions)', appPeopleInsert.length === 0, appPeopleInsert.join(', '));
 
 // R21
-const ni = lastPolicyEvent('notifications_insert');
-check('R21 the final notice insert rule uses the role / recipient / event-type check', ni && ni.kind === 'create' && /with check \(public\._notification_insert_allowed\(company_id, recipient_id, event_type\)\)/.test(ni.text), JSON.stringify(ni));
-const fn = s200.slice(s200.indexOf('function public._notification_insert_allowed'), s200.indexOf('$$;', s200.indexOf('function public._notification_insert_allowed')));
+const ni = createdPolicy('notifications_insert');
+check('R21 the notice insert rule uses the role / recipient / event-type check (and it is the only insert rule on notices)', ni && /with check \(public\._notification_insert_allowed\(company_id, recipient_id, event_type\)\)/.test(ni)
+  && (setup.match(/create policy \w+ on public\.app_notifications for (insert|all)\b/g) || []).length === 1, String(ni));
+const fn = sqlHelper.fn('_notification_insert_allowed');
 const listOf = (role) => { const m = fn.match(new RegExp(`if my_role = '${role}' then\\s*return ev in \\(([^)]*)\\)`)); return m ? [...m[1].matchAll(/'([a-z_]+)'/g)].map((x) => x[1]) : []; };
 const workerList = listOf('worker');
 const customerList = listOf('customer');
@@ -70,7 +58,10 @@ check('R21 every notice the customer app writes is on the customers\' list', cus
 const actions = read('src/data/actions.ts');
 check('R21 notifyStaff only writes to ACTIVE owner/admins', /m\.role === 'owner' \|\| m\.role === 'admin'\) && m\.status === 'active'/.test(actions));
 check('R21 notifyPeople skips anyone who is not an active member (instead of failing the save)', /const to = db\.demo \? personIds : personIds\.filter\(\(id\) => active\.has\(id\)\);/.test(actions) && /insertRows\('app_notifications', to\.map\(/.test(actions));
-check('R21 the helper cannot be called by signed-out visitors', /revoke all on function public\._notification_insert_allowed\(uuid, uuid, text\) from public, anon;/.test(s200));
+const niGrants = sqlHelper.grants('_notification_insert_allowed');
+check('R21 the helper cannot be called by signed-out visitors (revoked from public and anon, granted only to signed-in people and the server)',
+  /^revoke all on function public\._notification_insert_allowed\([^)]*\) from public, anon\b/m.test(niGrants)
+  && sqlHelper.grantedTo('_notification_insert_allowed').every((r) => ['authenticated', 'service_role'].includes(r)), niGrants);
 
 // R9 + R17 (the media function)
 const media = read('supabase/functions/media/index.ts');

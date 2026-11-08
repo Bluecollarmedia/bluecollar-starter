@@ -1,8 +1,9 @@
 // Run: node scripts/checks/serviceRequests.check.cjs <path to typescript package>
-// "Request a service": the form's checks, the server function (update 114), the Request tab, the owner's list and the notification tap.
+// "Request a service": the form's checks, the server function (submit_service_request in setup.sql), the Request tab, the owner's list and the notification tap.
 const ts = require(process.argv[2] || 'typescript');
 const fs = require('fs');
 const path = require('path');
+const sqlHelper = require('./_sql.cjs');   // supabase/setup.sql, the one file that builds the database
 const read = (p) => fs.readFileSync(path.join(__dirname, '../..', p), 'utf8');
 const { withBrand } = require('./_brand.cjs');
 const compile = (src) => {
@@ -29,19 +30,22 @@ check('8 the owner sees new requests first (newest first), then contacted, then 
 check('9 the new-request count counts only the new ones', lib.newRequestCount(sorted) === 2);
 
 // ── the server function ──
-const sql = read('supabase/updates/114_service_requests.sql');
-// The old updates (114, and 118's final copy) still hold the ORIGINAL app's service list. The starter's list lives in
-// src/config/brand.js (wording.serviceTypes, read by src/lib/serviceRequest.ts) and setup.sql (Step 5) must accept exactly these words. Until setup.sql exists this only checks the app list.
-const setupPath = path.join(__dirname, '../../supabase/setup.sql');
-const setupSql = fs.existsSync(setupPath) ? fs.readFileSync(setupPath, 'utf8') : '';
-const allowed = (setupSql.match(/allowed constant text\[\] := array\[([\s\S]*?)\];/) || [])[1] || '';
+const sql = sqlHelper.fn('submit_service_request');
+const tableGrants = sqlHelper.grants('service_requests');
+const tableRules = sqlHelper.policies('service_requests');
+// The starter's list lives in src/config/brand.js (wording.serviceTypes, read by src/lib/serviceRequest.ts); setup.sql must accept exactly these words.
+const allowed = (sql.match(/allowed constant text\[\] := array\[([\s\S]*?)\];/) || [])[1] || '';
 const sqlServices = [...allowed.matchAll(/'([^']+)'/g)].map((m) => m[1]);
-check('10 the form offers a short plain list, and (once setup.sql exists) the server accepts every one of them', lib.SERVICE_CHOICES.length > 0 && new Set(lib.SERVICE_CHOICES).size === lib.SERVICE_CHOICES.length && (!setupSql || lib.SERVICE_CHOICES.every((s) => sqlServices.includes(s))), JSON.stringify(sqlServices));
-check('11 anyone, signed in or not, may send a request; nobody can read the table except an owner or admin', /grant execute on function public\.submit_service_request\(.*\) to anon, authenticated/.test(sql) && /revoke all on public\.service_requests from public, anon, authenticated/.test(sql) && /role in \('owner','admin'\)/.test(sql));
-check('12 there is no insert policy and no insert grant (the function is the only way in)', !/for insert/.test(sql) && !/grant[^;]*insert[^;]*service_requests/.test(sql));
+check('10 the form offers a short plain list, and the server (setup.sql) accepts every one of them', lib.SERVICE_CHOICES.length > 0 && new Set(lib.SERVICE_CHOICES).size === lib.SERVICE_CHOICES.length && sqlServices.length > 0 && lib.SERVICE_CHOICES.every((s) => sqlServices.includes(s)), JSON.stringify(sqlServices));
+check('11 anyone, signed in or not, may send a request; nobody can read the table except an owner or admin',
+  ['anon', 'authenticated'].every((r) => sqlHelper.grantedTo('submit_service_request').includes(r))
+  && /^revoke all on table public\.service_requests from anon, authenticated;$/m.test(tableGrants) && !/ to anon\b/.test(tableGrants)
+  && (tableRules.match(/create policy/g) || []).length === 2 && (tableRules.match(/m\.role = ANY \(ARRAY\['owner'::text, 'admin'::text\]\)/g) || []).length >= 3
+  && /role in \('owner','admin'\)/.test(sql));
+check('12 there is no insert policy and no insert grant (the function is the only way in)', !/for (insert|all)\b/.test(tableRules) && !/^grant [^\n]*\binsert\b/m.test(tableGrants));
 check('13 spam is held back: 3 an hour from one phone or email, 40 an hour in all', />= 3 then/.test(sql) && />= 40 then/.test(sql));
 check('14 the owner and admins get a notification for each request', /insert into public\.app_notifications/.test(sql) && /'service_request'/.test(sql));
-check('15 only status, who handled it and when can be changed by the owner', /grant update \(status, handled_by, handled_at\)/.test(sql));
+check('15 only status, who handled it and when can be changed by the owner', /^grant update \(status, handled_by, handled_at\) on table public\.service_requests to authenticated;$/m.test(tableGrants) && !/^grant [^\n]*\bupdate on table public\.service_requests/m.test(tableGrants));
 
 // ── the app ──
 const layout = read('app/weather/(tabs)/_layout.tsx');
@@ -58,8 +62,7 @@ const es = { ...compile(read('src/i18n/es.customer.ts')).ES_CUSTOMER, ...compile
 check('21 every service and every form message has Spanish', lib.SERVICE_CHOICES.every((s) => es[s]) && ['Request a service', 'Send request', 'Request sent', 'Enter your name.', 'Choose at least one service.'].every((k) => es[k]));
 const data = read('src/data/serviceRequests.ts');
 const fn = read('supabase/functions/notify-request/index.ts');
-const sql118 = read('supabase/updates/118_request_email.sql');
-check('23 update 118 makes the request function return the new id and adds emailed_at (the rest of the function is as in 114)', /return jsonb_build_object\('ok', true, 'id', rid\);/.test(sql118) && /add column if not exists emailed_at timestamptz/.test(sql118) && /grant execute on function public\.submit_service_request\(.*\) to anon, authenticated/.test(sql118) && !/return jsonb_build_object\('ok', true\);/.test(sql118));
+check('23 the request function returns the new id (for the owner email) and the table has emailed_at', /return jsonb_build_object\('ok', true, 'id', rid\);/.test(sql) && /^\s+emailed_at timestamp with time zone,$/m.test(sqlHelper.table('service_requests')) && !/return jsonb_build_object\('ok', true\);/.test(sql));
 check('24 right after a request is sent the app asks notify-request to email the owner, and a failure there is never shown to the visitor', /supabase\.functions\.invoke\('notify-request', \{ body: \{ id \} \}\)\.catch\(\(\) => \{\}\)/.test(data) && /typeof id === 'string'/.test(data));
 check('25 notify-request is one self-contained file (pasted into the website), emails only owners and admins of that company, only a fresh request, and only once', !/from '\.\.\/_shared/.test(fn) && /in\('role', \['owner', 'admin'\]\)/.test(fn) && /FRESH_MS = 15 \* 60 \* 1000/.test(fn) && /\.is\('emailed_at', null\)/.test(fn) && /api\.resend\.com\/emails/.test(fn) && /reply_to: looksLikeEmail\(r\.email\) \? r\.email : undefined/.test(fn));
 check('26 the email says who, how to reach them, where, what services and the details, and the subject names them', /Name: \$\{r\.name\}/.test(fn) && /Phone: \$\{r\.phone\}/.test(fn) && /Town \/ ZIP: \$\{r\.town\}/.test(fn) && /Services: \$\{r\.services\.join/.test(fn) && /Details: /.test(fn) && /subject: `New service request: \$\{r\.name\} \(\$\{r\.town\}\)`/.test(fn));

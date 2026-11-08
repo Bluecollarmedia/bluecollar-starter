@@ -56,7 +56,7 @@ export function setLanguage(next: Language) {
   syncLanguageToAccount();
 }
 
-/** Saves the language on the signed-in account (update 95) so the server's push notices come in it. Quietly does nothing when signed out or the update is not installed. */
+/** Saves the language on the signed-in account (in setup.sql) so the server's push notices come in it. Quietly does nothing when signed out or the database doesn't have it yet. */
 export function syncLanguageToAccount() {
   try {
     const { supabase } = require('@/lib/supabase') as typeof import('@/lib/supabase');

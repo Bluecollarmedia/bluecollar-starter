@@ -1,16 +1,16 @@
 /**
- * Clearing activity logs (supabase/updates/051): delete a project's activity for a period. Owner/admin only (the database checks). A count is asked first ("dry run") so the
+ * Clearing activity logs (supabase/setup.sql): delete a project's activity for a period. Owner/admin only (the database checks). A count is asked first ("dry run") so the
  * confirmation shows the real number.
  */
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import { NEEDS_UPDATE_51, isMissingFunction, type ClearMode, type ClearRange } from '@/lib/logClear';
+import { NEEDS_DATABASE_SETUP, isMissingFunction, type ClearMode, type ClearRange } from '@/lib/logClear';
 
 export type Result<T = undefined> = { ok: true; data: T } | { ok: false; error: string };
 const fail = (error: string): Result<never> => ({ ok: false, error });
 const NOT_CONNECTED = 'Clearing the log needs the live database.';
 
 function why(error: { message?: string }): string {
-  return isMissingFunction(error.message) ? NEEDS_UPDATE_51 : error.message || 'Something went wrong.';
+  return isMissingFunction(error.message) ? NEEDS_DATABASE_SETUP : error.message || 'Something went wrong.';
 }
 
 export async function previewProjectClear(projectId: string, range: ClearRange): Promise<Result<number>> {

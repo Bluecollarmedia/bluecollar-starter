@@ -33,7 +33,7 @@ export const EMAIL_ERRORS: Record<string, string> = {
   not_allowed: 'Only the owner, or someone the owner allows, can email a quote.',
   sign_in_required: 'Please sign in again, then try once more.',
   not_found: "That document couldn't be found.",
-  bad_request: 'The email service needs its update. Deploy send-document-email again (with database update 81 for invoices).',
+  bad_request: 'The email service needs its update. Deploy send-document-email again (and run supabase/setup.sql again for invoice links).',
   send_failed: "The email service didn't accept it. Check the sender setup in Resend, then try again.",
 };
 

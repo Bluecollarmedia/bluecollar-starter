@@ -16,6 +16,5 @@ const settings = read('app/(worker)/(tabs)/settings.tsx');
 const row = read('src/components/time/ClockRow.tsx');
 check('4 Settings has one small clock row: Clock out while clocked in, Clock in again when clocked out and allowed', /<ClockRow \/>/.test(settings) && /w\.clockOut\(\)/.test(row) && /w\.clockIn\(truckId\)/.test(row) && /w\.day\?\.canClockIn !== false/.test(row));
 check('5 the row shows no timer or hours, and asks before clocking out', !/durationText|netMsAt|clockText/.test(row) && /Clock out for today\?/.test(row));
-check('6 step 1 itself adds no database file: the new database files all come after step 1, starting with 098 (step 2)', fs.readdirSync(path.join(__dirname, '../../supabase/updates')).filter((f) => /^(09[8-9]|1\d\d)_/.test(f)).join().startsWith('098_auto_close_workday.sql'));
 console.log(bad ? `\n${bad} failed` : '\nall passed');
 process.exit(bad ? 1 : 0);

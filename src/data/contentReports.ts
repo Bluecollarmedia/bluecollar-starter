@@ -1,7 +1,7 @@
 /**
- * Report content (supabase/updates/049): report a message or a shared photo, and for the owner/admin to see,
- * act on and mark handled. Direct database calls (not the shared store) so a database that has not had
- * update 49 yet keeps working everywhere else; reporting then falls back to an email to support.
+ * Report content (supabase/setup.sql): report a message or a shared photo, and for the owner/admin to see,
+ * act on and mark handled. Direct database calls (not the shared store) so a database that doesn't have
+ * reports yet keeps working everywhere else; reporting then falls back to an email to support.
  */
 import { useCallback, useEffect, useState } from 'react';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';

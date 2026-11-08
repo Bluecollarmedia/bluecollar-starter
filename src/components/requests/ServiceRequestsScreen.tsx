@@ -1,5 +1,5 @@
 /**
- * Owner and admin: the service requests people sent from the public Weather area's Request tab (update 114). New ones first.
+ * Owner and admin: the service requests people sent from the public Weather area's Request tab (submit_service_request in setup.sql). New ones first.
  * Call or email the person right from the card, then mark it contacted or done.
  */
 import React, { useState } from 'react';

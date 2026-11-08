@@ -1,5 +1,5 @@
 /**
- * Owner: send one customer a private one-time link (supabase/updates/078_invite_links.sql). The customer taps it once, creates
+ * Owner: send one customer a private one-time link (supabase/setup.sql). The customer taps it once, creates
  * their login, and their projects and properties are already on it. A customer who already has a login does not need a link.
  */
 import React, { useEffect, useRef, useState } from 'react';

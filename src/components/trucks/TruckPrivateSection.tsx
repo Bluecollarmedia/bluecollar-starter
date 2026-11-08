@@ -1,7 +1,7 @@
 /**
  * On a truck's page, for the company owner only: the truck's Insurance (PDFs or photos, with expiry warnings) and its Maintenance log
  * (title, date serviced, when it is next due, and what was done; the owner is reminded on the due date). Nobody else sees this section,
- * and the database refuses to give the data to anyone else either (supabase/updates/056 and 077).
+ * and the database refuses to give the data to anyone else either (supabase/setup.sql).
  */
 import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Linking, Alert } from 'react-native';

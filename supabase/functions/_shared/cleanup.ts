@@ -1,5 +1,5 @@
 /**
- * Storage cleanup for permanently deleted companies (updates 68 and 74).
+ * Storage cleanup for permanently deleted companies (see supabase/setup.sql).
  *
  * The database deletes a company's rows in ONE all-or-nothing step and, in that same step, queues what must be removed from storage:
  * every file a table row pointed at ('file') and whole folders ('prefix': the company's folder, ID photos and avatars of deleted people).
